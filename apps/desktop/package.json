@@ -4,10 +4,7 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vue-tsc --noEmit && vite build",
-    "preview": "vite preview",
-    "tauri": "tauri dev"
+    "dev": "tauri dev"
   },
   "dependencies": {
     "@tauri-apps/api": "catalog:frontend",
@@ -16,6 +13,7 @@
   },
   "devDependencies": {
     "@tauri-apps/cli": "catalog:frontend",
+    "@types/node": "catalog:dev",
     "@vitejs/plugin-vue": "catalog:frontend",
     "typescript": "catalog:dev",
     "vite": "catalog:frontend",
