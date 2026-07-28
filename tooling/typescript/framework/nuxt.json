@@ -1,0 +1,6 @@
+{
+  "extends": "./vue.json",
+  "compilerOptions": {
+    "types": ["nuxt", "vue"]
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "extends": "../../tooling/typescript/framework/tauri.json",
+  "compilerOptions": {
+    "useDefineForClassFields": true
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.d.ts",
+    "src/**/*.vue"
+  ],
+  "references": [
+    {
+      "path": "./tsconfig.node.json"
+    }
+  ]
+}

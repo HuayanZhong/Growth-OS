@@ -1,0 +1,6 @@
+{
+  "extends": "../runtime/browser.json",
+  "compilerOptions": {
+    "jsx": "react-jsx"
+  }
+}

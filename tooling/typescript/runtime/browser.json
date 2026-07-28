@@ -1,0 +1,17 @@
+{
+  "extends": "../base.json",
+
+  "compilerOptions": {
+    "target": "ES2024",
+
+    "module": "Preserve",
+
+    "moduleResolution": "Bundler",
+
+    "lib": ["ES2024", "DOM", "DOM.Iterable"],
+
+    "isolatedModules": true,
+
+    "noEmit": true
+  }
+}

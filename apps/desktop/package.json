@@ -1,0 +1,24 @@
+{
+  "name": "desktop",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "tauri": "tauri dev"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "catalog:frontend",
+    "@tauri-apps/plugin-opener": "catalog:frontend",
+    "vue": "catalog:frontend"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "catalog:frontend",
+    "@vitejs/plugin-vue": "catalog:frontend",
+    "typescript": "catalog:dev",
+    "vite": "catalog:frontend",
+    "vue-tsc": "catalog:frontend"
+  }
+}

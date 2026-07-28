@@ -1,0 +1,16 @@
+# 根目录标识，停止向上查找
+root = true
+
+# 全局默认
+[*]
+charset = utf-8                     # 文件编码
+end_of_line = lf                    # 换行符（LF）
+indent_style = space                # 缩进方式（空格）
+indent_size = 2                     # 缩进宽度
+insert_final_newline = true         # 文件末尾保留空行
+trim_trailing_whitespace = true     # 删除行尾空白
+max_line_length = 100               # 单行最大宽度
+
+# Markdown 保留行尾空格（用于换行）
+[*.md]
+trim_trailing_whitespace = false
