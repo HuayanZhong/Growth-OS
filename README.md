@@ -2,21 +2,21 @@
 
 仿 Coze 平台的全栈桌面应用，基于 Turborepo Monorepo 架构。
 
-| 组件 | 技术 | 位置 |
-|------|------|------|
-| 桌面壳 | Electron + TypeScript | `packages/desktop-core` |
-| 前端 | Nuxt 4 + Vue 3 + Vite | `apps/desktop` |
-| 构建编排 | Turborepo | `turbo.json` |
-| 包管理 | pnpm workspace | `pnpm-workspace.yaml` |
-| 语言 | TypeScript（Monorepo 共享配置） | `tooling/typescript` |
+| 组件     | 技术                            | 位置                    |
+| -------- | ------------------------------- | ----------------------- |
+| 桌面壳   | Electron + TypeScript           | `packages/desktop-core` |
+| 前端     | Nuxt 4 + Vue 3 + Vite           | `apps/desktop`          |
+| 构建编排 | Turborepo                       | `turbo.json`            |
+| 包管理   | pnpm workspace                  | `pnpm-workspace.yaml`   |
+| 语言     | TypeScript（Monorepo 共享配置） | `tooling/typescript`    |
 
 ## 前置要求
 
-| 工具 | 版本 | 说明 |
-|------|------|------|
-| **Node.js** | >= 24 | 建议用 [`nvm`](https://github.com/coreybutler/nvm-windows) 或 [`fnm`](https://github.com/Schniz/fnm) 管理版本 |
-| **pnpm** | 11.17.0 | 启用 Corepack 后自动安装：`corepack enable` |
-| **Git** | 任意现代版本 | |
+| 工具        | 版本         | 说明                                                                                                          |
+| ----------- | ------------ | ------------------------------------------------------------------------------------------------------------- |
+| **Node.js** | >= 24        | 建议用 [`nvm`](https://github.com/coreybutler/nvm-windows) 或 [`fnm`](https://github.com/Schniz/fnm) 管理版本 |
+| **pnpm**    | 11.17.0      | 启用 Corepack 后自动安装：`corepack enable`                                                                   |
+| **Git**     | 任意现代版本 |                                                                                                               |
 
 ## 快速开始
 
@@ -56,6 +56,7 @@ pnpm install
 > ```
 >
 > 然后重新安装：
+>
 > ```bash
 > pnpm install
 > ```
@@ -64,23 +65,27 @@ pnpm install
 
 ```bash
 # 启动桌面端（Nuxt + Electron）
+cd apps/desktop
 pnpm dev
 ```
 
 这条命令会：
 
-1. 启动 Nuxt dev server（`http://localhost:3000`）
-2. 编译 `desktop-core` TypeScript 代码
-3. 等待端口就绪后自动弹出 Electron 窗口
+1. 启动 Nuxt dev server
+2. `vite-plugin-electron` 自动编译 Electron 主进程和 preload 代码
+3. 自动弹出 Electron 窗口，加载 Nuxt 页面
+4. 改代码时前端 HMR、主进程自动重启
 
-你也可以单独启动各子项目：
+### 单独启动
 
 ```bash
-# 仅启动 Nuxt（浏览器调试）
-pnpm --filter desktop dev
+# 仅启动 Nuxt（浏览器调试，不启动 Electron）
+cd apps/desktop
+npx nuxt dev
 
-# 单独启动 Electron（需先启动 Nuxt）
-pnpm --filter @growth-os/desktop-core dev
+# 仅编译 desktop-core（验证类型）
+cd packages/desktop-core
+pnpm dev
 ```
 
 ## 项目结构
@@ -91,9 +96,7 @@ Growth OS/
 │   └── desktop/              ← Nuxt 前端应用
 │       ├── app/
 │       │   └── app.vue       ← 入口组件
-│       ├── modules/
-│       │   └── electron.ts   ← Electron 生命周期管理模块
-│       ├── nuxt.config.ts
+│       ├── nuxt.config.ts    ← 集成 vite-plugin-electron
 │       └── package.json
 │
 ├── packages/
@@ -126,20 +129,20 @@ Growth OS/
 
 ### 前端 & 桌面
 
-| 技术 | 用途 |
-|------|------|
-| [Nuxt 4](https://nuxt.com/) | Vue 全栈框架 |
-| [Vue 3](https://vuejs.org/) | 前端 UI 框架 |
+| 技术                                    | 用途                         |
+| --------------------------------------- | ---------------------------- |
+| [Nuxt 4](https://nuxt.com/)             | Vue 全栈框架                 |
+| [Vue 3](https://vuejs.org/)             | 前端 UI 框架                 |
 | [Electron](https://www.electronjs.org/) | 桌面壳（Chromium + Node.js） |
-| [Vite](https://vite.dev/) | 前端构建工具 |
+| [Vite](https://vite.dev/)               | 前端构建工具                 |
 
 ### Monorepo
 
-| 技术 | 用途 |
-|------|------|
-| [Turborepo](https://turbo.build/repo) | 构建编排与缓存 |
-| [pnpm](https://pnpm.io/) | 包管理器 |
-| [TypeScript](https://www.typescriptlang.org/) | 类型系统 |
+| 技术                                          | 用途           |
+| --------------------------------------------- | -------------- |
+| [Turborepo](https://turbo.build/repo)         | 构建编排与缓存 |
+| [pnpm](https://pnpm.io/)                      | 包管理器       |
+| [TypeScript](https://www.typescriptlang.org/) | 类型系统       |
 
 ## 常见问题
 

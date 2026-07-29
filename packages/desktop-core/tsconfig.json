@@ -8,8 +8,7 @@
       "node",
       "electron"
     ],
-    "rootDir": "src",
-    "outDir": "dist"
+    "rootDir": "src"
   },
   "include": [
     "src/**/*.ts"

@@ -14,5 +14,9 @@
     "nuxt": "catalog:frontend",
     "vue": "catalog:frontend",
     "vue-router": "catalog:frontend"
+  },
+  "devDependencies": {
+    "electron": "catalog:frontend",
+    "vite-plugin-electron": "catalog:frontend"
   }
 }

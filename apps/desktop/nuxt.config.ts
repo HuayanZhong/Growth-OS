@@ -5,5 +5,8 @@ export default defineNuxtConfig({
   compatibilityDate: '2026-07-29',
 
   // 禁用 SSR，因为桌面端不需要服务器端渲染
-  ssr: false
+  ssr: false,
+
+  // Electron 桌面端模块——自动编译 main/preload 并启动 Electron
+  modules: ['./modules/electron'],
 })

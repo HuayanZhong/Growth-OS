@@ -1,43 +1,46 @@
 # @growth-os/desktop-core
 
-桌面端核心模块。提供 Electron 窗口创建、IPC 通信等能力，由 Nuxt 模块接管运行时生命周期。
+桌面端核心模块。提供 Electron 主进程（窗口创建、IPC、preload）源码，由 `vite-plugin-electron` 负责编译和运行时管理。
 
 ## 架构
 
 ```
-apps/desktop (Nuxt)
-  └── modules/electron.ts       ← 管理 Electron 进程生命周期
-       └── 调用 desktop-core 编译产物
-            ├── dist/main.js    ← Electron 主进程入口
-            └── dist/preload.js ← 安全桥接层
-```
+apps/desktop/nuxt.config.ts
+  └── vite.plugins: [electron({...})]   ← vite-plugin-electron
+       ├── 构建 desktop-core 的 main.ts / preload.ts
+       ├── 启动 Electron 进程
+       └── 改动主进程代码 → 自动重启 Electron
 
-Nuxt dev server 启动后，Electron 窗口加载 `localhost:3000`，前端享有 Vite HMR。
+packages/desktop-core/src/
+  ├── main.ts        ← Electron 主进程入口
+  └── preload.ts     ← preload 脚本（安全桥接层）
+```
 
 ## 快速开始
 
 ```bash
-# 1. 安装依赖（如果尚未执行）
-pnpm install
-
-# 2. 启动桌面端（Nuxt + Electron）
+# 进入 Nuxt 项目，一条命令启动所有
+cd apps/desktop
 pnpm dev
 ```
 
 上述命令会：
 
-1. 启动 Nuxt dev server（端口 3000）
-2. 编译 `packages/desktop-core` 的 TypeScript
-3. 端口就绪后自动启动 Electron 窗口
+1. 启动 Nuxt dev server
+2. `vite-plugin-electron` 自动编译 `main.ts` 和 `preload.ts`
+3. 自动启动 Electron 窗口，加载 Nuxt 页面
+4. 改动主进程代码 → 自动重启 Electron
 
 ### 单独启动
 
 ```bash
-# 仅启动 Nuxt（浏览器调试）
-pnpm --filter desktop dev
+# 仅启动 Nuxt（浏览器调试，不启动 Electron）
+cd apps/desktop
+npx nuxt dev
 
-# 单独启动 Electron（需先确保 Nuxt 在 3000 端口运行）
-pnpm --filter @growth-os/desktop-core dev
+# 仅编译 desktop-core（验证类型）
+cd packages/desktop-core
+pnpm dev
 ```
 
 ## 前提条件
@@ -60,8 +63,7 @@ electron_mirror=https://npmmirror.com/mirrors/electron/
 packages/desktop-core/
 ├── src/
 │   ├── main.ts       # Electron 主进程：窗口创建、IPC、生命周期
-│   ├── preload.ts    # preload 脚本：contextBridge 安全桥接
-│   └── launch.ts     # launch 函数：供 Nuxt Module 调用的进程管理
+│   └── preload.ts    # preload 脚本：contextBridge 安全桥接
 ├── dist/             # TypeScript 编译产物
 │   ├── main.js
 │   └── preload.js
@@ -71,10 +73,10 @@ packages/desktop-core/
 
 ## 技术栈
 
-| 组件 | 技术 |
-|------|------|
-| 桌面壳 | Electron 43 |
-| 前端 | Nuxt 4 + Vue 3 |
-| 语言 | TypeScript |
-| 构建编排 | Turborepo |
-| 包管理 | pnpm workspace |
+| 组件     | 技术           |
+| -------- | -------------- |
+| 桌面壳   | Electron 43    |
+| 前端     | Nuxt 4 + Vue 3 |
+| 语言     | TypeScript     |
+| 构建编排 | Turborepo      |
+| 包管理   | pnpm workspace |
