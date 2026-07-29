@@ -11,7 +11,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@tailwindcss/vite": "catalog:frontend",
+    "daisyui": "catalog:frontend",
     "nuxt": "catalog:frontend",
+    "tailwindcss": "catalog:frontend",
     "vue": "catalog:frontend",
     "vue-router": "catalog:frontend"
   },

@@ -3,6 +3,15 @@ import { build, startup } from 'vite-plugin-electron'
 import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
+// vite-plugin-electron 会在 process.electronApp 上挂载 Electron App 实例
+declare global {
+  namespace NodeJS {
+    interface Process {
+      electronApp?: import('electron').App
+    }
+  }
+}
+
 const __dirname = fileURLToPath(new URL('.', import.meta.url))
 const coreSrc = resolve(__dirname, '../../../packages/desktop-core/src')
 const outDir = resolve(__dirname, '../../../packages/desktop-core/dist')

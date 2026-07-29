@@ -26,3 +26,6 @@ catalogs:
     vue: ^3.5.40
     vue-router: ^5.2.0
     vite-plugin-electron: ^1.1.0
+    tailwindcss: ^4.3.3
+    '@tailwindcss/vite': ^4.3.3
+    daisyui: ^5.7.4
