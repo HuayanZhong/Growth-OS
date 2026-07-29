@@ -1,0 +1,19 @@
+{
+  "name": "@growth-os/desktop-core",
+  "version": "1.0.0",
+  "description": "桌面端核心模块——负责创建窗口、处理事件、与主进程通信等",
+  "private": true,
+  "type": "module",
+  "main": "dist/main.js",
+  "types": "dist/main.d.ts",
+  "scripts": {
+    "dev": "tsc && pnx wait-on http://localhost:3000 && electron .",
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "electron": "catalog:frontend",
+    "electron-builder": "catalog:frontend",
+    "electron-vite": "catalog:frontend",
+    "@types/node": "catalog:dev"
+  }
+}

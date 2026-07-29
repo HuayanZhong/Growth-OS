@@ -9,6 +9,7 @@ packages:
   - 'tooling/*'
 
 allowBuilds:
+  electron-winstaller: true
   esbuild: true
 
 catalogs:
@@ -19,6 +20,9 @@ catalogs:
     typescript: 6.0.3
   # 前端依赖
   frontend:
+    electron: ^43.2.0
+    electron-builder: ^26.15.3
+    electron-vite: ^5.0.0
     nuxt: ^4.5.1
     vue: ^3.5.40
     vue-router: ^5.2.0

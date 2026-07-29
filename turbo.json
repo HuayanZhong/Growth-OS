@@ -1,8 +1,18 @@
 {
+  "$schema": "https://turbo.build/schema.json",
   "tasks": {
     "dev": {
-      "persistent": true,
       "cache": false
+    },
+    "desktop#dev": {
+      "persistent": true
+    },
+    "@growth-os/desktop-core#dev": {
+      "persistent": true
+    },
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"]
     }
   }
 }
