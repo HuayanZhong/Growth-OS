@@ -2,12 +2,7 @@
   "$schema": "https://turbo.build/schema.json",
   "tasks": {
     "dev": {
-      "cache": false
-    },
-    "desktop#dev": {
-      "persistent": true
-    },
-    "@growth-os/desktop-core#dev": {
+      "cache": false,
       "persistent": true
     },
     "build": {
