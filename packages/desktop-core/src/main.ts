@@ -20,7 +20,7 @@ function createWindow() {
 
   // 生产模式加载 Nuxt 构建产物，开发模式连接 Nuxt dev server
   if (app.isPackaged) {
-    win.loadFile(path.join(__dirname, "../../apps/desktop/.output/public/index.html"));
+    win.loadFile(path.join(__dirname, "../../../apps/desktop/.output/public/index.html"));
   } else {
     win.loadURL("http://localhost:3000");
   }
