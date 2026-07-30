@@ -7,6 +7,10 @@
   "exports": {
     ".": "./src"
   },
+  "scripts": {
+    "lint": "oxlint --fix --config .oxlintrc.json",
+    "format": "oxfmt --config ../../tooling/format/.oxfmtrc.json"
+  },
   "devDependencies": {
     "@types/node": "catalog:dev",
     "electron": "catalog:frontend",

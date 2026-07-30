@@ -8,10 +8,8 @@
   "type": "module",
   "scripts": {
     "dev": "turbo run dev",
-    "lint": "oxlint --config tooling/lint/.oxlintrc.json",
-    "lint:fix": "oxlint --config tooling/lint/.oxlintrc.json --fix",
-    "format": "oxfmt --config tooling/format/.oxfmtrc.json",
-    "format:check": "oxfmt --config tooling/format/.oxfmtrc.json --check"
+    "lint": "turbo run lint",
+    "format": "turbo run format"
   },
   "devDependencies": {
     "oxfmt": "catalog:format",

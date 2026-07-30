@@ -8,9 +8,12 @@
   "author": "",
   "type": "module",
   "scripts": {
-    "dev": "nuxt dev"
+    "dev": "nuxt dev",
+    "lint": "oxlint --fix --config .oxlintrc.json",
+    "format": "oxfmt --config ../../tooling/format/.oxfmtrc.json"
   },
   "dependencies": {
+    "@growth-os/desktop-core": "workspace:*",
     "@tailwindcss/vite": "catalog:frontend",
     "daisyui": "catalog:frontend",
     "nuxt": "catalog:frontend",
