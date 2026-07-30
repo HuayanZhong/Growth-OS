@@ -15,6 +15,8 @@
   "devDependencies": {
     "@types/node": "catalog:dev",
     "electron": "catalog:frontend",
-    "electron-builder": "catalog:frontend"
+    "electron-builder": "catalog:frontend",
+    "oxfmt": "catalog:format",
+    "oxlint": "catalog:lint"
   }
 }

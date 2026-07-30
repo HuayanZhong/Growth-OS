@@ -23,6 +23,9 @@
   },
   "devDependencies": {
     "electron": "catalog:frontend",
+    "oxfmt": "catalog:format",
+    "oxlint": "catalog:lint",
+    "oxlint-tailwindcss": "catalog:lint",
     "vite-plugin-electron": "catalog:frontend"
   }
 }

@@ -10,6 +10,7 @@ files:
   - '**/*'
   - '!node_modules/**/*'
   - '!src/**/*'
+  - 'dist/**/*'
 
 extraResources:
   - from: ../../apps/desktop/.output/public
