@@ -32,13 +32,16 @@ function createWindow() {
       console.error('[desktop-core] 加载开发服务器 URL 失败:', err);
     });
   } else {
-    // 生产模式加载 Nuxt 构建产物（相对于 packages/desktop-core/dist）
-    // 路径解析：dist/ → apps/desktop/.output/public/index.html
-    win
-      .loadFile(path.join(__dirname, '../../../apps/desktop/.output/public/index.html'))
-      .catch((err) => {
-        console.error('[desktop-core] 加载生产构建文件失败:', err);
-      });
+    // 生产模式加载 Nuxt 构建产物
+    // - 开发调试（直接 node 运行）：相对于 packages/desktop-core/dist → apps/desktop/.output/public/index.html
+    // - 打包后（electron-builder）：process.resourcesPath/public/index.html
+    const htmlPath = app.isPackaged
+      ? path.join(process.resourcesPath, 'public', 'index.html')
+      : path.join(__dirname, '../../../apps/desktop/.output/public/index.html');
+
+    win.loadFile(htmlPath).catch((err) => {
+      console.error('[desktop-core] 加载生产构建文件失败:', err);
+    });
   }
 }
 

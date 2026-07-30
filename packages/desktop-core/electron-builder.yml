@@ -1,0 +1,30 @@
+appId: com.growth-os.desktop
+productName: Growth OS
+copyright: Copyright © 2026 Growth OS
+
+directories:
+  output: ../../dist/electron
+  buildResources: ../../apps/desktop/app/assets
+
+files:
+  - '**/*'
+  - '!node_modules/**/*'
+  - '!src/**/*'
+
+extraResources:
+  - from: ../../apps/desktop/.output/public
+    to: public
+    filter:
+      - '**/*'
+
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true

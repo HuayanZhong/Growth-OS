@@ -18,4 +18,12 @@ export default defineNuxtConfig({
 
   // 引入自定义 CSS 文件
   css: ['~/assets/css/main.css'],
+
+  // 桌面端 SPA 构建，无需 Nitro 运行时
+  nitro: {
+    preset: 'static',
+  },
+
+  // 启用 Nuxt DevTools
+  devtools: { enabled: true },
 });

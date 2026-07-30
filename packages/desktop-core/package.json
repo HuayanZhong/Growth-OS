@@ -4,6 +4,7 @@
   "private": true,
   "description": "桌面端核心模块——Electron 主进程和 preload 源码",
   "type": "module",
+  "main": "dist/main.js",
   "exports": {
     ".": "./src"
   },

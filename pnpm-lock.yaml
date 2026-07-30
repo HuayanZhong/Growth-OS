@@ -311,10 +311,6 @@ importers:
         specifier: catalog:frontend
         version: 26.15.3(electron-builder-squirrel-windows@26.15.3)(supports-color@10.2.2)
 
-  tooling/format: {}
-
-  tooling/lint: {}
-
 packages:
 
   '@babel/code-frame@7.29.7':
