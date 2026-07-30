@@ -1,6 +1,6 @@
 ---
 name: langgraph-human-in-the-loop
-description: "INVOKE THIS SKILL when implementing human-in-the-loop patterns, pausing for approval, or handling errors in LangGraph. Covers interrupt(), Command(resume=...), approval/validation workflows, and the 4-tier error handling strategy."
+description: 'INVOKE THIS SKILL when implementing human-in-the-loop patterns, pausing for approval, or handling errors in LangGraph. Covers interrupt(), Command(resume=...), approval/validation workflows, and the 4-tier error handling strategy.'
 ---
 
 <overview>
@@ -69,13 +69,22 @@ print(result["__interrupt__"])
 result = graph.invoke(Command(resume=True), config)
 print(result["approved"])  # True
 ```
+
 </python>
 <typescript>
 Pause execution for human review and resume with Command.
 
 ```typescript
-import { interrupt, Command, MemorySaver, StateGraph, StateSchema, START, END } from "@langchain/langgraph";
-import { z } from "zod";
+import {
+  interrupt,
+  Command,
+  MemorySaver,
+  StateGraph,
+  StateSchema,
+  START,
+  END,
+} from '@langchain/langgraph';
+import { z } from 'zod';
 
 const State = new StateSchema({
   approved: z.boolean().default(false),
@@ -83,19 +92,19 @@ const State = new StateSchema({
 
 const approvalNode = async (state: typeof State.State) => {
   // Pause and ask for approval
-  const approved = interrupt("Do you approve this action?");
+  const approved = interrupt('Do you approve this action?');
   // When resumed, Command({ resume }) returns that value here
   return { approved };
 };
 
 const checkpointer = new MemorySaver();
 const graph = new StateGraph(State)
-  .addNode("approval", approvalNode)
-  .addEdge(START, "approval")
-  .addEdge("approval", END)
+  .addNode('approval', approvalNode)
+  .addEdge(START, 'approval')
+  .addEdge('approval', END)
   .compile({ checkpointer });
 
-const config = { configurable: { thread_id: "thread-1" } };
+const config = { configurable: { thread_id: 'thread-1' } };
 
 // Initial run — hits interrupt and pauses
 let result = await graph.invoke({ approved: false }, config);
@@ -104,8 +113,9 @@ console.log(result.__interrupt__);
 
 // Resume with the human's response
 result = await graph.invoke(new Command({ resume: true }), config);
-console.log(result.approved);  // true
+console.log(result.approved); // true
 ```
+
 </typescript>
 </ex-basic-interrupt-resume>
 
@@ -152,12 +162,13 @@ def human_review(state: EmailAgentState) -> Command[Literal["send_reply", "__end
         # Rejection — human will handle directly
         return Command(update={}, goto=END)
 ```
+
 </python>
 <typescript>
 Interrupt for human review, then route to send or end based on the decision.
 
 ```typescript
-import { interrupt, Command, END, GraphNode } from "@langchain/langgraph";
+import { interrupt, Command, END, GraphNode } from '@langchain/langgraph';
 
 const humanReview: GraphNode<typeof EmailAgentState> = async (state) => {
   const classification = state.classification!;
@@ -167,20 +178,21 @@ const humanReview: GraphNode<typeof EmailAgentState> = async (state) => {
     emailId: state.emailContent,
     draftResponse: state.responseText,
     urgency: classification.urgency,
-    action: "Please review and approve/edit this response",
+    action: 'Please review and approve/edit this response',
   });
 
   // Process the human's decision
   if (humanDecision.approved) {
     return new Command({
       update: { responseText: humanDecision.editedResponse || state.responseText },
-      goto: "sendReply",
+      goto: 'sendReply',
     });
   } else {
     return new Command({ update: {}, goto: END });
   }
 };
 ```
+
 </typescript>
 </ex-approval-workflow>
 
@@ -226,21 +238,22 @@ retry = graph.invoke(Command(resume="thirty"), config)
 final = graph.invoke(Command(resume=30), config)
 print(final["age"])  # 30
 ```
+
 </python>
 <typescript>
 Validate human input in a loop, re-prompting until valid.
 
 ```typescript
-import { interrupt } from "@langchain/langgraph";
+import { interrupt } from '@langchain/langgraph';
 
 const getAgeNode = (state: typeof State.State) => {
-  let prompt = "What is your age?";
+  let prompt = 'What is your age?';
 
   while (true) {
     const answer = interrupt(prompt);
 
     // Validate the input
-    if (typeof answer === "number" && answer > 0) {
+    if (typeof answer === 'number' && answer > 0) {
       return { age: answer };
     } else {
       // Invalid input — ask again with a more specific prompt
@@ -249,6 +262,7 @@ const getAgeNode = (state: typeof State.State) => {
   }
 };
 ```
+
 </typescript>
 </ex-validation-loop>
 
@@ -305,12 +319,23 @@ resume_map = {
 result = graph.invoke(Command(resume=resume_map), config)
 # result["vals"] = ["a:answer for question_a", "b:answer for question_b"]
 ```
+
 </python>
 <typescript>
 Resume multiple parallel interrupts by mapping interrupt IDs to values.
 
 ```typescript
-import { Command, END, MemorySaver, START, StateGraph, interrupt, isInterrupted, INTERRUPT, Annotation } from "@langchain/langgraph";
+import {
+  Command,
+  END,
+  MemorySaver,
+  START,
+  StateGraph,
+  interrupt,
+  isInterrupted,
+  INTERRUPT,
+  Annotation,
+} from '@langchain/langgraph';
 
 const State = Annotation.Root({
   vals: Annotation<string[]>({
@@ -320,25 +345,25 @@ const State = Annotation.Root({
 });
 
 function nodeA(_state: typeof State.State) {
-  const answer = interrupt("question_a") as string;
+  const answer = interrupt('question_a') as string;
   return { vals: [`a:${answer}`] };
 }
 
 function nodeB(_state: typeof State.State) {
-  const answer = interrupt("question_b") as string;
+  const answer = interrupt('question_b') as string;
   return { vals: [`b:${answer}`] };
 }
 
 const graph = new StateGraph(State)
-  .addNode("a", nodeA)
-  .addNode("b", nodeB)
-  .addEdge(START, "a")
-  .addEdge(START, "b")
-  .addEdge("a", END)
-  .addEdge("b", END)
+  .addNode('a', nodeA)
+  .addNode('b', nodeB)
+  .addEdge(START, 'a')
+  .addEdge(START, 'b')
+  .addEdge('a', END)
+  .addEdge('b', END)
   .compile({ checkpointer: new MemorySaver() });
 
-const config = { configurable: { thread_id: "1" } };
+const config = { configurable: { thread_id: '1' } };
 
 const interruptedResult = await graph.invoke({ vals: [] }, config);
 
@@ -354,6 +379,7 @@ if (isInterrupted(interruptedResult)) {
 const result = await graph.invoke(new Command({ resume: resumeMap }), config);
 // result.vals = ["a:answer for question_a", "b:answer for question_b"]
 ```
+
 </typescript>
 </ex-multiple-interrupts>
 
@@ -368,12 +394,14 @@ When the graph resumes, the node restarts from the **beginning** — ALL code be
 <idempotency-rules>
 
 **Do:**
+
 - Use **upsert** (not insert) operations before `interrupt()`
 - Use **check-before-create** patterns
 - Place side effects **after** `interrupt()` when possible
 - Separate side effects into their own nodes
 
 **Don't:**
+
 - Create new records before `interrupt()` — duplicates on each resume
 - Append to lists before `interrupt()` — duplicate entries on each resume
 
@@ -406,6 +434,7 @@ def node_a(state: State):
     approved = interrupt("Approve this change?")
     return {"approved": approved}
 ```
+
 </python>
 <typescript>
 Idempotent operations before interrupt vs non-idempotent (wrong).
@@ -413,30 +442,32 @@ Idempotent operations before interrupt vs non-idempotent (wrong).
 ```typescript
 // GOOD: Upsert is idempotent — safe before interrupt
 const nodeA = async (state: typeof State.State) => {
-  await db.upsertUser({ userId: state.userId, status: "pending_approval" });
-  const approved = interrupt("Approve this change?");
+  await db.upsertUser({ userId: state.userId, status: 'pending_approval' });
+  const approved = interrupt('Approve this change?');
   return { approved };
 };
 
 // GOOD: Side effect AFTER interrupt — only runs once
 const nodeA = async (state: typeof State.State) => {
-  const approved = interrupt("Approve this change?");
+  const approved = interrupt('Approve this change?');
   if (approved) {
-    await db.createAuditLog({ userId: state.userId, action: "approved" });
+    await db.createAuditLog({ userId: state.userId, action: 'approved' });
   }
   return { approved };
 };
 
 // BAD: Insert creates duplicates on each resume!
 const nodeA = async (state: typeof State.State) => {
-  await db.createAuditLog({  // Runs again on resume!
+  await db.createAuditLog({
+    // Runs again on resume!
     userId: state.userId,
-    action: "pending_approval",
+    action: 'pending_approval',
   });
-  const approved = interrupt("Approve this change?");
+  const approved = interrupt('Approve this change?');
   return { approved };
 };
 ```
+
 </typescript>
 </ex-idempotent-patterns>
 
@@ -459,22 +490,24 @@ def node_in_subgraph(state: State):
     result = interrupt("What's your name?")
     # ...
 ```
+
 </python>
 <typescript>
 
 ```typescript
 async function nodeInParentGraph(state: State) {
-  someCode();  // <-- Re-executes on resume
+  someCode(); // <-- Re-executes on resume
   const subgraphResult = await subgraph.invoke(someInput);
   // ...
 }
 
 async function nodeInSubgraph(state: State) {
-  someOtherCode();  // <-- Also re-executes on resume
+  someOtherCode(); // <-- Also re-executes on resume
   const result = interrupt("What's your name?");
   // ...
 }
 ```
+
 </typescript>
 </subgraph-interrupt-re-execution>
 
@@ -499,6 +532,7 @@ graph = builder.compile()
 # CORRECT
 graph = builder.compile(checkpointer=InMemorySaver())
 ```
+
 </python>
 <typescript>
 Checkpointer required for interrupt functionality.
@@ -510,6 +544,7 @@ const graph = builder.compile();
 // CORRECT
 const graph = builder.compile({ checkpointer: new MemorySaver() });
 ```
+
 </typescript>
 </fix-checkpointer-required-for-interrupts>
 
@@ -524,17 +559,19 @@ graph.invoke({"resume_data": "approve"}, config)
 # CORRECT
 graph.invoke(Command(resume="approve"), config)
 ```
+
 </python>
 <typescript>
 Use Command to resume from an interrupt (regular object restarts graph).
 
 ```typescript
 // WRONG
-await graph.invoke({ resumeData: "approve" }, config);
+await graph.invoke({ resumeData: 'approve' }, config);
 
 // CORRECT
-await graph.invoke(new Command({ resume: "approve" }), config);
+await graph.invoke(new Command({ resume: 'approve' }), config);
 ```
+
 </typescript>
 </fix-resume-with-command>
 

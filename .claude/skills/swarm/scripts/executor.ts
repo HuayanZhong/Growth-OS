@@ -1,4 +1,4 @@
-import type { FailureGroup, TaskResult, TaskSpec } from "./types.js";
+import type { FailureGroup, TaskResult, TaskSpec } from './types.js';
 
 /**
  * PTC tool declaration for swarm subagent dispatch.
@@ -15,14 +15,14 @@ declare const tools: {
     description: string;
     subagent_type?: string;
     response_schema?: Record<string, unknown>;
-    mode?: "agent" | "invoke";
+    mode?: 'agent' | 'invoke';
   }) => Promise<string>;
 };
 
 /**
  * Column names that must not be overwritten by structured output merging.
  */
-const RESERVED_COLUMNS = new Set(["id", "file"]);
+const RESERVED_COLUMNS = new Set(['id', 'file']);
 
 /**
  * Call the PTC `swarm_task` tool.
@@ -36,12 +36,10 @@ export async function callTask(args: {
   description: string;
   subagent_type?: string;
   response_schema?: Record<string, unknown>;
-  mode?: "agent" | "invoke";
+  mode?: 'agent' | 'invoke';
 }): Promise<string> {
-  if (typeof tools.swarmTask !== "function") {
-    throw new Error(
-      "Swarm requires a 'swarm_task' tool in the PTC configuration.",
-    );
+  if (typeof tools.swarmTask !== 'function') {
+    throw new Error("Swarm requires a 'swarm_task' tool in the PTC configuration.");
   }
   return tools.swarmTask(args);
 }
@@ -81,15 +79,15 @@ export async function dispatch(
         });
         results[i] = {
           id: spec.id,
-          status: "completed",
+          status: 'completed',
           result: String(output),
         };
       } catch (err: unknown) {
         const msg =
-          err != null && typeof (err as Error).message === "string"
+          err != null && typeof (err as Error).message === 'string'
             ? (err as Error).message
             : String(err);
-        results[i] = { id: spec.id, status: "failed", error: msg };
+        results[i] = { id: spec.id, status: 'failed', error: msg };
       }
     }
   }
@@ -117,7 +115,7 @@ export function deduplicateFailures(results: TaskResult[]): FailureGroup[] {
   const groups = new Map<string, string[]>();
 
   for (const r of results) {
-    if (r.status !== "failed" || !r.error) {
+    if (r.status !== 'failed' || !r.error) {
       continue;
     }
 
@@ -148,10 +146,7 @@ export function deduplicateFailures(results: TaskResult[]): FailureGroup[] {
  * @param row - The table row to update (mutated in place).
  * @param value - The subagent's parsed structured output.
  */
-export function mergeResult(
-  row: Record<string, unknown>,
-  value: Record<string, unknown>,
-): void {
+export function mergeResult(row: Record<string, unknown>, value: Record<string, unknown>): void {
   for (const [k, v] of Object.entries(value)) {
     if (!RESERVED_COLUMNS.has(k)) {
       row[k] = v;

@@ -4,13 +4,8 @@
     "target": "ES2022",
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
-    "types": [
-      "node",
-      "electron"
-    ],
+    "types": ["node", "electron"],
     "rootDir": "src"
   },
-  "include": [
-    "src/**/*.ts"
-  ]
+  "include": ["src/**/*.ts"]
 }

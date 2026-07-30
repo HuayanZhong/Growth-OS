@@ -1,6 +1,7 @@
 ---
-description: "INVOKE THIS SKILL when building, testing, or deploying Managed Deep Agents in LangSmith with the mda CLI. Covers the code-first, file-based project layout; define_deep_agent / defineDeepAgent; authored tools and middleware; MCP connectors; cron schedules; skills; sandboxes; mda init/dev/deploy; Context Hub; and human-in-the-loop interrupts in Python and TypeScript."
+description: 'INVOKE THIS SKILL when building, testing, or deploying Managed Deep Agents in LangSmith with the mda CLI. Covers the code-first, file-based project layout; define_deep_agent / defineDeepAgent; authored tools and middleware; MCP connectors; cron schedules; skills; sandboxes; mda init/dev/deploy; Context Hub; and human-in-the-loop interrupts in Python and TypeScript.'
 ---
+
 # Managed Deep Agents
 
 ## Overview
@@ -83,12 +84,12 @@ agent = define_deep_agent(
 
 ```ts
 // agent.ts
-import { defineDeepAgent } from "managed-deepagents";
+import { defineDeepAgent } from 'managed-deepagents';
 
-import { queryDB } from "./tools/query-db";
+import { queryDB } from './tools/query-db';
 
 export const agent = defineDeepAgent({
-  model: "openai:gpt-5.5",
+  model: 'openai:gpt-5.5',
   tools: [queryDB],
 });
 ```
@@ -133,17 +134,14 @@ def query_db(query: str) -> str:
 
 ```ts
 // tools/query-db.ts
-import { tool } from "langchain";
-import { z } from "zod";
+import { tool } from 'langchain';
+import { z } from 'zod';
 
-export const queryDB = tool(
-  async ({ query }) => `Ran query: ${query}`,
-  {
-    name: "query_db",
-    description: "Run a read-only SQL query against the application database.",
-    schema: z.object({ query: z.string().describe("A read-only SQL query.") }),
-  },
-);
+export const queryDB = tool(async ({ query }) => `Ran query: ${query}`, {
+  name: 'query_db',
+  description: 'Run a read-only SQL query against the application database.',
+  schema: z.object({ query: z.string().describe('A read-only SQL query.') }),
+});
 ```
 
 Tools read deployment secrets from environment variables. Put local values in `.env`; deploy forwards non-reserved `.env` values as hosted secrets.
@@ -168,13 +166,13 @@ agent = define_deep_agent(
 
 ```ts
 // agent.ts
-import { defineDeepAgent } from "managed-deepagents";
-import { modelCallLimitMiddleware, piiMiddleware } from "langchain";
+import { defineDeepAgent } from 'managed-deepagents';
+import { modelCallLimitMiddleware, piiMiddleware } from 'langchain';
 
 export const agent = defineDeepAgent({
-  model: "openai:gpt-5.5",
+  model: 'openai:gpt-5.5',
   middleware: [
-    piiMiddleware("email", { strategy: "redact" }),
+    piiMiddleware('email', { strategy: 'redact' }),
     modelCallLimitMiddleware({ runLimit: 50 }),
   ],
 });
@@ -197,11 +195,11 @@ mcp = define_mcp_servers(
 
 ```ts
 // connectors/mcp.ts
-import { defineMcpServers } from "managed-deepagents";
+import { defineMcpServers } from 'managed-deepagents';
 
 export const mcp = defineMcpServers({
   mcpServers: {
-    langchainDocs: { transport: "http", url: "https://docs.langchain.com/mcp" },
+    langchainDocs: { transport: 'http', url: 'https://docs.langchain.com/mcp' },
   },
 });
 ```
@@ -225,12 +223,12 @@ schedule = define_schedule(
 
 ```ts
 // schedules/daily-digest.ts
-import { defineSchedule } from "managed-deepagents";
+import { defineSchedule } from 'managed-deepagents';
 
 export const schedule = defineSchedule({
-  cron: "0 8 * * 1-5",
-  timezone: "America/Los_Angeles",
-  prompt: "Summarize what you learned yesterday and list open questions.",
+  cron: '0 8 * * 1-5',
+  timezone: 'America/Los_Angeles',
+  prompt: 'Summarize what you learned yesterday and list open questions.',
 });
 ```
 
@@ -255,11 +253,11 @@ sandbox = define_sandbox(
 
 ```ts
 // sandbox/index.ts
-import { defineSandbox } from "managed-deepagents";
-import { LangSmithSandbox } from "deepagents";
+import { defineSandbox } from 'managed-deepagents';
+import { LangSmithSandbox } from 'deepagents';
 
 export const sandbox = defineSandbox(LangSmithSandbox, {
-  scope: "thread",
+  scope: 'thread',
   idleTtlSeconds: 600,
   defaultTimeout: 600,
 });
@@ -273,11 +271,11 @@ Put deploy-owned skills under `skills/<name>/SKILL.md`. Deploy syncs `skills/**`
 
 ## CLI commands
 
-| Command | Use |
-| --- | --- |
-| `mda init <name>` | Scaffold a Python or TypeScript project. |
-| `mda dev [path]` | Compile into `.mda/build` and run the local LangGraph dev server in LangSmith Studio. Flags: `--port`, `--hostname`, `--browser`, `--no-reload`. |
-| `mda deploy [path]` | Compile, sync Context Hub, upload, and deploy. Flags: `--name`, `--deployment-type dev\|prod`, `--tenant-id`, `--host-url`, `--no-wait`. |
+| Command             | Use                                                                                                                                              |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `mda init <name>`   | Scaffold a Python or TypeScript project.                                                                                                         |
+| `mda dev [path]`    | Compile into `.mda/build` and run the local LangGraph dev server in LangSmith Studio. Flags: `--port`, `--hostname`, `--browser`, `--no-reload`. |
+| `mda deploy [path]` | Compile, sync Context Hub, upload, and deploy. Flags: `--name`, `--deployment-type dev\|prod`, `--tenant-id`, `--host-url`, `--no-wait`.         |
 
 For Python projects, run `uv sync` inside the generated project before `mda dev`. Authentication resolves in order: `LANGGRAPH_HOST_API_KEY`, `LANGSMITH_API_KEY`, `LANGCHAIN_API_KEY`, read from `.env` first, then the shell.
 
@@ -309,7 +307,7 @@ agent = define_deep_agent(
 
 ```ts
 export const agent = defineDeepAgent({
-  model: "openai:gpt-5.5",
+  model: 'openai:gpt-5.5',
   tools: [queryDB],
   interruptOn: { query_db: true },
 });

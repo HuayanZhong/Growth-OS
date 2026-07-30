@@ -4,11 +4,11 @@
  */
 export interface DesktopAPI {
   /** 获取 Electron 应用版本号 */
-  version: () => Promise<string>
+  version: () => Promise<string>;
 }
 
 declare global {
   interface Window {
-    desktop: DesktopAPI
+    desktop: DesktopAPI;
   }
 }

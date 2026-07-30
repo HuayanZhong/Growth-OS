@@ -1,5 +1,5 @@
-import { defineNuxtConfig } from 'nuxt/config'
-import tailwindcss from "@tailwindcss/vite"
+import { defineNuxtConfig } from 'nuxt/config';
+import tailwindcss from '@tailwindcss/vite';
 
 export default defineNuxtConfig({
   // 兼容性日期，用于 Nuxt 3.0 之前的版本
@@ -18,4 +18,4 @@ export default defineNuxtConfig({
 
   // 引入自定义 CSS 文件
   css: ['~/assets/css/main.css'],
-})
+});

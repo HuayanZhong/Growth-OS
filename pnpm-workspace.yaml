@@ -18,6 +18,12 @@ catalogs:
     '@types/node': ^26.1.1
     turbo: ^2.10.7
     typescript: 6.0.3
+  # 代码检查目录
+  lint:
+    oxlint: ^1.76.0
+  # 格式化目录
+  format:
+    oxfmt: ^0.61.0
   # 前端依赖
   frontend:
     electron: ^43.2.0

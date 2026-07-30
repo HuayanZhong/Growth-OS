@@ -1,4 +1,4 @@
-import { readColumn } from "./utils.js";
+import { readColumn } from './utils.js';
 
 /**
  * Replace `{column}` placeholders in a template string with values
@@ -17,10 +17,7 @@ import { readColumn } from "./utils.js";
  * @returns The interpolated string with all placeholders resolved.
  * @throws Error listing all missing column paths.
  */
-export function interpolate(
-  template: string,
-  row: Record<string, unknown>,
-): string {
+export function interpolate(template: string, row: Record<string, unknown>): string {
   const missing: string[] = [];
 
   const result = template.replace(/\{([^}]+)\}/g, (_match, rawPath) => {
@@ -32,11 +29,11 @@ export function interpolate(
       return `{${path}}`;
     }
 
-    if (typeof value === "string") {
+    if (typeof value === 'string') {
       return value;
     }
 
-    if (typeof value === "number" || typeof value === "boolean") {
+    if (typeof value === 'number' || typeof value === 'boolean') {
       return String(value);
     }
 
@@ -44,9 +41,7 @@ export function interpolate(
   });
 
   if (missing.length > 0) {
-    throw new Error(
-      `Interpolation failed: missing columns: ${missing.join(", ")}`,
-    );
+    throw new Error(`Interpolation failed: missing columns: ${missing.join(', ')}`);
   }
 
   return result;

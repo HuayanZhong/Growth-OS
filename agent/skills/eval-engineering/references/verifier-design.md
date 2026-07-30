@@ -6,9 +6,9 @@ Use an LLM judge when success is semantic. Keep the verifier focused on the sele
 
 Start with:
 
-~~~text
+```text
 Pass iff [the independently observable successful outcome].
-~~~
+```
 
 Give the judge:
 
@@ -49,10 +49,10 @@ Do not use an LLM for those facts. Never add response length, keywords, citation
 
 Before the Harness run, execute focused fixtures in the same Verifier image and command used by Harbor. Retain their results in logs or artifacts:
 
-| Case | Expected |
-|---|---|
-| Clear capable result, including a valid paraphrase | pass |
-| Realistic wrong result for this capability | fail |
+| Case                                               | Expected |
+| -------------------------------------------------- | -------- |
+| Clear capable result, including a valid paraphrase | pass     |
+| Realistic wrong result for this capability         | fail     |
 
 These are Verifier tests, not agent runs. Add another fixture only for a specific risk, such as a plausible negation, an unsupported material claim, or instructions embedded in agent output. If a wrong case passes or a valid case fails, fix the rubric or evidence and rerun. Confirm the Verifier image contains every fixture and calibration file it invokes.
 

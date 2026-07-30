@@ -1,6 +1,6 @@
-import { extractPlaceholders } from "./interpolate.js";
-import type { BatchFn } from "./types.js";
-import { readColumn } from "./utils.js";
+import { extractPlaceholders } from './interpolate.js';
+import type { BatchFn } from './types.js';
+import { readColumn } from './utils.js';
 
 /**
  * Maximum rows per batch when auto-batching.
@@ -67,7 +67,7 @@ export function resolveBatchGroups(
     return createBatches(rows, auto);
   }
 
-  if (typeof batchSize === "number") {
+  if (typeof batchSize === 'number') {
     return createBatches(rows, clampBatchSize(batchSize));
   }
 
@@ -113,15 +113,15 @@ export function wrapSchema(
   const props = (itemSchema.properties as Record<string, unknown>) ?? {};
   const req = (itemSchema.required as string[]) ?? [];
   const itemProperties: Record<string, unknown> = {
-    id: { type: "string" },
+    id: { type: 'string' },
     ...props,
   };
-  const itemRequired: string[] = ["id", ...req];
+  const itemRequired: string[] = ['id', ...req];
 
   const resultsArray: Record<string, unknown> = {
-    type: "array",
+    type: 'array',
     items: {
-      type: "object",
+      type: 'object',
       additionalProperties: false,
       properties: itemProperties,
       required: itemRequired,
@@ -134,12 +134,12 @@ export function wrapSchema(
   }
 
   return {
-    type: "object",
+    type: 'object',
     additionalProperties: false,
     properties: {
       results: resultsArray,
     },
-    required: ["results"],
+    required: ['results'],
   };
 }
 
@@ -152,12 +152,12 @@ export function wrapSchema(
  */
 function formatValue(value: unknown): string {
   if (value === undefined || value === null) {
-    return "";
+    return '';
   }
-  if (typeof value === "string") {
+  if (typeof value === 'string') {
     return value;
   }
-  if (typeof value === "number" || typeof value === "boolean") {
+  if (typeof value === 'number' || typeof value === 'boolean') {
     return String(value);
   }
   return JSON.stringify(value);
@@ -169,10 +169,7 @@ function formatValue(value: unknown): string {
  * sees a column name as a name, never as template syntax.
  */
 function renderTaskBlock(instruction: string): string {
-  return instruction.replace(
-    /\{([^}]+)\}/g,
-    (_m, raw) => `\`${String(raw).trim()}\``,
-  );
+  return instruction.replace(/\{([^}]+)\}/g, (_m, raw) => `\`${String(raw).trim()}\``);
 }
 
 /**
@@ -185,10 +182,7 @@ function renderTaskBlock(instruction: string): string {
  *       col1: <value>
  *       col2: <value>
  */
-function renderItemsBlock(
-  rows: Array<Record<string, unknown>>,
-  placeholders: string[],
-): string {
+function renderItemsBlock(rows: Array<Record<string, unknown>>, placeholders: string[]): string {
   const lines: string[] = [];
 
   for (const row of rows) {
@@ -212,7 +206,7 @@ function renderItemsBlock(
     }
   }
 
-  return lines.join("\n");
+  return lines.join('\n');
 }
 
 /**
@@ -242,31 +236,31 @@ export function buildBatchPrompt(
 
   if (context) {
     parts.push(context);
-    parts.push("");
+    parts.push('');
   }
 
-  parts.push("# Task");
+  parts.push('# Task');
   parts.push(taskBlock);
-  parts.push("");
+  parts.push('');
 
   parts.push(`# Items (${rows.length})`);
   if (placeholders.length === 1) {
     parts.push(`Each item below is the value of \`${placeholders[0]}\`.`);
-    parts.push("");
+    parts.push('');
   } else if (placeholders.length > 1) {
-    const cols = placeholders.map((p) => `\`${p}\``).join(", ");
+    const cols = placeholders.map((p) => `\`${p}\``).join(', ');
     parts.push(`Each item below provides ${cols}.`);
-    parts.push("");
+    parts.push('');
   }
   parts.push(itemsBlock);
-  parts.push("");
+  parts.push('');
 
   parts.push(
     `Return a JSON object with a 'results' array of exactly ${rows.length} ` +
       "entries, each including the item's 'id' exactly as shown above.",
   );
 
-  return parts.join("\n");
+  return parts.join('\n');
 }
 
 /**
@@ -293,7 +287,7 @@ export function unpackBatchResults(
     const items: Array<Record<string, unknown>> = parsed?.results ?? [];
 
     for (const item of items) {
-      if (item && typeof item.id === "string") {
+      if (item && typeof item.id === 'string') {
         const { id, ...fields } = item;
         resultsMap.set(id, fields);
       }

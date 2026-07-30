@@ -1,14 +1,14 @@
-import { createTable, loadTable, saveTable } from "./table.js";
-import { interpolate, extractPlaceholders } from "./interpolate.js";
-import { readColumn } from "./utils.js";
-import { evaluateFilter } from "./filter.js";
-import { dispatch, deduplicateFailures, mergeResult } from "./executor.js";
+import { createTable, loadTable, saveTable } from './table.js';
+import { interpolate, extractPlaceholders } from './interpolate.js';
+import { readColumn } from './utils.js';
+import { evaluateFilter } from './filter.js';
+import { dispatch, deduplicateFailures, mergeResult } from './executor.js';
 import {
   resolveBatchGroups,
   wrapSchema,
   buildBatchPrompt,
   unpackBatchResults,
-} from "./batching.js";
+} from './batching.js';
 import type {
   CreateSource,
   SwarmHandle,
@@ -17,7 +17,7 @@ import type {
   RowsOptions,
   TaskSpec,
   TaskResult,
-} from "./types.js";
+} from './types.js';
 
 /**
  * Maximum concurrent subagent dispatches per `run()` call.
@@ -58,7 +58,7 @@ function buildDispatchUnits(
     context?: string;
     subagentType?: string;
     responseSchema: Record<string, unknown>;
-    mode: "agent" | "invoke";
+    mode: 'agent' | 'invoke';
   },
 ): { units: DispatchUnit[]; errors: TaskResult[] } {
   const units: DispatchUnit[] = [];
@@ -90,7 +90,7 @@ function buildDispatchUnits(
       } catch (err) {
         errors.push({
           id: rowId,
-          status: "failed",
+          status: 'failed',
           error: (err as Error).message,
         });
       }
@@ -120,10 +120,7 @@ function buildDispatchUnits(
  * Single-row units pass through directly. Batch units are unpacked
  * into one result per row — missing rows become failures.
  */
-function unpackDispatchResults(
-  units: DispatchUnit[],
-  results: TaskResult[],
-): TaskResult[] {
+function unpackDispatchResults(units: DispatchUnit[], results: TaskResult[]): TaskResult[] {
   const rowResults: TaskResult[] = [];
 
   for (let idx = 0; idx < units.length; idx++) {
@@ -135,30 +132,27 @@ function unpackDispatchResults(
       continue;
     }
 
-    if (result.status === "failed") {
+    if (result.status === 'failed') {
       for (const rowId of unit.rowIds) {
-        rowResults.push({ id: rowId, status: "failed", error: result.error });
+        rowResults.push({ id: rowId, status: 'failed', error: result.error });
       }
       continue;
     }
 
-    const { results: unpacked } = unpackBatchResults(
-      result.result ?? "",
-      unit.rowIds,
-    );
+    const { results: unpacked } = unpackBatchResults(result.result ?? '', unit.rowIds);
     for (const rowId of unit.rowIds) {
       const value = unpacked.get(rowId);
       if (value !== undefined) {
         rowResults.push({
           id: rowId,
-          status: "completed",
-          result: typeof value === "string" ? value : JSON.stringify(value),
+          status: 'completed',
+          result: typeof value === 'string' ? value : JSON.stringify(value),
         });
       } else {
         rowResults.push({
           id: rowId,
-          status: "failed",
-          error: "Missing from batch response",
+          status: 'failed',
+          error: 'Missing from batch response',
         });
       }
     }
@@ -187,7 +181,7 @@ function mergeRowResults(
       continue;
     }
 
-    if (result.status === "completed" && result.result != null) {
+    if (result.status === 'completed' && result.result != null) {
       try {
         mergeResult(row, JSON.parse(result.result));
         completed++;
@@ -206,21 +200,14 @@ function mergeRowResults(
  * Verify every `{column}` reference in `instruction` resolves on at
  * least one matched row. Throws with a list of unresolved paths.
  */
-function validatePlaceholders(
-  instruction: string,
-  rows: Record<string, unknown>[],
-): void {
+function validatePlaceholders(instruction: string, rows: Record<string, unknown>[]): void {
   const placeholders = extractPlaceholders(instruction);
   if (placeholders.length === 0) {
     return;
   }
-  const unresolved = placeholders.filter(
-    (p) => !rows.some((r) => readColumn(r, p) !== undefined),
-  );
+  const unresolved = placeholders.filter((p) => !rows.some((r) => readColumn(r, p) !== undefined));
   if (unresolved.length > 0) {
-    throw new Error(
-      `instruction references unknown column(s): ${unresolved.join(", ")}`,
-    );
+    throw new Error(`instruction references unknown column(s): ${unresolved.join(', ')}`);
   }
 }
 
@@ -249,26 +236,13 @@ export async function create(source: CreateSource): Promise<SwarmHandle> {
  * @param options - Dispatch configuration (instruction, filter, schema, etc.).
  * @returns A summary with completion counts and deduplicated failure groups.
  */
-export async function run(
-  tableId: string,
-  options: RunOptions,
-): Promise<RunResult> {
+export async function run(tableId: string, options: RunOptions): Promise<RunResult> {
   const allRows = await loadTable(tableId);
-  const {
-    instruction,
-    context,
-    filter,
-    subagentType,
-    responseSchema,
-    batchSize,
-    concurrency,
-  } = options;
-  const mode = subagentType != null ? "agent" : "invoke";
+  const { instruction, context, filter, subagentType, responseSchema, batchSize, concurrency } =
+    options;
+  const mode = subagentType != null ? 'agent' : 'invoke';
 
-  const effectiveConcurrency = Math.max(
-    1,
-    Math.min(concurrency ?? MAX_SUBAGENTS, MAX_SUBAGENTS),
-  );
+  const effectiveConcurrency = Math.max(1, Math.min(concurrency ?? MAX_SUBAGENTS, MAX_SUBAGENTS));
 
   // -----------------------------------------------------------------------
   // 1. Partition rows into matched (dispatched) and skipped (filtered out)
@@ -329,10 +303,7 @@ export async function run(
   }
 
   const rowResults = unpackDispatchResults(units, dispatchResults);
-  const { completed, failed: mergeFailed } = mergeRowResults(
-    rowResults,
-    rowById,
-  );
+  const { completed, failed: mergeFailed } = mergeRowResults(rowResults, rowById);
   const failed = mergeFailed + interpolationErrors.length;
   const allRowResults = [...interpolationErrors, ...rowResults];
 

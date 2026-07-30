@@ -1,8 +1,4 @@
 {
   // 推荐的扩展
-  "recommendations": [
-    "oxc.oxc-vscode",
-    "Vue.volar",
-    "bradlc.vscode-tailwindcss",
-  ]
+  "recommendations": ["oxc.oxc-vscode", "Vue.volar", "bradlc.vscode-tailwindcss"]
 }

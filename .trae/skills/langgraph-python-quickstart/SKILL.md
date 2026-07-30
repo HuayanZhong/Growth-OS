@@ -1,6 +1,6 @@
 ---
 name: langgraph-python-quickstart
-description: "Scaffold a minimal local LangGraph agent in Python by following the official quickstart. Use when the user wants to quickly build or try a LangGraph agent locally."
+description: 'Scaffold a minimal local LangGraph agent in Python by following the official quickstart. Use when the user wants to quickly build or try a LangGraph agent locally.'
 ---
 
 # LangGraph Python quickstart

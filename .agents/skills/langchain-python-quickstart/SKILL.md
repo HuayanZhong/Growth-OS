@@ -1,6 +1,6 @@
 ---
 name: langchain-python-quickstart
-description: "Scaffold a minimal local LangChain agent in Python by following the official quickstart. Use when the user wants to quickly build or try a LangChain agent locally."
+description: 'Scaffold a minimal local LangChain agent in Python by following the official quickstart. Use when the user wants to quickly build or try a LangChain agent locally.'
 ---
 
 # LangChain Python quickstart

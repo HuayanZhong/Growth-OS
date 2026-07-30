@@ -1,0 +1,6 @@
+{
+  "name": "@growth-os/lint",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Growth OS 共享 oxlint 配置"
+}

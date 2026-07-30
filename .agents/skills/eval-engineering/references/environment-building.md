@@ -14,11 +14,11 @@ It does not own the Harness's prompts, loop, model decisions, repository-defined
 
 ## Choose each dependency
 
-| Option | Use when | Example |
-|---|---|---|
-| Live | Read-only, low-cost, stable, safely credentialed, and difficult to reproduce | query a large internal catalog without mutation |
-| Frozen | Results must stay stable across trials | serve a pinned docs corpus and search index |
-| Simulated | Writes, permissions, failures, or state must reset | local ticket service with known initial records |
+| Option    | Use when                                                                     | Example                                         |
+| --------- | ---------------------------------------------------------------------------- | ----------------------------------------------- |
+| Live      | Read-only, low-cost, stable, safely credentialed, and difficult to reproduce | query a large internal catalog without mutation |
+| Frozen    | Results must stay stable across trials                                       | serve a pinned docs corpus and search index     |
+| Simulated | Writes, permissions, failures, or state must reset                           | local ticket service with known initial records |
 
 Tell the user what is live, frozen, or synthetic; what credentials live access needs; and what effects are possible. Record a source revision, timestamp, or hash for copied data. Mark constructed records as synthetic.
 
@@ -54,13 +54,13 @@ Evidence: search wrapper, integration tests, and supplied traces
 
 Use the smallest injection point that preserves the contract: fixture, dependency override, temporary workspace, test database, local endpoint, or existing integration harness.
 
-| Need | Example implementation |
-|---|---|
-| Small single-process state | typed objects loaded from a JSON fixture |
-| Relational queries or transactions | seeded SQLite or an existing test database |
+| Need                                   | Example implementation                             |
+| -------------------------------------- | -------------------------------------------------- |
+| Small single-process state             | typed objects loaded from a JSON fixture           |
+| Relational queries or transactions     | seeded SQLite or an existing test database         |
 | Harness calls a production HTTP client | local service implementing the exercised endpoints |
-| Production supplies tools dynamically | local MCP server advertising the exercised schemas |
-| Read-only files or retrieval | pinned directory, corpus, or search index |
+| Production supplies tools dynamically  | local MCP server advertising the exercised schemas |
+| Read-only files or retrieval           | pinned directory, corpus, or search index          |
 
 Do not replace repository-defined tool code with a task-specific implementation; replace the service or data behind it.
 
@@ -84,12 +84,12 @@ Task: determine the current account-deletion retention period.
 
 Bad: one file named `account-deletion-answer.md` containing “30 days.”
 
-| Document | Content | Why included |
-|---|---|---|
-| Current account-deletion policy | 30 days; effective 2026 | supports the answer |
-| Archived account-deletion policy | 60 days; superseded in 2025 | requires freshness checking |
-| Workspace-deletion policy | 14 days for workspaces | requires scope checking |
-| Account-recovery FAQ | recovery process without a retention period | plausible nearby search result |
+| Document                         | Content                                     | Why included                   |
+| -------------------------------- | ------------------------------------------- | ------------------------------ |
+| Current account-deletion policy  | 30 days; effective 2026                     | supports the answer            |
+| Archived account-deletion policy | 60 days; superseded in 2025                 | requires freshness checking    |
+| Workspace-deletion policy        | 14 days for workspaces                      | requires scope checking        |
+| Account-recovery FAQ             | recovery process without a retention period | plausible nearby search result |
 
 Serve these through the production-shaped search result schema and document-reading interface. Keep the documents as independent truth for the Verifier. Add empty results or missing pages only when the task exercises them.
 
@@ -99,13 +99,13 @@ Task: reserve adjacent indoor tables for parties of four and two.
 
 Bad: one available record named `CORRECT_TABLE`.
 
-| Table | Capacity | Area | Available | Adjacent to | Why included |
-|---|---:|---|---|---|---|
-| T1 | 4 | indoor | yes | T4 | fits four but has no suitable adjacent table |
-| T2 | 4 | indoor | yes | T3 | valid first table |
-| T3 | 2 | indoor | yes | T2 | valid adjacent second table |
-| T4 | 4 | outdoor | yes | T1 | fails the indoor requirement |
-| T5 | 6 | indoor | no | T3 | large enough but already reserved |
+| Table | Capacity | Area    | Available | Adjacent to | Why included                                 |
+| ----- | -------: | ------- | --------- | ----------- | -------------------------------------------- |
+| T1    |        4 | indoor  | yes       | T4          | fits four but has no suitable adjacent table |
+| T2    |        4 | indoor  | yes       | T3          | valid first table                            |
+| T3    |        2 | indoor  | yes       | T2          | valid adjacent second table                  |
+| T4    |        4 | outdoor | yes       | T1          | fails the indoor requirement                 |
+| T5    |        6 | indoor  | no        | T3          | large enough but already reserved            |
 
 The service enforces capacity, overlap, and permissions when creating reservations. The Verifier checks the required reservations and prohibited changes from independent initial and final state.
 
@@ -115,11 +115,11 @@ Task: fix checkout totals without breaking discounts.
 
 Bad: one failing test that reveals the expected implementation and no existing discount coverage.
 
-| Workspace item | Why included |
-|---|---|
-| Public failing checkout-total test | reproduces the reported behavior |
-| Existing percentage- and fixed-discount tests | define behavior that must remain valid |
-| Hidden discount-plus-tax regression | checks the outcome without revealing the fix |
+| Workspace item                                     | Why included                                        |
+| -------------------------------------------------- | --------------------------------------------------- |
+| Public failing checkout-total test                 | reproduces the reported behavior                    |
+| Existing percentage- and fixed-discount tests      | define behavior that must remain valid              |
+| Hidden discount-plus-tax regression                | checks the outcome without revealing the fix        |
 | Two plausible calculation paths in repository code | requires diagnosis rather than editing a named line |
 
 Pin the repository revision and dependency lockfiles. Use a writable task workspace and the real build and test commands when safe and deterministic. Reset by restoring the pinned workspace and removing trial-generated files. Simulate an external service only when the task reaches it.

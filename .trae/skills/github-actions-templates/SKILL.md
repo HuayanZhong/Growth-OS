@@ -47,7 +47,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: "npm"
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm ci
@@ -74,7 +74,7 @@ name: Build and Push
 on:
   push:
     branches: [main]
-    tags: ["v*"]
+    tags: ['v*']
 
 env:
   REGISTRY: ghcr.io
@@ -174,7 +174,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        python-version: ["3.9", "3.10", "3.11", "3.12"]
+        python-version: ['3.9', '3.10', '3.11', '3.12']
 
     steps:
       - uses: actions/checkout@v4
@@ -243,7 +243,7 @@ jobs:
   call-test:
     uses: ./.github/workflows/reusable-test.yml
     with:
-      node-version: "20.x"
+      node-version: '20.x'
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 ```
@@ -269,15 +269,15 @@ jobs:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@0.28.0
         with:
-          scan-type: "fs"
-          scan-ref: "."
-          format: "sarif"
-          output: "trivy-results.sarif"
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
 
       - name: Upload Trivy results to GitHub Security
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: "trivy-results.sarif"
+          sarif_file: 'trivy-results.sarif'
 
       - name: Run Snyk Security Scan
         uses: snyk/actions/node@0.4.0
@@ -292,7 +292,7 @@ name: Deploy to Production
 
 on:
   push:
-    tags: ["v*"]
+    tags: ['v*']
 
 jobs:
   deploy:
@@ -319,7 +319,6 @@ jobs:
               "text": "Deployment to production completed successfully!"
             }
 ```
-
 
 ## Related Skills
 

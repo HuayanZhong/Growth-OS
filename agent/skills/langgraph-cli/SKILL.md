@@ -1,10 +1,12 @@
 ---
-description: "INVOKE THIS SKILL when using the langgraph CLI to scaffold, develop, build, or deploy LangGraph applications. Covers langgraph new, dev, build, up, deploy, and langgraph.json configuration."
+description: 'INVOKE THIS SKILL when using the langgraph CLI to scaffold, develop, build, or deploy LangGraph applications. Covers langgraph new, dev, build, up, deploy, and langgraph.json configuration.'
 ---
+
 <overview>
 The `langgraph` CLI manages the full lifecycle of LangGraph applications — from scaffolding a new project to deploying it to LangGraph Platform (LangSmith Deployments).
 
 Key commands:
+
 - **`langgraph new`** — Scaffold a project from a template
 - **`langgraph dev`** — Run locally with hot reload (no Docker)
 - **`langgraph build`** — Build a Docker image
@@ -18,6 +20,7 @@ All commands (except `new`) read from a `langgraph.json` config file in the proj
 ## When to use
 
 Use this skill when the user wants to:
+
 - Scaffold a new LangGraph project
 - Run a local development or production-like server
 - Build or deploy a LangGraph application
@@ -162,11 +165,11 @@ The configuration file used by all CLI commands (`dev`, `build`, `up`, `deploy`)
 
 ```json
 {
-    "dependencies": ["."],
-    "graphs": {
-        "agent": "./my_agent/agent.py:graph"
-    },
-    "env": "./.env"
+  "dependencies": ["."],
+  "graphs": {
+    "agent": "./my_agent/agent.py:graph"
+  },
+  "env": "./.env"
 }
 ```
 
@@ -174,11 +177,11 @@ The configuration file used by all CLI commands (`dev`, `build`, `up`, `deploy`)
 
 ```json
 {
-    "dependencies": ["."],
-    "graphs": {
-        "agent": "./src/agent.js:graph"
-    },
-    "env": "./.env"
+  "dependencies": ["."],
+  "graphs": {
+    "agent": "./src/agent.js:graph"
+  },
+  "env": "./.env"
 }
 ```
 
@@ -186,31 +189,29 @@ The configuration file used by all CLI commands (`dev`, `build`, `up`, `deploy`)
 
 ```json
 {
-    "dependencies": [".", "langchain_openai", "./local_package"],
-    "graphs": {
-        "agent": "./my_agent/agent.py:graph",
-        "retriever": "./my_agent/rag.py:rag_graph"
-    },
-    "env": "./.env",
-    "python_version": "3.12",
-    "pip_config_file": "./pip.conf",
-    "dockerfile_lines": [
-        "RUN apt-get update && apt-get install -y ffmpeg"
-    ]
+  "dependencies": [".", "langchain_openai", "./local_package"],
+  "graphs": {
+    "agent": "./my_agent/agent.py:graph",
+    "retriever": "./my_agent/rag.py:rag_graph"
+  },
+  "env": "./.env",
+  "python_version": "3.12",
+  "pip_config_file": "./pip.conf",
+  "dockerfile_lines": ["RUN apt-get update && apt-get install -y ffmpeg"]
 }
 ```
 
 ### Key reference
 
-| Key | Required | Description |
-|-----|----------|-------------|
-| `dependencies` | Yes | Array of dependencies. `"."` looks for local packages via `pyproject.toml`, `setup.py`, `requirements.txt`, or `package.json`. Can also be paths to subdirectories (`"./my_pkg"`) or package names (`"langchain_openai"`). |
-| `graphs` | Yes | Mapping of graph ID to path. Format: `./path/to/file.py:variable` (Python) or `./path/to/file.js:function` (JS). The variable must be a `CompiledGraph` or a function returning one. Multiple graphs supported. |
-| `env` | No | Path to a `.env` file (string) OR an inline mapping of env var names to values (object). Used by `langgraph dev` and `langgraph up` locally. `langgraph deploy` reads from this file and adds the variables as deployment secrets. |
-| `python_version` | No | `"3.11"`, `"3.12"`, or `"3.13"`. Defaults to `"3.11"`. |
-| `node_version` | No | Node.js version for JS projects. |
-| `pip_config_file` | No | Path to a pip config file for custom package indexes. |
-| `dockerfile_lines` | No | Array of additional Dockerfile lines appended after the base image import. Use for system packages, binaries, or custom setup. |
+| Key                | Required | Description                                                                                                                                                                                                                        |
+| ------------------ | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `dependencies`     | Yes      | Array of dependencies. `"."` looks for local packages via `pyproject.toml`, `setup.py`, `requirements.txt`, or `package.json`. Can also be paths to subdirectories (`"./my_pkg"`) or package names (`"langchain_openai"`).         |
+| `graphs`           | Yes      | Mapping of graph ID to path. Format: `./path/to/file.py:variable` (Python) or `./path/to/file.js:function` (JS). The variable must be a `CompiledGraph` or a function returning one. Multiple graphs supported.                    |
+| `env`              | No       | Path to a `.env` file (string) OR an inline mapping of env var names to values (object). Used by `langgraph dev` and `langgraph up` locally. `langgraph deploy` reads from this file and adds the variables as deployment secrets. |
+| `python_version`   | No       | `"3.11"`, `"3.12"`, or `"3.13"`. Defaults to `"3.11"`.                                                                                                                                                                             |
+| `node_version`     | No       | Node.js version for JS projects.                                                                                                                                                                                                   |
+| `pip_config_file`  | No       | Path to a pip config file for custom package indexes.                                                                                                                                                                              |
+| `dockerfile_lines` | No       | Array of additional Dockerfile lines appended after the base image import. Use for system packages, binaries, or custom setup.                                                                                                     |
 
 ## Typical workflow
 
@@ -223,16 +224,16 @@ The configuration file used by all CLI commands (`dev`, `build`, `up`, `deploy`)
 
 ## `langgraph dev` vs `langgraph up`
 
-| Feature | `langgraph dev` | `langgraph up` |
-|---------|----------------|----------------|
-| Docker required | No | Yes |
-| Install | `pip install 'langgraph-cli[inmem]'` | `pip install langgraph-cli` |
-| Primary use | Rapid development & testing | Production-like validation |
-| State persistence | In-memory / pickled to local dir | PostgreSQL |
-| Hot reloading | Yes (default) | Optional (`--watch`) |
-| Default port | 2024 | 8123 |
-| Resource usage | Lightweight | Heavier (Docker containers for server, Postgres, Redis) |
-| IDE debugging | Built-in DAP support (`--debug-port`) | Container debugging |
+| Feature           | `langgraph dev`                       | `langgraph up`                                          |
+| ----------------- | ------------------------------------- | ------------------------------------------------------- |
+| Docker required   | No                                    | Yes                                                     |
+| Install           | `pip install 'langgraph-cli[inmem]'`  | `pip install langgraph-cli`                             |
+| Primary use       | Rapid development & testing           | Production-like validation                              |
+| State persistence | In-memory / pickled to local dir      | PostgreSQL                                              |
+| Hot reloading     | Yes (default)                         | Optional (`--watch`)                                    |
+| Default port      | 2024                                  | 8123                                                    |
+| Resource usage    | Lightweight                           | Heavier (Docker containers for server, Postgres, Redis) |
+| IDE debugging     | Built-in DAP support (`--debug-port`) | Container debugging                                     |
 
 ## Gotchas
 

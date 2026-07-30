@@ -1,5 +1,5 @@
-import type { SwarmFilter } from "./types.js";
-import { readColumn } from "./utils.js";
+import type { SwarmFilter } from './types.js';
+import { readColumn } from './utils.js';
 
 /**
  * Compare two values for deep equality.
@@ -34,39 +34,34 @@ function deepEquals(a: unknown, b: unknown): boolean {
  * @param row - The table row to test against.
  * @returns `true` if the row matches the filter.
  */
-export function evaluateFilter(
-  filter: SwarmFilter,
-  row: Record<string, unknown>,
-): boolean {
-  if (filter == null || typeof filter !== "object") {
-    throw new Error(
-      `evaluateFilter: expected a filter object, got ${JSON.stringify(filter)}`,
-    );
+export function evaluateFilter(filter: SwarmFilter, row: Record<string, unknown>): boolean {
+  if (filter == null || typeof filter !== 'object') {
+    throw new Error(`evaluateFilter: expected a filter object, got ${JSON.stringify(filter)}`);
   }
 
-  if ("and" in filter) {
+  if ('and' in filter) {
     return filter.and.every((f) => evaluateFilter(f, row));
   }
 
-  if ("or" in filter) {
+  if ('or' in filter) {
     return filter.or.some((f) => evaluateFilter(f, row));
   }
 
   const value = readColumn(row, filter.column);
 
-  if ("equals" in filter) {
+  if ('equals' in filter) {
     return deepEquals(value, filter.equals);
   }
 
-  if ("notEquals" in filter) {
+  if ('notEquals' in filter) {
     return !deepEquals(value, filter.notEquals);
   }
 
-  if ("in" in filter) {
+  if ('in' in filter) {
     return filter.in.some((item) => deepEquals(value, item));
   }
 
-  if ("exists" in filter) {
+  if ('exists' in filter) {
     return filter.exists ? value != null : value == null;
   }
 

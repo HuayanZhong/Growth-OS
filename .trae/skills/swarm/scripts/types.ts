@@ -56,10 +56,7 @@ export interface CreateSource {
  * the same batch size are grouped together, then chunked into
  * batches of that size.
  */
-export type BatchFn = (
-  row: Record<string, unknown>,
-  rowCount: number,
-) => number;
+export type BatchFn = (row: Record<string, unknown>, rowCount: number) => number;
 
 /**
  * Options for `run()`.
@@ -292,7 +289,7 @@ export interface TaskSpec {
    *
    * @default "agent"
    */
-  mode?: "agent" | "invoke";
+  mode?: 'agent' | 'invoke';
 }
 
 /**
@@ -309,7 +306,7 @@ export interface TaskResult {
   /**
    * Whether the dispatch succeeded or failed.
    */
-  status: "completed" | "failed";
+  status: 'completed' | 'failed';
 
   /**
    * The subagent's response string (present when `status` is `"completed"`).

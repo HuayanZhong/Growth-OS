@@ -18,7 +18,7 @@ Used in `nuxt.config.ts` or modules:
 export default defineNuxtConfig({
   hooks: {
     'build:before': () => {
-      console.log('Build starting...')
+      console.log('Build starting...');
     },
     'pages:extend': (pages) => {
       // Add custom pages
@@ -26,14 +26,14 @@ export default defineNuxtConfig({
         name: 'custom',
         path: '/custom',
         file: '~/pages/custom.vue',
-      })
+      });
     },
     'components:dirs': (dirs) => {
       // Add component directories
-      dirs.push({ path: '~/extra-components' })
+      dirs.push({ path: '~/extra-components' });
     },
   },
-})
+});
 ```
 
 ### In Modules
@@ -43,36 +43,36 @@ export default defineNuxtConfig({
 export default defineNuxtModule({
   setup(options, nuxt) {
     nuxt.hook('ready', async (nuxt) => {
-      console.log('Nuxt is ready')
-    })
+      console.log('Nuxt is ready');
+    });
 
     nuxt.hook('close', async (nuxt) => {
-      console.log('Nuxt is closing')
-    })
+      console.log('Nuxt is closing');
+    });
 
     nuxt.hook('modules:done', () => {
-      console.log('All modules loaded')
-    })
+      console.log('All modules loaded');
+    });
   },
-})
+});
 ```
 
 ### Common Build Hooks
 
-| Hook | When |
-|------|------|
-| `ready` | Nuxt initialization complete |
-| `close` | Nuxt is closing |
-| `modules:done` | All modules installed |
-| `build:before` | Before build starts |
-| `build:done` | Build complete |
-| `pages:extend` | Add/modify routes (before meta scan) |
-| `pages:resolved` | After page meta is scanned (with `scanPageMeta`) |
-| `components:dirs` | Component dirs being resolved |
-| `imports:extend` | Auto-imports being resolved |
-| `nitro:config` | Before Nitro config finalized |
-| `vite:extend` | Vite context created |
-| `vite:extendConfig` | Before Vite config finalized |
+| Hook                | When                                             |
+| ------------------- | ------------------------------------------------ |
+| `ready`             | Nuxt initialization complete                     |
+| `close`             | Nuxt is closing                                  |
+| `modules:done`      | All modules installed                            |
+| `build:before`      | Before build starts                              |
+| `build:done`        | Build complete                                   |
+| `pages:extend`      | Add/modify routes (before meta scan)             |
+| `pages:resolved`    | After page meta is scanned (with `scanPageMeta`) |
+| `components:dirs`   | Component dirs being resolved                    |
+| `imports:extend`    | Auto-imports being resolved                      |
+| `nitro:config`      | Before Nitro config finalized                    |
+| `vite:extend`       | Vite context created                             |
+| `vite:extendConfig` | Before Vite config finalized                     |
 
 ## App Hooks (Runtime)
 
@@ -84,54 +84,54 @@ Used in plugins and composables:
 // plugins/lifecycle.ts
 export default defineNuxtPlugin((nuxtApp) => {
   nuxtApp.hook('app:created', (vueApp) => {
-    console.log('Vue app created')
-  })
+    console.log('Vue app created');
+  });
 
   nuxtApp.hook('app:mounted', (vueApp) => {
-    console.log('App mounted')
-  })
+    console.log('App mounted');
+  });
 
   nuxtApp.hook('page:start', () => {
-    console.log('Page navigation starting')
-  })
+    console.log('Page navigation starting');
+  });
 
   nuxtApp.hook('page:finish', () => {
-    console.log('Page navigation finished')
-  })
+    console.log('Page navigation finished');
+  });
 
   nuxtApp.hook('page:loading:start', () => {
-    console.log('Page loading started')
-  })
+    console.log('Page loading started');
+  });
 
   nuxtApp.hook('page:loading:end', () => {
-    console.log('Page loading ended')
-  })
-})
+    console.log('Page loading ended');
+  });
+});
 ```
 
 ### Common App Hooks
 
-| Hook | When |
-|------|------|
-| `app:created` | Vue app created |
-| `app:mounted` | Vue app mounted (client only) |
-| `app:error` | Fatal error occurred |
-| `page:start` | Page navigation starting |
-| `page:finish` | Page navigation finished |
+| Hook                 | When                          |
+| -------------------- | ----------------------------- |
+| `app:created`        | Vue app created               |
+| `app:mounted`        | Vue app mounted (client only) |
+| `app:error`          | Fatal error occurred          |
+| `page:start`         | Page navigation starting      |
+| `page:finish`        | Page navigation finished      |
 | `page:loading:start` | Loading indicator should show |
-| `page:loading:end` | Loading indicator should hide |
-| `link:prefetch` | Link is being prefetched |
+| `page:loading:end`   | Loading indicator should hide |
+| `link:prefetch`      | Link is being prefetched      |
 
 ### Using Runtime Hooks
 
 ```ts
 // composables/usePageTracking.ts
 export function usePageTracking() {
-  const nuxtApp = useNuxtApp()
+  const nuxtApp = useNuxtApp();
 
   nuxtApp.hook('page:finish', () => {
-    trackPageView(useRoute().path)
-  })
+    trackPageView(useRoute().path);
+  });
 }
 ```
 
@@ -144,37 +144,37 @@ Used in server plugins:
 export default defineNitroPlugin((nitroApp) => {
   // Modify HTML before sending
   nitroApp.hooks.hook('render:html', (html, { event }) => {
-    html.head.push('<meta name="custom" content="value">')
-    html.bodyAppend.push('<script>console.log("injected")</script>')
-  })
+    html.head.push('<meta name="custom" content="value">');
+    html.bodyAppend.push('<script>console.log("injected")</script>');
+  });
 
   // Modify response
   nitroApp.hooks.hook('render:response', (response, { event }) => {
-    console.log('Sending response:', response.statusCode)
-  })
+    console.log('Sending response:', response.statusCode);
+  });
 
   // Before request
   nitroApp.hooks.hook('request', (event) => {
-    console.log('Request:', event.path)
-  })
+    console.log('Request:', event.path);
+  });
 
   // After response
   nitroApp.hooks.hook('afterResponse', (event) => {
-    console.log('Response sent')
-  })
-})
+    console.log('Response sent');
+  });
+});
 ```
 
 ### Common Nitro Hooks
 
-| Hook | When |
-|------|------|
-| `request` | Request received |
-| `beforeResponse` | Before sending response |
-| `afterResponse` | After response sent |
-| `render:html` | Before HTML is sent |
+| Hook              | When                         |
+| ----------------- | ---------------------------- |
+| `request`         | Request received             |
+| `beforeResponse`  | Before sending response      |
+| `afterResponse`   | After response sent          |
+| `render:html`     | Before HTML is sent          |
 | `render:response` | Before response is finalized |
-| `error` | Error occurred |
+| `error`           | Error occurred               |
 
 ## Custom Hooks
 
@@ -182,23 +182,23 @@ export default defineNitroPlugin((nitroApp) => {
 
 ```ts
 // types/hooks.d.ts
-import type { HookResult } from '@nuxt/schema'
+import type { HookResult } from '@nuxt/schema';
 
 declare module '#app' {
   interface RuntimeNuxtHooks {
-    'my-app:event': (data: MyEventData) => HookResult
+    'my-app:event': (data: MyEventData) => HookResult;
   }
 }
 
 declare module '@nuxt/schema' {
   interface NuxtHooks {
-    'my-module:init': () => HookResult
+    'my-module:init': () => HookResult;
   }
 }
 
 declare module 'nitropack/types' {
   interface NitroRuntimeHooks {
-    'my-server:event': (data: any) => void
+    'my-server:event': (data: any) => void;
   }
 }
 ```
@@ -209,15 +209,15 @@ declare module 'nitropack/types' {
 // In a plugin
 export default defineNuxtPlugin((nuxtApp) => {
   // Call custom hook
-  nuxtApp.callHook('my-app:event', { type: 'custom' })
-})
+  nuxtApp.callHook('my-app:event', { type: 'custom' });
+});
 
 // In a module
 export default defineNuxtModule({
   setup(options, nuxt) {
-    nuxt.callHook('my-module:init')
+    nuxt.callHook('my-module:init');
   },
-})
+});
 ```
 
 ## useRuntimeHook
@@ -228,8 +228,8 @@ Call hooks at runtime from components:
 <script setup lang="ts">
 // Register a callback for a runtime hook
 useRuntimeHook('app:error', (error) => {
-  console.error('App error:', error)
-})
+  console.error('App error:', error);
+});
 </script>
 ```
 
@@ -241,13 +241,13 @@ useRuntimeHook('app:error', (error) => {
 // plugins/analytics.client.ts
 export default defineNuxtPlugin((nuxtApp) => {
   nuxtApp.hook('page:finish', () => {
-    const route = useRoute()
+    const route = useRoute();
     analytics.track('pageview', {
       path: route.path,
       title: document.title,
-    })
-  })
-})
+    });
+  });
+});
 ```
 
 ### Performance Monitoring
@@ -255,17 +255,17 @@ export default defineNuxtPlugin((nuxtApp) => {
 ```ts
 // plugins/performance.client.ts
 export default defineNuxtPlugin((nuxtApp) => {
-  let navigationStart: number
+  let navigationStart: number;
 
   nuxtApp.hook('page:start', () => {
-    navigationStart = performance.now()
-  })
+    navigationStart = performance.now();
+  });
 
   nuxtApp.hook('page:finish', () => {
-    const duration = performance.now() - navigationStart
-    console.log(`Navigation took ${duration}ms`)
-  })
-})
+    const duration = performance.now() - navigationStart;
+    console.log(`Navigation took ${duration}ms`);
+  });
+});
 ```
 
 ### Inject HTML
@@ -278,12 +278,12 @@ export default defineNitroPlugin((nitroApp) => {
       <script>
         window.APP_CONFIG = ${JSON.stringify(config)}
       </script>
-    `)
-  })
-})
+    `);
+  });
+});
 ```
 
-<!-- 
+<!--
 Source references:
 - https://nuxt.com/docs/4.x/guide/going-further/hooks
 - https://nuxt.com/docs/4.x/api/advanced/hooks

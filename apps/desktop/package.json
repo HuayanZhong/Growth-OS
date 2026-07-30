@@ -1,15 +1,15 @@
 {
   "name": "desktop",
   "version": "1.0.0",
-  "description": "Growth OS 桌面端",
   "private": true,
+  "description": "Growth OS 桌面端",
+  "keywords": [],
+  "license": "ISC",
+  "author": "",
   "type": "module",
   "scripts": {
     "dev": "nuxt dev"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "@tailwindcss/vite": "catalog:frontend",
     "daisyui": "catalog:frontend",

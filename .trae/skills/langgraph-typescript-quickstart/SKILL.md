@@ -1,6 +1,6 @@
 ---
 name: langgraph-typescript-quickstart
-description: "Scaffold a minimal local LangGraph agent in TypeScript by following the official quickstart. Use when the user wants to quickly build or try a LangGraph agent locally."
+description: 'Scaffold a minimal local LangGraph agent in TypeScript by following the official quickstart. Use when the user wants to quickly build or try a LangGraph agent locally.'
 ---
 
 # LangGraph TypeScript quickstart

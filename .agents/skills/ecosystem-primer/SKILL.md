@@ -1,14 +1,14 @@
 ---
 name: ecosystem-primer
-description: "INVOKE FIRST for any LangChain / LangGraph / Deep Agents agent building project before consulting other skills or writing any agent code. Required starting point for up to date info on framework selection (LangChain vs LangGraph vs Deep Agents vs hybrid composition), agent patterns, install, environment setup, and which skill to load next."
+description: 'INVOKE FIRST for any LangChain / LangGraph / Deep Agents agent building project before consulting other skills or writing any agent code. Required starting point for up to date info on framework selection (LangChain vs LangGraph vs Deep Agents vs hybrid composition), agent patterns, install, environment setup, and which skill to load next.'
 ---
 
 <overview>
 LangChain Inc. maintains three layered open-source tools for building agents, plus LangSmith for observability. The stack, top-down:
 
-- **Deep Agents** (top layer, *harness*) — batteries-included toolkit built on LangChain + LangGraph. Ships with planning, file management, subagent spawning, and memory out of the box.
-- **LangGraph** (middle layer, *runtime*) — low-level orchestration for durable execution, custom control flow, and stateful workflows. LangChain agents run on top of LangGraph.
-- **LangChain** (bottom layer, *framework*) — abstractions for models, tools, and the agent loop. Provider-agnostic, easiest to start with.
+- **Deep Agents** (top layer, _harness_) — batteries-included toolkit built on LangChain + LangGraph. Ships with planning, file management, subagent spawning, and memory out of the box.
+- **LangGraph** (middle layer, _runtime_) — low-level orchestration for durable execution, custom control flow, and stateful workflows. LangChain agents run on top of LangGraph.
+- **LangChain** (bottom layer, _framework_) — abstractions for models, tools, and the agent loop. Provider-agnostic, easiest to start with.
 - **LangSmith** (cross-cutting) — observability and evaluation platform. Framework-agnostic; always recommended alongside any of the above.
 
 Higher layers depend on lower ones, but you don't need to use lower layers directly. Deep Agents gives you LangGraph's durable execution without writing graph code. LangChain gives you models and tools without managing graph edges.
@@ -40,11 +40,13 @@ This is your **layer**. BUT you are not done: later in Step 4, you MUST load the
 ### LangChain — agent framework
 
 **Best for:**
+
 - Single-purpose agents with a fixed tool set
 - RAG pipelines and document Q&A
 - Model calls, prompt templates, structured output
 
 **Not ideal when:**
+
 - The agent needs to plan across many steps or manage large context
 - Control flow is conditional, iterative, or parallel
 - State must persist across sessions
@@ -58,12 +60,14 @@ All LangChain agents use `create_agent(model, tools=[...])`.
 ### LangGraph — agent runtime
 
 **Best for:**
+
 - Custom control flow — deterministic loops, reflection cycles, parallel fan-out
 - Complex workflows combining deterministic and agentic steps
 - Human-in-the-loop with precise interrupt and resume points
 - State that must survive failures or span long sessions
 
 **Not ideal when:**
+
 - You want planning, file management, and subagent delegation out of the box (use Deep Agents instead)
 - The workflow is simple enough for a straight tool loop
 
@@ -76,6 +80,7 @@ All LangGraph graphs use `StateGraph(State)` with explicit nodes, edges, and con
 ### Deep Agents — agent harness
 
 **Best for:**
+
 - Long-running tasks that require planning and decomposition
 - Agents that read, write, and manage files across a session
 - Delegating subtasks to specialized subagents
@@ -83,6 +88,7 @@ All LangGraph graphs use `StateGraph(State)` with explicit nodes, edges, and con
 - Loading domain-specific skills on demand
 
 **Not ideal when:**
+
 - The task is simple enough for a single-purpose agent
 - You need precise hand-crafted control over every graph edge (use LangGraph directly)
 
@@ -144,6 +150,7 @@ Start here rather than tree-searching from root (swap `python` → `javascript` 
 ### Accessing docs in an agent context
 
 **If the LangChain Docs MCP server is connected** (`mcp__docs-langchain__*` tools are available), query it directly:
+
 ```
 tree /oss/python -L 2                        # explore Python structure
 tree /oss/javascript -L 2                    # parallel TypeScript structure
@@ -152,6 +159,7 @@ rg -il "checkpointer" /oss/python/langgraph/ # search by keyword
 ```
 
 **If the MCP server is not available**, use the `llms.txt` index:
+
 1. Fetch `https://docs.langchain.com/llms.txt` — structured list of all pages with descriptions
 2. Identify the 2–4 most relevant pages for the question
 3. Fetch those pages directly for accurate, up-to-date content

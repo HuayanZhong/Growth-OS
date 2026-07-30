@@ -1,6 +1,7 @@
 ---
-description: "INVOKE THIS SKILL when you need human-in-the-loop approval, custom middleware, or structured output. Covers HumanInTheLoopMiddleware for human approval of dangerous tool calls, creating custom middleware with hooks, Command resume patterns, and structured output with Pydantic/Zod."
+description: 'INVOKE THIS SKILL when you need human-in-the-loop approval, custom middleware, or structured output. Covers HumanInTheLoopMiddleware for human approval of dangerous tool calls, creating custom middleware with hooks, Command resume patterns, and structured output with Pydantic/Zod.'
 ---
+
 <overview>
 Middleware patterns for production LangChain agents:
 
@@ -43,36 +44,35 @@ agent = create_agent(
     ],
 )
 ```
+
 </python>
 <typescript>
 Set up an agent with HITL that pauses before sending emails for human approval.
 
 ```typescript
-import { createAgent, humanInTheLoopMiddleware } from "langchain";
-import { MemorySaver } from "@langchain/langgraph";
-import { tool } from "@langchain/core/tools";
-import { z } from "zod";
+import { createAgent, humanInTheLoopMiddleware } from 'langchain';
+import { MemorySaver } from '@langchain/langgraph';
+import { tool } from '@langchain/core/tools';
+import { z } from 'zod';
 
-const sendEmail = tool(
-  async ({ to, subject, body }) => `Email sent to ${to}`,
-  {
-    name: "send_email",
-    description: "Send an email",
-    schema: z.object({ to: z.string(), subject: z.string(), body: z.string() }),
-  }
-);
+const sendEmail = tool(async ({ to, subject, body }) => `Email sent to ${to}`, {
+  name: 'send_email',
+  description: 'Send an email',
+  schema: z.object({ to: z.string(), subject: z.string(), body: z.string() }),
+});
 
 const agent = createAgent({
-  model: "anthropic:claude-sonnet-4-5",
+  model: 'anthropic:claude-sonnet-4-5',
   tools: [sendEmail],
   checkpointer: new MemorySaver(),
   middleware: [
     humanInTheLoopMiddleware({
-      interruptOn: { send_email: { allowedDecisions: ["approve", "edit", "reject"] } },
+      interruptOn: { send_email: { allowedDecisions: ['approve', 'edit', 'reject'] } },
     }),
   ],
 });
 ```
+
 </typescript>
 </ex-basic-hitl-setup>
 
@@ -100,19 +100,23 @@ result2 = agent.invoke(
     config=config
 )
 ```
+
 </python>
 <typescript>
 Run the agent, detect an interrupt, then resume execution after human approval.
 
 ```typescript
-import { Command } from "@langchain/langgraph";
+import { Command } from '@langchain/langgraph';
 
-const config = { configurable: { thread_id: "session-1" } };
+const config = { configurable: { thread_id: 'session-1' } };
 
 // Step 1: Agent runs until it needs to call tool
-const result1 = await agent.invoke({
-  messages: [{ role: "user", content: "Send email to john@example.com" }]
-}, config);
+const result1 = await agent.invoke(
+  {
+    messages: [{ role: 'user', content: 'Send email to john@example.com' }],
+  },
+  config,
+);
 
 // Check for interrupt
 if (result1.__interrupt__) {
@@ -121,10 +125,11 @@ if (result1.__interrupt__) {
 
 // Step 2: Human approves
 const result2 = await agent.invoke(
-  new Command({ resume: { decisions: [{ type: "approve" }] } }),
-  config
+  new Command({ resume: { decisions: [{ type: 'approve' }] } }),
+  config,
 );
 ```
+
 </typescript>
 </ex-running-with-interrupts>
 
@@ -151,6 +156,7 @@ result2 = agent.invoke(
     config=config
 )
 ```
+
 </python>
 <typescript>
 Edit the tool arguments before approving when the original values need correction.
@@ -160,22 +166,25 @@ Edit the tool arguments before approving when the original values need correctio
 const result2 = await agent.invoke(
   new Command({
     resume: {
-      decisions: [{
-        type: "edit",
-        editedAction: {
-          name: "send_email",
-          args: {
-            to: "alice@company.com",  // Fixed email
-            subject: "Project Meeting - Updated",
-            body: "...",
+      decisions: [
+        {
+          type: 'edit',
+          editedAction: {
+            name: 'send_email',
+            args: {
+              to: 'alice@company.com', // Fixed email
+              subject: 'Project Meeting - Updated',
+              body: '...',
+            },
           },
         },
-      }]
-    }
+      ],
+    },
   }),
-  config
+  config,
 );
 ```
+
 </typescript>
 </ex-editing-tool-arguments>
 
@@ -195,6 +204,7 @@ result2 = agent.invoke(
     config=config
 )
 ```
+
 </python>
 </ex-rejecting-with-feedback>
 
@@ -218,6 +228,7 @@ agent = create_agent(
     ],
 )
 ```
+
 </python>
 </ex-multiple-tools-different-policies>
 
@@ -261,22 +272,27 @@ def guard_middleware(request, handler):
         return "This tool is disabled"  # short-circuit
     return handler(request)
 ```
+
 </python>
 <typescript>
 `createMiddleware({ wrapToolCall })` intercepts tool execution.
 
 ```typescript
-import { createMiddleware } from "langchain";
+import { createMiddleware } from 'langchain';
 
 const retryMiddleware = createMiddleware({
   wrapToolCall: async (request, handler) => {
     for (let attempt = 0; attempt < 3; attempt++) {
-      try { return await handler(request); }
-      catch (e) { if (attempt === 2) throw e; }
+      try {
+        return await handler(request);
+      } catch (e) {
+        if (attempt === 2) throw e;
+      }
     }
   },
 });
 ```
+
 </typescript>
 </ex-wrap-tool-call>
 
@@ -295,22 +311,24 @@ def log_calls(state, runtime):
 def check_output(state, runtime):
     print(f"Model responded")
 ```
+
 </python>
 <typescript>
 All before/after hooks share the same `(state, runtime)` signature via `createMiddleware`.
 
 ```typescript
-import { createMiddleware } from "langchain";
+import { createMiddleware } from 'langchain';
 
 const loggingMiddleware = createMiddleware({
   beforeModel: (state, runtime) => {
     console.log(`Calling model with ${state.messages.length} messages`);
   },
   afterModel: (state, runtime) => {
-    console.log("Model responded");
+    console.log('Model responded');
   },
 });
 ```
+
 </typescript>
 </ex-before-after-hooks>
 
@@ -336,6 +354,7 @@ agent = create_agent(
     middleware=[HumanInTheLoopMiddleware({...})]
 )
 ```
+
 </python>
 <typescript>
 HITL requires a checkpointer to persist state.
@@ -343,17 +362,20 @@ HITL requires a checkpointer to persist state.
 ```typescript
 // WRONG: No checkpointer
 const agent = createAgent({
-  model: "anthropic:claude-sonnet-4-5", tools: [sendEmail],
+  model: 'anthropic:claude-sonnet-4-5',
+  tools: [sendEmail],
   middleware: [humanInTheLoopMiddleware({ interruptOn: { send_email: true } })],
 });
 
 // CORRECT: Add checkpointer
 const agent = createAgent({
-  model: "anthropic:claude-sonnet-4-5", tools: [sendEmail],
+  model: 'anthropic:claude-sonnet-4-5',
+  tools: [sendEmail],
   checkpointer: new MemorySaver(),
   middleware: [humanInTheLoopMiddleware({ interruptOn: { send_email: true } })],
 });
 ```
+
 </typescript>
 </fix-missing-checkpointer>
 
@@ -368,6 +390,7 @@ agent.invoke(input)  # No config!
 # CORRECT
 agent.invoke(input, config={"configurable": {"thread_id": "user-123"}})
 ```
+
 </python>
 </fix-no-thread-id>
 
@@ -383,6 +406,7 @@ agent.invoke({"resume": {"decisions": [...]}})
 from langgraph.types import Command
 agent.invoke(Command(resume={"decisions": [{"type": "approve"}]}), config=config)
 ```
+
 </python>
 <typescript>
 Use Command class to resume execution after an interrupt.
@@ -395,5 +419,6 @@ await agent.invoke({ resume: { decisions: [...] } });
 import { Command } from "@langchain/langgraph";
 await agent.invoke(new Command({ resume: { decisions: [{ type: "approve" }] } }), config);
 ```
+
 </typescript>
 </fix-wrong-resume-syntax>

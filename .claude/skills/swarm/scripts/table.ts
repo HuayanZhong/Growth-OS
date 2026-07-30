@@ -1,4 +1,4 @@
-import type { CreateSource, SwarmHandle } from "./types.js";
+import type { CreateSource, SwarmHandle } from './types.js';
 
 /**
  * PTC tool declarations for file operations.
@@ -29,14 +29,14 @@ declare const __sessionId__: string | undefined;
  * with an underscore, and caps length to prevent excessively long paths.
  */
 function sanitizeSessionId(id: string): string {
-  return id.replace(/[^a-zA-Z0-9_-]/g, "_").slice(0, 64);
+  return id.replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 64);
 }
 
 /**
  * Directory prefix for all table JSONL files, scoped to the session.
  */
 function getTableDir(): string {
-  const id = typeof __sessionId__ !== "undefined" ? __sessionId__ : "default";
+  const id = typeof __sessionId__ !== 'undefined' ? __sessionId__ : 'default';
   return `/tmp/.swarm/${sanitizeSessionId(id)}`;
 }
 
@@ -95,7 +95,7 @@ export function _resetForTesting(): void {
 export function generateId(): string {
   const hex = Math.floor(Math.random() * 0xffffff)
     .toString(16)
-    .padStart(6, "0");
+    .padStart(6, '0');
   return `t_${hex}`;
 }
 
@@ -107,7 +107,7 @@ export function generateId(): string {
  * @returns Path like `".swarm/003-t_a1b2c3.jsonl"`.
  */
 export function tablePath(sequence: number, id: string): string {
-  const padded = String(sequence).padStart(3, "0");
+  const padded = String(sequence).padStart(3, '0');
   return `${getTableDir()}/${padded}-${id}.jsonl`;
 }
 
@@ -119,7 +119,7 @@ export function tablePath(sequence: number, id: string): string {
  * @returns JSONL string.
  */
 export function serializeJsonl(rows: Record<string, unknown>[]): string {
-  return rows.map((r) => JSON.stringify(r)).join("\n");
+  return rows.map((r) => JSON.stringify(r)).join('\n');
 }
 
 /**
@@ -138,25 +138,20 @@ export function parseJsonl(content: string): Record<string, unknown>[] {
   const parseLine = (line: string, idx: number): Record<string, unknown> => {
     try {
       const parsed = JSON.parse(line);
-      if (
-        typeof parsed !== "object" ||
-        parsed === null ||
-        Array.isArray(parsed)
-      ) {
+      if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) {
         throw new Error(`expected object`);
       }
       return parsed as Record<string, unknown>;
     } catch (e) {
-      throw new Error(
-        `JSONL parse error at line ${idx + 1}: ${(e as Error).message}`,
-        { cause: e },
-      );
+      throw new Error(`JSONL parse error at line ${idx + 1}: ${(e as Error).message}`, {
+        cause: e,
+      });
     }
   };
 
   return content
-    .split("\n")
-    .filter((line) => line.trim() !== "")
+    .split('\n')
+    .filter((line) => line.trim() !== '')
     .map(parseLine);
 }
 
@@ -168,7 +163,7 @@ export function parseJsonl(content: string): Record<string, unknown>[] {
  *          filename doesn't match the expected pattern.
  */
 export function extractIdFromPath(filePath: string): string | undefined {
-  const filename = filePath.split("/").pop() || "";
+  const filename = filePath.split('/').pop() || '';
   const match = filename.match(/^\d+-(t_[a-f0-9]+)\.jsonl$/);
   return match ? match[1] : undefined;
 }
@@ -180,7 +175,7 @@ export function extractIdFromPath(filePath: string): string | undefined {
  * @returns The sequence number, or `0` if the filename doesn't match.
  */
 export function extractSeqFromPath(filePath: string): number {
-  const filename = filePath.split("/").pop() || "";
+  const filename = filePath.split('/').pop() || '';
   const match = filename.match(/^(\d+)-/);
   return match ? parseInt(match[1], 10) : 0;
 }
@@ -195,11 +190,9 @@ export function extractSeqFromPath(filePath: string): number {
  * @param paths - List of file paths.
  * @returns Array of `{ id, file }` row objects.
  */
-export function pathsToRows(
-  paths: string[],
-): Array<{ id: string; file: string }> {
+export function pathsToRows(paths: string[]): Array<{ id: string; file: string }> {
   const basenames = paths.map((p) => {
-    const parts = p.split("/");
+    const parts = p.split('/');
     return parts[parts.length - 1] || p;
   });
 
@@ -211,7 +204,7 @@ export function pathsToRows(
   return paths.map((filePath, idx) => {
     let id = basenames[idx];
     if ((counts.get(id) ?? 0) > 1) {
-      const parts = filePath.split("/");
+      const parts = filePath.split('/');
       if (parts.length >= 2) {
         id = `${parts[parts.length - 2]}-${id}`;
       }
@@ -253,7 +246,7 @@ function findDuplicateIds(rows: Record<string, unknown>[]): string[] {
  * @internal
  */
 export async function globFiles(pattern: string): Promise<string[]> {
-  if (typeof tools.glob !== "function") {
+  if (typeof tools.glob !== 'function') {
     throw new Error(`Swarm requires a 'glob' tool in the PTC configuration`);
   }
 
@@ -265,9 +258,9 @@ export async function globFiles(pattern: string): Promise<string[]> {
 
   const paths: string[] = [];
   for (const item of parsed) {
-    if (typeof item === "string") {
+    if (typeof item === 'string') {
       paths.push(item);
-    } else if (item && typeof item.path === "string") {
+    } else if (item && typeof item.path === 'string') {
       paths.push(item.path);
     }
   }
@@ -285,10 +278,8 @@ export async function globFiles(pattern: string): Promise<string[]> {
  * @internal
  */
 export async function readFile(path: string): Promise<string> {
-  if (typeof tools.readFile !== "function") {
-    throw new Error(
-      `Swarm requires a 'readFile' tool in the PTC configuration`,
-    );
+  if (typeof tools.readFile !== 'function') {
+    throw new Error(`Swarm requires a 'readFile' tool in the PTC configuration`);
   }
   return tools.readFile({ file_path: path });
 }
@@ -314,17 +305,13 @@ export async function writeFile(
   content: string,
   previousContent?: string,
 ): Promise<void> {
-  if (typeof tools.writeFile !== "function") {
-    throw new Error(
-      `Swarm requires a 'writeFile' tool in the PTC configuration`,
-    );
+  if (typeof tools.writeFile !== 'function') {
+    throw new Error(`Swarm requires a 'writeFile' tool in the PTC configuration`);
   }
   const result = await tools.writeFile({ file_path: path, content });
-  if (typeof result === "string" && result.includes("already exists")) {
-    if (typeof tools.editFile !== "function") {
-      throw new Error(
-        "Swarm requires an 'edit_file' PTC tool to update existing tables",
-      );
+  if (typeof result === 'string' && result.includes('already exists')) {
+    if (typeof tools.editFile !== 'function') {
+      throw new Error("Swarm requires an 'edit_file' PTC tool to update existing tables");
     }
     if (previousContent == null) {
       throw new Error(
@@ -375,7 +362,7 @@ async function evict(): Promise<void> {
       cache.delete(id);
     }
     try {
-      await writeFile(filePath, "", prev);
+      await writeFile(filePath, '', prev);
     } catch {
       // Best-effort eviction — non-fatal if overwrite fails
     }
@@ -438,18 +425,14 @@ async function resolveGlob(pattern: string | string[]): Promise<string[]> {
  * @throws Error if the source is invalid, empty, or missing required PTC tools.
  */
 export async function createTable(source: CreateSource): Promise<SwarmHandle> {
-  const sourceCount = [source.glob, source.filePaths, source.tasks].filter(
-    (s) => s != null,
-  ).length;
+  const sourceCount = [source.glob, source.filePaths, source.tasks].filter((s) => s != null).length;
 
   if (sourceCount === 0) {
-    throw new Error(
-      "create() requires exactly one source: glob, filePaths, or tasks",
-    );
+    throw new Error('create() requires exactly one source: glob, filePaths, or tasks');
   }
 
   if (sourceCount > 1) {
-    throw new Error("create() accepts only one source type at a time");
+    throw new Error('create() accepts only one source type at a time');
   }
 
   let rows: Record<string, unknown>[];
@@ -459,17 +442,17 @@ export async function createTable(source: CreateSource): Promise<SwarmHandle> {
     rows = pathsToRows(paths);
   } else if (source.filePaths != null) {
     if (source.filePaths.length === 0) {
-      throw new Error("filePaths array is empty");
+      throw new Error('filePaths array is empty');
     }
     rows = pathsToRows(source.filePaths);
   } else {
     const tasks = source.tasks ?? [];
     if (tasks.length === 0) {
-      throw new Error("tasks array is empty");
+      throw new Error('tasks array is empty');
     }
 
     for (let idx = 0; idx < tasks.length; idx++) {
-      if (typeof tasks[idx].id !== "string") {
+      if (typeof tasks[idx].id !== 'string') {
         throw new Error(`tasks[${idx}] is missing string 'id' field`);
       }
     }
@@ -479,7 +462,7 @@ export async function createTable(source: CreateSource): Promise<SwarmHandle> {
 
   const dupes = findDuplicateIds(rows);
   if (dupes.length > 0) {
-    throw new Error(`create() received duplicate row ids: ${dupes.join(", ")}`);
+    throw new Error(`create() received duplicate row ids: ${dupes.join(', ')}`);
   }
 
   await evict();
@@ -510,9 +493,7 @@ export async function createTable(source: CreateSource): Promise<SwarmHandle> {
  * @returns The table's row array (by reference — mutations are visible).
  * @throws Error if the table is not found (evicted or never created).
  */
-export async function loadTable(
-  id: string,
-): Promise<Record<string, unknown>[]> {
+export async function loadTable(id: string): Promise<Record<string, unknown>[]> {
   const cached = cache.get(id);
   if (cached) {
     return cached.rows;
@@ -546,10 +527,7 @@ export async function loadTable(
  * @param rows - The updated row array to persist.
  * @throws Error if the table has not been loaded into cache.
  */
-export async function saveTable(
-  id: string,
-  rows: Record<string, unknown>[],
-): Promise<void> {
+export async function saveTable(id: string, rows: Record<string, unknown>[]): Promise<void> {
   const cached = cache.get(id);
   if (!cached) {
     throw new Error(`Table "${id}" is not loaded - call loadTable first`);

@@ -1,7 +1,12 @@
 ---
-description: "Dispatches many independent items in parallel: create a table, fan out to subagents, aggregate results. One row = one unit of work."
-metadata: {"entrypoint":"scripts/index.ts","required-ptc-tools":"swarm_task read_file write_file edit_file glob"}
+description: 'Dispatches many independent items in parallel: create a table, fan out to subagents, aggregate results. One row = one unit of work.'
+metadata:
+  {
+    'entrypoint': 'scripts/index.ts',
+    'required-ptc-tools': 'swarm_task read_file write_file edit_file glob',
+  }
 ---
+
 # Swarm
 
 Process many independent items in parallel. `create` builds a table handle;
@@ -33,9 +38,12 @@ multiple items into a single row.
 For small files (under ~500 lines), parse and create in one block:
 
 ```javascript
-const { create } = await import("@/skills/swarm");
-const raw = await tools.readFile({ file_path: "/data.jsonl" });
-const records = raw.trim().split("\n").map(l => JSON.parse(l));
+const { create } = await import('@/skills/swarm');
+const raw = await tools.readFile({ file_path: '/data.jsonl' });
+const records = raw
+  .trim()
+  .split('\n')
+  .map((l) => JSON.parse(l));
 const table = await create({ tasks: records });
 console.log(table);
 ```
@@ -43,13 +51,15 @@ console.log(table);
 For large files, read in chunks of 500 lines to avoid truncation:
 
 ```javascript
-const { create } = await import("@/skills/swarm");
+const { create } = await import('@/skills/swarm');
 let records = [];
 let offset = 0;
 while (true) {
-  const chunk = await tools.readFile({ file_path: "/data.txt", offset, limit: 500 });
-  const lines = chunk.split("\n").filter(l => l.trim());
-  for (const l of lines) { records.push({ id: `r${records.length}`, text: l }); }
+  const chunk = await tools.readFile({ file_path: '/data.txt', offset, limit: 500 });
+  const lines = chunk.split('\n').filter((l) => l.trim());
+  for (const l of lines) {
+    records.push({ id: `r${records.length}`, text: l });
+  }
   if (lines.length < 500) break;
   offset += 500;
 }
@@ -62,21 +72,24 @@ across two blocks. Only the block that calls swarm functions needs the import:
 
 ```javascript
 // eval 1: parse only — no swarm import needed
-const raw = await tools.readFile({ file_path: "/data.jsonl" });
-globalThis.records = raw.trim().split("\n").map(l => JSON.parse(l));
+const raw = await tools.readFile({ file_path: '/data.jsonl' });
+globalThis.records = raw
+  .trim()
+  .split('\n')
+  .map((l) => JSON.parse(l));
 console.log(`Parsed ${globalThis.records.length} records`);
 ```
 
 ```javascript
 // eval 2: create and dispatch
-const { create, run } = await import("@/skills/swarm");
+const { create, run } = await import('@/skills/swarm');
 const table = await create({ tasks: globalThis.records });
 const result = await run(table.id, {
-  instruction: "Classify {text}",
+  instruction: 'Classify {text}',
   responseSchema: {
-    type: "object",
-    properties: { label: { type: "string" } },
-    required: ["label"],
+    type: 'object',
+    properties: { label: { type: 'string' } },
+    required: ['label'],
   },
 });
 console.log(result);
@@ -98,15 +111,23 @@ reasoning. Each dispatch runs a full agentic loop with the named subagent.
 ```javascript
 // Direct model call — classification, no tools needed
 await run(table.id, {
-  instruction: "Classify {text}",
-  responseSchema: { type: "object", properties: { label: { type: "string" } }, required: ["label"] },
+  instruction: 'Classify {text}',
+  responseSchema: {
+    type: 'object',
+    properties: { label: { type: 'string' } },
+    required: ['label'],
+  },
 });
 
 // Subagent — needs to read files and reason over multiple steps
 await run(table.id, {
-  subagentType: "reviewer",
-  instruction: "Review {file} for security issues.",
-  responseSchema: { type: "object", properties: { finding: { type: "string" } }, required: ["finding"] },
+  subagentType: 'reviewer',
+  instruction: 'Review {file} for security issues.',
+  responseSchema: {
+    type: 'object',
+    properties: { finding: { type: 'string' } },
+    required: ['finding'],
+  },
 });
 ```
 
@@ -122,17 +143,18 @@ JS and write the results into rows.
 shared background: domain terms, classification rules, examples, etc.
 
 ```javascript
-const { create, run } = await import("@/skills/swarm");
+const { create, run } = await import('@/skills/swarm');
 
-const table = await create({ glob: "src/**/*.ts" });
+const table = await create({ glob: 'src/**/*.ts' });
 const r = await run(table.id, {
-  subagentType: "reviewer",
+  subagentType: 'reviewer',
   instruction: "Review {file} for security issues. List findings or write 'no issues'.",
-  context: "TypeScript Express backend using Prisma ORM. Focus on injection, auth bypass, path traversal.",
+  context:
+    'TypeScript Express backend using Prisma ORM. Focus on injection, auth bypass, path traversal.',
   responseSchema: {
-    type: "object",
-    properties: { review: { type: "string" } },
-    required: ["review"],
+    type: 'object',
+    properties: { review: { type: 'string' } },
+    required: ['review'],
   },
 });
 console.log(r);
@@ -145,15 +167,15 @@ console.log(r);
 each row and constrain what subagents can return.
 
 ```javascript
-const { run } = await import("@/skills/swarm");
+const { run } = await import('@/skills/swarm');
 await run(table.id, {
-  instruction: "Classify: {text}",
+  instruction: 'Classify: {text}',
   responseSchema: {
-    type: "object",
+    type: 'object',
     properties: {
-      sentiment: { type: "string", enum: ["positive", "negative", "neutral"] },
+      sentiment: { type: 'string', enum: ['positive', 'negative', 'neutral'] },
     },
-    required: ["sentiment"],
+    required: ['sentiment'],
   },
 });
 // Row after: { id: "r1", text: "...", sentiment: "positive" }
@@ -174,16 +196,16 @@ Set `batchSize` to control grouping:
   chunked. Allows mixed dispatch where some rows go solo and others batch.
 
 ```javascript
-const { create, run } = await import("@/skills/swarm");
+const { create, run } = await import('@/skills/swarm');
 const table = await create({ tasks: items });
 
 // Complex items get individual attention; simple ones batch together
 await run(table.id, {
-  instruction: "Analyze {text}",
+  instruction: 'Analyze {text}',
   responseSchema: {
-    type: "object",
-    properties: { analysis: { type: "string" } },
-    required: ["analysis"],
+    type: 'object',
+    properties: { analysis: { type: 'string' } },
+    required: ['analysis'],
   },
   batchSize: (row) => (row.token_count > 1000 ? 1 : 10),
 });
@@ -196,10 +218,12 @@ Batch sizes are clamped to [1, 50] after evaluation.
 After `run()`, use `rows()` and plain JS — no additional subagents needed.
 
 ```javascript
-const { rows } = await import("@/skills/swarm");
-const data = await rows(table.id, { columns: ["sentiment"] });
+const { rows } = await import('@/skills/swarm');
+const data = await rows(table.id, { columns: ['sentiment'] });
 const counts = {};
-data.forEach(r => { counts[r.sentiment] = (counts[r.sentiment] || 0) + 1 });
+data.forEach((r) => {
+  counts[r.sentiment] = (counts[r.sentiment] || 0) + 1;
+});
 console.log(counts);
 // → { positive: 120, negative: 45, neutral: 35 }
 ```
@@ -209,23 +233,23 @@ console.log(counts);
 `run` updates the table in place — chain calls to accumulate columns.
 
 ```javascript
-const { create, run } = await import("@/skills/swarm");
+const { create, run } = await import('@/skills/swarm');
 const table = await create({ tasks: interviews });
 await run(table.id, {
-  instruction: "Classify sentiment of {text}",
+  instruction: 'Classify sentiment of {text}',
   responseSchema: {
-    type: "object",
-    properties: { sentiment: { type: "string", enum: ["positive", "negative", "neutral"] } },
-    required: ["sentiment"],
+    type: 'object',
+    properties: { sentiment: { type: 'string', enum: ['positive', 'negative', 'neutral'] } },
+    required: ['sentiment'],
   },
 });
 await run(table.id, {
-  filter: { column: "sentiment", equals: "negative" },
-  instruction: "Summarize why {text} had negative sentiment.",
+  filter: { column: 'sentiment', equals: 'negative' },
+  instruction: 'Summarize why {text} had negative sentiment.',
   responseSchema: {
-    type: "object",
-    properties: { summary: { type: "string" } },
-    required: ["summary"],
+    type: 'object',
+    properties: { summary: { type: 'string' } },
+    required: ['summary'],
   },
 });
 ```
@@ -237,24 +261,24 @@ data, use a simple schema with a status or marker field. The `exists: false`
 filter still works for retries.
 
 ```javascript
-const { create, run } = await import("@/skills/swarm");
+const { create, run } = await import('@/skills/swarm');
 const fixedSchema = {
-  type: "object",
-  properties: { fixed: { type: "string" } },
-  required: ["fixed"],
+  type: 'object',
+  properties: { fixed: { type: 'string' } },
+  required: ['fixed'],
 };
-const table = await create({ glob: "src/**/*.ts" });
+const table = await create({ glob: 'src/**/*.ts' });
 await run(table.id, {
-  subagentType: "fixer",
-  instruction: "Add missing JSDoc to all exported functions in {file}.",
+  subagentType: 'fixer',
+  instruction: 'Add missing JSDoc to all exported functions in {file}.',
   responseSchema: fixedSchema,
 });
 // retry any that failed
 await run(table.id, {
-  subagentType: "fixer",
-  instruction: "Add missing JSDoc to all exported functions in {file}.",
+  subagentType: 'fixer',
+  instruction: 'Add missing JSDoc to all exported functions in {file}.',
   responseSchema: fixedSchema,
-  filter: { column: "fixed", exists: false },
+  filter: { column: 'fixed', exists: false },
 });
 ```
 
@@ -298,32 +322,32 @@ await run(table.id, {
 
 Create a table. Returns a handle `{ id, count, columns }`.
 
-| Source | Description |
-|--------|------------|
+| Source                                                                  | Description                                                |
+| ----------------------------------------------------------------------- | ---------------------------------------------------------- |
 | `{ glob: "src/**/*.ts" }` or `{ glob: ["src/**/*.ts", "lib/**/*.ts"] }` | Match files by one or more patterns. Columns: `id`, `file` |
-| `{ filePaths: ["a.ts", "b.ts"] }` | Explicit file list. Columns: `id`, `file` |
-| `{ tasks: [{ id: "t1", text: "..." }] }` | Custom rows. Each must have `id` |
+| `{ filePaths: ["a.ts", "b.ts"] }`                                       | Explicit file list. Columns: `id`, `file`                  |
+| `{ tasks: [{ id: "t1", text: "..." }] }`                                | Custom rows. Each must have `id`                           |
 
 ### `run(tableId, options)`
 
 Dispatch work across rows. Returns `{ completed, failed, skipped, failures }`.
 
-| Option | Default | Description |
-|--------|---------|------------|
-| `instruction` | (required) | Template with `{column}` placeholders |
-| `responseSchema` | (required) | JSON Schema (`type: "object"`) — properties become row columns |
-| `context` | — | Prose prepended to every subagent prompt |
-| `filter` | — | Only dispatch matching rows |
-| `subagentType` | — | Name of subagent to dispatch to. When set, runs a full agentic loop. When omitted, runs a direct model call |
-| `batchSize` | auto | Number or `(row, rowCount) => number`. Auto caps dispatches at 10; `1` = per-row; function = per-row sizing |
-| `concurrency` | `10` | Max concurrent subagent dispatches (clamped to 1–10) |
+| Option           | Default    | Description                                                                                                 |
+| ---------------- | ---------- | ----------------------------------------------------------------------------------------------------------- |
+| `instruction`    | (required) | Template with `{column}` placeholders                                                                       |
+| `responseSchema` | (required) | JSON Schema (`type: "object"`) — properties become row columns                                              |
+| `context`        | —          | Prose prepended to every subagent prompt                                                                    |
+| `filter`         | —          | Only dispatch matching rows                                                                                 |
+| `subagentType`   | —          | Name of subagent to dispatch to. When set, runs a full agentic loop. When omitted, runs a direct model call |
+| `batchSize`      | auto       | Number or `(row, rowCount) => number`. Auto caps dispatches at 10; `1` = per-row; function = per-row sizing |
+| `concurrency`    | `10`       | Max concurrent subagent dispatches (clamped to 1–10)                                                        |
 
 ### `rows(tableId, options?)`
 
 Retrieve rows. Use for inspection and JS-based aggregation.
 
-| Option | Description |
-|--------|------------|
-| `filter` | Only return matching rows |
+| Option    | Description                 |
+| --------- | --------------------------- |
+| `filter`  | Only return matching rows   |
 | `columns` | Project to specific columns |
-| `limit` | Max rows returned |
+| `limit`   | Max rows returned           |

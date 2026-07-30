@@ -1,6 +1,7 @@
 ---
-description: "Iteratively inspect an agent repository and optional user-provided traces, interview the user, and create, run, and audit Harbor evals one at a time. Use for agent evals, Harbor tasks, benchmark cases, verifier design, or controlled agent environments."
+description: 'Iteratively inspect an agent repository and optional user-provided traces, interview the user, and create, run, and audit Harbor evals one at a time. Use for agent evals, Harbor tasks, benchmark cases, verifier design, or controlled agent environments.'
 ---
+
 # Eval Engineering
 
 Create one Harbor task at a time, run it, inspect the result, and repeat with the user.

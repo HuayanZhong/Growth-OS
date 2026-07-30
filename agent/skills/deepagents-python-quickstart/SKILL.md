@@ -1,6 +1,7 @@
 ---
-description: "Scaffold a minimal local Deep Agent in Python by following the official quickstart, using provider-native web search instead of Tavily. Use when the user wants to quickly build or try a Deep Agent locally."
+description: 'Scaffold a minimal local Deep Agent in Python by following the official quickstart, using provider-native web search instead of Tavily. Use when the user wants to quickly build or try a Deep Agent locally.'
 ---
+
 # Deep Agents Python quickstart
 
 Follow the live docs — do not invent an alternate API from memory:
@@ -22,11 +23,11 @@ Apply these on top of the quickstart (they keep setup minimal and model-agnostic
 
 3. **Do not use Tavily** (or any second search vendor). Replace the quickstart's `internet_search` / Tavily tool with the chosen provider's built-in web search. Look up the current tool shape on that provider's LangChain chat docs (examples as of writing — re-check if needed):
 
-   | Provider | Built-in search tool |
-   |----------|----------------------|
+   | Provider  | Built-in search tool                                                   |
+   | --------- | ---------------------------------------------------------------------- |
    | Anthropic | `{"type": "web_search_20260209", "name": "web_search", "max_uses": 5}` |
-   | OpenAI | `{"type": "web_search"}` |
-   | Google | `{"google_search": {}}` |
+   | OpenAI    | `{"type": "web_search"}`                                               |
+   | Google    | `{"google_search": {}}`                                                |
 
    Prefer Anthropic / OpenAI / Google so provider search is available. Only secret: that provider's API key in `.env` (gitignored). Skip LangSmith tracing unless they ask.
 

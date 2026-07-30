@@ -1,6 +1,6 @@
 ---
 name: deepagents-typescript-quickstart
-description: "Scaffold a minimal local Deep Agent in TypeScript by following the official quickstart, using provider-native web search instead of Tavily. Use when the user wants to quickly build or try a Deep Agent locally."
+description: 'Scaffold a minimal local Deep Agent in TypeScript by following the official quickstart, using provider-native web search instead of Tavily. Use when the user wants to quickly build or try a Deep Agent locally.'
 ---
 
 # Deep Agents TypeScript quickstart
@@ -24,11 +24,11 @@ Apply these on top of the quickstart (they keep setup minimal and model-agnostic
 
 3. **Do not use Tavily** (or `@langchain/tavily`). Replace the quickstart's search tool with the chosen provider's built-in web search. Look up the current export/tool shape on that provider's LangChain docs (examples as of writing — re-check if needed):
 
-   | Provider | Built-in search tool |
-   |----------|----------------------|
+   | Provider  | Built-in search tool                                              |
+   | --------- | ----------------------------------------------------------------- |
    | Anthropic | `@langchain/anthropic` `tools.webSearch_*()` (or equivalent dict) |
-   | OpenAI | `{ type: "web_search" }` |
-   | Google | `{ google_search: {} }` |
+   | OpenAI    | `{ type: "web_search" }`                                          |
+   | Google    | `{ google_search: {} }`                                           |
 
    Prefer Anthropic / OpenAI / Google so provider search is available. Only secret: that provider's API key in `.env` (gitignored). Skip LangSmith tracing unless they ask.
 

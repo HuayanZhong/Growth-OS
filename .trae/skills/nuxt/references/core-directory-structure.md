@@ -53,17 +53,17 @@ The `app/` directory is the default `srcDir` in Nuxt 4 and holds all Vue applica
 // nuxt.config.ts - customize source directory
 export default defineNuxtConfig({
   srcDir: 'src/', // Use 'src/' instead of the default 'app/'
-})
+});
 ```
 
 **Aliases** (Nuxt 4 defaults):
 
-| Alias | Resolves to |
-|-------|-------------|
-| `~` / `@` | `<rootDir>/app` (the srcDir) |
-| `~~` / `@@` | `<rootDir>` (project root) |
-| `#shared` | `<rootDir>/shared` |
-| `#server` | `<rootDir>/server` |
+| Alias       | Resolves to                  |
+| ----------- | ---------------------------- |
+| `~` / `@`   | `<rootDir>/app` (the srcDir) |
+| `~~` / `@@` | `<rootDir>` (project root)   |
+| `#shared`   | `<rootDir>/shared`           |
+| `#server`   | `<rootDir>/server`           |
 
 Because `~` now points at `app/`, reference root-level files (modules, server handlers) with `~~` or the dedicated aliases — e.g. `~~/server/handler.ts` or `#server/handler.ts`.
 
@@ -115,7 +115,7 @@ Re-export nested composables:
 
 ```ts
 // composables/index.ts
-export { useHelper } from './nested/utils'
+export { useHelper } from './nested/utils';
 ```
 
 ### `app/pages/`
@@ -169,7 +169,7 @@ Use in pages:
 definePageMeta({
   layout: 'admin',
   // layout: false // Disable layout
-})
+});
 </script>
 ```
 
@@ -231,8 +231,8 @@ shared/
 Only top-level files in `shared/utils/` and `shared/types/` are auto-imported. Import anything else via the `#shared` alias:
 
 ```ts
-import { capitalize } from '#shared/utils/format'
-import lower from '#shared/formatters/lower'
+import { capitalize } from '#shared/utils/format';
+import lower from '#shared/formatters/lower';
 ```
 
 ### `public/` Directory
@@ -275,28 +275,28 @@ Reference in components:
 
 ## Special Files
 
-| File | Purpose |
-|------|---------|
-| `app.vue` | Root component (optional with pages/) |
-| `app.config.ts` | Runtime app configuration |
-| `error.vue` | Custom error page |
-| `nuxt.config.ts` | Build-time configuration |
-| `.nuxtignore` | Ignore files from Nuxt |
-| `.env` | Environment variables |
+| File             | Purpose                               |
+| ---------------- | ------------------------------------- |
+| `app.vue`        | Root component (optional with pages/) |
+| `app.config.ts`  | Runtime app configuration             |
+| `error.vue`      | Custom error page                     |
+| `nuxt.config.ts` | Build-time configuration              |
+| `.nuxtignore`    | Ignore files from Nuxt                |
+| `.env`           | Environment variables                 |
 
 ## File Naming Conventions
 
-| Pattern | Meaning |
-|---------|---------|
-| `[param]` | Dynamic route parameter |
-| `[[param]]` | Optional parameter |
-| `[...slug]` | Catch-all route |
-| `(group)` | Route group (not in URL) |
-| `.client.vue` | Client-only component |
-| `.server.vue` | Server-only component |
-| `.global.ts` | Global middleware |
+| Pattern       | Meaning                  |
+| ------------- | ------------------------ |
+| `[param]`     | Dynamic route parameter  |
+| `[[param]]`   | Optional parameter       |
+| `[...slug]`   | Catch-all route          |
+| `(group)`     | Route group (not in URL) |
+| `.client.vue` | Client-only component    |
+| `.server.vue` | Server-only component    |
+| `.global.ts`  | Global middleware        |
 
-<!-- 
+<!--
 Source references:
 - https://nuxt.com/docs/4.x/directory-structure
 - https://nuxt.com/docs/4.x/directory-structure/app

@@ -1,6 +1,6 @@
 ---
 name: langchain-typescript-quickstart
-description: "Scaffold a minimal local LangChain agent in TypeScript by following the official quickstart. Use when the user wants to quickly build or try a LangChain agent locally."
+description: 'Scaffold a minimal local LangChain agent in TypeScript by following the official quickstart. Use when the user wants to quickly build or try a LangChain agent locally.'
 ---
 
 # LangChain TypeScript quickstart

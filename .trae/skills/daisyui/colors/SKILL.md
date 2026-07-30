@@ -6,6 +6,7 @@ description: MANDATORY color usage rules for daisyUI 5
 ## daisyUI 5 colors
 
 ### daisyUI color names
+
 - `primary`: Primary brand color, The main color of your brand
 - `primary-content`: Foreground content color to use on primary color
 - `secondary`: Secondary brand color, The optional, secondary color of your brand
@@ -28,6 +29,7 @@ description: MANDATORY color usage rules for daisyUI 5
 - `error-content`: Foreground content color to use on error color
 
 ### daisyUI color rules
+
 1. daisyUI adds semantic color names to Tailwind CSS colors
 2. daisyUI color names can be used in utility classes, like other Tailwind CSS color names. For example, `bg-primary` will use the primary color for the background
 3. daisyUI color names include variables as value so they can change based on the theme
@@ -46,7 +48,10 @@ The default configuration enables `light` and `dark`. Choose specific themes, ev
 
 ```css
 @plugin "daisyui" {
-  themes: light --default, dark --prefersdark, cupcake;
+  themes:
+    light --default,
+    dark --prefersdark,
+    cupcake;
 }
 ```
 
@@ -63,12 +68,14 @@ The default configuration enables `light` and `dark`. Choose specific themes, ev
 ```
 
 ### daisyUI custom theme with custom colors
+
 A CSS file with Tailwind CSS, daisyUI and a custom daisyUI theme looks like this:
+
 ```css
-@import "tailwindcss";
+@import 'tailwindcss';
 @plugin "daisyui";
 @plugin "daisyui/theme" {
-  name: "mytheme";
+  name: 'mytheme';
   default: true; /* set as default */
   prefersdark: false; /* set as default dark mode (prefers-color-scheme:dark) */
   color-scheme: light; /* color of browser-provided UI */
@@ -108,7 +115,9 @@ A CSS file with Tailwind CSS, daisyUI and a custom daisyUI theme looks like this
   --noise: 0; /* only 0 or 1 - Adds a subtle noise (grain) effect to components */
 }
 ```
+
 #### Rules
+
 - All CSS variables above are required
 - Colors can be OKLCH or hex or other formats
 - If you're generating a custom theme, do not include the comments from the example above. Just provide the code.
@@ -121,7 +130,7 @@ Use the built-in theme's name and override only the values that need to change. 
 
 ```css
 @plugin "daisyui/theme" {
-  name: "light";
+  name: 'light';
   default: true;
   --color-primary: blue;
   --color-secondary: teal;
@@ -131,8 +140,8 @@ Use the built-in theme's name and override only the values that need to change. 
 For a custom CDN theme, define the same variables under a selector that matches the chosen `data-theme` and checked theme controller:
 
 ```css
-:root:has(input.theme-controller[value=mytheme]:checked),
-[data-theme="mytheme"] {
+:root:has(input.theme-controller[value='mytheme']:checked),
+[data-theme='mytheme'] {
   color-scheme: light;
   --color-primary: oklch(55% 0.3 240);
   /* define the remaining custom-theme variables */

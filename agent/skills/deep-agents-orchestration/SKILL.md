@@ -1,6 +1,7 @@
 ---
-description: "INVOKE THIS SKILL when using subagents, task planning, or human approval in Deep Agents. Covers SubAgentMiddleware, TodoList for planning, and HITL interrupts."
+description: 'INVOKE THIS SKILL when using subagents, task planning, or human approval in Deep Agents. Covers SubAgentMiddleware, TodoList for planning, and HITL interrupts.'
 ---
+
 <overview>
 Deep Agents include three orchestration capabilities:
 
@@ -17,11 +18,11 @@ All three are automatically included in `create_deep_agent()`.
 
 <when-to-use-subagents>
 
-| Use Subagents When | Use Main Agent When |
-|-------------------|-------------------|
-| Task needs specialized tools | General-purpose tools sufficient |
-| Want to isolate complex work | Single-step operation |
-| Need clean context for main agent | Context bloat acceptable |
+| Use Subagents When                | Use Main Agent When              |
+| --------------------------------- | -------------------------------- |
+| Task needs specialized tools      | General-purpose tools sufficient |
+| Want to isolate complex work      | Single-step operation            |
+| Need clean context for main agent | Context bloat acceptable         |
 
 </when-to-use-subagents>
 
@@ -57,33 +58,36 @@ agent = create_deep_agent(
 
 # Main agent delegates: task(agent="researcher", instruction="Research AI trends")
 ```
+
 </python>
 <typescript>
 Create a custom "researcher" subagent with specialized tools for academic paper search.
 
 ```typescript
-import { createDeepAgent } from "deepagents";
-import { tool } from "@langchain/core/tools";
-import { z } from "zod";
+import { createDeepAgent } from 'deepagents';
+import { tool } from '@langchain/core/tools';
+import { z } from 'zod';
 
-const searchPapers = tool(
-  async ({ query }) => `Found 10 papers about ${query}`,
-  { name: "search_papers", description: "Search papers", schema: z.object({ query: z.string() }) }
-);
+const searchPapers = tool(async ({ query }) => `Found 10 papers about ${query}`, {
+  name: 'search_papers',
+  description: 'Search papers',
+  schema: z.object({ query: z.string() }),
+});
 
 const agent = await createDeepAgent({
   subagents: [
     {
-      name: "researcher",
-      description: "Conduct web research and compile findings",
-      systemPrompt: "Search thoroughly, return concise summary",
+      name: 'researcher',
+      description: 'Conduct web research and compile findings',
+      systemPrompt: 'Search thoroughly, return concise summary',
       tools: [searchPapers],
-    }
-  ]
+    },
+  ],
 });
 
 // Main agent delegates: task(agent="researcher", instruction="Research AI trends")
 ```
+
 </typescript>
 </ex-custom-subagents>
 
@@ -108,6 +112,7 @@ agent = create_deep_agent(
     checkpointer=MemorySaver()  # Required for interrupts
 )
 ```
+
 </python>
 </ex-subagent-with-hitl>
 
@@ -123,6 +128,7 @@ Subagents are stateless - provide complete instructions in a single call.
 # CORRECT: Complete instructions upfront
 # task(agent='research', instruction='Find data on AI, save to /research/, return summary')
 ```
+
 </python>
 <typescript>
 Subagents are stateless - provide complete instructions in a single call.
@@ -135,6 +141,7 @@ Subagents are stateless - provide complete instructions in a single call.
 // CORRECT: Complete instructions upfront
 // task research: Find data on AI, save to /research/, return summary
 ```
+
 </typescript>
 </fix-subagents-are-stateless>
 
@@ -155,6 +162,7 @@ agent = create_deep_agent(
     subagents=[{"name": "helper", "skills": ["/helper-skills/"], ...}]
 )
 ```
+
 </python>
 </fix-custom-subagents-dont-inherit-skills>
 
@@ -164,10 +172,10 @@ agent = create_deep_agent(
 
 <when-to-use-todolist>
 
-| Use TodoList When | Skip TodoList When |
-|------------------|-------------------|
-| Complex multi-step tasks | Simple single-action tasks |
-| Long-running operations | Quick operations (< 3 steps) |
+| Use TodoList When        | Skip TodoList When           |
+| ------------------------ | ---------------------------- |
+| Complex multi-step tasks | Simple single-action tasks   |
+| Long-running operations  | Quick operations (< 3 steps) |
 
 </when-to-use-todolist>
 
@@ -178,6 +186,7 @@ write_todos(todos: list[dict]) -> None
 ```
 
 Each todo item has:
+
 - `content`: Description of the task
 - `status`: One of `"pending"`, `"in_progress"`, `"completed"`
 </todolist-tool>
@@ -203,19 +212,29 @@ result = agent.invoke({
 #   {"content": "Write tests", "status": "pending"}
 # ]
 ```
+
 </python>
 <typescript>
 Invoke an agent that automatically creates a todo list for a multi-step task.
 
 ```typescript
-import { createDeepAgent } from "deepagents";
+import { createDeepAgent } from 'deepagents';
 
-const agent = await createDeepAgent();  // TodoListMiddleware included
+const agent = await createDeepAgent(); // TodoListMiddleware included
 
-const result = await agent.invoke({
-  messages: [{ role: "user", content: "Create a REST API: design models, implement CRUD, add auth, write tests" }]
-}, { configurable: { thread_id: "session-1" } });
+const result = await agent.invoke(
+  {
+    messages: [
+      {
+        role: 'user',
+        content: 'Create a REST API: design models, implement CRUD, add auth, write tests',
+      },
+    ],
+  },
+  { configurable: { thread_id: 'session-1' } },
+);
 ```
+
 </typescript>
 </ex-todolist-usage>
 
@@ -231,6 +250,7 @@ todos = result.get("todos", [])
 for todo in todos:
     print(f"[{todo['status']}] {todo['content']}")
 ```
+
 </python>
 </ex-access-todo-state>
 
@@ -246,6 +266,7 @@ agent.invoke({"messages": [...]})
 config = {"configurable": {"thread_id": "user-session"}}
 agent.invoke({"messages": [...]}, config=config)  # Todos preserved
 ```
+
 </python>
 </fix-todolist-requires-thread-id>
 
@@ -255,10 +276,10 @@ agent.invoke({"messages": [...]}, config=config)  # Todos preserved
 
 <when-to-use-hitl>
 
-| Use HITL When | Skip HITL When |
-|--------------|---------------|
-| High-stakes operations (DB writes, deployments) | Read-only operations |
-| Compliance requires human oversight | Fully automated workflows |
+| Use HITL When                                   | Skip HITL When            |
+| ----------------------------------------------- | ------------------------- |
+| High-stakes operations (DB writes, deployments) | Read-only operations      |
+| Compliance requires human oversight             | Fully automated workflows |
 
 </when-to-use-hitl>
 
@@ -279,23 +300,25 @@ agent = create_deep_agent(
     checkpointer=MemorySaver()  # REQUIRED for interrupts
 )
 ```
+
 </python>
 <typescript>
 Configure which tools require human approval before execution.
 
 ```typescript
-import { createDeepAgent } from "deepagents";
-import { MemorySaver } from "@langchain/langgraph";
+import { createDeepAgent } from 'deepagents';
+import { MemorySaver } from '@langchain/langgraph';
 
 const agent = await createDeepAgent({
   interruptOn: {
     write_file: true,
-    execute_sql: { allowedDecisions: ["approve", "reject"] },
+    execute_sql: { allowedDecisions: ['approve', 'reject'] },
     read_file: false,
   },
-  checkpointer: new MemorySaver()  // REQUIRED
+  checkpointer: new MemorySaver(), // REQUIRED
 });
 ```
+
 </typescript>
 </ex-hitl-setup>
 
@@ -328,37 +351,40 @@ if state.next:
 # Step 3: Approve and resume
 result = agent.invoke(Command(resume={"decisions": [{"type": "approve"}]}), config=config)
 ```
+
 </python>
 <typescript>
 Complete workflow: trigger an interrupt, check state, approve action, and resume execution.
 
 ```typescript
-import { createDeepAgent } from "deepagents";
-import { MemorySaver, Command } from "@langchain/langgraph";
+import { createDeepAgent } from 'deepagents';
+import { MemorySaver, Command } from '@langchain/langgraph';
 
 const agent = await createDeepAgent({
   interruptOn: { write_file: true },
-  checkpointer: new MemorySaver()
+  checkpointer: new MemorySaver(),
 });
 
-const config = { configurable: { thread_id: "session-1" } };
+const config = { configurable: { thread_id: 'session-1' } };
 
 // Step 1: Agent proposes write_file - execution pauses
-let result = await agent.invoke({
-  messages: [{ role: "user", content: "Write config to /prod.yaml" }]
-}, config);
+let result = await agent.invoke(
+  {
+    messages: [{ role: 'user', content: 'Write config to /prod.yaml' }],
+  },
+  config,
+);
 
 // Step 2: Check for interrupts
 const state = await agent.getState(config);
 if (state.next) {
-  console.log("Pending action");
+  console.log('Pending action');
 }
 
 // Step 3: Approve and resume
-result = await agent.invoke(
-  new Command({ resume: { decisions: [{ type: "approve" }] } }), config
-);
+result = await agent.invoke(new Command({ resume: { decisions: [{ type: 'approve' }] } }), config);
 ```
+
 </typescript>
 </ex-approval-workflow>
 
@@ -372,16 +398,18 @@ result = agent.invoke(
     config=config,
 )
 ```
+
 </python>
 <typescript>
 Reject a pending action with feedback, prompting the agent to try a different approach.
 
 ```typescript
 const result = await agent.invoke(
-  new Command({ resume: { decisions: [{ type: "reject", message: "Run tests first" }] } }),
+  new Command({ resume: { decisions: [{ type: 'reject', message: 'Run tests first' }] } }),
   config,
 );
 ```
+
 </typescript>
 </ex-reject-with-feedback>
 
@@ -401,6 +429,7 @@ result = agent.invoke(
     config=config,
 )
 ```
+
 </python>
 </ex-edit-before-execution>
 
@@ -431,6 +460,7 @@ agent = create_deep_agent(interrupt_on={"write_file": True})
 # CORRECT
 agent = create_deep_agent(interrupt_on={"write_file": True}, checkpointer=MemorySaver())
 ```
+
 </python>
 <typescript>
 Checkpointer is required when using interruptOn for HITL workflows.
@@ -440,8 +470,12 @@ Checkpointer is required when using interruptOn for HITL workflows.
 const agent = await createDeepAgent({ interruptOn: { write_file: true } });
 
 // CORRECT
-const agent = await createDeepAgent({ interruptOn: { write_file: true }, checkpointer: new MemorySaver() });
+const agent = await createDeepAgent({
+  interruptOn: { write_file: true },
+  checkpointer: new MemorySaver(),
+});
 ```
+
 </typescript>
 </fix-checkpointer-required>
 
@@ -459,6 +493,7 @@ agent.invoke({...}, config=config)
 # Resume with Command using same config
 agent.invoke(Command(resume={"decisions": [{"type": "approve"}]}), config=config)
 ```
+
 </python>
 <typescript>
 A consistent thread_id is required to resume interrupted workflows.
@@ -473,6 +508,7 @@ await agent.invoke({ messages: [...] }, config);
 // Resume with Command using same config
 await agent.invoke(new Command({ resume: { decisions: [{ type: "approve" }] } }), config);
 ```
+
 </typescript>
 </fix-thread-id-required-for-resumption>
 
@@ -488,5 +524,6 @@ if "__interrupt__" in result:                      # Step 2: check for interrupt
         config=config,
     )
 ```
+
 </python>
 </fix-interrupt-checks-between-invocations>

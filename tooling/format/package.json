@@ -1,0 +1,6 @@
+{
+  "name": "@growth-os/format",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Growth OS 共享 oxfmt 配置"
+}

@@ -1,6 +1,6 @@
 ---
 name: langgraph-fundamentals
-description: "INVOKE THIS SKILL when writing ANY LangGraph code. Covers StateGraph, state schemas, nodes, edges, Command, Send, invoke, streaming, and error handling."
+description: 'INVOKE THIS SKILL when writing ANY LangGraph code. Covers StateGraph, state schemas, nodes, edges, Command, Send, invoke, streaming, and error handling.'
 ---
 
 <overview>
@@ -31,11 +31,11 @@ Follow these 5 steps when building a new graph:
 
 <when-to-use-langgraph>
 
-| Use LangGraph When | Use Alternatives When |
-|-------------------|----------------------|
-| Need fine-grained control over agent orchestration | Quick prototyping → LangChain agents |
-| Building complex workflows with branching/loops | Simple stateless workflows → LangChain direct |
-| Require human-in-the-loop, persistence | Batteries-included features → Deep Agents |
+| Use LangGraph When                                 | Use Alternatives When                         |
+| -------------------------------------------------- | --------------------------------------------- |
+| Need fine-grained control over agent orchestration | Quick prototyping → LangChain agents          |
+| Building complex workflows with branching/loops    | Simple stateless workflows → LangChain direct |
+| Require human-in-the-loop, persistence             | Batteries-included features → Deep Agents     |
 
 </when-to-use-langgraph>
 
@@ -45,11 +45,11 @@ Follow these 5 steps when building a new graph:
 
 <state-update-strategies>
 
-| Need | Solution | Example |
-|------|----------|---------|
-| Overwrite value | No reducer (default) | Simple fields like counters |
-| Append to list | Reducer (operator.add / concat) | Message history, logs |
-| Custom logic | Custom reducer function | Complex merging |
+| Need            | Solution                        | Example                     |
+| --------------- | ------------------------------- | --------------------------- |
+| Overwrite value | No reducer (default)            | Simple fields like counters |
+| Append to list  | Reducer (operator.add / concat) | Message history, logs       |
+| Custom logic    | Custom reducer function         | Complex merging             |
 
 </state-update-strategies>
 
@@ -66,23 +66,25 @@ class State(TypedDict):
     messages: Annotated[list, operator.add]  # Appends to list
     total: Annotated[int, operator.add]  # Sums integers
 ```
+
 </python>
 <typescript>
 Use StateSchema with ReducedValue for accumulating arrays.
 
 ```typescript
-import { StateSchema, ReducedValue, MessagesValue } from "@langchain/langgraph";
-import { z } from "zod";
+import { StateSchema, ReducedValue, MessagesValue } from '@langchain/langgraph';
+import { z } from 'zod';
 
 const State = new StateSchema({
-  name: z.string(),  // Default: overwrites
-  messages: MessagesValue,  // Built-in for messages
+  name: z.string(), // Default: overwrites
+  messages: MessagesValue, // Built-in for messages
   items: new ReducedValue(
     z.array(z.string()).default(() => []),
-    { reducer: (current, update) => current.concat(update) }
+    { reducer: (current, update) => current.concat(update) },
   ),
 });
 ```
+
 </typescript>
 </ex-state-with-reducer>
 
@@ -107,6 +109,7 @@ class State(TypedDict):
     messages: Annotated[list, operator.add]
 # Final: {"messages": ["A", "B"]}
 ```
+
 </python>
 <typescript>
 Without ReducedValue, arrays are overwritten not appended.
@@ -114,7 +117,7 @@ Without ReducedValue, arrays are overwritten not appended.
 ```typescript
 // WRONG: Array will be overwritten
 const State = new StateSchema({
-  items: z.array(z.string()),  // No reducer!
+  items: z.array(z.string()), // No reducer!
 });
 // Node 1: { items: ["A"] }, Node 2: { items: ["B"] }
 // Final: { items: ["B"] }  // A is lost!
@@ -123,11 +126,12 @@ const State = new StateSchema({
 const State = new StateSchema({
   items: new ReducedValue(
     z.array(z.string()).default(() => []),
-    { reducer: (current, update) => current.concat(update) }
+    { reducer: (current, update) => current.concat(update) },
   ),
 });
 // Final: { items: ["A", "B"] }
 ```
+
 </typescript>
 </fix-forgot-reducer-for-list>
 
@@ -145,6 +149,7 @@ def my_node(state: State) -> State:
 def my_node(state: State) -> dict:
     return {"field": "updated"}
 ```
+
 </python>
 <typescript>
 Return partial updates only, not the full state object.
@@ -152,15 +157,16 @@ Return partial updates only, not the full state object.
 ```typescript
 // WRONG: Returning entire state
 const myNode = async (state: typeof State.State) => {
-  state.field = "updated";
-  return state;  // Don't do this!
+  state.field = 'updated';
+  return state; // Don't do this!
 };
 
 // CORRECT: Return partial updates
 const myNode = async (state: typeof State.State) => {
-  return { field: "updated" };
+  return { field: 'updated' };
 };
 ```
+
 </typescript>
 </fix-state-must-return-dict>
 
@@ -174,10 +180,10 @@ Node functions accept these arguments:
 
 <python>
 
-| Signature | When to Use |
-|-----------|-------------|
-| `def node(state: State)` | Simple nodes that only need state |
-| `def node(state: State, config: RunnableConfig)` | Need thread_id, tags, or configurable values |
+| Signature                                           | When to Use                                   |
+| --------------------------------------------------- | --------------------------------------------- |
+| `def node(state: State)`                            | Simple nodes that only need state             |
+| `def node(state: State, config: RunnableConfig)`    | Need thread_id, tags, or configurable values  |
 | `def node(state: State, runtime: Runtime[Context])` | Need runtime context, store, or stream_writer |
 
 ```python
@@ -195,19 +201,20 @@ def node_with_runtime(state: State, runtime: Runtime[Context]):
     user_id = runtime.context.user_id
     return {"results": f"User: {user_id}"}
 ```
+
 </python>
 <typescript>
 
-| Signature | When to Use |
-|-----------|-------------|
-| `(state) => {...}` | Simple nodes that only need state |
+| Signature                  | When to Use                                  |
+| -------------------------- | -------------------------------------------- |
+| `(state) => {...}`         | Simple nodes that only need state            |
 | `(state, config) => {...}` | Need thread_id, tags, or configurable values |
 
 ```typescript
-import { GraphNode, StateSchema } from "@langchain/langgraph";
+import { GraphNode, StateSchema } from '@langchain/langgraph';
 
 const plainNode: GraphNode<typeof State> = (state) => {
-  return { results: "done" };
+  return { results: 'done' };
 };
 
 const nodeWithConfig: GraphNode<typeof State> = (state, config) => {
@@ -215,6 +222,7 @@ const nodeWithConfig: GraphNode<typeof State> = (state, config) => {
   return { results: `Thread: ${threadId}` };
 };
 ```
+
 </typescript>
 
 </node-function-signatures>
@@ -225,12 +233,12 @@ const nodeWithConfig: GraphNode<typeof State> = (state, config) => {
 
 <edge-type-selection>
 
-| Need | Edge Type | When to Use |
-|------|-----------|-------------|
-| Always go to same node | `add_edge()` | Fixed, deterministic flow |
-| Route based on state | `add_conditional_edges()` | Dynamic branching |
-| Update state AND route | `Command` | Combine logic in single node |
-| Fan-out to multiple nodes | `Send` | Parallel processing with dynamic inputs |
+| Need                      | Edge Type                 | When to Use                             |
+| ------------------------- | ------------------------- | --------------------------------------- |
+| Always go to same node    | `add_edge()`              | Fixed, deterministic flow               |
+| Route based on state      | `add_conditional_edges()` | Dynamic branching                       |
+| Update state AND route    | `Command`                 | Combine logic in single node            |
+| Fan-out to multiple nodes | `Send`                    | Parallel processing with dynamic inputs |
 
 </edge-type-selection>
 
@@ -265,17 +273,18 @@ graph = (
 result = graph.invoke({"input": "hello"})
 print(result["output"])  # "PROCESSED: HELLO"
 ```
+
 </python>
 <typescript>
 Chain nodes with addEdge and compile before invoking.
 
 ```typescript
-import { StateGraph, StateSchema, START, END } from "@langchain/langgraph";
-import { z } from "zod";
+import { StateGraph, StateSchema, START, END } from '@langchain/langgraph';
+import { z } from 'zod';
 
 const State = new StateSchema({
   input: z.string(),
-  output: z.string().default(""),
+  output: z.string().default(''),
 });
 
 const processInput = async (state: typeof State.State) => {
@@ -287,16 +296,17 @@ const finalize = async (state: typeof State.State) => {
 };
 
 const graph = new StateGraph(State)
-  .addNode("process", processInput)
-  .addNode("finalize", finalize)
-  .addEdge(START, "process")
-  .addEdge("process", "finalize")
-  .addEdge("finalize", END)
+  .addNode('process', processInput)
+  .addNode('finalize', finalize)
+  .addEdge(START, 'process')
+  .addEdge('process', 'finalize')
+  .addEdge('finalize', END)
   .compile();
 
-const result = await graph.invoke({ input: "hello" });
-console.log(result.output);  // "PROCESSED: HELLO"
+const result = await graph.invoke({ input: 'hello' });
+console.log(result.output); // "PROCESSED: HELLO"
 ```
+
 </typescript>
 </ex-basic-graph>
 
@@ -333,39 +343,41 @@ graph = (
     .compile()
 )
 ```
+
 </python>
 <typescript>
 addConditionalEdges routes based on function return value.
 
 ```typescript
-import { StateGraph, StateSchema, START, END } from "@langchain/langgraph";
-import { z } from "zod";
+import { StateGraph, StateSchema, START, END } from '@langchain/langgraph';
+import { z } from 'zod';
 
 const State = new StateSchema({
   query: z.string(),
-  route: z.string().default(""),
-  result: z.string().default(""),
+  route: z.string().default(''),
+  result: z.string().default(''),
 });
 
 const classify = async (state: typeof State.State) => {
-  if (state.query.toLowerCase().includes("weather")) {
-    return { route: "weather" };
+  if (state.query.toLowerCase().includes('weather')) {
+    return { route: 'weather' };
   }
-  return { route: "general" };
+  return { route: 'general' };
 };
 
 const routeQuery = (state: typeof State.State) => state.route;
 
 const graph = new StateGraph(State)
-  .addNode("classify", classify)
-  .addNode("weather", async () => ({ result: "Sunny, 72F" }))
-  .addNode("general", async () => ({ result: "General response" }))
-  .addEdge(START, "classify")
-  .addConditionalEdges("classify", routeQuery, ["weather", "general"])
-  .addEdge("weather", END)
-  .addEdge("general", END)
+  .addNode('classify', classify)
+  .addNode('weather', async () => ({ result: 'Sunny, 72F' }))
+  .addNode('general', async () => ({ result: 'General response' }))
+  .addEdge(START, 'classify')
+  .addConditionalEdges('classify', routeQuery, ['weather', 'general'])
+  .addEdge('weather', END)
+  .addEdge('general', END)
   .compile();
 ```
+
 </typescript>
 </ex-conditional-edges>
 
@@ -374,6 +386,7 @@ const graph = new StateGraph(State)
 ## Command
 
 Command combines state updates and routing in a single return value. Fields:
+
 - **`update`**: State updates to apply (like returning a dict from a node)
 - **`goto`**: Node name(s) to navigate to next
 - **`resume`**: Value to resume after `interrupt()` — see human-in-the-loop skill
@@ -408,36 +421,38 @@ graph = (
     .compile()
 )
 ```
+
 </python>
 <typescript>
 Return Command with update and goto to combine state change with routing.
 
 ```typescript
-import { StateGraph, StateSchema, START, END, Command } from "@langchain/langgraph";
-import { z } from "zod";
+import { StateGraph, StateSchema, START, END, Command } from '@langchain/langgraph';
+import { z } from 'zod';
 
 const State = new StateSchema({
   count: z.number().default(0),
-  result: z.string().default(""),
+  result: z.string().default(''),
 });
 
 const nodeA = async (state: typeof State.State) => {
   const newCount = state.count + 1;
   if (newCount > 5) {
-    return new Command({ update: { count: newCount }, goto: "node_c" });
+    return new Command({ update: { count: newCount }, goto: 'node_c' });
   }
-  return new Command({ update: { count: newCount }, goto: "node_b" });
+  return new Command({ update: { count: newCount }, goto: 'node_b' });
 };
 
 const graph = new StateGraph(State)
-  .addNode("node_a", nodeA, { ends: ["node_b", "node_c"] })
-  .addNode("node_b", async () => ({ result: "B" }))
-  .addNode("node_c", async () => ({ result: "C" }))
-  .addEdge(START, "node_a")
-  .addEdge("node_b", END)
-  .addEdge("node_c", END)
+  .addNode('node_a', nodeA, { ends: ['node_b', 'node_c'] })
+  .addNode('node_b', async () => ({ result: 'B' }))
+  .addNode('node_c', async () => ({ result: 'C' }))
+  .addEdge(START, 'node_a')
+  .addEdge('node_b', END)
+  .addEdge('node_c', END)
   .compile();
 ```
+
 </typescript>
 </ex-command-state-and-routing>
 
@@ -497,25 +512,26 @@ graph = (
 
 result = graph.invoke({"tasks": ["Task A", "Task B", "Task C"]})
 ```
+
 </python>
 <typescript>
 Fan out tasks to parallel workers using the Send API and aggregate results.
 
 ```typescript
-import { Send, StateGraph, StateSchema, ReducedValue, START, END } from "@langchain/langgraph";
-import { z } from "zod";
+import { Send, StateGraph, StateSchema, ReducedValue, START, END } from '@langchain/langgraph';
+import { z } from 'zod';
 
 const State = new StateSchema({
   tasks: z.array(z.string()),
   results: new ReducedValue(
     z.array(z.string()).default(() => []),
-    { reducer: (curr, upd) => curr.concat(upd) }
+    { reducer: (curr, upd) => curr.concat(upd) },
   ),
-  summary: z.string().default(""),
+  summary: z.string().default(''),
 });
 
 const orchestrator = (state: typeof State.State) => {
-  return state.tasks.map((task) => new Send("worker", { task }));
+  return state.tasks.map((task) => new Send('worker', { task }));
 };
 
 const worker = async (state: { task: string }) => {
@@ -527,13 +543,14 @@ const synthesize = async (state: typeof State.State) => {
 };
 
 const graph = new StateGraph(State)
-  .addNode("worker", worker)
-  .addNode("synthesize", synthesize)
-  .addConditionalEdges(START, orchestrator, ["worker"])
-  .addEdge("worker", "synthesize")
-  .addEdge("synthesize", END)
+  .addNode('worker', worker)
+  .addNode('synthesize', synthesize)
+  .addConditionalEdges(START, orchestrator, ['worker'])
+  .addEdge('worker', 'synthesize')
+  .addEdge('synthesize', END)
   .compile();
 ```
+
 </typescript>
 </ex-orchestrator-worker>
 
@@ -550,6 +567,7 @@ class State(TypedDict):
 class State(TypedDict):
     results: Annotated[list, operator.add]  # Accumulates
 ```
+
 </python>
 <typescript>
 Use ReducedValue to accumulate parallel worker results.
@@ -560,9 +578,13 @@ const State = new StateSchema({ results: z.array(z.string()) });
 
 // CORRECT
 const State = new StateSchema({
-  results: new ReducedValue(z.array(z.string()).default(() => []), { reducer: (curr, upd) => curr.concat(upd) }),
+  results: new ReducedValue(
+    z.array(z.string()).default(() => []),
+    { reducer: (curr, upd) => curr.concat(upd) },
+  ),
 });
 ```
+
 </typescript>
 </fix-send-accumulator>
 
@@ -581,26 +603,28 @@ result = graph.invoke({"input": "hello"})
 # With config (for persistence, tags, etc.)
 result = graph.invoke({"input": "hello"}, {"configurable": {"thread_id": "1"}})
 ```
+
 </python>
 <typescript>
 
 ```typescript
-const result = await graph.invoke({ input: "hello" });
+const result = await graph.invoke({ input: 'hello' });
 // With config
-const result = await graph.invoke({ input: "hello" }, { configurable: { thread_id: "1" } });
+const result = await graph.invoke({ input: 'hello' }, { configurable: { thread_id: '1' } });
 ```
+
 </typescript>
 
 </invoke-basics>
 
 <stream-mode-selection>
 
-| Mode | What it Streams | Use Case |
-|------|----------------|----------|
-| `values` | Full state after each step | Monitor complete state |
-| `updates` | State deltas | Track incremental updates |
-| `messages` | LLM tokens + metadata | Chat UIs |
-| `custom` | User-defined data | Progress indicators |
+| Mode       | What it Streams            | Use Case                  |
+| ---------- | -------------------------- | ------------------------- |
+| `values`   | Full state after each step | Monitor complete state    |
+| `updates`  | State deltas               | Track incremental updates |
+| `messages` | LLM tokens + metadata      | Chat UIs                  |
+| `custom`   | User-defined data          | Progress indicators       |
 
 </stream-mode-selection>
 
@@ -617,14 +641,15 @@ for chunk in graph.stream(
     if hasattr(token, "content"):
         print(token.content, end="", flush=True)
 ```
+
 </python>
 <typescript>
 Stream LLM tokens in real-time for chat UI display.
 
 ```typescript
 for await (const chunk of graph.stream(
-  { messages: [new HumanMessage("Hello")] },
-  { streamMode: "messages" }
+  { messages: [new HumanMessage('Hello')] },
+  { streamMode: 'messages' },
 )) {
   const [token, metadata] = chunk;
   if (token.content) {
@@ -632,6 +657,7 @@ for await (const chunk of graph.stream(
   }
 }
 ```
+
 </typescript>
 </ex-stream-llm-tokens>
 
@@ -652,25 +678,27 @@ def my_node(state):
 for chunk in graph.stream({"data": "test"}, stream_mode="custom"):
     print(chunk)
 ```
+
 </python>
 <typescript>
 Emit custom progress updates from within nodes using the stream writer.
 
 ```typescript
-import { getWriter } from "@langchain/langgraph";
+import { getWriter } from '@langchain/langgraph';
 
 const myNode = async (state: typeof State.State) => {
   const writer = getWriter();
-  writer("Processing step 1...");
+  writer('Processing step 1...');
   // Do work
-  writer("Complete!");
-  return { result: "done" };
+  writer('Complete!');
+  return { result: 'done' };
 };
 
-for await (const chunk of graph.stream({ data: "test" }, { streamMode: "custom" })) {
+for await (const chunk of graph.stream({ data: 'test' }, { streamMode: 'custom' })) {
   console.log(chunk);
 }
 ```
+
 </typescript>
 </ex-stream-custom-data>
 
@@ -682,12 +710,12 @@ Match the error type to the right handler:
 
 <error-handling-table>
 
-| Error Type | Who Fixes | Strategy | Example |
-|---|---|---|---|
-| Transient (network, rate limits) | System | `RetryPolicy(max_attempts=3)` | `add_node(..., retry_policy=...)` |
-| LLM-recoverable (tool failures) | LLM | `ToolNode(tools, handle_tool_errors=True)` | Error returned as ToolMessage |
-| User-fixable (missing info) | Human | `interrupt({"message": ...})` | Collect missing data (see HITL skill) |
-| Unexpected | Developer | Let bubble up | `raise` |
+| Error Type                       | Who Fixes | Strategy                                   | Example                               |
+| -------------------------------- | --------- | ------------------------------------------ | ------------------------------------- |
+| Transient (network, rate limits) | System    | `RetryPolicy(max_attempts=3)`              | `add_node(..., retry_policy=...)`     |
+| LLM-recoverable (tool failures)  | LLM       | `ToolNode(tools, handle_tool_errors=True)` | Error returned as ToolMessage         |
+| User-fixable (missing info)      | Human     | `interrupt({"message": ...})`              | Collect missing data (see HITL skill) |
+| Unexpected                       | Developer | Let bubble up                              | `raise`                               |
 
 </error-handling-table>
 
@@ -704,19 +732,17 @@ workflow.add_node(
     retry_policy=RetryPolicy(max_attempts=3, initial_interval=1.0)
 )
 ```
+
 </python>
 <typescript>
 Use retryPolicy for transient errors.
 
 ```typescript
-workflow.addNode(
-  "searchDocumentation",
-  searchDocumentation,
-  {
-    retryPolicy: { maxAttempts: 3, initialInterval: 1.0 },
-  },
-);
+workflow.addNode('searchDocumentation', searchDocumentation, {
+  retryPolicy: { maxAttempts: 3, initialInterval: 1.0 },
+});
 ```
+
 </typescript>
 </ex-retry-policy>
 
@@ -731,17 +757,19 @@ tool_node = ToolNode(tools, handle_tool_errors=True)
 
 workflow.add_node("tools", tool_node)
 ```
+
 </python>
 <typescript>
 Use ToolNode from @langchain/langgraph/prebuilt to handle tool execution and errors. When handleToolErrors is true, errors are returned as ToolMessages so the LLM can recover.
 
 ```typescript
-import { ToolNode } from "@langchain/langgraph/prebuilt";
+import { ToolNode } from '@langchain/langgraph/prebuilt';
 
 const toolNode = new ToolNode(tools, { handleToolErrors: true });
 
-workflow.addNode("tools", toolNode);
+workflow.addNode('tools', toolNode);
 ```
+
 </typescript>
 </ex-tool-node-error-handling>
 
@@ -761,18 +789,20 @@ builder.invoke({"input": "test"})  # AttributeError!
 graph = builder.compile()
 graph.invoke({"input": "test"})
 ```
+
 </python>
 <typescript>
 Must compile() to get executable graph.
 
 ```typescript
 // WRONG
-await builder.invoke({ input: "test" });
+await builder.invoke({ input: 'test' });
 
 // CORRECT
 const graph = builder.compile();
-await graph.invoke({ input: "test" });
+await graph.invoke({ input: 'test' });
 ```
+
 </typescript>
 </fix-compile-before-execution>
 
@@ -790,17 +820,19 @@ def should_continue(state):
     return END if state["count"] > 10 else "node_b"
 builder.add_conditional_edges("node_a", should_continue)
 ```
+
 </python>
 <typescript>
 Use conditional edges with END return to break loops.
 
 ```typescript
 // WRONG: Loops forever
-builder.addEdge("node_a", "node_b").addEdge("node_b", "node_a");
+builder.addEdge('node_a', 'node_b').addEdge('node_b', 'node_a');
 
 // CORRECT
-builder.addConditionalEdges("node_a", (state) => state.count > 10 ? END : "node_b");
+builder.addConditionalEdges('node_a', (state) => (state.count > 10 ? END : 'node_b'));
 ```
+
 </typescript>
 </fix-infinite-loop-needs-exit>
 
@@ -826,11 +858,12 @@ return {"items": ["item"]}  # List for list reducer, not a string
 
 ```typescript
 // Always await graph.invoke() - it returns a Promise
-const result = await graph.invoke({ input: "test" });
+const result = await graph.invoke({ input: 'test' });
 
 // TS Command nodes need { ends } to declare routing destinations
-builder.addNode("router", routerFn, { ends: ["node_b", "node_c"] });
+builder.addNode('router', routerFn, { ends: ['node_b', 'node_c'] });
 ```
+
 </fix-common-mistakes>
 
 <boundaries>

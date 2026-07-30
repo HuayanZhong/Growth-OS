@@ -1,21 +1,27 @@
 ### fab
+
 FAB (Floating Action Button) stays in the bottom corner of screen. It includes a focusable and accessible element with button role. Clicking or focusing it shows additional buttons (known as Speed Dial buttons) in a vertical arrangement or a flower shape (quarter circle)
 
 [fab docs](https://daisyui.com/components/fab/)
 
 #### Class names
+
 - component: `fab`
 - part: `fab-close`, `fab-main-action`
 - modifier: `fab-flower`
 
 #### Syntax
+
 A single FAB in the corner of screen
+
 ```html
 <div class="fab">
   <button class="btn btn-lg btn-circle">{IconOriginal}</button>
 </div>
 ```
+
 A FAB that opens a 3 other buttons in the corner of page vertically
+
 ```html
 <div class="fab">
   <div tabindex="0" role="button" class="btn btn-lg btn-circle btn-primary">{IconOriginal}</div>
@@ -24,7 +30,9 @@ A FAB that opens a 3 other buttons in the corner of page vertically
   <button class="btn btn-lg btn-circle">{Icon3}</button>
 </div>
 ```
+
 A FAB that opens a 3 other buttons in the corner of page vertically and they have label text
+
 ```html
 <div class="fab">
   <div tabindex="0" role="button" class="btn btn-lg btn-circle btn-primary">{IconOriginal}</div>
@@ -33,7 +41,9 @@ A FAB that opens a 3 other buttons in the corner of page vertically and they hav
   <div>{Label3}<button class="btn btn-lg btn-circle">{Icon3}</button></div>
 </div>
 ```
+
 FAB with rectangle buttons. These are not circular buttons so they can have more content.
+
 ```html
 <div class="fab">
   <div tabindex="0" role="button" class="btn btn-lg btn-circle btn-primary">{IconOriginal}</div>
@@ -42,7 +52,9 @@ FAB with rectangle buttons. These are not circular buttons so they can have more
   <button class="btn btn-lg">{Label3}</button>
 </div>
 ```
+
 FAB with close button. When FAB is open, the original button is replaced with a close button
+
 ```html
 <div class="fab">
   <div tabindex="0" role="button" class="btn btn-lg btn-circle btn-primary">{IconOriginal}</div>
@@ -52,7 +64,9 @@ FAB with close button. When FAB is open, the original button is replaced with a 
   <div>{Label3}<button class="btn btn-lg btn-circle">{Icon3}</button></div>
 </div>
 ```
+
 FAB with Main Action button. When FAB is open, the original button is replaced with a main action button
+
 ```html
 <div class="fab">
   <div tabindex="0" role="button" class="btn btn-lg btn-circle btn-primary">{IconOriginal}</div>
@@ -64,7 +78,9 @@ FAB with Main Action button. When FAB is open, the original button is replaced w
   <div>{Label3}<button class="btn btn-lg btn-circle">{Icon3}</button></div>
 </div>
 ```
+
 FAB Flower. It opens the buttons in a flower shape (quarter circle) arrangement instead of vertical
+
 ```html
 <div class="fab fab-flower">
   <div tabindex="0" role="button" class="btn btn-lg btn-circle btn-primary">{IconOriginal}</div>
@@ -74,7 +90,9 @@ FAB Flower. It opens the buttons in a flower shape (quarter circle) arrangement 
   <button class="btn btn-lg btn-circle">{Icon3}</button>
 </div>
 ```
+
 FAB Flower with tooltips. There's no space for a text label in a quarter circle, so tooltips are used to indicate the button's function
+
 ```html
 <div class="fab fab-flower">
   <div tabindex="0" role="button" class="btn btn-lg btn-circle btn-primary">{IconOriginal}</div>
@@ -90,7 +108,9 @@ FAB Flower with tooltips. There's no space for a text label in a quarter circle,
   </div>
 </div>
 ```
+
 #### Rules
+
 - {Icon*} should be replaced with the appropriate icon for each button. SVG icons are recommended
 - {IconOriginal} is the icon that we see before opening the FAB
 - {IconMainAction} is the icon we see after opening the FAB

@@ -2,14 +2,23 @@
   "name": "Growth OS",
   "version": "1.0.0",
   "description": "仿coze平台",
-  "type": "module",
-  "packageManager": "pnpm@11.17.0",
-  "scripts": {
-    "dev": "turbo run dev"
-  },
   "keywords": [],
-  "author": "",
   "license": "ISC",
+  "author": "",
+  "type": "module",
+  "scripts": {
+    "dev": "turbo run dev",
+    "lint": "oxlint --config tooling/lint/.oxlintrc.json",
+    "lint:fix": "oxlint --config tooling/lint/.oxlintrc.json --fix",
+    "format": "oxfmt --config tooling/format/.oxfmtrc.json",
+    "format:check": "oxfmt --config tooling/format/.oxfmtrc.json --check"
+  },
+  "devDependencies": {
+    "oxfmt": "catalog:format",
+    "oxlint": "catalog:lint",
+    "turbo": "catalog:dev",
+    "typescript": "catalog:dev"
+  },
   "devEngines": {
     "packageManager": {
       "name": "pnpm",
@@ -17,8 +26,5 @@
       "onFail": "download"
     }
   },
-  "devDependencies": {
-    "turbo": "catalog:dev",
-    "typescript": "catalog:dev"
-  }
+  "packageManager": "pnpm@11.17.0"
 }

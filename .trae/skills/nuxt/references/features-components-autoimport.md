@@ -55,10 +55,11 @@ export default defineNuxtConfig({
       pathPrefix: false, // Use filename only
     },
   ],
-})
+});
 ```
 
 With `pathPrefix: false`:
+
 ```
 components/base/Button.vue → <Button />
 ```
@@ -69,7 +70,7 @@ Prefix with `Lazy` for dynamic imports:
 
 ```vue
 <script setup lang="ts">
-const showChart = ref(false)
+const showChart = ref(false);
 </script>
 
 <template>
@@ -80,6 +81,7 @@ const showChart = ref(false)
 ```
 
 Benefits:
+
 - Reduces initial bundle size
 - Code-splits component into separate chunk
 - Loads on-demand
@@ -148,7 +150,7 @@ Hydrate on condition:
 
 ```vue
 <script setup lang="ts">
-const isReady = ref(false)
+const isReady = ref(false);
 </script>
 
 <template>
@@ -175,7 +177,7 @@ Never hydrate (static only):
 
 <script setup>
 function onChartReady() {
-  console.log('Chart is now interactive')
+  console.log('Chart is now interactive');
 }
 </script>
 ```
@@ -218,7 +220,7 @@ export default defineNuxtConfig({
   experimental: {
     componentIslands: true,
   },
-})
+});
 ```
 
 ### Paired Components
@@ -235,9 +237,9 @@ Server version renders during SSR, client version takes over after hydration.
 
 ```vue
 <script setup lang="ts">
-import { SomeComponent } from '#components'
+import { SomeComponent } from '#components';
 
-const dynamicComponent = resolveComponent('MyButton')
+const dynamicComponent = resolveComponent('MyButton');
 </script>
 
 <template>
@@ -252,7 +254,7 @@ Bypass auto-imports when needed:
 
 ```vue
 <script setup lang="ts">
-import { LazyMountainsList, NuxtLink } from '#components'
+import { LazyMountainsList, NuxtLink } from '#components';
 </script>
 ```
 
@@ -266,7 +268,7 @@ export default defineNuxtConfig({
     { path: '~/components/forms', prefix: 'Form' },
     '~/components', // Default, should come last
   ],
-})
+});
 ```
 
 ## Global Components
@@ -280,7 +282,7 @@ export default defineNuxtConfig({
     global: true,
     dirs: ['~/components'],
   },
-})
+});
 ```
 
 Or use `.global.vue` suffix:
@@ -298,7 +300,7 @@ export default defineNuxtConfig({
   components: {
     dirs: [], // Disable auto-imports
   },
-})
+});
 ```
 
 ## Library Authors
@@ -307,21 +309,21 @@ Register components from npm package:
 
 ```ts
 // my-ui-lib/nuxt.ts
-import { addComponentsDir, createResolver, defineNuxtModule } from '@nuxt/kit'
+import { addComponentsDir, createResolver, defineNuxtModule } from '@nuxt/kit';
 
 export default defineNuxtModule({
   setup() {
-    const resolver = createResolver(import.meta.url)
+    const resolver = createResolver(import.meta.url);
 
     addComponentsDir({
       path: resolver.resolve('./components'),
       prefix: 'MyUi',
-    })
+    });
   },
-})
+});
 ```
 
-<!-- 
+<!--
 Source references:
 - https://nuxt.com/docs/directory-structure/app/components
 - https://nuxt.com/docs/guide/concepts/auto-imports#auto-imported-components

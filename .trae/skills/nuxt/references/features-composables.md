@@ -14,25 +14,25 @@ Nuxt automatically imports Vue APIs, Nuxt composables, and your custom composabl
 ```vue
 <script setup lang="ts">
 // No imports needed - all auto-imported
-const count = ref(0)
-const doubled = computed(() => count.value * 2)
+const count = ref(0);
+const doubled = computed(() => count.value * 2);
 
 watch(count, (newVal) => {
-  console.log('Count changed:', newVal)
-})
+  console.log('Count changed:', newVal);
+});
 
 onMounted(() => {
-  console.log('Component mounted')
-})
+  console.log('Component mounted');
+});
 
 // Lifecycle hooks
-onBeforeMount(() => {})
-onUnmounted(() => {})
-onBeforeUnmount(() => {})
+onBeforeMount(() => {});
+onUnmounted(() => {});
+onBeforeUnmount(() => {});
 
 // Reactivity
-const state = reactive({ name: 'John' })
-const shallow = shallowRef({ deep: 'object' })
+const state = reactive({ name: 'John' });
+const shallow = shallowRef({ deep: 'object' });
 </script>
 ```
 
@@ -41,32 +41,32 @@ const shallow = shallowRef({ deep: 'object' })
 ```vue
 <script setup lang="ts">
 // All auto-imported
-const route = useRoute()
-const router = useRouter()
-const config = useRuntimeConfig()
-const appConfig = useAppConfig()
-const nuxtApp = useNuxtApp()
+const route = useRoute();
+const router = useRouter();
+const config = useRuntimeConfig();
+const appConfig = useAppConfig();
+const nuxtApp = useNuxtApp();
 
 // Data fetching
-const { data } = await useFetch('/api/data')
-const { data: asyncData } = await useAsyncData('key', () => fetchData())
+const { data } = await useFetch('/api/data');
+const { data: asyncData } = await useAsyncData('key', () => fetchData());
 
 // State
-const state = useState('key', () => 'initial')
-const cookie = useCookie('token')
+const state = useState('key', () => 'initial');
+const cookie = useCookie('token');
 
 // Head/SEO
-useHead({ title: 'My Page' })
-useSeoMeta({ description: 'Page description' })
+useHead({ title: 'My Page' });
+useSeoMeta({ description: 'Page description' });
 
 // Accessibility — announce content to screen readers
-const { polite, assertive } = useAnnouncer() // needs <NuxtAnnouncer> (Nuxt 4.4+)
-const { set } = useRouteAnnouncer()           // automatic on navigation
+const { polite, assertive } = useAnnouncer(); // needs <NuxtAnnouncer> (Nuxt 4.4+)
+const { set } = useRouteAnnouncer(); // automatic on navigation
 
 // Request helpers (SSR)
-const headers = useRequestHeaders()
-const event = useRequestEvent()
-const url = useRequestURL()
+const headers = useRequestHeaders();
+const event = useRequestEvent();
+const url = useRequestURL();
 </script>
 ```
 
@@ -78,14 +78,14 @@ Manually announce dynamic content (form validation, toasts, loading) to screen r
 
 ```vue
 <script setup lang="ts">
-const { polite, assertive } = useAnnouncer()
+const { polite, assertive } = useAnnouncer();
 
 async function submit() {
   try {
-    await $fetch('/api/contact', { method: 'POST', body: form })
-    polite('Message sent successfully')   // waits for screen reader silence
+    await $fetch('/api/contact', { method: 'POST', body: form });
+    polite('Message sent successfully'); // waits for screen reader silence
   } catch {
-    assertive('Error: failed to send')    // interrupts immediately
+    assertive('Error: failed to send'); // interrupts immediately
   }
 }
 </script>
@@ -100,32 +100,32 @@ Use `useRouteAnnouncer` (with `<NuxtRouteAnnouncer>`) instead for automatic rout
 ```ts
 // composables/useCounter.ts
 export function useCounter(initial = 0) {
-  const count = ref(initial)
-  const increment = () => count.value++
-  const decrement = () => count.value--
-  return { count, increment, decrement }
+  const count = ref(initial);
+  const increment = () => count.value++;
+  const decrement = () => count.value--;
+  return { count, increment, decrement };
 }
 ```
 
 ```ts
 // composables/useAuth.ts
 export function useAuth() {
-  const user = useState<User | null>('user', () => null)
-  const isLoggedIn = computed(() => !!user.value)
+  const user = useState<User | null>('user', () => null);
+  const isLoggedIn = computed(() => !!user.value);
 
   async function login(credentials: Credentials) {
     user.value = await $fetch('/api/auth/login', {
       method: 'POST',
       body: credentials,
-    })
+    });
   }
 
   async function logout() {
-    await $fetch('/api/auth/logout', { method: 'POST' })
-    user.value = null
+    await $fetch('/api/auth/logout', { method: 'POST' });
+    user.value = null;
   }
 
-  return { user, isLoggedIn, login, logout }
+  return { user, isLoggedIn, login, logout };
 }
 ```
 
@@ -134,8 +134,8 @@ export function useAuth() {
 ```vue
 <script setup lang="ts">
 // Auto-imported - no import statement needed
-const { count, increment } = useCounter(10)
-const { user, isLoggedIn, login } = useAuth()
+const { count, increment } = useCounter(10);
+const { user, isLoggedIn, login } = useAuth();
 </script>
 ```
 
@@ -156,7 +156,7 @@ Re-export nested composables:
 
 ```ts
 // composables/index.ts
-export { useHelper } from './nested/helper'
+export { useHelper } from './nested/helper';
 ```
 
 Or configure scanning:
@@ -170,7 +170,7 @@ export default defineNuxtConfig({
       'composables/**', // Scan all nested
     ],
   },
-})
+});
 ```
 
 ## Utilities (`app/utils/`)
@@ -178,22 +178,22 @@ export default defineNuxtConfig({
 ```ts
 // utils/format.ts
 export function formatDate(date: Date) {
-  return date.toLocaleDateString()
+  return date.toLocaleDateString();
 }
 
 export function formatCurrency(amount: number) {
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
-  }).format(amount)
+  }).format(amount);
 }
 ```
 
 ```vue
 <script setup lang="ts">
 // Auto-imported
-const date = formatDate(new Date())
-const price = formatCurrency(99.99)
+const date = formatDate(new Date());
+const price = formatCurrency(99.99);
 </script>
 ```
 
@@ -202,21 +202,21 @@ const price = formatCurrency(99.99)
 ```ts
 // server/utils/db.ts
 export function useDb() {
-  return createDbConnection()
+  return createDbConnection();
 }
 
 // server/utils/auth.ts
 export function verifyToken(token: string) {
-  return jwt.verify(token, process.env.JWT_SECRET)
+  return jwt.verify(token, process.env.JWT_SECRET);
 }
 ```
 
 ```ts
 // server/api/users.ts
 export default defineEventHandler(() => {
-  const db = useDb() // Auto-imported
-  return db.query('SELECT * FROM users')
-})
+  const db = useDb(); // Auto-imported
+  return db.query('SELECT * FROM users');
+});
 ```
 
 ## Shared Utilities (`shared/`)
@@ -226,16 +226,16 @@ Code auto-imported in **both** the Vue app and the Nitro server (Nuxt 3.14+). On
 ```ts
 // shared/utils/capitalize.ts
 export function capitalize(input: string) {
-  return input ? input[0].toUpperCase() + input.slice(1) : ''
+  return input ? input[0].toUpperCase() + input.slice(1) : '';
 }
 ```
 
 ```ts
 // Auto-imported in app components AND server/api/*
-const title = capitalize('hello')
+const title = capitalize('hello');
 
 // Non-scanned files: import via the #shared alias
-import lower from '#shared/formatters/lower'
+import lower from '#shared/formatters/lower';
 ```
 
 ## Third-party Package Imports
@@ -259,7 +259,7 @@ export default defineNuxtConfig({
       },
     ],
   },
-})
+});
 ```
 
 ## Explicit Imports
@@ -268,7 +268,7 @@ Use `#imports` alias when needed:
 
 ```vue
 <script setup lang="ts">
-import { ref, computed, useFetch } from '#imports'
+import { ref, computed, useFetch } from '#imports';
 </script>
 ```
 
@@ -278,7 +278,7 @@ Nuxt composables must be called in valid context:
 
 ```ts
 // ❌ Wrong - module level
-const config = useRuntimeConfig()
+const config = useRuntimeConfig();
 
 export function useMyComposable() {}
 ```
@@ -286,12 +286,13 @@ export function useMyComposable() {}
 ```ts
 // ✅ Correct - inside function
 export function useMyComposable() {
-  const config = useRuntimeConfig()
-  return { apiBase: config.public.apiBase }
+  const config = useRuntimeConfig();
+  return { apiBase: config.public.apiBase };
 }
 ```
 
 **Valid contexts:**
+
 - `<script setup>` block
 - `setup()` function
 - `defineNuxtPlugin()` callback
@@ -311,10 +312,10 @@ export default defineNuxtConfig({
   imports: {
     scan: false,
   },
-})
+});
 ```
 
-<!-- 
+<!--
 Source references:
 - https://nuxt.com/docs/4.x/guide/concepts/auto-imports
 - https://nuxt.com/docs/4.x/directory-structure/app/composables

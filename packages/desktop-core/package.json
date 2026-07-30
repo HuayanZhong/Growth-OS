@@ -1,15 +1,15 @@
 {
   "name": "@growth-os/desktop-core",
   "version": "1.0.0",
-  "description": "桌面端核心模块——Electron 主进程和 preload 源码",
   "private": true,
+  "description": "桌面端核心模块——Electron 主进程和 preload 源码",
   "type": "module",
   "exports": {
     ".": "./src"
   },
   "devDependencies": {
+    "@types/node": "catalog:dev",
     "electron": "catalog:frontend",
-    "electron-builder": "catalog:frontend",
-    "@types/node": "catalog:dev"
+    "electron-builder": "catalog:frontend"
   }
 }
