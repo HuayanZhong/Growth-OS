@@ -10,7 +10,8 @@
   },
   "scripts": {
     "lint": "oxlint --fix --config .oxlintrc.json",
-    "format": "oxfmt --config ../../tooling/format/.oxfmtrc.json"
+    "format": "oxfmt --config ../../tooling/format/.oxfmtrc.json",
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@types/node": "catalog:dev",

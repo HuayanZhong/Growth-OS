@@ -1,4 +1,5 @@
 import { defineNuxtModule } from '@nuxt/kit';
+import type { Nuxt } from '@nuxt/schema';
 import { build, startup } from 'vite-plugin-electron';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -22,18 +23,18 @@ export default defineNuxtModule({
     configKey: 'electron',
   },
 
-  setup(_options, nuxt) {
+  setup(_options: Record<string, never>, nuxt: Nuxt) {
     let started = false;
 
     /**
      * 开发模式下：Nuxt dev server 启动后，build Electron 入口文件并启动 Electron 窗口。
      * 此 hook 仅在 `nuxt dev` 时触发。
      */
-    nuxt.hook('listen', async (_server, listener) => {
+    nuxt.hook('listen', async (_server: unknown, listener: { url: string }) => {
       if (started) return;
       started = true;
 
-      const url = listener.url ?? `http://localhost:${_server.address()?.port ?? 3000}`;
+      const url = listener.url ?? `http://localhost:${(_server as any)?.address()?.port ?? 3000}`;
       process.env.VITE_DEV_SERVER_URL = String(url).replace(/\/$/, '');
 
       try {

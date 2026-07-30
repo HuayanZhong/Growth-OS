@@ -17,6 +17,10 @@
     "format": {
       "dependsOn": [],
       "cache": false
+    },
+    "typecheck": {
+      "dependsOn": [],
+      "cache": false
     }
   }
 }

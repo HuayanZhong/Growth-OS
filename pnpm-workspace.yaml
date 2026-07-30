@@ -36,3 +36,5 @@ catalogs:
     tailwindcss: ^4.3.3
     '@tailwindcss/vite': ^4.3.3
     daisyui: ^5.7.4
+    vue-tsc: ^3.3.8
+    '@nuxt/kit': ^4.5.1

@@ -10,7 +10,8 @@
   "scripts": {
     "dev": "nuxt dev",
     "lint": "oxlint --fix --config .oxlintrc.json",
-    "format": "oxfmt --config ../../tooling/format/.oxfmtrc.json"
+    "format": "oxfmt --config ../../tooling/format/.oxfmtrc.json",
+    "typecheck": "nuxt typecheck"
   },
   "dependencies": {
     "@growth-os/desktop-core": "workspace:*",
@@ -22,10 +23,12 @@
     "vue-router": "catalog:frontend"
   },
   "devDependencies": {
+    "@nuxt/kit": "catalog:frontend",
     "electron": "catalog:frontend",
     "oxfmt": "catalog:format",
     "oxlint": "catalog:lint",
     "oxlint-tailwindcss": "catalog:lint",
-    "vite-plugin-electron": "catalog:frontend"
+    "vite-plugin-electron": "catalog:frontend",
+    "vue-tsc": "catalog:frontend"
   }
 }
