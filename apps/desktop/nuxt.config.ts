@@ -9,7 +9,8 @@ export default defineNuxtConfig({
   ssr: false,
 
   // Electron 桌面端模块——自动编译 main/preload 并启动 Electron
-  modules: ['./modules/electron'],
+  // @nuxt/test-utils/module 提供 Vitest 的 Nuxt 测试环境
+  modules: ['./modules/electron', '@nuxt/test-utils/module'],
 
   // 配置 Tailwind CSS
   vite: {

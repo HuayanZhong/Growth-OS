@@ -1,1 +1,21 @@
+# Code Owners 配置
+# 格式: <目录或文件模式> <GitHub 用户名或团队名>
+# 详见: https://docs.github.com/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
 
+# 根目录配置文件
+* @HuayanZhong
+
+# 应用目录
+/apps/ @HuayanZhong
+
+# 共享包
+/packages/ @HuayanZhong
+
+# 工具链配置
+/tooling/ @HuayanZhong
+
+# CI/CD 配置
+/.github/ @HuayanZhong
+
+# 文档
+/docs/ @HuayanZhong

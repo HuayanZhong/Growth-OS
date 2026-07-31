@@ -11,7 +11,8 @@
     "dev": "nuxt dev",
     "lint": "oxlint --fix --config .oxlintrc.json",
     "format": "oxfmt --config ../../tooling/format/.oxfmtrc.json",
-    "typecheck": "nuxt typecheck"
+    "typecheck": "nuxt typecheck",
+    "test": "vitest run"
   },
   "dependencies": {
     "@growth-os/desktop-core": "workspace:*",
@@ -24,11 +25,15 @@
   },
   "devDependencies": {
     "@nuxt/kit": "catalog:frontend",
+    "@nuxt/test-utils": "catalog:test",
+    "@vue/test-utils": "catalog:test",
     "electron": "catalog:frontend",
+    "happy-dom": "catalog:test",
     "oxfmt": "catalog:format",
     "oxlint": "catalog:lint",
     "oxlint-tailwindcss": "catalog:lint",
     "vite-plugin-electron": "catalog:frontend",
+    "vitest": "catalog:test",
     "vue-tsc": "catalog:frontend"
   }
 }

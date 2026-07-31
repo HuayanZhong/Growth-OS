@@ -38,3 +38,9 @@ catalogs:
     daisyui: ^5.7.4
     vue-tsc: ^3.3.8
     '@nuxt/kit': ^4.5.1
+  # 测试依赖
+  test:
+    vitest: ^4.1.10
+    '@nuxt/test-utils': ^4.1.0
+    '@vue/test-utils': ^2.4.11
+    happy-dom: ^20.11.1

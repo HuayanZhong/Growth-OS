@@ -10,13 +10,15 @@
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "format": "turbo run format",
-    "typecheck": "turbo run typecheck"
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test"
   },
   "devDependencies": {
     "oxfmt": "catalog:format",
     "oxlint": "catalog:lint",
     "turbo": "catalog:dev",
-    "typescript": "catalog:dev"
+    "typescript": "catalog:dev",
+    "vitest": "catalog:test"
   },
   "devEngines": {
     "packageManager": {

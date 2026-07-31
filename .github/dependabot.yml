@@ -1,0 +1,60 @@
+version: 2
+
+updates:
+  # pnpm 依赖更新
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "09:00"
+      timezone: Asia/Shanghai
+    open-pull-requests-limit: 10
+    labels:
+      - dependencies
+    # 将相关依赖分组，减少 PR 数量
+    groups:
+      # 前端框架相关依赖
+      frontend:
+        patterns:
+          - "vue"
+          - "vue-router"
+          - "nuxt"
+          - "@nuxt/*"
+          - "@vue/*"
+          - "tailwindcss"
+          - "@tailwindcss/*"
+          - "daisyui"
+      # Electron 相关依赖
+      electron:
+        patterns:
+          - "electron"
+          - "electron-*"
+          - "vite-plugin-electron"
+      # 测试相关依赖
+      testing:
+        patterns:
+          - "vitest"
+          - "@vue/test-utils"
+          - "@nuxt/test-utils"
+          - "happy-dom"
+      # 工具链依赖
+      tooling:
+        patterns:
+          - "typescript"
+          - "turbo"
+          - "oxlint"
+          - "oxlint-*"
+          - "oxfmt"
+          - "@types/*"
+
+  # GitHub Actions 版本更新
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "09:00"
+      timezone: Asia/Shanghai
+    labels:
+      - github-actions
