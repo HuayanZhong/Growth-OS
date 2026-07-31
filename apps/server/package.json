@@ -1,0 +1,33 @@
+{
+  "name": "server",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Growth OS 后端服务 - NestJS",
+  "scripts": {
+    "build": "nest build",
+    "dev": "nest start --watch",
+    "start": "nest start",
+    "lint": "oxlint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@nestjs/common": "catalog:backend",
+    "@nestjs/config": "catalog:backend",
+    "@nestjs/core": "catalog:backend",
+    "@nestjs/platform-express": "catalog:backend",
+    "class-transformer": "catalog:backend",
+    "class-validator": "catalog:backend",
+    "reflect-metadata": "catalog:backend",
+    "rxjs": "catalog:backend"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "catalog:backend",
+    "@nestjs/schematics": "catalog:backend",
+    "@nestjs/testing": "catalog:backend",
+    "@types/express": "catalog:backend",
+    "@types/node": "catalog:dev",
+    "typescript": "catalog:dev",
+    "vitest": "catalog:test"
+  }
+}
