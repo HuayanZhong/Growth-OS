@@ -1,0 +1,43 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    ":semanticPrefixChore",
+    ":dependencyDashboard",
+    "schedule:weekly"
+  ],
+  "timezone": "Asia/Shanghai",
+  "labels": ["dependencies"],
+  "prConcurrentLimit": 10,
+  "packageRules": [
+    {
+      "groupName": "frontend",
+      "matchPackagePatterns": [
+        "^vue$",
+        "^vue-router$",
+        "^nuxt$",
+        "^@nuxt/",
+        "^@vue/",
+        "^tailwindcss$",
+        "^@tailwindcss/",
+        "^daisyui$"
+      ]
+    },
+    {
+      "groupName": "electron",
+      "matchPackagePatterns": ["^electron", "^vite-plugin-electron$"]
+    },
+    {
+      "groupName": "testing",
+      "matchPackagePatterns": ["^vitest$", "^@vue/test-utils$", "^@nuxt/test-utils$", "^happy-dom$"]
+    },
+    {
+      "groupName": "tooling",
+      "matchPackagePatterns": ["^turbo$", "^oxlint", "^oxfmt$", "^@types/"]
+    },
+    {
+      "groupName": "github-actions",
+      "matchManagers": ["github-actions"]
+    }
+  ]
+}
