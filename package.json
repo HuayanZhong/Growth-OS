@@ -7,14 +7,16 @@
   "author": "",
   "type": "module",
   "scripts": {
-    "dev": "turbo run dev",
+    "dev": "dotenv -c development -- turbo run dev",
+    "start": "dotenv -c production -- turbo run start:prod",
     "build": "turbo run build",
     "lint": "turbo run lint",
     "format": "turbo run format --concurrency=1",
-    "typecheck": "turbo run typecheck",
-    "test": "turbo run test"
+    "typecheck": "dotenv -v CI=true -- turbo run typecheck",
+    "test": "dotenv -v CI=true -- turbo run test"
   },
   "devDependencies": {
+    "dotenv-cli": "catalog:dev",
     "oxfmt": "catalog:format",
     "oxlint": "catalog:lint",
     "turbo": "catalog:dev",

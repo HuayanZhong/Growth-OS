@@ -16,6 +16,7 @@ catalogs:
   # 开发目录
   dev:
     '@types/node': ^26.1.1
+    dotenv-cli: ^11.0.0
     turbo: ^2.10.7
     typescript: 6.0.3
   # 代码检查目录
@@ -58,3 +59,6 @@ catalogs:
     '@types/express': ^5.0.0
     class-validator: ^0.15.1
     class-transformer: ^0.5.1
+  # 跨包共享依赖（前后端通用）
+  shared:
+    zod: ^4.4.3

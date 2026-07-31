@@ -10,6 +10,7 @@
   "scripts": {
     "dev": "nuxt dev",
     "build": "nuxt build",
+    "start:prod": "electron ../../packages/desktop-core/dist/main.js --no-sandbox",
     "lint": "oxlint --fix --config .oxlintrc.json",
     "format": "oxfmt --config ../../tooling/format/.oxfmtrc.json",
     "typecheck": "nuxt typecheck",
@@ -17,6 +18,7 @@
   },
   "dependencies": {
     "@growth-os/desktop-core": "workspace:*",
+    "@growth-os/shared": "workspace:*",
     "@tailwindcss/vite": "catalog:frontend",
     "daisyui": "catalog:frontend",
     "nuxt": "catalog:frontend",
