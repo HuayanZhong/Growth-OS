@@ -9,6 +9,7 @@
   "type": "module",
   "scripts": {
     "dev": "nuxt dev",
+    "build": "nuxt build",
     "lint": "oxlint --fix --config .oxlintrc.json",
     "format": "oxfmt --config ../../tooling/format/.oxfmtrc.json",
     "typecheck": "nuxt typecheck",

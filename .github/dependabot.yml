@@ -41,7 +41,7 @@ updates:
       # 工具链依赖
       tooling:
         patterns:
-          - "typescript"
+          # - "typescript"
           - "turbo"
           - "oxlint"
           - "oxlint-*"
