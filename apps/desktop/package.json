@@ -14,7 +14,8 @@
     "lint": "oxlint --fix --config .oxlintrc.json",
     "format": "oxfmt --config ../../tooling/format/.oxfmtrc.json",
     "typecheck": "nuxt typecheck",
-    "test": "vitest run"
+    "test": "vitest run",
+    "verify:build": "electron scripts/verify-build.cjs"
   },
   "dependencies": {
     "@growth-os/desktop-core": "workspace:*",

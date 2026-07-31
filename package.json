@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "dotenv -c development -- turbo run dev",
     "start": "dotenv -c production -- turbo run start:prod",
-    "build": "turbo run build",
+    "build": "dotenv -c production -- turbo run build",
     "lint": "turbo run lint",
     "format": "turbo run format --concurrency=1",
     "typecheck": "dotenv -v CI=true -- turbo run typecheck",

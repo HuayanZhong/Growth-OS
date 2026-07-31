@@ -3,6 +3,7 @@
   "ui": "tui",
   "globalEnv": [
     "NODE_ENV",
+    "NUXT_APP_BASE_URL",
     "NUXT_PUBLIC_SITE_URL",
     "NUXT_PUBLIC_APP_NAME",
     "PORT"

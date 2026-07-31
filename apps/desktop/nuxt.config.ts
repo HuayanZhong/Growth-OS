@@ -4,7 +4,8 @@ import tailwindcss from '@tailwindcss/vite';
 // Electron 用 loadFile 加载 index.html，绝对路径 /_nuxt/ 会解析为文件系统根目录导致白屏
 // Nuxt 官方文档：app.baseURL 在 nuxt.config.ts 中不支持相对路径（Nitro 限制），需通过环境变量设置
 // https://nuxt.com/docs/4.x/api/nuxt-config#baseurl
-process.env.NUXT_APP_BASE_URL = './';
+// 从 .env 读取（根 package.json 的 build/dev 脚本通过 dotenv-cli 注入），兜底 './'
+process.env.NUXT_APP_BASE_URL = process.env.NUXT_APP_BASE_URL || './';
 
 export default defineNuxtConfig({
   // 兼容性日期，用于 Nuxt 3.0 之前的版本
