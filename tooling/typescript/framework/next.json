@@ -1,8 +1,10 @@
 {
-  "extends": "../runtime/node.json",
+  "extends": "./react.json",
 
   "compilerOptions": {
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+    "allowJs": true,
+    "noEmit": true,
+    "jsx": "preserve",
+    "plugins": [{ "name": "next" }]
   }
 }
