@@ -32,6 +32,16 @@
       "matchPackagePatterns": ["^vitest$", "^@vue/test-utils$", "^@nuxt/test-utils$", "^happy-dom$"]
     },
     {
+      "groupName": "backend",
+      "matchPackagePatterns": [
+        "^@nestjs/",
+        "^class-validator$",
+        "^class-transformer$",
+        "^reflect-metadata$",
+        "^rxjs$"
+      ]
+    },
+    {
       "groupName": "tooling",
       "matchPackagePatterns": ["^turbo$", "^oxlint", "^oxfmt$", "^@types/"]
     },

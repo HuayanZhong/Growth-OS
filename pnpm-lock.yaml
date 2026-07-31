@@ -430,12 +430,15 @@ importers:
       '@types/node':
         specifier: catalog:dev
         version: 26.1.1
+      oxfmt:
+        specifier: catalog:format
+        version: 0.61.0
+      oxlint:
+        specifier: catalog:lint
+        version: 1.76.0
       typescript:
         specifier: catalog:dev
         version: 6.0.3
-      vitest:
-        specifier: catalog:test
-        version: 4.1.10(@types/node@26.1.1)(happy-dom@20.11.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.49.0)(yaml@2.9.0))
 
   packages/desktop-core:
     devDependencies:

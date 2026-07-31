@@ -1,5 +1,5 @@
-import { Module } from '@nestjs/common'
-import { ConfigModule } from '@nestjs/config'
+import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -8,4 +8,4 @@ import { ConfigModule } from '@nestjs/config'
     }),
   ],
 })
-export class AppModule { }
+export class AppModule {}

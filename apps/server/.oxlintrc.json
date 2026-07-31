@@ -7,26 +7,25 @@
     "perf": "warn"
   },
   "rules": {
-    "no-console": "off",
+    "no-console": "warn",
     "no-debugger": "error",
     "no-underscore-dangle": "off",
+    "no-await-in-loop": "off",
     "typescript/no-unused-vars": "warn",
+    "typescript/no-extraneous-class": [
+      "warn",
+      {
+        "allowWithDecorator": true
+      }
+    ],
     "import/first": "warn",
     "import/newline-after-import": "warn",
     "import/consistent-type-specifier-style": ["warn", "prefer-top-level"],
-    "import/no-commonjs": "error"
+    "import/no-anonymous-default-export": "warn"
   },
   "env": {
-    "browser": false,
     "node": true,
     "es2024": true
   },
-  "ignorePatterns": [
-    "**/dist/**",
-    "**/.nuxt/**",
-    "**/.output/**",
-    "**/.turbo/**",
-    "**/node_modules/**",
-    "**/*.gen.*"
-  ]
+  "ignorePatterns": ["**/dist/**", "**/.turbo/**", "**/node_modules/**"]
 }
