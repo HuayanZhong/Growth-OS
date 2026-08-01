@@ -18,9 +18,9 @@
     "zod": "catalog:shared"
   },
   "devDependencies": {
+    "@types/node": "catalog:dev",
     "oxfmt": "catalog:format",
     "oxlint": "catalog:lint",
-    "typescript": "catalog:dev",
-    "@types/node": "catalog:dev"
+    "typescript": "catalog:dev"
   }
 }
