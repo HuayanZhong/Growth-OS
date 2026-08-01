@@ -445,6 +445,10 @@ importers:
         version: 6.0.3
 
   packages/desktop-core:
+    dependencies:
+      '@growth-os/shared':
+        specifier: workspace:*
+        version: link:../shared
     devDependencies:
       '@types/node':
         specifier: catalog:dev

@@ -1,14 +1,14 @@
 /**
  * Electron preload 暴露给渲染进程的桌面端 API 类型。
- * 渲染进程中通过 `window.desktop` 调用。
+ *
+ * 类型由 `@growth-os/shared` 的 `DesktopAPI` 派生（基于 `IpcChannelMap`），
+ * 与 `main.ts` / `preload.ts` 共享同一类型契约。
+ *
+ * 渲染进程中通过 `window.desktop` 调用。新增通道只需修改 `IpcChannelMap`，
+ * 此文件无需改动。
  */
-export interface DesktopAPI {
-  /** 获取 Electron 应用版本号 */
-  version: () => Promise<string>;
-}
-
 declare global {
   interface Window {
-    desktop: DesktopAPI;
+    desktop: import('@growth-os/shared').DesktopAPI;
   }
 }

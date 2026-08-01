@@ -13,6 +13,9 @@
     "format": "oxfmt --config ../../tooling/format/.oxfmtrc.json",
     "typecheck": "tsc --noEmit"
   },
+  "dependencies": {
+    "@growth-os/shared": "workspace:*"
+  },
   "devDependencies": {
     "@types/node": "catalog:dev",
     "electron": "catalog:frontend",

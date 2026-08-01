@@ -13,3 +13,11 @@ export {
 } from './env.ts';
 
 export { normalizeBaseUrl, normalizePrefix, joinUrl } from './normalize.ts';
+
+export {
+  type IpcChannelMap,
+  type IpcChannelName,
+  type IpcRequest,
+  type IpcResponse,
+  type DesktopAPI,
+} from './utils/ipc-channels.ts';
