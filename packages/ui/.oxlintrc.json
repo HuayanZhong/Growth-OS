@@ -1,0 +1,38 @@
+{
+  "$schema": "../../node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "unicorn", "oxc", "vue", "import"],
+  "categories": {
+    "correctness": "error",
+    "suspicious": "warn",
+    "perf": "warn"
+  },
+  "rules": {
+    "no-console": "off",
+    "no-debugger": "error",
+    "no-underscore-dangle": "off",
+    "typescript/no-unused-vars": "warn",
+    "vue/component-definition-name-casing": ["warn", "PascalCase"],
+    "vue/define-emits-declaration": ["warn", "type-based"],
+    "vue/define-props-declaration": ["warn", "type-based"],
+    "vue/no-arrow-functions-in-watch": "error",
+    "vue/no-async-in-computed-properties": "error",
+    "vue/no-computed-properties-in-data": "error",
+    "import/first": "warn",
+    "import/newline-after-import": "warn",
+    "import/consistent-type-specifier-style": ["warn", "prefer-top-level"],
+    "import/no-anonymous-default-export": "warn"
+  },
+  "env": {
+    "browser": true,
+    "node": true,
+    "es2024": true
+  },
+  "ignorePatterns": [
+    "**/dist/**",
+    "**/.nuxt/**",
+    "**/.output/**",
+    "**/.turbo/**",
+    "**/node_modules/**",
+    "**/*.gen.*"
+  ]
+}

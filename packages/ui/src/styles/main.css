@@ -1,0 +1,12 @@
+@import 'tailwindcss';
+
+/* 扫描 UI 包源码（组件类名），相对本文件（src/styles/）指向 src/ */
+@source "../";
+
+/* daisyUI 插件：默认主题 light（固定），theme-controller 可切 dark / cupcake */
+@plugin "daisyui" {
+  themes:
+    light --default,
+    dark,
+    cupcake;
+}

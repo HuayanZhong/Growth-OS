@@ -20,6 +20,7 @@
   "dependencies": {
     "@growth-os/desktop-core": "workspace:*",
     "@growth-os/shared": "workspace:*",
+    "@growth-os/ui": "workspace:*",
     "@tailwindcss/vite": "catalog:frontend",
     "daisyui": "catalog:frontend",
     "nuxt": "catalog:frontend",

@@ -15,7 +15,7 @@
 
     "verbatimModuleSyntax": true,
 
-    "rewriteRelativeImportExtensions": true,
+    "allowImportingTsExtensions": true,
 
     "forceConsistentCasingInFileNames": true,
 
