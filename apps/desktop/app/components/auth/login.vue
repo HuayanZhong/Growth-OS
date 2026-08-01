@@ -1,7 +1,53 @@
 <script setup lang="ts">
-// 登录表单（静态原型）：纯展示无逻辑；颜色全用 daisyUI 语义色，随主题变化
+// 登录表单：为 Supabase Auth 预留结构（邮箱 + 密码 + SSO），SSO 只保留在此表单
+import { computed, ref } from 'vue'
+import { loginSchema } from '@growth-os/types'
+
 // 切换注册表单：由父组件（认证页）监听 switch-to-register 事件
 defineEmits<{ switchToRegister: [] }>()
+
+// 表单数据（预留：接入 Supabase 后直接传给 signInWithPassword）
+const email = ref('')
+const password = ref('')
+const submitting = ref(false)
+// 字段级输入标记：未输入前不显示对应校验错误，避免空表单默认报错
+const emailTouched = ref(false)
+const passwordTouched = ref(false)
+
+// zod 字段级校验：各自字段开始输入后才校验（互不交叉）
+const emailError = computed(() => {
+  if (!emailTouched.value) return undefined
+  const result = loginSchema.shape.email.safeParse(email.value)
+  return result.success ? undefined : result.error.issues[0]?.message
+})
+const passwordError = computed(() => {
+  if (!passwordTouched.value) return undefined
+  const result = loginSchema.shape.password.safeParse(password.value)
+  return result.success ? undefined : result.error.issues[0]?.message
+})
+
+// 提交登录（预留：接入 supabase-js 后调用 signInWithPassword）
+async function onSubmit() {
+  if (submitting.value) return
+  // 提交时强制校验两个字段（错误分别显示在各字段下方）
+  emailTouched.value = true
+  passwordTouched.value = true
+  // 校验失败不提交
+  if (emailError.value || passwordError.value) return
+  submitting.value = true
+  try {
+    // TODO: await supabase.auth.signInWithPassword({ email: email.value, password: password.value })
+    // 成功后由全局 auth 守卫接管跳转
+  } finally {
+    submitting.value = false
+  }
+}
+
+// SSO 登录（预留：接入后调用 signInWithOAuth，QQ/微信需 Supabase 自定义 provider 或代理登录）
+function onSso(provider: 'qq' | 'wechat') {
+  // TODO: await supabase.auth.signInWithOAuth({ provider })
+  void provider
+}
 </script>
 
 <template>
@@ -16,57 +62,90 @@ defineEmits<{ switchToRegister: [] }>()
     <!-- 登录卡片 -->
     <div class="card w-full bg-base-100 shadow-lg">
       <div class="card-body gap-3">
-        <!-- 邮箱输入（仅支持邮箱登录，label 作容器，官方语法） -->
-        <label class="input validator">
-          <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-            <g
-              stroke-linejoin="round"
-              stroke-linecap="round"
-              stroke-width="2.5"
-              fill="none"
-              stroke="currentColor"
-            >
-              <rect width="20" height="16" x="2" y="4" rx="2"></rect>
-              <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
-            </g>
-          </svg>
-          <input type="email" placeholder="请输入邮箱" required />
-        </label>
-        <div class="validator-hint hidden">请输入有效的邮箱地址</div>
+        <!-- 登录表单（novalidate：校验统一交给 zod，避免浏览器原生提示与 zod 重复） -->
+        <form class="flex flex-col gap-3" @submit.prevent="onSubmit" novalidate>
+          <!-- 邮箱输入（仅支持邮箱登录，label 作容器） -->
+          <label class="input">
+            <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <g
+                stroke-linejoin="round"
+                stroke-linecap="round"
+                stroke-width="2.5"
+                fill="none"
+                stroke="currentColor"
+              >
+                <rect width="20" height="16" x="2" y="4" rx="2"></rect>
+                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+              </g>
+            </svg>
+            <input
+              v-model="email"
+              type="email"
+              name="email"
+              placeholder="请输入邮箱"
+              autocomplete="email"
+              required
+              @input="emailTouched = true"
+            />
+          </label>
+          <!-- zod 字段级错误提示（通过时隐藏占位，避免布局跳动） -->
+          <p class="text-sm text-error" aria-live="polite">{{ emailError ?? '' }}</p>
 
-        <!-- 密码输入（validator 校验，右侧眼睛为"显示密码"预留位） -->
-        <label class="input validator">
-          <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-            <g
-              stroke-linejoin="round"
-              stroke-linecap="round"
-              stroke-width="2.5"
-              fill="none"
-              stroke="currentColor"
-            >
-              <path
-                d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"
-              ></path>
-              <circle cx="16.5" cy="7.5" r=".5" fill="currentColor"></circle>
-            </g>
-          </svg>
-          <input type="password" required placeholder="请输入密码" minlength="8" />
-        </label>
-        <p class="validator-hint hidden">密码至少 8 位</p>
+          <!-- 密码输入（右侧眼睛为"显示密码"预留位） -->
+          <label class="input">
+            <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <g
+                stroke-linejoin="round"
+                stroke-linecap="round"
+                stroke-width="2.5"
+                fill="none"
+                stroke="currentColor"
+              >
+                <path
+                  d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"
+                ></path>
+                <circle cx="16.5" cy="7.5" r=".5" fill="currentColor"></circle>
+              </g>
+            </svg>
+            <input
+              v-model="password"
+              type="password"
+              name="password"
+              placeholder="请输入密码"
+              autocomplete="current-password"
+              minlength="8"
+              required
+              @input="passwordTouched = true"
+            />
+          </label>
+          <!-- zod 字段级错误提示（通过时隐藏占位，避免布局跳动） -->
+          <p class="text-sm text-error" aria-live="polite">{{ passwordError ?? '' }}</p>
 
-        <!-- 主登录按钮（页面唯一 primary 色） -->
-        <button type="button" class="btn btn-primary btn-block btn-circle">登 录</button>
+          <!-- 主登录按钮（页面唯一 primary 色；提交中显示 loading 态） -->
+          <button type="submit" class="btn btn-primary btn-block btn-circle" :disabled="submitting">
+            <span v-if="submitting" class="loading loading-spinner loading-sm"></span>
+            {{ submitting ? '提交中' : '登 录' }}
+          </button>
+        </form>
 
-        <!-- 第三方登录占位（接入 SSO 时替换为官方 logo） -->
+        <!-- 第三方登录（SSO 只保留在此表单；接入后替换为 supabase.auth.signInWithOAuth） -->
         <div class="divider text-xs text-base-content/50">或</div>
         <div class="grid grid-cols-2 gap-3">
           <!-- QQ 登录（品牌蓝，官方图标） -->
-          <button type="button" class="btn btn-dash btn-info btn-circle btn-block">
+          <button
+            type="button"
+            class="btn btn-dash btn-info btn-circle btn-block"
+            @click="onSso('qq')"
+          >
             <!-- 官方 QQ 图标（assets/icons/qq.svg） -->
             <img src="~/assets/icons/qq.svg" alt="QQ logo" class="h-6 w-6" />
             QQ 登录
           </button>
-          <button type="button" class="btn btn-dash btn-success btn-circle btn-block">
+          <button
+            type="button"
+            class="btn btn-dash btn-success btn-circle btn-block"
+            @click="onSso('wechat')"
+          >
             <!-- 官方微信图标（assets/icons/微信.svg） -->
             <img src="~/assets/icons/微信.svg" alt="微信 logo" class="h-6 w-6" />
             微信登录

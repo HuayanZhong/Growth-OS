@@ -1,0 +1,26 @@
+{
+  "name": "@growth-os/types",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Growth OS 全仓库类型分发 - 跨包共享的 zod schema 与业务类型",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "lint": "oxlint --fix --config .oxlintrc.json",
+    "format": "oxfmt --config ../../tooling/format/.oxfmtrc.json",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "zod": "catalog:shared"
+  },
+  "devDependencies": {
+    "oxfmt": "catalog:format",
+    "oxlint": "catalog:lint",
+    "typescript": "catalog:dev",
+    "@types/node": "catalog:dev"
+  }
+}

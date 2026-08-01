@@ -378,6 +378,9 @@ importers:
       '@growth-os/shared':
         specifier: workspace:*
         version: link:../../packages/shared
+      '@growth-os/types':
+        specifier: workspace:*
+        version: link:../../packages/types
       '@growth-os/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -512,6 +515,25 @@ importers:
         version: 1.76.0
 
   packages/shared:
+    dependencies:
+      zod:
+        specifier: catalog:shared
+        version: 4.4.3
+    devDependencies:
+      '@types/node':
+        specifier: catalog:dev
+        version: 26.1.1
+      oxfmt:
+        specifier: catalog:format
+        version: 0.61.0
+      oxlint:
+        specifier: catalog:lint
+        version: 1.76.0
+      typescript:
+        specifier: catalog:dev
+        version: 6.0.3
+
+  packages/types:
     dependencies:
       zod:
         specifier: catalog:shared
