@@ -1,6 +1,6 @@
-import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
-import { validate } from './config/env.validation.ts';
+import { Module } from '@nestjs/common'
+import { ConfigModule } from '@nestjs/config'
+import { validate } from './config/env.validation.ts'
 
 @Module({
   imports: [

@@ -1,5 +1,5 @@
-import { contextBridge, ipcRenderer } from 'electron';
-import type { DesktopAPI, IpcChannelName, IpcRequest, IpcResponse } from '@growth-os/shared';
+import { contextBridge, ipcRenderer } from 'electron'
+import type { DesktopAPI, IpcChannelName, IpcRequest, IpcResponse } from '@growth-os/shared'
 
 /**
  * 类型安全的 IPC 调用封装。
@@ -12,7 +12,7 @@ async function invokeIpc<TChannel extends IpcChannelName>(
   channel: TChannel,
   ...args: IpcRequest<TChannel> extends void ? [] : [request: IpcRequest<TChannel>]
 ): Promise<IpcResponse<TChannel>> {
-  return ipcRenderer.invoke(channel, ...args) as Promise<IpcResponse<TChannel>>;
+  return ipcRenderer.invoke(channel, ...args) as Promise<IpcResponse<TChannel>>
 }
 
 /**
@@ -28,6 +28,6 @@ async function invokeIpc<TChannel extends IpcChannelName>(
  */
 const api: DesktopAPI = {
   version: () => invokeIpc('version'),
-};
+}
 
-contextBridge.exposeInMainWorld('desktop', api);
+contextBridge.exposeInMainWorld('desktop', api)

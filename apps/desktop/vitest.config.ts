@@ -1,5 +1,5 @@
-import { defineVitestConfig } from '@nuxt/test-utils/config';
-import { baseTestConfig } from '../../tooling/test/base.ts';
+import { defineVitestConfig } from '@nuxt/test-utils/config'
+import { baseTestConfig } from '../../tooling/test/base.ts'
 
 /**
  * desktop 应用测试配置
@@ -10,4 +10,4 @@ export default defineVitestConfig({
     ...baseTestConfig,
     environment: 'nuxt',
   },
-});
+})

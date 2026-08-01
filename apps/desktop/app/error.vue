@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { NuxtError } from '#app';
+import type { NuxtError } from '#app'
 
 /**
  * Nuxt 全局错误页。
@@ -7,9 +7,9 @@ import type { NuxtError } from '#app';
  * 应用运行时抛出未捕获错误时由 Nuxt 自动加载，作为整屏兜底界面。
  * 布局：hero 居中容器 + card 包裹错误信息，status 为视觉锚点。
  */
-const props = defineProps<{ error: NuxtError }>();
+const props = defineProps<{ error: NuxtError }>()
 
-const handleError = () => clearError({ redirect: '/' });
+const handleError = () => clearError({ redirect: '/' })
 </script>
 
 <template>

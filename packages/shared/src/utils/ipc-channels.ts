@@ -21,19 +21,19 @@
 export interface IpcChannelMap {
   /** 获取 Electron 应用版本号 */
   version: {
-    request: void;
-    response: string;
-  };
+    request: void
+    response: string
+  }
 }
 
 /** 所有 IPC 通道名（字符串字面量联合类型） */
-export type IpcChannelName = keyof IpcChannelMap;
+export type IpcChannelName = keyof IpcChannelMap
 
 /** 指定通道的请求参数类型 */
-export type IpcRequest<TChannel extends IpcChannelName> = IpcChannelMap[TChannel]['request'];
+export type IpcRequest<TChannel extends IpcChannelName> = IpcChannelMap[TChannel]['request']
 
 /** 指定通道的响应类型 */
-export type IpcResponse<TChannel extends IpcChannelName> = IpcChannelMap[TChannel]['response'];
+export type IpcResponse<TChannel extends IpcChannelName> = IpcChannelMap[TChannel]['response']
 
 /**
  * 从 `IpcChannelMap` 派生的桌面端 API 类型，对应 `window.desktop`。
@@ -47,5 +47,5 @@ export type IpcResponse<TChannel extends IpcChannelName> = IpcChannelMap[TChanne
 export type DesktopAPI = {
   [K in IpcChannelName]: IpcRequest<K> extends void
     ? () => Promise<IpcResponse<K>>
-    : (request: IpcRequest<K>) => Promise<IpcResponse<K>>;
-};
+    : (request: IpcRequest<K>) => Promise<IpcResponse<K>>
+}

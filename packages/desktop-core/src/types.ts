@@ -9,6 +9,6 @@
  */
 declare global {
   interface Window {
-    desktop: import('@growth-os/shared').DesktopAPI;
+    desktop: import('@growth-os/shared').DesktopAPI
   }
 }

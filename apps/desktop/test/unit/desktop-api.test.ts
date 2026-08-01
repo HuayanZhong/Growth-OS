@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect } from 'vitest'
 
 /**
  * 测试环境验证
@@ -6,6 +6,6 @@ import { describe, it, expect } from 'vitest';
  */
 describe('测试环境验证', () => {
   it('Vitest 已正确配置', () => {
-    expect(1 + 1).toBe(2);
-  });
-});
+    expect(1 + 1).toBe(2)
+  })
+})

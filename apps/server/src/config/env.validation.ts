@@ -1,4 +1,4 @@
-import { z, parseEnv, envIntString } from '@growth-os/shared';
+import { z, parseEnv, envIntString } from '@growth-os/shared'
 
 /**
  * 服务端环境变量 schema。
@@ -7,7 +7,7 @@ import { z, parseEnv, envIntString } from '@growth-os/shared';
  */
 const envSchema = z.object({
   PORT: envIntString(),
-});
+})
 
 /**
  * ConfigModule 的 validate 函数。
@@ -17,6 +17,6 @@ const envSchema = z.object({
  * env 文件由根目录 dotenv-cli 注入到 process.env，ConfigModule 不再读 .env 文件。
  */
 export function validate(config: Record<string, unknown>) {
-  if (process.env.CI === 'true') return config;
-  return parseEnv(envSchema, config, { label: 'server' });
+  if (process.env.CI === 'true') return config
+  return parseEnv(envSchema, config, { label: 'server' })
 }

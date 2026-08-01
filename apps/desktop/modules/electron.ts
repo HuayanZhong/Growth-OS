@@ -1,21 +1,21 @@
-import { defineNuxtModule } from '@nuxt/kit';
-import type { Nuxt } from '@nuxt/schema';
-import { build, startup } from 'vite-plugin-electron';
-import { resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { defineNuxtModule } from '@nuxt/kit'
+import type { Nuxt } from '@nuxt/schema'
+import { build, startup } from 'vite-plugin-electron'
+import { resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
 
 // vite-plugin-electron 会在 process.electronApp 上挂载 Electron App 实例
 declare global {
   namespace NodeJS {
     interface Process {
-      electronApp?: import('electron').App;
+      electronApp?: import('electron').App
     }
   }
 }
 
-const __dirname = fileURLToPath(new URL('.', import.meta.url));
-const coreSrc = resolve(__dirname, '../../../packages/desktop-core/src');
-const outDir = resolve(__dirname, '../../../packages/desktop-core/dist');
+const __dirname = fileURLToPath(new URL('.', import.meta.url))
+const coreSrc = resolve(__dirname, '../../../packages/desktop-core/src')
+const outDir = resolve(__dirname, '../../../packages/desktop-core/dist')
 
 export default defineNuxtModule({
   meta: {
@@ -24,18 +24,18 @@ export default defineNuxtModule({
   },
 
   setup(_options: Record<string, never>, nuxt: Nuxt) {
-    let started = false;
+    let started = false
 
     /**
      * 开发模式下：Nuxt dev server 启动后，build Electron 入口文件并启动 Electron 窗口。
      * 此 hook 仅在 `nuxt dev` 时触发。
      */
     nuxt.hook('listen', async (_server: unknown, listener: { url: string }) => {
-      if (started) return;
-      started = true;
+      if (started) return
+      started = true
 
-      const url = listener.url ?? `http://localhost:${(_server as any)?.address()?.port ?? 3000}`;
-      process.env.VITE_DEV_SERVER_URL = String(url).replace(/\/$/, '');
+      const url = listener.url ?? `http://localhost:${(_server as any)?.address()?.port ?? 3000}`
+      process.env.VITE_DEV_SERVER_URL = String(url).replace(/\/$/, '')
 
       try {
         for (const entry of [resolve(coreSrc, 'main.ts'), resolve(coreSrc, 'preload.ts')]) {
@@ -43,19 +43,19 @@ export default defineNuxtModule({
           await build({
             entry,
             vite: { mode: 'development', build: { outDir, watch: {}, minify: false } },
-          });
+          })
         }
 
         // 启动 Electron 进程，argv 数组第一项为入口文件路径，其余为 Electron CLI 参数
-        await startup([resolve(outDir, 'main.js'), '--no-sandbox']);
+        await startup([resolve(outDir, 'main.js'), '--no-sandbox'])
 
         // vite-plugin-electron 会在 process.electronApp 上注册 exit 监听。
         // 移除默认监听，让 Nuxt 进程的生命周期由自身控制，避免 Electron 退出时连带杀掉 Nuxt。
-        process.electronApp?.removeAllListeners('exit');
+        process.electronApp?.removeAllListeners('exit')
       } catch (e) {
-        console.error('[desktop-electron] 构建或启动 Electron 失败:', e);
+        console.error('[desktop-electron] 构建或启动 Electron 失败:', e)
       }
-    });
+    })
 
     /**
      * 生产模式下：Nuxt 构建完成后编译 Electron 入口文件。
@@ -67,12 +67,12 @@ export default defineNuxtModule({
       if (!nuxt.options.dev) {
         try {
           for (const entry of [resolve(coreSrc, 'main.ts'), resolve(coreSrc, 'preload.ts')]) {
-            await build({ entry, vite: { mode: 'production', build: { outDir, minify: true } } });
+            await build({ entry, vite: { mode: 'production', build: { outDir, minify: true } } })
           }
         } catch (e) {
-          console.error('[desktop-electron] 生产构建 Electron 入口失败:', e);
+          console.error('[desktop-electron] 生产构建 Electron 入口失败:', e)
         }
       }
-    });
+    })
   },
-});
+})
