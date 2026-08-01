@@ -42,7 +42,7 @@ Header 总长度不超过 72 字符。Body 每行不超过 72 字符。
 
 ## Scope（可选）
 
-Scope 取值为 monorepo 包目录名，由 `commitlint.config.js` 动态扫描以下目录生成，新增包自动纳入：
+Scope 是**推荐项而非强制项**：commitlint 不拦截未命中枚举的 scope（`scope-enum` 已关闭），只要求小写。推荐取值：
 
 - `apps/*` — 应用（如 `desktop`、`server`）
 - `packages/*` — 共享包（如 `desktop-core`、`shared`）
@@ -54,10 +54,10 @@ Scope 取值为 monorepo 包目录名，由 `commitlint.config.js` 动态扫描�
 | ------- | ------------------------ |
 | `turbo` | `turbo.json`             |
 | `deps`  | 根依赖或统一版本升级     |
-| `repo`  | 仓库级配置（根目录文件） |
+| `repo`  | 仓库级配置（根目录文件、.trae/、AGENTS.md） |
 | `docs`  | `docs/`                  |
 
-如果改动涉及多个包且不宜拆分提交，可以不写 scope。
+如果改动涉及多个包且不宜拆分提交，可以不写 scope；其他合理 scope 也可以使用（如 `.trae/` 下规则按领域写 `frontend-style`），commitlint 不强制枚举。
 
 ## Subject 规范
 
