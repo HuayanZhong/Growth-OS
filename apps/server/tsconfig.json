@@ -4,11 +4,20 @@
     "outDir": "./dist",
     "rootDir": "./src",
     "noEmit": false,
+    "rewriteRelativeImportExtensions": true,
     "verbatimModuleSyntax": false,
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": [
+        "./src/*"
+      ]
     }
   },
-  "include": ["src/**/*.ts"],
-  "exclude": ["node_modules", "dist", "test"]
+  "include": [
+    "src/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "test"
+  ]
 }
