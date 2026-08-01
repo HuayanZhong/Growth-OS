@@ -13,6 +13,8 @@ gsap.registerPlugin(CSSPlugin)
 
 // 当前展示的表单：login | register
 const mode = ref<'login' | 'register'>('login')
+// 切换中锁：动画（退出 + 入场）完成前忽略新的切换请求，防止快速连点叠加多次翻转
+const switching = ref(false)
 const loginRef = ref<InstanceType<typeof AuthLogin>>()
 const registerRef = ref<InstanceType<typeof AuthRegister>>()
 
@@ -29,7 +31,8 @@ function formRoot(el: unknown): HTMLElement | null {
 // 透视固定在父容器（.hero 的 perspective 样式），翻转只动 rotationY——
 // 若把 transformPerspective 当动画属性，透视值会从极小过渡到 1200px，近大远小极端变形并触发滚动条闪烁。
 function switchMode(next: 'login' | 'register') {
-  if (mode.value === next) return
+  if (mode.value === next || switching.value) return
+  switching.value = true
   const curEl = formRoot(mode.value === 'login' ? loginRef.value?.$el : registerRef.value?.$el)
   gsap
     .timeline({
@@ -41,8 +44,19 @@ function switchMode(next: 'login' | 'register') {
           gsap.fromTo(
             nextEl,
             { rotationY: 90 },
-            { rotationY: 0, duration: 0.5, ease: 'back.out(1.5)', clearProps: 'transform' },
+            {
+              rotationY: 0,
+              duration: 0.5,
+              ease: 'back.out(1.5)',
+              clearProps: 'transform',
+              // 入场动画结束才解锁，切换全程忽略连点
+              onComplete: () => {
+                switching.value = false
+              },
+            },
           )
+        } else {
+          switching.value = false
         }
       },
     })
