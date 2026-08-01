@@ -1,2 +1,5 @@
 @import 'tailwindcss';
-@plugin "daisyui";
+/* daisyUI 插件只声明一次：默认主题 light（固定），勾选 theme-controller 切 dark（不跟随系统偏好） */
+@plugin "daisyui" {
+  themes: light --default, dark, cupcake;
+}
