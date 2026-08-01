@@ -20,4 +20,5 @@ export {
   type IpcRequest,
   type IpcResponse,
   type DesktopAPI,
+  type UpdateCheckResult,
 } from './utils/ipc-channels.ts'

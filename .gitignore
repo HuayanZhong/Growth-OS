@@ -41,3 +41,9 @@ dist-ssr
 .env
 .env.*
 !.env.example
+
+# 代码签名证书（自签名测试证书 / 正式证书都不得入库）
+# 路径通过环境变量 CSC_LINK 注入到 electron-builder
+tools/certs/*.pfx
+tools/certs/*.cer
+tools/certs/*.pem

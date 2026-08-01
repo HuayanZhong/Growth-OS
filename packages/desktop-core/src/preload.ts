@@ -28,6 +28,8 @@ async function invokeIpc<TChannel extends IpcChannelName>(
  */
 const api: DesktopAPI = {
   version: () => invokeIpc('version'),
+  checkForUpdates: () => invokeIpc('checkForUpdates'),
+  quitAndInstall: () => invokeIpc('quitAndInstall'),
 }
 
 contextBridge.exposeInMainWorld('desktop', api)

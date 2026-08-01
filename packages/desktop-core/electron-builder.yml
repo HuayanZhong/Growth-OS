@@ -18,6 +18,28 @@ extraResources:
     filter:
       - '**/*'
 
+# ============================================================
+# 自动更新发布源（P3 #17）
+# ============================================================
+# electron-updater 通过此配置拉取 latest.yml 和安装包
+# 发布到 GitHub Releases 时需要环境变量 GH_TOKEN（GitHub Personal Access Token，需 repo 权限）
+# owner/repo 与 git remote 一致，硬编码非敏感信息
+publish:
+  provider: github
+  owner: HuayanZhong
+  repo: Growth-OS
+
+# ============================================================
+# 代码签名（P3 #18）
+# ============================================================
+# electron-builder 自动读取环境变量注入签名配置，无需在此显式声明：
+#   CSC_LINK          → 证书文件路径（.pfx）
+#   CSC_KEY_PASSWORD  → 证书密码
+#
+# 当前使用自签名测试证书（位于 tools/certs/growth-os-test.pfx）
+# 注意：自签名证书会被 Windows SmartScreen 拦截，仅用于验证签名链路
+# 正式分发前必须替换为 OV/EV 证书
+
 win:
   target:
     - target: nsis
@@ -29,3 +51,5 @@ nsis:
   allowToChangeInstallationDirectory: true
   createDesktopShortcut: true
   createStartMenuShortcut: true
+  # 启用差分包，减少增量更新的下载体积
+  differentialPackage: true
