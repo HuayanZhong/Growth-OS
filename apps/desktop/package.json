@@ -23,6 +23,7 @@
     "@growth-os/ui": "workspace:*",
     "@tailwindcss/vite": "catalog:frontend",
     "daisyui": "catalog:frontend",
+    "gsap": "catalog:frontend",
     "nuxt": "catalog:frontend",
     "tailwindcss": "catalog:frontend",
     "vue": "catalog:frontend",

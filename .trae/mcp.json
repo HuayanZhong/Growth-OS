@@ -5,6 +5,13 @@
     },
     "reference-langchain": {
       "url": "https://reference.langchain.com/mcp"
+    },
+    "gsap-master": {
+      "command": "pnx",
+      "args": [
+        "-y",
+        "@vinhnguyen/gsap-mcp"
+      ]
     }
   }
 }
