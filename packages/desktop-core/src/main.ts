@@ -31,8 +31,9 @@ function handleIpc<TChannel extends IpcChannelName>(
 }
 
 function createWindow() {
-  // preload.js 与 main.js 编译到同一 outDir 下
-  const preloadPath = path.join(__dirname, 'preload.js')
+  // preload.cjs 与 main.js 编译到同一 outDir 下。
+  // 扩展名 .cjs：Electron sandbox 的 preload 只支持 CJS，且须避开 package.json "type": "module" 的 ESM 解析
+  const preloadPath = path.join(__dirname, 'preload.cjs')
 
   // 移除默认菜单栏（File, Edit, View, Window, Help）
   Menu.setApplicationMenu(null)

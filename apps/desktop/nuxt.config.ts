@@ -14,6 +14,33 @@ export default defineNuxtConfig({
   // 禁用 SSR，因为桌面端不需要服务器端渲染
   ssr: false,
 
+  // 全局 head：CSP meta 消除 Electron 安全警告。
+  // 注意：禁止加入 'unsafe-eval'（警告专门针对它）；'unsafe-inline' 是 Nuxt SPA
+  // 内联 payload 所需，不会触发该警告。
+  app: {
+    head: {
+      meta: [
+        {
+          'http-equiv': 'Content-Security-Policy',
+          content: [
+            "default-src 'self'",
+            // Nuxt SPA 内联 payload 脚本 + 样式（Tailwind/daisyUI 注入）
+            "script-src 'self' 'unsafe-inline'",
+            "style-src 'self' 'unsafe-inline'",
+            // Supabase 头像/文件存储 + 内联图片
+            "img-src 'self' data: blob: https: http:",
+            "font-src 'self' data:",
+            // Supabase API（https）+ dev 模式 HMR（ws/localhost）
+            "connect-src 'self' https: http: ws: wss:",
+            "object-src 'none'",
+            "base-uri 'self'",
+            "form-action 'self'",
+          ].join('; '),
+        },
+      ],
+    },
+  },
+
   // Electron 桌面端模块——自动编译 main/preload 并启动 Electron
   // @nuxt/test-utils/module 提供 Vitest 的 Nuxt 测试环境
   modules: ['./modules/electron', '@nuxt/test-utils/module'],

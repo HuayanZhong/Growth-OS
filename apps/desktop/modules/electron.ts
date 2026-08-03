@@ -39,10 +39,23 @@ export default defineNuxtModule({
 
       try {
         for (const entry of [resolve(coreSrc, 'main.ts'), resolve(coreSrc, 'preload.ts')]) {
+          const isPreload = entry.endsWith('preload.ts')
           // watch: {} 启用 Vite 的观察模式，使得 main/preload 修改后自动增量编译
           await build({
             entry,
-            vite: { mode: 'development', build: { outDir, watch: {}, minify: false } },
+            vite: {
+              mode: 'development',
+              build: {
+                outDir,
+                watch: {},
+                minify: false,
+                // preload 必须输出 CJS：Electron sandbox 的 preload 不支持 ESM。
+                // 扩展名用 .cjs 避开 package.json "type": "module" 的 ESM 解析
+                ...(isPreload
+                  ? { lib: { entry, formats: ['cjs'], fileName: () => 'preload.cjs' } }
+                  : {}),
+              },
+            },
           })
         }
 
@@ -67,7 +80,22 @@ export default defineNuxtModule({
       if (!nuxt.options.dev) {
         try {
           for (const entry of [resolve(coreSrc, 'main.ts'), resolve(coreSrc, 'preload.ts')]) {
-            await build({ entry, vite: { mode: 'production', build: { outDir, minify: true } } })
+            const isPreload = entry.endsWith('preload.ts')
+            await build({
+              entry,
+              vite: {
+                mode: 'production',
+                build: {
+                  outDir,
+                  minify: true,
+                  // preload 必须输出 CJS：Electron sandbox 的 preload 不支持 ESM。
+                  // 扩展名用 .cjs 避开 package.json "type": "module" 的 ESM 解析
+                  ...(isPreload
+                    ? { lib: { entry, formats: ['cjs'], fileName: () => 'preload.cjs' } }
+                    : {}),
+                },
+              },
+            })
           }
         } catch (e) {
           console.error('[desktop-electron] 生产构建 Electron 入口失败:', e)
