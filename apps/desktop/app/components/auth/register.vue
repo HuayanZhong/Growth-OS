@@ -6,13 +6,19 @@ import { registerSchema } from '@growth-os/types'
 // 切换登录表单：由父组件（认证页）监听 switch-to-login 事件
 defineEmits<{ switchToLogin: [] }>()
 
-// 表单数据（预留：接入 Supabase 后直接传给 signUp）
+// 表单数据
 const email = ref('')
 const password = ref('')
 const submitting = ref(false)
 // 字段级输入标记：未输入前不显示对应校验错误，避免空表单默认报错
 const emailTouched = ref(false)
 const passwordTouched = ref(false)
+// 注册成功后显示"确认邮件已发送"视图（方案B：Confirm email 开启，signUp 返回 session 为 null）
+const registeredEmail = ref('')
+const resending = ref(false)
+
+const { signUp, resendConfirmation } = useAuth()
+const { showToast } = useToast()
 
 // zod 字段级校验：各自字段开始输入后才校验（互不交叉）
 const emailError = computed(() => {
@@ -26,7 +32,7 @@ const passwordError = computed(() => {
   return result.success ? undefined : result.error.issues[0]?.message
 })
 
-// 提交注册（预留：接入 supabase-js 后调用 signUp）
+// 提交注册
 async function onSubmit() {
   if (submitting.value) return
   // 提交时强制校验两个字段（错误分别显示在各字段下方）
@@ -36,10 +42,33 @@ async function onSubmit() {
   if (emailError.value || passwordError.value) return
   submitting.value = true
   try {
-    // TODO: await supabase.auth.signUp({ email: email.value, password: password.value })
-    // 成功后由全局 auth 守卫接管跳转
+    const { data, error } = await signUp(email.value, password.value)
+    if (error) {
+      showToast(mapAuthError(error), 'error')
+      return
+    }
+    // Confirm email 开启：session 为 null -> 显示确认视图
+    // 若 session 非空（Confirm email 关闭场景）-> 守卫接管跳转
+    if (data.session === null) {
+      registeredEmail.value = email.value
+    }
   } finally {
     submitting.value = false
+  }
+}
+
+// 重发确认邮件
+async function onResend() {
+  if (resending.value || !registeredEmail.value) return
+  resending.value = true
+  try {
+    const { error } = await resendConfirmation(registeredEmail.value)
+    showToast(
+      error ? mapAuthError(error) : '确认邮件已重新发送，请查收（注意垃圾邮件文件夹）',
+      error ? 'error' : 'success',
+    )
+  } finally {
+    resending.value = false
   }
 }
 </script>
@@ -56,8 +85,43 @@ async function onSubmit() {
     <!-- 注册卡片 -->
     <div class="card w-full bg-base-100 shadow-lg">
       <div class="card-body gap-3">
+        <!-- 确认邮件已发送视图（方案B：注册成功，待邮箱确认） -->
+        <div v-if="registeredEmail" class="flex flex-col items-center gap-3 py-4 text-center">
+          <div class="text-success">
+            <svg
+              class="h-12 w-12"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <rect width="20" height="16" x="2" y="4" rx="2" />
+              <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+            </svg>
+          </div>
+          <h2 class="text-lg font-semibold text-base-content">确认邮件已发送</h2>
+          <p class="text-sm text-base-content/60">
+            我们已向
+            <span class="font-medium text-base-content">{{ registeredEmail }}</span>
+            发送确认邮件，请点击邮件中的链接完成注册。
+          </p>
+          <button
+            type="button"
+            class="btn btn-ghost btn-block btn-circle"
+            :disabled="resending"
+            @click="onResend"
+          >
+            <span v-if="resending" class="loading loading-spinner loading-sm"></span>
+            {{ resending ? '发送中' : '重新发送确认邮件' }}
+          </button>
+          <button class="btn btn-link" @click="$emit('switchToLogin')">返回登录</button>
+        </div>
+
         <!-- 注册表单（novalidate：校验统一交给 zod，避免浏览器原生提示与 zod 重复） -->
-        <form class="flex flex-col gap-3" @submit.prevent="onSubmit" novalidate>
+        <form v-else class="flex flex-col gap-3" @submit.prevent="onSubmit" novalidate>
           <!-- 邮箱输入（仅支持邮箱注册，label 作容器） -->
           <label class="input">
             <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -122,8 +186,8 @@ async function onSubmit() {
           </button>
         </form>
 
-        <!-- 登录引导（切到登录表单） -->
-        <p class="mt-1 text-center text-sm text-base-content/60">
+        <!-- 登录引导（切到登录表单；确认视图下隐藏） -->
+        <p v-if="!registeredEmail" class="mt-1 text-center text-sm text-base-content/60">
           已有账号？
           <button class="btn btn-link" @click="$emit('switchToLogin')">立即登录</button>
         </p>

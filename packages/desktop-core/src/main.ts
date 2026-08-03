@@ -51,6 +51,19 @@ function createWindow() {
     },
   })
 
+  // 开发模式：F12 / Ctrl+Shift+I 切换 DevTools（菜单栏已移除，需手动注册）
+  if (!app.isPackaged) {
+    win.webContents.on('before-input-event', (event, input) => {
+      if (
+        input.key === 'F12' ||
+        (input.control && input.shift && input.key.toLowerCase() === 'i')
+      ) {
+        win.webContents.toggleDevTools()
+        event.preventDefault()
+      }
+    })
+  }
+
   // VITE_DEV_SERVER_URL 由 vite-plugin-electron 注入，仅在开发模式下可用
   if (process.env.VITE_DEV_SERVER_URL) {
     win.loadURL(process.env.VITE_DEV_SERVER_URL).catch((err) => {

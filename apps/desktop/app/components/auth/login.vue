@@ -26,7 +26,10 @@ const passwordError = computed(() => {
   return result.success ? undefined : result.error.issues[0]?.message
 })
 
-// 提交登录（预留：接入 supabase-js 后调用 signInWithPassword）
+const { signIn } = useAuth()
+const { showToast } = useToast()
+
+// 提交登录
 async function onSubmit() {
   if (submitting.value) return
   // 提交时强制校验两个字段（错误分别显示在各字段下方）
@@ -36,7 +39,11 @@ async function onSubmit() {
   if (emailError.value || passwordError.value) return
   submitting.value = true
   try {
-    // TODO: await supabase.auth.signInWithPassword({ email: email.value, password: password.value })
+    const { error } = await signIn(email.value, password.value)
+    if (error) {
+      showToast(mapAuthError(error), 'error')
+      return
+    }
     // 成功后由全局 auth 守卫接管跳转
   } finally {
     submitting.value = false

@@ -37,6 +37,9 @@ export default defineNuxtConfig({
     public: {
       siteUrl: process.env.NUXT_PUBLIC_SITE_URL ?? 'http://localhost:3000',
       appName: process.env.NUXT_PUBLIC_APP_NAME ?? 'Growth OS',
+      // Supabase 公开配置（publishable key，非 secret，可暴露给前端）
+      supabaseUrl: process.env.NUXT_PUBLIC_SUPABASE_URL ?? '',
+      supabaseAnonKey: process.env.NUXT_PUBLIC_SUPABASE_ANON_KEY ?? '',
     },
   },
 
