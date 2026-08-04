@@ -58,6 +58,12 @@ export default defineNuxtConfig({
     preset: 'static',
   },
 
+  // 路由级布局：集中管理，无需在每个页面写 definePageMeta
+  routeRules: {
+    '/dashboard': { appLayout: 'dashboard' },
+    '/dashboard/**': { appLayout: 'dashboard' },
+  },
+
   // 运行时配置：public 区的变量会内联到前端 bundle，暴露给终端用户
   // 禁止把 secret（如 API Key）放进 public 区
   runtimeConfig: {
