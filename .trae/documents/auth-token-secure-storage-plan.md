@@ -1,7 +1,7 @@
 # Token 安全存储方案（Electron 桌面端）
 
 > 状态：方案设计（未实现）
-> 相关文件：`useSupabase.ts` / `useAuth.ts` / `modules/electron.ts` / `packages/desktop-core/src/{main,preload}.ts` / `packages/shared/src/utils/ipc-channels.ts`
+> 相关文件：`useSupabase.ts` / `useAuth.ts` / `modules/electron.ts` / `packages/desktop-core/src/{main,preload}.ts` / `packages/types/src/utils/ipc-channels.ts`
 > 现状：session 全量明文存 `localStorage`（key `supabase.auth.token`），包含 access token + refresh token + user 全量数据
 
 ---
@@ -77,7 +77,7 @@
 
 **改动点**：
 
-1. **`packages/shared/src/utils/ipc-channels.ts`** —— `IpcChannelMap` 加一个通道：
+1. **`packages/types/src/utils/ipc-channels.ts`** —— `IpcChannelMap` 加一个通道：
 
 ```ts
 /** 主进程安全存储（safeStorage 加密，仅 Electron 环境可用） */

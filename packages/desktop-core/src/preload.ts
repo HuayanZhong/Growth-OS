@@ -1,5 +1,5 @@
 import { contextBridge, ipcRenderer } from 'electron'
-import type { DesktopAPI, IpcChannelName, IpcRequest, IpcResponse } from '@growth-os/shared'
+import type { DesktopAPI, IpcChannelName, IpcRequest, IpcResponse } from '@growth-os/types'
 
 /**
  * 类型安全的 IPC 调用封装。
@@ -22,7 +22,7 @@ async function invokeIpc<TChannel extends IpcChannelName>(
  * `api` 标注为 `DesktopAPI`（从 `IpcChannelMap` 派生），与 main.ts 的 handler 共享契约。
  *
  * 新增 IPC 通道：
- * 1. 在 `@growth-os/shared` 的 `IpcChannelMap` 添加条目
+ * 1. 在 `@growth-os/types` 的 `IpcChannelMap` 添加条目
  * 2. 在 `main.ts` 调用 `handleIpc('通道名', handler)`
  * 3. 在此处添加对应方法
  */
@@ -30,6 +30,7 @@ const api: DesktopAPI = {
   version: () => invokeIpc('version'),
   checkForUpdates: () => invokeIpc('checkForUpdates'),
   quitAndInstall: () => invokeIpc('quitAndInstall'),
+  secureStore: (request) => invokeIpc('secureStore', request),
 }
 
 contextBridge.exposeInMainWorld('desktop', api)

@@ -14,11 +14,5 @@ export {
 
 export { normalizeBaseUrl, normalizePrefix, joinUrl } from './normalize.ts'
 
-export {
-  type IpcChannelMap,
-  type IpcChannelName,
-  type IpcRequest,
-  type IpcResponse,
-  type DesktopAPI,
-  type UpdateCheckResult,
-} from './utils/ipc-channels.ts'
+// 注意：IPC 类型契约（IpcChannelMap/DesktopAPI 等）已迁至 @growth-os/types，
+// 需要时从 '@growth-os/types' 导入。

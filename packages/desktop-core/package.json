@@ -14,7 +14,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@growth-os/shared": "workspace:*",
+    "@growth-os/types": "workspace:*",
     "electron-updater": "catalog:frontend"
   },
   "devDependencies": {

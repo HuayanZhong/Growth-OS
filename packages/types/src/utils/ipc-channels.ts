@@ -1,5 +1,6 @@
 /**
  * IPC 通道类型映射 —— Electron 主进程与渲染进程共享的类型契约。
+ * 由 `@growth-os/types` 统一分发，跨包只读引用。
  *
  * 设计要点：
  * - key = 通道名（与 `ipcMain.handle` / `ipcRenderer.invoke` 第一参数一致）
@@ -52,6 +53,21 @@ export interface IpcChannelMap {
   quitAndInstall: {
     request: void
     response: void
+  }
+  /**
+   * 安全存储（仅 Electron 环境）：主进程用 safeStorage（OS 级加密，
+   * Win=DPAPI / macOS=Keychain / Linux=libsecret）加密后落盘 userData/secure-store。
+   * 用于持久化 Supabase session 等敏感数据，localStorage 不再存 token。
+   */
+  secureStore: {
+    request: {
+      action: 'get' | 'set' | 'remove'
+      /** 存储键（如 Supabase 的 session storageKey） */
+      key: string
+      /** 待加密写入的值（action 为 'set' 时必填） */
+      value?: string
+    }
+    response: string | null
   }
 }
 

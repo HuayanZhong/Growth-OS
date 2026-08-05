@@ -19,7 +19,6 @@
   },
   "dependencies": {
     "@growth-os/desktop-core": "workspace:*",
-    "@growth-os/shared": "workspace:*",
     "@growth-os/types": "workspace:*",
     "@growth-os/ui": "workspace:*",
     "@supabase/supabase-js": "catalog:frontend",
