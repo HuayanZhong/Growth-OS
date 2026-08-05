@@ -1,35 +1,31 @@
 import type { AuthError, Session } from '@supabase/supabase-js'
 
 /**
- * 认证操作封装。
+ * 认证服务类：封装 Supabase Auth 操作。
+ * 方法用箭头函数字段定义，解构后 this 仍指向实例（如 `const { signIn } = useAuth()`）。
  * 错误不在此处吞掉，由调用方按 UI 需要提示；mapAuthError 统一中文映射。
  */
-export function useAuth() {
-  const supabase = useSupabase()
+export class AuthService {
+  private readonly supabase = useSupabase()
 
-  async function getSession(): Promise<Session | null> {
-    const { data } = await supabase.auth.getSession()
+  getSession = async (): Promise<Session | null> => {
+    const { data } = await this.supabase.auth.getSession()
     return data.session
   }
 
-  async function signIn(email: string, password: string) {
-    return supabase.auth.signInWithPassword({ email, password })
-  }
+  signIn = (email: string, password: string) =>
+    this.supabase.auth.signInWithPassword({ email, password })
 
-  async function signUp(email: string, password: string) {
-    return supabase.auth.signUp({ email, password })
-  }
+  signUp = (email: string, password: string) => this.supabase.auth.signUp({ email, password })
 
-  async function signOut() {
-    return supabase.auth.signOut()
-  }
+  signOut = () => this.supabase.auth.signOut()
 
   // 重发注册确认邮件（type:'signup' 对应 signUp 的邮箱确认）
-  async function resendConfirmation(email: string) {
-    return supabase.auth.resend({ type: 'signup', email })
-  }
+  resendConfirmation = (email: string) => this.supabase.auth.resend({ type: 'signup', email })
+}
 
-  return { getSession, signIn, signUp, signOut, resendConfirmation }
+export function useAuth(): AuthService {
+  return new AuthService()
 }
 
 // Supabase Auth 错误 -> 中文提示

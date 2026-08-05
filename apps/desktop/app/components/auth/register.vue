@@ -48,9 +48,11 @@ async function onSubmit() {
       return
     }
     // Confirm email 开启：session 为 null -> 显示确认视图
-    // 若 session 非空（Confirm email 关闭场景）-> 守卫接管跳转
+    // 若 session 非空（Confirm email 关闭场景）-> 显式跳转工作台
     if (data.session === null) {
       registeredEmail.value = email.value
+    } else {
+      await navigateTo('/dashboard')
     }
   } finally {
     submitting.value = false

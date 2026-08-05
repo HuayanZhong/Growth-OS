@@ -44,7 +44,8 @@ async function onSubmit() {
       showToast(mapAuthError(error), 'error')
       return
     }
-    // 成功后由全局 auth 守卫接管跳转
+    // 登录成功：session 已持久化到 storage，显式跳转工作台（守卫会在导航时校验登录态）
+    await navigateTo('/dashboard')
   } finally {
     submitting.value = false
   }
