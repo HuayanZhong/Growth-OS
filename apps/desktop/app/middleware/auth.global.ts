@@ -9,7 +9,8 @@
  */
 export default defineNuxtRouteMiddleware(async (to) => {
   const supabase = useSupabase()
-  const { data } = await supabase.auth.getSession()
+  // getSession 失败（如 storage/IPC 异常）视为未登录，避免守卫抛错把导航打回错误页造成死循环
+  const { data } = await supabase.auth.getSession().catch(() => ({ data: { session: null } }))
   const loggedIn = !!data.session
   const isAuthPage = to.path.startsWith('/auth')
 

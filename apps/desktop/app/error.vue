@@ -9,7 +9,11 @@ import type { NuxtError } from '#app'
  */
 const props = defineProps<{ error: NuxtError }>()
 
-const handleError = () => clearError({ redirect: '/' })
+// 返回登录页：不经中间页，未登录/已登录都可直达（不依赖 useAuth，兜底页不引入可能再抛错的模块）
+const toLogin = () => clearError({ redirect: '/auth' })
+
+// 返回首页：redirect 到 /dashboard（经守卫处理，与登录态无关）
+const toHome = () => clearError({ redirect: '/' })
 </script>
 
 <template>
@@ -24,7 +28,8 @@ const handleError = () => clearError({ redirect: '/' })
             {{ props.error?.message || '页面加载时出现问题' }}
           </p>
           <div class="card-actions">
-            <button class="btn btn-primary" @click="handleError">返回首页</button>
+            <button class="btn btn-primary" @click="toLogin">返回登录页</button>
+            <button class="btn btn-ghost" @click="toHome">返回首页</button>
           </div>
         </div>
       </div>
