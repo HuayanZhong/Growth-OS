@@ -19,6 +19,8 @@ function isElectron(): boolean {
   return typeof window !== 'undefined' && Boolean(window.desktop?.secureStore)
 }
 
+export { isElectron }
+
 /**
  * 裁剪 session JSON：只保留 token 相关字段与最小 user 信息。
  * 解析失败（非 session 数据）时原样返回，不阻断存储。
@@ -46,7 +48,13 @@ function trimSession(value: string): string {
 export const secureStorage: SecureStorageAdapter = {
   async getItem(key) {
     if (!isElectron()) return localStorage.getItem(key)
-    return window.desktop.secureStore({ action: 'get', key })
+    try {
+      return await window.desktop.secureStore({ action: 'get', key })
+    } catch (err) {
+      // IPC 异常视为未登录：不阻断应用，仅本轮会话无法恢复
+      console.error('[auth] secureStore getItem 失败:', key, err)
+      return null
+    }
   },
 
   async setItem(key, value) {
@@ -54,7 +62,13 @@ export const secureStorage: SecureStorageAdapter = {
       localStorage.setItem(key, value)
       return
     }
-    await window.desktop.secureStore({ action: 'set', key, value: trimSession(value) })
+    try {
+      await window.desktop.secureStore({ action: 'set', key, value: trimSession(value) })
+    } catch (err) {
+      // 持久化失败不阻断登录：session 在内存中仍有效（signIn 成功即可用），
+      // 仅重启后需重新登录。auth-js 的 storage 异常会直接 throw 冒泡，必须在此兜住。
+      console.error('[auth] secureStore setItem 失败，session 不持久化:', key, err)
+    }
   },
 
   async removeItem(key) {
@@ -62,6 +76,10 @@ export const secureStorage: SecureStorageAdapter = {
       localStorage.removeItem(key)
       return
     }
-    await window.desktop.secureStore({ action: 'remove', key })
+    try {
+      await window.desktop.secureStore({ action: 'remove', key })
+    } catch (err) {
+      console.error('[auth] secureStore removeItem 失败:', key, err)
+    }
   },
 }

@@ -44,8 +44,12 @@ async function onSubmit() {
       showToast(mapAuthError(error), 'error')
       return
     }
+    showToast('登录成功', 'success')
     // 登录成功：session 已持久化到 storage，显式跳转工作台（守卫会在导航时校验登录态）
     await navigateTo('/dashboard')
+  } catch (err) {
+    // 网络/服务端异常时 signIn 会 throw（如 AuthRetryableFetchError），兜底提示避免静默失败
+    showToast(err instanceof Error ? err.message : '登录失败，请稍后重试', 'error')
   } finally {
     submitting.value = false
   }

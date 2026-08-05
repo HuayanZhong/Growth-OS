@@ -31,8 +31,9 @@ async function onSignOut() {
     showToast(mapAuthError(error), 'error')
     return
   }
-  // 登出后全局守卫会把当前页重定向到 /auth
+  // 登出后显式跳转登录页：守卫只在导航发生时执行，不导航会停留在 dashboard
   showToast('已退出登录', 'success')
+  await navigateTo('/auth')
 }
 </script>
 

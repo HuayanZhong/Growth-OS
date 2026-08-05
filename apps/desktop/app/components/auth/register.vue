@@ -52,8 +52,12 @@ async function onSubmit() {
     if (data.session === null) {
       registeredEmail.value = email.value
     } else {
+      showToast('注册成功', 'success')
       await navigateTo('/dashboard')
     }
+  } catch (err) {
+    // 网络/服务端异常时 signUp 会 throw（如 AuthRetryableFetchError），兜底提示避免静默失败
+    showToast(err instanceof Error ? err.message : '注册失败，请稍后重试', 'error')
   } finally {
     submitting.value = false
   }

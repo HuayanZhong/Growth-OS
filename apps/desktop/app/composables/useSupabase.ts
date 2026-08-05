@@ -1,21 +1,35 @@
 import { createClient } from '@supabase/supabase-js'
 import type { SupabaseClient } from '@supabase/supabase-js'
-import { secureStorage } from '~/composables/useSecureStorage'
+import { isElectron, secureStorage } from '~/composables/useSecureStorage'
 
 // 模块级单例：ssr:false 仅浏览器运行，不会跨请求共享，安全
 let client: SupabaseClient | null = null
 
-// auth-js 默认 storageKey（storageKey 未自定义时的默认值，含旧版 '-user' 后缀键）
-const LEGACY_STORAGE_KEYS = ['supabase.auth.token', 'supabase.auth.token-user']
+/**
+ * supabase-js 各版本 storage key 格式：
+ * - v2（当前）：sb-<project-ref>-auth-token（由 URL hostname 首段派生，见 SupabaseClient.ts）
+ * - v1/早期 v2：supabase.auth.token（含 '-user' 后缀的 user 独立存储）
+ * Electron 下 session 经 secureStore 走 IPC，localStorage 中出现上述 key 均为历史明文残留，
+ * 一次性清理；纯浏览器 fallback 的清理由 isElectron 门控排除，避免误删当前会话。
+ */
+function legacyStorageKeys(supabaseUrl: string): string[] {
+  let sbKey = ''
+  try {
+    sbKey = `sb-${new URL(supabaseUrl).hostname.split('.')[0]}-auth-token`
+  } catch {
+    // URL 解析失败时跳过，仅清理其余已知 key
+  }
+  return ['supabase.auth.token', 'supabase.auth.token-user', ...(sbKey ? [sbKey] : [])]
+}
 
 /**
  * 清除历史版本明文存 localStorage 的 session 残留。
- * 安全存储接入后 token 不再明文落盘；旧残留一次性清理（用户重新登录一次），
- * 避免过期明文 token 长期驻留磁盘。
+ * 仅 Electron 环境执行：safeStorage 接入前 token 明文存 localStorage，接入后一次性清理。
  */
-function clearLegacyLocalStorageSession(): void {
+function clearLegacyLocalStorageSession(supabaseUrl: string): void {
   if (typeof localStorage === 'undefined') return
-  for (const key of LEGACY_STORAGE_KEYS) {
+  if (!isElectron()) return
+  for (const key of legacyStorageKeys(supabaseUrl)) {
     localStorage.removeItem(key)
   }
 }
@@ -28,7 +42,7 @@ function clearLegacyLocalStorageSession(): void {
 export function useSupabase(): SupabaseClient {
   if (client) return client
   const { supabaseUrl, supabaseAnonKey } = useRuntimeConfig().public
-  clearLegacyLocalStorageSession()
+  clearLegacyLocalStorageSession(supabaseUrl)
   client = createClient(supabaseUrl, supabaseAnonKey, {
     auth: {
       persistSession: true,
