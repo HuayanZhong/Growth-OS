@@ -24,8 +24,9 @@ export { isElectron }
 /**
  * 裁剪 session JSON：只保留 token 相关字段与最小 user 信息。
  * 解析失败（非 session 数据）时原样返回，不阻断存储。
+ * 导出供测试：PII 剥离属安全关键路径，需独立单测。
  */
-function trimSession(value: string): string {
+export function trimSession(value: string): string {
   try {
     const session = JSON.parse(value) as Record<string, unknown>
     if (!session || typeof session !== 'object') return value

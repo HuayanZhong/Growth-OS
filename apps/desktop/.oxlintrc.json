@@ -50,5 +50,13 @@
     "**/.turbo/**",
     "**/node_modules/**",
     "**/*.gen.*"
+  ],
+  "overrides": [
+    {
+      "files": ["test/**"],
+      "rules": {
+        "import/first": "off"
+      }
+    }
   ]
 }

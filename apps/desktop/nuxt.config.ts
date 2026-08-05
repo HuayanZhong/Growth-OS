@@ -78,4 +78,13 @@ export default defineNuxtConfig({
 
   // 启用 Nuxt DevTools
   devtools: { enabled: true },
+
+  // 扩展 Nuxt 生成的 tsconfig：默认 include 只覆盖 test/nuxt（集测目录），
+  // unit（纯逻辑单测）不在其中，导致 IDE 无法解析 unit 文件里的 ~ 别名。
+  // 路径基准与 .nuxt/tsconfig.app.json 的 include 一致（相对 .nuxt/ 目录）。
+  typescript: {
+    tsConfig: {
+      include: ['../test/unit/**/*'],
+    },
+  },
 })
