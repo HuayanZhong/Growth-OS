@@ -116,7 +116,7 @@ async function onResend() {
           </p>
           <button
             type="button"
-            class="btn btn-ghost btn-block btn-circle"
+            class="btn btn-ghost btn-block"
             :disabled="resending"
             @click="onResend"
           >

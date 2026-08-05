@@ -1,6 +1,5 @@
 <script setup lang="ts">
 // Dashboard 布局：左侧导航 + 右侧内容区（对标 Coze 桌面端）
-import { computed, ref } from 'vue'
 import { useAuth, mapAuthError } from '~/composables/useAuth'
 import { ThemeToggle } from '@growth-os/ui'
 

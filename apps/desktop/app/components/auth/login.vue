@@ -134,7 +134,7 @@ function onSso(provider: 'qq' | 'wechat') {
           <p class="text-sm text-error" aria-live="polite">{{ passwordError ?? '' }}</p>
 
           <!-- 主登录按钮（页面唯一 primary 色；提交中显示 loading 态） -->
-          <button type="submit" class="btn btn-primary btn-block btn-circle" :disabled="submitting">
+          <button type="submit" class="btn btn-primary btn-block" :disabled="submitting">
             <span v-if="submitting" class="loading loading-spinner loading-sm"></span>
             {{ submitting ? '提交中' : '登 录' }}
           </button>
@@ -153,11 +153,7 @@ function onSso(provider: 'qq' | 'wechat') {
             <img src="~/assets/icons/qq.svg" alt="QQ logo" class="h-6 w-6" />
             QQ 登录
           </button>
-          <button
-            type="button"
-            class="btn btn-dash btn-success btn-circle btn-block"
-            @click="onSso('wechat')"
-          >
+          <button type="button" class="btn btn-dash btn-success btn-block" @click="onSso('wechat')">
             <!-- 官方微信图标（assets/icons/微信.svg） -->
             <img src="~/assets/icons/微信.svg" alt="微信 logo" class="h-6 w-6" />
             微信登录

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 // 认证页：hero 骨架 + 暗夜切换 + 登录/注册切换（GSAP 3D 翻转过渡动画）
-import { nextTick, ref } from 'vue'
 // 显式注册 CSSPlugin：Vite 预打包 tree-shake 会移除 gsap 的自动注册（sideEffects:false），
 // 不注册则 rotationY/opacity 等 CSS 属性全部被忽略（"Missing plugin"），动画不生效
 import { gsap } from 'gsap'
