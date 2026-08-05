@@ -33,14 +33,17 @@ describe('useSupabase 单例与 legacy 清理', () => {
 
   it('Electron 环境下首次调用清理 legacy 明文残留（含派生 sb- key）', async () => {
     setElectron(true)
+    // 派生 key 由当前 URL 的 projectRef 生成（CI 无 .env 时是占位 URL，测试不硬编码真实 ref）
+    const projectRef = new URL(useRuntimeConfig().public.supabaseUrl).hostname.split('.')[0]!
+    const derivedKey = `sb-${projectRef}-auth-token`
     localStorage.setItem('supabase.auth.token', 'x')
     localStorage.setItem('supabase.auth.token-user', 'y')
-    localStorage.setItem('sb-xhuhkaryzscetmvdxbzb-auth-token', 'z')
+    localStorage.setItem(derivedKey, 'z')
     const useSupabase = await loadUseSupabase()
     useSupabase()
     expect(localStorage.getItem('supabase.auth.token')).toBeNull()
     expect(localStorage.getItem('supabase.auth.token-user')).toBeNull()
-    expect(localStorage.getItem('sb-xhuhkaryzscetmvdxbzb-auth-token')).toBeNull()
+    expect(localStorage.getItem(derivedKey)).toBeNull()
   })
 
   it('浏览器（非 Electron）不清理 localStorage（避免误删当前会话）', async () => {
