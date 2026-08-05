@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // Dashboard 布局：左侧导航 + 右侧内容区（对标 Coze 桌面端）
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useAuth, mapAuthError } from '~/composables/useAuth'
 import { ThemeToggle } from '@growth-os/ui'
 
@@ -8,6 +8,22 @@ const route = useRoute()
 const { getSession, signOut } = useAuth()
 const session = ref(await getSession())
 const { showToast } = useToast()
+
+// 导航项激活判断：exact 精确匹配（概览），否则前缀匹配（子路由同样高亮）
+function isActive(path: string, exact = false) {
+  if (exact) return route.path === path
+  return route.path === path || route.path.startsWith(`${path}/`)
+}
+
+// 导航链接样式：激活态 primary 高亮，未激活态悬停渐变
+function navClass(path: string, exact = false) {
+  return isActive(path, exact)
+    ? 'rounded-lg bg-primary font-medium text-primary-content shadow-sm transition-colors'
+    : 'rounded-lg text-base-content/70 transition-colors hover:bg-base-300'
+}
+
+// 用户头像占位：取邮箱首字母
+const initials = computed(() => (session.value?.user.email?.[0] ?? '?').toUpperCase())
 
 async function onSignOut() {
   const { error } = await signOut()
@@ -23,23 +39,31 @@ async function onSignOut() {
 <template>
   <div class="flex h-screen overflow-hidden">
     <!-- 左侧导航栏 -->
-    <aside class="flex h-full w-60 flex-col border-r border-base-300 bg-base-200">
-      <!-- 顶部：应用标识 -->
-      <div class="flex h-16 items-center gap-2 px-5">
-        <span class="text-lg font-bold text-primary">Growth OS</span>
+    <aside class="flex h-full w-60 shrink-0 flex-col border-r border-base-300 bg-base-200">
+      <!-- 顶部：品牌区 -->
+      <div class="flex h-16 items-center gap-2.5 px-4">
+        <div
+          class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary text-base font-bold text-primary-content shadow-sm"
+        >
+          G
+        </div>
+        <div class="min-w-0 flex-1 leading-tight">
+          <p class="truncate text-sm font-bold tracking-tight">Growth OS</p>
+          <p class="truncate text-xs text-base-content/50">个人工作台</p>
+        </div>
+        <ThemeToggle />
       </div>
 
       <!-- 中部：导航菜单 -->
-      <nav class="flex-1 overflow-y-auto px-3 py-2">
-        <ul class="menu w-full gap-1 px-0">
+      <nav class="flex-1 overflow-y-auto px-3 py-3">
+        <ul class="menu w-full gap-0.5 px-0">
+          <li class="menu-title px-2 pb-1 text-xs uppercase tracking-wider text-base-content/40">
+            工作台
+          </li>
           <li>
-            <NuxtLink
-              to="/dashboard"
-              :class="{ active: route.path === '/dashboard' }"
-              class="rounded-lg transition-colors"
-            >
+            <NuxtLink to="/dashboard" :class="navClass('/dashboard', true)">
               <svg
-                class="h-5 w-5"
+                class="h-5 w-5 shrink-0"
                 fill="none"
                 stroke="currentColor"
                 stroke-width="2"
@@ -55,14 +79,16 @@ async function onSignOut() {
               <span>概览</span>
             </NuxtLink>
           </li>
+
+          <li
+            class="menu-title px-2 pb-1 pt-3 text-xs uppercase tracking-wider text-base-content/40"
+          >
+            资源
+          </li>
           <li>
-            <NuxtLink
-              to="/dashboard/agents"
-              :class="{ active: route.path === '/dashboard/agents' }"
-              class="rounded-lg transition-colors"
-            >
+            <NuxtLink to="/dashboard/agents" :class="navClass('/dashboard/agents')">
               <svg
-                class="h-5 w-5"
+                class="h-5 w-5 shrink-0"
                 fill="none"
                 stroke="currentColor"
                 stroke-width="2"
@@ -81,13 +107,9 @@ async function onSignOut() {
             </NuxtLink>
           </li>
           <li>
-            <NuxtLink
-              to="/dashboard/skills"
-              :class="{ active: route.path === '/dashboard/skills' }"
-              class="rounded-lg transition-colors"
-            >
+            <NuxtLink to="/dashboard/skills" :class="navClass('/dashboard/skills')">
               <svg
-                class="h-5 w-5"
+                class="h-5 w-5 shrink-0"
                 fill="none"
                 stroke="currentColor"
                 stroke-width="2"
@@ -103,13 +125,9 @@ async function onSignOut() {
             </NuxtLink>
           </li>
           <li>
-            <NuxtLink
-              to="/dashboard/projects"
-              :class="{ active: route.path === '/dashboard/projects' }"
-              class="rounded-lg transition-colors"
-            >
+            <NuxtLink to="/dashboard/projects" :class="navClass('/dashboard/projects')">
               <svg
-                class="h-5 w-5"
+                class="h-5 w-5 shrink-0"
                 fill="none"
                 stroke="currentColor"
                 stroke-width="2"
@@ -125,13 +143,9 @@ async function onSignOut() {
             </NuxtLink>
           </li>
           <li>
-            <NuxtLink
-              to="/dashboard/files"
-              :class="{ active: route.path === '/dashboard/files' }"
-              class="rounded-lg transition-colors"
-            >
+            <NuxtLink to="/dashboard/files" :class="navClass('/dashboard/files')">
               <svg
-                class="h-5 w-5"
+                class="h-5 w-5 shrink-0"
                 fill="none"
                 stroke="currentColor"
                 stroke-width="2"
@@ -151,34 +165,44 @@ async function onSignOut() {
         </ul>
       </nav>
 
-      <!-- 底部：用户信息 + 退出 + 主题切换 -->
-      <div class="flex items-center gap-2 border-t border-base-300 px-4 py-3">
-        <div class="flex min-w-0 flex-1 flex-col">
-          <span class="truncate text-sm text-base-content/70">
-            {{ session?.user.email ?? '未知用户' }}
-          </span>
-        </div>
-        <ThemeToggle />
-        <button
-          type="button"
-          class="btn btn-ghost btn-sm btn-square"
-          title="退出登录"
-          @click="onSignOut"
+      <!-- 底部：用户区 -->
+      <div class="border-t border-base-300 p-3">
+        <div
+          class="flex items-center gap-2.5 rounded-lg p-2 transition-colors hover:bg-base-300/60"
         >
-          <svg
-            class="h-5 w-5"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            viewBox="0 0 24 24"
+          <div class="avatar avatar-placeholder shrink-0">
+            <div class="w-9 rounded-full bg-primary/15 text-sm font-semibold text-primary">
+              <span>{{ initials }}</span>
+            </div>
+          </div>
+          <div class="min-w-0 flex-1">
+            <p class="truncate text-sm font-medium">{{ session?.user.email ?? '未登录' }}</p>
+            <p class="flex items-center gap-1.5 text-xs text-base-content/50">
+              <span class="h-1.5 w-1.5 rounded-full bg-success" />
+              已登录
+            </p>
+          </div>
+          <button
+            type="button"
+            class="btn btn-ghost btn-sm btn-square shrink-0"
+            title="退出登录"
+            @click="onSignOut"
           >
-            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-            <polyline points="16 17 21 12 16 7" />
-            <line x1="21" x2="9" y1="12" y2="12" />
-          </svg>
-        </button>
+            <svg
+              class="h-5 w-5"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              viewBox="0 0 24 24"
+            >
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+              <polyline points="16 17 21 12 16 7" />
+              <line x1="21" x2="9" y1="12" y2="12" />
+            </svg>
+          </button>
+        </div>
       </div>
     </aside>
 
