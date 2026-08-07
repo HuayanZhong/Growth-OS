@@ -153,7 +153,11 @@ function onSso(provider: 'qq' | 'wechat') {
             <img src="~/assets/icons/qq.svg" alt="QQ logo" class="h-6 w-6" />
             QQ 登录
           </button>
-          <button type="button" class="btn btn-dash btn-success btn-block" @click="onSso('wechat')">
+          <button
+            type="button"
+            class="btn btn-dash btn-circle btn-success btn-block"
+            @click="onSso('wechat')"
+          >
             <!-- 官方微信图标（assets/icons/微信.svg） -->
             <img src="~/assets/icons/微信.svg" alt="微信 logo" class="h-6 w-6" />
             微信登录
