@@ -62,4 +62,15 @@ describe('useToast', () => {
       'msg-6',
     ])
   })
+
+  it('顶掉最旧 toast 时清除其自动移除定时器，避免过期空操作', () => {
+    const clearSpy = vi.spyOn(globalThis, 'clearTimeout')
+    for (let i = 0; i < 6; i++) showToast(`msg-${i}`)
+    // 第 6 条触发顶掉 msg-0，其 3s 定时器应立即被清除
+    expect(clearSpy).toHaveBeenCalledTimes(1)
+    // 时间推进后队列不再有残留移除动作（msg-1~5 的定时器正常到期清空）
+    vi.advanceTimersByTime(4000)
+    expect(toasts.value).toHaveLength(0)
+    clearSpy.mockRestore()
+  })
 })

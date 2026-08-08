@@ -93,9 +93,12 @@ function dismiss(t: DisplayToast) {
   removeToast(t.id)
 }
 
-// 组件卸载时清理所有进行中的动画
+// 组件卸载时清理所有进行中的动画。
+// entered 目前是实例级 Set（卸载即销毁），clear() 为防御：防止未来提升为模块级共享时，
+// 重挂载后旧 id 误跳过新 toast 的入场动画
 onUnmounted(() => {
   gsap.killTweensOf(Object.values(toastEls.value))
+  entered.clear()
 })
 
 // daisyUI alert 语义色映射
