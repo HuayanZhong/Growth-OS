@@ -54,6 +54,12 @@ async function onSubmit() {
       return
     }
     showToast('登录成功', 'success')
+    // 动画目标缺失（ref 未绑定/组件重渲染等）时降级直接跳转，
+    // 避免 gsap 对 null 目标静默失败、onComplete 不执行导致卡在登录页
+    if (!rootEl.value) {
+      await navigateTo('/dashboard')
+      return
+    }
     // 登录成功：表单缩小淡出离场，动画结束再跳转，形成「登录页收起 → 工作台滑入」的过渡
     gsap.to(rootEl.value, {
       opacity: 0,

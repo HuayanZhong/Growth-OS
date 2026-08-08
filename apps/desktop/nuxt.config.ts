@@ -1,11 +1,18 @@
 import { defineNuxtConfig } from 'nuxt/config'
 import tailwindcss from '@tailwindcss/vite'
 
-// Electron 用 loadFile 加载 index.html，绝对路径 /_nuxt/ 会解析为文件系统根目录导致白屏
+// Electron 生产打包用 loadFile 加载 index.html，绝对路径 /_nuxt/ 会解析为文件系统根目录导致白屏
 // Nuxt 官方文档：app.baseURL 在 nuxt.config.ts 中不支持相对路径（Nitro 限制），需通过环境变量设置
 // https://nuxt.com/docs/4.x/api/nuxt-config#baseurl
 // 从 .env 读取（根 package.json 的 build/dev 脚本通过 dotenv-cli 注入），兜底 './'
-process.env.NUXT_APP_BASE_URL = process.env.NUXT_APP_BASE_URL || './'
+// dev 模式强制 '/':dev 下 Electron 窗口走 dev server URL 加载（见 modules/electron.ts），
+// 相对 baseURL './' 会让 Nuxt DevTools 面板的模块 URL 变成 "C:/..." 畸形绝对路径（Windows 盘符拼进 URL，
+// 服务端返回 HTML，MIME 校验失败 → DevTools 黑屏、主应用报 entry.async.js 加载失败）
+if (process.env.NODE_ENV !== 'production') {
+  process.env.NUXT_APP_BASE_URL = '/'
+} else {
+  process.env.NUXT_APP_BASE_URL = process.env.NUXT_APP_BASE_URL || './'
+}
 
 export default defineNuxtConfig({
   // 兼容性日期，用于 Nuxt 3.0 之前的版本
