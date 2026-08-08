@@ -24,7 +24,19 @@ function navClass(path: string, exact = false) {
 // 用户头像占位：取邮箱首字母
 const initials = computed(() => (session.value?.user.email?.[0] ?? '?').toUpperCase())
 
+// 退出登录确认弹窗（daisyUI modal）
+const signOutDialog = ref<HTMLDialogElement | null>(null)
+
+function openSignOutDialog() {
+  signOutDialog.value?.showModal()
+}
+
+function closeSignOutDialog() {
+  signOutDialog.value?.close()
+}
+
 async function onSignOut() {
+  closeSignOutDialog()
   const { error } = await signOut()
   if (error) {
     showToast(mapAuthError(error), 'error')
@@ -202,7 +214,7 @@ async function onSignOut() {
             type="button"
             class="btn btn-ghost btn-sm btn-square shrink-0"
             title="退出登录"
-            @click="onSignOut"
+            @click="openSignOutDialog"
           >
             <svg
               class="h-5 w-5"
@@ -227,4 +239,21 @@ async function onSignOut() {
       <slot />
     </main>
   </div>
+
+  <!-- 退出登录确认弹窗 -->
+  <dialog ref="signOutDialog" class="modal">
+    <div class="modal-box">
+      <h3 class="text-lg font-bold">确认退出登录？</h3>
+      <p class="py-4 text-sm text-base-content/70">
+        退出后需重新登录才能访问工作台，确定要继续吗？
+      </p>
+      <div class="modal-action">
+        <button type="button" class="btn" @click="closeSignOutDialog">取消</button>
+        <button type="button" class="btn btn-primary" @click="onSignOut">确认退出</button>
+      </div>
+    </div>
+    <form method="dialog" class="modal-backdrop">
+      <button type="button" @click="closeSignOutDialog">关闭</button>
+    </form>
+  </dialog>
 </template>
