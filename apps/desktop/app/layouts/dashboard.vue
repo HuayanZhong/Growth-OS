@@ -43,9 +43,25 @@ async function onSignOut() {
       <!-- 顶部：品牌区 -->
       <div class="flex h-16 items-center gap-2.5 px-4">
         <div
-          class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary text-base font-bold text-primary-content shadow-sm"
+          class="flex h-9 w-9 shrink-0 items-center justify-center text-primary"
+          aria-hidden="true"
         >
-          G
+          <!-- 节点网格：三节点沿对角线上升相连，OS 系统隐喻（线条版，currentColor 继承语义色） -->
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            class="h-6 w-6"
+            role="img"
+            aria-label="Growth OS logo"
+          >
+            <circle cx="6.5" cy="17.5" r="2.2" />
+            <circle cx="12" cy="12" r="2.2" />
+            <circle cx="17.5" cy="6.5" r="2.2" />
+            <path d="M8.5 16l2.1-2.4M13.4 10.4l2.1-2.3" />
+          </svg>
         </div>
         <div class="min-w-0 flex-1 leading-tight">
           <p class="truncate text-sm font-bold tracking-tight">Growth OS</p>
