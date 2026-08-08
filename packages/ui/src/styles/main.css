@@ -1,7 +1,26 @@
 @import 'tailwindcss';
+@import './fonts.css';
 
 /* 扫描 UI 包源码（组件类名），相对本文件（src/styles/）指向 src/ */
 @source "../";
+
+/* 品牌手写体 Caveat（SIL OFL 1.1，免费商用，来源 Google Fonts）：
+   只打包 latin 子集（U+0000-00FF），覆盖英文品牌标题；中文自动回退 --font-sans。
+   桌面端离线可用，不依赖 Google Fonts CDN */
+@font-face {
+  font-family: 'Caveat';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('../assets/fonts/caveat/caveat-latin-variable.woff2') format('woff2');
+}
+
+/* 品牌字体令牌：标题/品牌区艺术体（font-brand 工具类），正文仍用系统字体。
+   ZCOOL QingKe HuangYou（站酷庆科黄油体，OFL，可爱卡通风）覆盖中文标题；
+   Caveat 手写体覆盖英文标题。均为本地 woff2 打包，无 CDN 依赖 */
+@theme {
+  --font-brand: 'Caveat', 'ZCOOL QingKe HuangYou', ui-sans-serif, system-ui, sans-serif;
+}
 
 /* daisyUI 插件：默认主题 light（固定），theme-controller 可切 dark / cupcake */
 @plugin "daisyui" {

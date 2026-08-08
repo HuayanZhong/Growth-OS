@@ -84,7 +84,10 @@ async function onResend() {
   <div class="hero-content w-full max-w-sm flex-col items-center px-4">
     <!-- 品牌区（简洁文字版） -->
     <div class="text-center">
-      <h1 class="text-2xl font-semibold tracking-tight text-base-content">创建账号</h1>
+      <!-- 中文标题用 ZCOOL 卡通体（font-brand 语义令牌）；font-synthesis 关闭避免无 600 字重时合成变形 -->
+      <h1 class="font-brand text-2xl tracking-tight text-base-content [font-synthesis:none]">
+        创建账号
+      </h1>
       <p class="mt-1 text-sm text-base-content/60">注册以开始你的成长旅程</p>
     </div>
 

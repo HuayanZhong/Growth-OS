@@ -143,7 +143,8 @@ onUnmounted(() => {
           </svg>
         </div>
         <div class="min-w-0 flex-1 leading-tight">
-          <p class="truncate text-sm font-bold tracking-tight">Growth OS</p>
+          <!-- 品牌名用 Caveat 手写体（font-brand，语义令牌）；中文副标题回退系统字体 -->
+          <p class="truncate font-brand text-xl font-bold tracking-tight">Growth OS</p>
           <p class="truncate text-xs text-base-content/50">个人工作台</p>
         </div>
         <ThemeToggle />
