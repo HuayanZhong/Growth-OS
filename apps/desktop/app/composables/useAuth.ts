@@ -20,6 +20,39 @@ export class AuthService {
 
   signOut = () => this.supabase.auth.signOut()
 
+  // 强制本地登出：signOut 服务端调用失败（网络中断/异常）时兜底，
+  // scope: 'local' 只清本地不请求服务端，保证本地会话一定清除、用户一定能退出
+  forceSignOut = () => this.supabase.auth.signOut({ scope: 'local' })
+
+  // 登出（带过期/失败兜底）：
+  // - 本地 session 已过期或不存在 → 服务端 session 大概率已失效，直接 scope:'local' 清本地，
+  //   不发无谓的 logout 请求（避免 token 过期时每次退出都吃一个 403）
+  // - session 仍有效 → 正常调用服务端 logout 吊销 token；失败（403/网络）再降级本地登出
+  // 任何路径都保证本地会话清除、用户一定能退出。
+  // 返回 errorMessage：有值表示走了降级路径（服务端登出未完成），信息取自接口返回（已中文化），
+  // 供调用方提示；无值表示服务端 logout 成功（204 空响应，无成功文案可拿）
+  signOutWithFallback = async (): Promise<{ errorMessage?: string }> => {
+    const { data } = await this.supabase.auth.getSession()
+    const session = data.session
+    if (!session || (session.expires_at != null && Date.now() / 1000 >= session.expires_at)) {
+      await this.forceSignOut()
+      return { errorMessage: '会话已过期或不存在' }
+    }
+    try {
+      const { error } = await this.signOut()
+      if (error) {
+        await this.forceSignOut()
+        return { errorMessage: mapAuthError(error) }
+      }
+      return {}
+    } catch (err) {
+      await this.forceSignOut()
+      return {
+        errorMessage: err instanceof Error ? err.message : '网络异常，本地会话已清除',
+      }
+    }
+  }
+
   // 重发注册确认邮件（type:'signup' 对应 signUp 的邮箱确认）
   resendConfirmation = (email: string) => this.supabase.auth.resend({ type: 'signup', email })
 }
@@ -41,6 +74,8 @@ export function mapAuthError(error: AuthError): string {
       return '该邮箱已注册'
     case 'over_request_rate_limit':
       return '请求过于频繁，请稍后再试'
+    case 'session_not_found':
+      return '登录会话已失效，请重新登录'
     default:
       return error.message
   }

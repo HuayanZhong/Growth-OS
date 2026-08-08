@@ -1,7 +1,13 @@
 <script setup lang="ts">
 // 登录表单：为 Supabase Auth 预留结构（邮箱 + 密码 + SSO），SSO 只保留在此表单
 import { computed, ref } from 'vue'
+import { gsap } from 'gsap'
+import { CSSPlugin } from 'gsap/CSSPlugin'
 import { loginSchema } from '@growth-os/types'
+
+// 显式注册 CSSPlugin：Vite 预打包 tree-shake 会移除 gsap 自动注册（sideEffects:false），
+// 不注册则 scale/opacity 等 CSS 属性被忽略（registerPlugin 幂等）
+gsap.registerPlugin(CSSPlugin)
 
 // 切换注册表单：由父组件（认证页）监听 switch-to-register 事件
 defineEmits<{ switchToRegister: [] }>()
@@ -29,6 +35,9 @@ const passwordError = computed(() => {
 const { signIn } = useAuth()
 const { showToast } = useToast()
 
+// 表单根元素（登录成功离场动画目标）
+const rootEl = ref<HTMLElement | null>(null)
+
 // 提交登录
 async function onSubmit() {
   if (submitting.value) return
@@ -45,8 +54,15 @@ async function onSubmit() {
       return
     }
     showToast('登录成功', 'success')
-    // 登录成功：session 已持久化到 storage，显式跳转工作台（守卫会在导航时校验登录态）
-    await navigateTo('/dashboard')
+    // 登录成功：表单缩小淡出离场，动画结束再跳转，形成「登录页收起 → 工作台滑入」的过渡
+    gsap.to(rootEl.value, {
+      opacity: 0,
+      scale: 0.94,
+      y: -14,
+      duration: 0.3,
+      ease: 'power2.in',
+      onComplete: () => navigateTo('/dashboard'),
+    })
   } catch (err) {
     // 网络/服务端异常时 signIn 会 throw（如 AuthRetryableFetchError），兜底提示避免静默失败
     showToast(err instanceof Error ? err.message : '登录失败，请稍后重试', 'error')
@@ -64,7 +80,7 @@ function onSso(provider: 'qq' | 'wechat') {
 
 <template>
   <!-- 内容容器（daisyUI hero-content 官方结构，max-w-sm 限宽居中） -->
-  <div class="hero-content w-full max-w-sm flex-col items-center px-4">
+  <div ref="rootEl" class="hero-content w-full max-w-sm flex-col items-center px-4">
     <!-- 品牌区（简洁文字版） -->
     <div class="text-center">
       <h1 class="text-2xl font-semibold tracking-tight text-base-content">欢迎回来</h1>

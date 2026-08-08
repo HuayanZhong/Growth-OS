@@ -61,6 +61,19 @@ function switchMode(next: 'login' | 'register') {
     })
     .to(curEl, { rotationY: -90, duration: 0.4, ease: 'power2.in' })
 }
+
+// 页面入场动画：表单从下方淡入上移（首次访问与登出回到登录页时播放）
+onMounted(async () => {
+  await nextTick()
+  const el = formRoot(mode.value === 'login' ? loginRef.value?.$el : registerRef.value?.$el)
+  if (el) {
+    gsap.fromTo(
+      el,
+      { opacity: 0, y: 24 },
+      { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out', clearProps: 'transform,opacity' },
+    )
+  }
+})
 </script>
 
 <template>
