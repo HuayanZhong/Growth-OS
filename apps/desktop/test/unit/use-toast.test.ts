@@ -50,4 +50,16 @@ describe('useToast', () => {
     removeToast(toasts.value[0]!.id)
     expect(toasts.value.map((t) => t.message)).toEqual(['b'])
   })
+
+  it('超过上限（5 条）时顶掉最旧的，防止刷屏', () => {
+    for (let i = 0; i < 7; i++) showToast(`msg-${i}`, 'info', 0)
+    expect(toasts.value).toHaveLength(5)
+    expect(toasts.value.map((t) => t.message)).toEqual([
+      'msg-2',
+      'msg-3',
+      'msg-4',
+      'msg-5',
+      'msg-6',
+    ])
+  })
 })
