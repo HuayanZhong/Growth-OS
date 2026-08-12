@@ -6,19 +6,24 @@
   "scripts": {
     "build": "nest build",
     "dev": "nest start --watch",
-    "start:prod": "node dist/main.js",
+    "start:prod": "node dist/src/main.js",
     "lint": "oxlint --fix --config .oxlintrc.json",
     "format": "oxfmt --config ../../tooling/format/.oxfmtrc.json",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@growth-os/shared": "workspace:*",
+    "@mikro-orm/cli": "catalog:backend",
+    "@mikro-orm/core": "catalog:backend",
+    "@mikro-orm/nestjs": "catalog:backend",
+    "@mikro-orm/postgresql": "catalog:backend",
     "@nestjs/common": "catalog:backend",
     "@nestjs/config": "catalog:backend",
     "@nestjs/core": "catalog:backend",
     "@nestjs/platform-express": "catalog:backend",
     "reflect-metadata": "catalog:backend",
-    "rxjs": "catalog:backend"
+    "rxjs": "catalog:backend",
+    "tsx": "catalog:backend"
   },
   "devDependencies": {
     "@nestjs/cli": "catalog:backend",
@@ -26,6 +31,7 @@
     "@nestjs/testing": "catalog:backend",
     "@types/express": "catalog:backend",
     "@types/node": "catalog:dev",
+    "@types/pg": "catalog:dev",
     "oxfmt": "catalog:format",
     "oxlint": "catalog:lint",
     "typescript": "catalog:dev"

@@ -18,6 +18,7 @@ catalogs:
     '@commitlint/cli': ^21.2.1
     '@commitlint/config-conventional': ^21.2.0
     '@types/node': ^26.1.1
+    '@types/pg': ^8.21.0
     dotenv-cli: ^11.0.0
     husky: ^9.1.7
     lint-staged: ^17.2.0
@@ -68,6 +69,11 @@ catalogs:
     '@types/express': ^5.0.0
     class-validator: ^0.15.1
     class-transformer: ^0.5.1
+    '@mikro-orm/core': ^7.1.11
+    '@mikro-orm/nestjs': ^7.0.2
+    '@mikro-orm/postgresql': ^7.1.11
+    '@mikro-orm/cli': ^7.1.11
+    tsx: ^4.23.12
   # 跨包共享依赖（前后端通用）
   shared:
     zod: ^4.4.3
