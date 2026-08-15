@@ -1,0 +1,9 @@
+{
+  "files": {
+    "AGENTS.md": { "maxWords": 1600 },
+    "docs/AGENTS.md": { "maxWords": 1250 },
+    "docs/architecture.md": { "maxWords": 1800 },
+    "docs/guide-zh.md": { "maxWords": 800 },
+    ".agents/notes/README.md": { "maxWords": 400 }
+  }
+}

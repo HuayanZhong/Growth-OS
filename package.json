@@ -14,6 +14,7 @@
     "format": "turbo run format --concurrency=1",
     "typecheck": "dotenv -v CI=true -- turbo run typecheck",
     "test": "dotenv -v CI=true -- turbo run test",
+    "verify:docs": "node scripts/verify-docs.cjs",
     "prepare": "husky"
   },
   "devDependencies": {
