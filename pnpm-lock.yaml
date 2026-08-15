@@ -211,10 +211,19 @@ catalogs:
     '@mikro-orm/core':
       specifier: ^7.1.11
       version: 7.1.11
+    '@mikro-orm/decorators':
+      specifier: ^7.1.11
+      version: 7.1.11
+    '@mikro-orm/migrations':
+      specifier: ^7.1.11
+      version: 7.1.11
     '@mikro-orm/nestjs':
       specifier: ^7.0.2
       version: 7.0.2
     '@mikro-orm/postgresql':
+      specifier: ^7.1.11
+      version: 7.1.11
+    '@mikro-orm/reflection':
       specifier: ^7.1.11
       version: 7.1.11
     '@nestjs/cli':
@@ -472,10 +481,19 @@ importers:
       '@mikro-orm/core':
         specifier: catalog:backend
         version: 7.1.11
+      '@mikro-orm/decorators':
+        specifier: catalog:backend
+        version: 7.1.11(@mikro-orm/core@7.1.11)(reflect-metadata@0.2.2)
+      '@mikro-orm/migrations':
+        specifier: catalog:backend
+        version: 7.1.11(@mikro-orm/core@7.1.11)
       '@mikro-orm/nestjs':
         specifier: catalog:backend
         version: 7.0.2(@mikro-orm/core@7.1.11)(@nestjs/common@11.1.28(class-transformer@0.5.1)(class-validator@0.15.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2))(@nestjs/core@11.1.28)(reflect-metadata@0.2.2)
       '@mikro-orm/postgresql':
+        specifier: catalog:backend
+        version: 7.1.11(@mikro-orm/core@7.1.11)
+      '@mikro-orm/reflection':
         specifier: catalog:backend
         version: 7.1.11(@mikro-orm/core@7.1.11)
       '@nestjs/common':
@@ -1365,6 +1383,22 @@ packages:
       dataloader:
         optional: true
 
+  '@mikro-orm/decorators@7.1.11':
+    resolution: {integrity: sha512-Gye551HFreA2OlYJDn7YXM+sf6fSh0oVM/+M5fsqS1SSsv9G6eOaSC3xN9/0hK6puyPVx1A4BdR8Mzniv3vzJw==}
+    engines: {node: '>= 22.17.0'}
+    peerDependencies:
+      '@mikro-orm/core': 7.1.11
+      reflect-metadata: ^0.1.0 || ^0.2.0
+    peerDependenciesMeta:
+      reflect-metadata:
+        optional: true
+
+  '@mikro-orm/migrations@7.1.11':
+    resolution: {integrity: sha512-9yMYt1ljTenZaRUIW6BUOJtpV43fBOf7uCMe9sj6aoLXAqqWUQGurDuGpN8vFKwOgECwEGJtOmMBjzx2Lx42rg==}
+    engines: {node: '>= 22.17.0'}
+    peerDependencies:
+      '@mikro-orm/core': 7.1.11
+
   '@mikro-orm/nestjs@7.0.2':
     resolution: {integrity: sha512-0iEr+YzhXQ8cZaAKzfJNijHHAL1Fg/PrauaMiwlZpaxOy0aMAPCQEwaSuxsz43X6XShrCv/TlE6kRn/QPIMzZA==}
     engines: {node: '>= 22.17.0'}
@@ -1376,6 +1410,12 @@ packages:
 
   '@mikro-orm/postgresql@7.1.11':
     resolution: {integrity: sha512-FOYB8Q+YudzTJvej1b2zbznDuDXaob8j7P3Hfv9yHvOHxFzXaAndCewuUcnxi3har37pWdeyNlT2WB4oTn1HVA==}
+    engines: {node: '>= 22.17.0'}
+    peerDependencies:
+      '@mikro-orm/core': 7.1.11
+
+  '@mikro-orm/reflection@7.1.11':
+    resolution: {integrity: sha512-uYC/Ygwx7NNAgxXG1atK0KdjWMrEI6PVi0yL/Kf+BWMxXDeZkuU8+558WYLmv29wjyD8vh7qtgnDRtU1xW70WQ==}
     engines: {node: '>= 22.17.0'}
     peerDependencies:
       '@mikro-orm/core': 7.1.11
@@ -2610,6 +2650,9 @@ packages:
   '@tokenizer/token@0.3.0':
     resolution: {integrity: sha512-OvjF+z51L3ov0OyAU0duzsYuvO01PH7x4t6DJx+guahgTnBHkhJdG7soQeTSFLWN3efnHyibZ4Z8l2EuWwJN3A==}
 
+  '@ts-morph/common@0.29.0':
+    resolution: {integrity: sha512-35oUmphHbJvQ/+UTwFNme/t2p3FoKiGJ5auTjjpNTop2dyREspirjMy82PLSC1pnDJ8ah1GU98hwpVt64YXQsg==}
+
   '@turbo/darwin-64@2.10.7':
     resolution: {integrity: sha512-/c9cSBRermWDv85oufLhoH6XRLOVbvzJLRd+WLyfJCP+i0HFLQj4PVNDrHcY17/ve5l8X0Oua4bJBqJUgJPnZA==}
     cpu: [x64]
@@ -3427,6 +3470,9 @@ packages:
   cluster-key-slot@1.1.1:
     resolution: {integrity: sha512-rwHwUfXL40Chm1r08yrhU3qpUvdVlgkKNeyeGPOxnW8/SyVDvgRaed/Uz54AqWNaTCAThlj6QAs3TZcKI0xDEw==}
     engines: {node: '>=0.10.0'}
+
+  code-block-writer@13.0.3:
+    resolution: {integrity: sha512-Oofo0pq3IKnsFtuHqSF7TqBfr71aeyZDVJ0HpmqB7FBM2qEigL0iPONSCZSO9pE9dZTAxANe5XHG9Uy0YMv8cg==}
 
   color-convert@2.0.1:
     resolution: {integrity: sha512-RRECPsj7iu/xb5oKYcsFHSppFNnsj/52OVTRKb4zP5onXwVF3zVmmToNcOfGC+CRDpfK/U584fMg38ZHCaElKQ==}
@@ -6221,6 +6267,9 @@ packages:
   truncate-utf8-bytes@1.0.2:
     resolution: {integrity: sha512-95Pu1QXQvruGEhv62XCMO3Mm90GscOCClvrIUwCM0PYOXK3kaF3l3sIHxx71ThJfcbM2O5Au6SO3AWCSEfW4mQ==}
 
+  ts-morph@28.0.0:
+    resolution: {integrity: sha512-Wp3tnZ2bzwxyTZMtgWVzXDfm7lB1Drz+y9DmmYH/L702PQhPyVrp3pkou3yIz4qjS14GY9kcpmLiOOMvl8oG1g==}
+
   tsconfig-paths-webpack-plugin@4.2.0:
     resolution: {integrity: sha512-zbem3rfRS8BgeNK50Zz5SIQgXzLafiHjOwUAvk/38/o1jHn/V5QAgVUcz884or7WYcPaH3N2CIfUc2u0ul7UcA==}
     engines: {node: '>=10.13.0'}
@@ -7760,6 +7809,17 @@ snapshots:
 
   '@mikro-orm/core@7.1.11': {}
 
+  '@mikro-orm/decorators@7.1.11(@mikro-orm/core@7.1.11)(reflect-metadata@0.2.2)':
+    dependencies:
+      '@mikro-orm/core': 7.1.11
+    optionalDependencies:
+      reflect-metadata: 0.2.2
+
+  '@mikro-orm/migrations@7.1.11(@mikro-orm/core@7.1.11)':
+    dependencies:
+      '@mikro-orm/core': 7.1.11
+      '@mikro-orm/sql': 7.1.11(@mikro-orm/core@7.1.11)
+
   '@mikro-orm/nestjs@7.0.2(@mikro-orm/core@7.1.11)(@nestjs/common@11.1.28(class-transformer@0.5.1)(class-validator@0.15.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2))(@nestjs/core@11.1.28)(reflect-metadata@0.2.2)':
     dependencies:
       '@mikro-orm/core': 7.1.11
@@ -7779,6 +7839,11 @@ snapshots:
       postgres-interval: 4.1.0
     transitivePeerDependencies:
       - pg-native
+
+  '@mikro-orm/reflection@7.1.11(@mikro-orm/core@7.1.11)':
+    dependencies:
+      '@mikro-orm/core': 7.1.11
+      ts-morph: 28.0.0
 
   '@mikro-orm/sql@7.1.11(@mikro-orm/core@7.1.11)':
     dependencies:
@@ -8944,6 +9009,12 @@ snapshots:
 
   '@tokenizer/token@0.3.0': {}
 
+  '@ts-morph/common@0.29.0':
+    dependencies:
+      minimatch: 10.2.6
+      path-browserify: 1.0.1
+      tinyglobby: 0.2.17
+
   '@turbo/darwin-64@2.10.7':
     optional: true
 
@@ -9946,6 +10017,8 @@ snapshots:
   clsx@2.1.1: {}
 
   cluster-key-slot@1.1.1: {}
+
+  code-block-writer@13.0.3: {}
 
   color-convert@2.0.1:
     dependencies:
@@ -13007,6 +13080,11 @@ snapshots:
   truncate-utf8-bytes@1.0.2:
     dependencies:
       utf8-byte-length: 1.0.5
+
+  ts-morph@28.0.0:
+    dependencies:
+      '@ts-morph/common': 0.29.0
+      code-block-writer: 13.0.3
 
   tsconfig-paths-webpack-plugin@4.2.0:
     dependencies:

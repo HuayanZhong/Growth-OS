@@ -1,4 +1,4 @@
-import { z, parseEnv, envIntString, envBoolString } from '@growth-os/shared'
+import { z, parseEnv, envString, envIntString, envBoolString } from '@growth-os/shared'
 
 /**
  * 服务端环境变量 schema。
@@ -7,6 +7,8 @@ import { z, parseEnv, envIntString, envBoolString } from '@growth-os/shared'
  */
 const envSchema = z.object({
   PORT: envIntString(),
+  // MikroORM 数据库连接串（Supabase Postgres direct connection，见 .env.example）
+  DATABASE_URL: envString(),
   // MikroORM 调试日志开关：true 时打印 SQL 查询与参数（缺失视为 false）
   DB_DEBUG: envBoolString().optional(),
 })
