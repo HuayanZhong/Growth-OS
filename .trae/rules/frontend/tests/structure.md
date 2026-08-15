@@ -1,40 +1,40 @@
 ---
 alwaysApply: false
-description: 前端测试组织规则（Vitest + @nuxt/test-utils）：test/unit 放纯逻辑单测、test/nuxt 放组件/守卫/页面集测，文件与被测模块同名 kebab-case。新增测试文件、判断测试归属目录时使用。
+description: Frontend test organization (Vitest + @nuxt/test-utils): test/unit for pure-logic unit tests, test/nuxt for component/guard/page integration; kebab-case files named after the module. Use when adding test files or choosing a directory.
 ---
 
-# 测试目录结构
+# Test Directory Structure
 
-**适用场景**：新增测试文件、判断某个测试该放哪个目录。
+**When to use**: adding new test files, deciding which directory a test belongs in.
 
-**要点**：
+**Key points**:
 
-1. 测试按两级目录划分：
-   - `test/unit/`：纯逻辑单测（composables、工具函数、service）。不挂载组件、不需要 Nuxt 页面上下文，仅断言函数输入输出。
-   - `test/nuxt/`：集成测试（组件挂载、路由守卫、页面、布局、error page）。依赖 Nuxt 运行时上下文（auto-import、useRouter 等）。
-2. 文件命名 kebab-case + `.test.ts`，与被测模块同名：`useAuth.ts` → `use-auth.test.ts`；守卫 `auth.global.ts` → `auth-middleware.test.ts`（描述被测行为）。
-3. 测试文件只放 `test/` 下，不与被测源码混放；同模块补测试直接改同名文件，不新建变体。
-4. 配置统一在 `apps/desktop/vitest.config.ts`（`include: ['test/**/*.test.ts']` + Nuxt 测试环境），子模块不各自散配。
+1. Tests split into two levels:
+   - `test/unit/`: pure-logic unit tests (composables, utility functions, services). No component mounting, no Nuxt page context; only assert function inputs/outputs.
+   - `test/nuxt/`: integration tests (component mounting, route guards, pages, layouts, error page). Depends on Nuxt runtime context (auto-import, useRouter, etc.).
+2. Files are kebab-case + `.test.ts`, named after the module under test: `useAuth.ts` → `use-auth.test.ts`; guard `auth.global.ts` → `auth-middleware.test.ts` (describing the tested behavior).
+3. Test files live only under `test/`, never mixed with source; adding tests to an existing module edits the same-named file, no new variants.
+4. Configuration is centralized in `apps/desktop/vitest.config.ts` (`include: ['test/**/*.test.ts']` + the Nuxt test environment); sub-modules don't scatter their own config.
 
-**示例**：
+**Example**:
 
 ```text
 apps/desktop/test/
-├── unit/                       # 纯逻辑单测
+├── unit/                       # pure-logic unit tests
 │   ├── use-auth.test.ts
 │   ├── use-secure-storage.test.ts
 │   ├── use-supabase.test.ts
 │   └── use-toast.test.ts
-└── nuxt/                       # 集测：组件/守卫/页面/布局
+└── nuxt/                       # integration: components/guards/pages/layouts
     ├── auth-middleware.test.ts
     ├── error-page.test.ts
     ├── index-redirect.test.ts
     └── default-layout.test.ts
 ```
 
-**验证**：
+**Verification**:
 
 ```bash
 ls apps/desktop/test/unit apps/desktop/test/nuxt
-# 每个新增 composable/关键模块在对应目录有同名 *.test.ts
+# every new composable/key module has a same-named *.test.ts in the matching directory
 ```

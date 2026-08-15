@@ -1,29 +1,29 @@
 ---
 alwaysApply: false
-description: 前端样式颜色规则（Tailwind CSS v4 + daisyUI 5）：颜色一律使用语义色令牌，禁止硬编码色值，品牌色映射语义色。为元素上色、引入品牌色时使用。
+description: Frontend style color rule (Tailwind CSS v4 + daisyUI 5): use semantic color tokens only, never hard-code color values; brand colors map onto semantic tokens. Use when coloring elements or introducing brand colors.
 ---
 
-# 颜色
+# Colors
 
-**适用场景**：为任意元素上色、引入品牌色时。
+**When to use**: when coloring any element, when introducing brand colors.
 
-**要点**：
+**Key points**:
 
-1. 颜色只用 daisyUI 语义令牌（`base-*`、`primary`、`info`、`success`、`neutral` 等），随主题自动切换。
-2. 禁止十六进制、RGB、任意值类（`bg-[#...]`）与裸 `text-white` 等。
-3. 透明度变化用令牌透明度后缀（`/60`），不另写颜色。
-4. 品牌色映射语义色（如 QQ → `info`、微信 → `success`），不新增色值。
+1. Colors use only daisyUI semantic tokens (`base-*`, `primary`, `info`, `success`, `neutral`, etc.), which switch automatically with the theme.
+2. Hex, RGB, arbitrary-value classes (`bg-[#...]`) and bare `text-white` etc. are forbidden.
+3. Opacity changes use the token opacity suffix (`/60`), never a separate color.
+4. Brand colors map onto semantic tokens (e.g. QQ → `info`, WeChat → `success`); no new color values.
 
-**示例**：
+**Example**:
 
 ```vue
-<!-- 错误 -->
+<!-- Wrong -->
 <div class="bg-[#...] text-white">
-<!-- 正确 -->
+<!-- Correct -->
 <div class="bg-base-200 text-base-content">
 ```
 
-**验证**：
+**Verification**:
 
 ```bash
 rg -n '#[0-9a-fA-F]{3,8}\b|(bg|text)-\[#' --glob '*.vue' --glob '*.css' apps packages

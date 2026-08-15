@@ -1,61 +1,61 @@
 ---
 alwaysApply: false
-description: 前端样式组织规则（Vue 3 + Tailwind CSS v4 + daisyUI 5）：组件内 class 按语义分组、禁止内联 style；样式文件分层存放的目录结构。书写组件 template class、新增样式文件或静态资源时使用。
+description: Style organization rule (Vue 3 + Tailwind CSS v4 + daisyUI 5): group in-component classes semantically; inline style forbidden; layered directory structure for style files. Use when writing template classes or adding style files/assets.
 ---
 
-# 样式组织与目录结构
+# Style Organization & Directory Structure
 
-## 组件内样式：按语义分组，禁止内联 style
+## In-component styles: group semantically, no inline style
 
-**适用场景**：书写组件 template 的 class。
+**When to use**: when writing a component template's classes.
 
-**要点**：
+**Key points**:
 
-1. 类名按"布局 → 尺寸 → 颜色 → 状态"顺序分组排列。
-2. 优先 daisyUI 官方组件类与标准工具类，不重复造轮子。
-3. 禁止内联 `style`（动态尺寸等特例除外）；动态样式用 `:class` 切换语义类。
-4. 单元素 class 超过 5~6 组时触发可复用抽取。
+1. Class names group in "layout → size → color → state" order.
+2. Prefer daisyUI's official component classes and standard utility classes; don't reinvent the wheel.
+3. Inline `style` is forbidden (except special cases like dynamic sizes); dynamic styles switch semantic classes via `:class`.
+4. When a single element's classes exceed 5–6 groups, trigger reusable extraction.
 
-**示例**：
+**Example**:
 
 ```vue
-<!-- 错误 -->
-<button class="btn btn-primary" style="width:100%; margin-top:8px">登录</button>
-<!-- 正确 -->
-<button type="button" class="btn btn-primary btn-block mt-2">登录</button>
+<!-- Wrong -->
+<button class="btn btn-primary" style="width:100%; margin-top:8px">Login</button>
+<!-- Correct -->
+<button type="button" class="btn btn-primary btn-block mt-2">Login</button>
 ```
 
-**验证**：
+**Verification**:
 
 ```bash
 rg -n 'style="' --glob '*.vue' apps packages
 ```
 
-## 样式目录结构：分层存放
+## Style directory structure: layered storage
 
-**适用场景**：新增全局样式、组件、静态资源时。
+**When to use**: when adding global styles, components, or static assets.
 
-**要点**：
+**Key points**:
 
-1. 全局样式（tailwind + daisyUI + 主题）只在 UI 包单一 CSS 入口（`src/styles/main.css`）；消费方入口 CSS 仅 `@import '<ui-package>/main.css'`，不重复声明。
-2. UI 基础组件放 `src/components/ui/<name>/`，消费方经包名导入。
-3. 页面样式随组件内联；页面专属少量全局样式放应用 `app/assets/css/`。
-4. 静态资源（图标等）放 `app/assets/icons/`，经 `~/assets/icons/...` 引用，尺寸用 `h-* w-*` 覆盖。
+1. Global styles (tailwind + daisyUI + themes) live only in the UI package's single CSS entry (`src/styles/main.css`); consumer entry CSS only `@import '<ui-package>/main.css'`, no re-declaration.
+2. UI base components live under `src/components/ui/<name>/`, imported by consumers via the package name.
+3. Page styles are inlined with the component; a small amount of page-specific global styles go under the app's `app/assets/css/`.
+4. Static assets (icons etc.) go under `app/assets/icons/`, referenced via `~/assets/icons/...`, sized with `h-* w-*` overrides.
 
-**示例**：
+**Example**:
 
 ```text
 ui-package/src/
-├── styles/main.css        # 唯一全局样式入口
-├── lib/cn.ts              # 类名合并工具
-└── components/ui/<name>/  # 组件 + index.ts
+├── styles/main.css        # single global style entry
+├── lib/cn.ts              # class merging utility
+└── components/ui/<name>/  # component + index.ts
 
-app/app/assets/css/main.css  # 仅 @import '<ui-package>/main.css'
+app/app/assets/css/main.css  # only @import '<ui-package>/main.css'
 ```
 
-**验证**：
+**Verification**:
 
 ```bash
-# 消费方不应再有 @plugin "daisyui"（无输出即通过；rg 无匹配时退出码为 1，属正常）
+# Consumers should no longer have @plugin "daisyui" (no output means pass; rg exit code 1 on no match is normal)
 rg -l '@plugin "daisyui"' apps
 ```

@@ -1,20 +1,20 @@
 ---
 alwaysApply: false
-description: 主题切换规则（daisyUI 5）：主题在 CSS 显式启用，切换控件用 theme-controller 全局生效，页面不锁 data-theme，默认主题用 --default 标记。实现明暗切换、多主题时使用。
+description: Theme switching rule (daisyUI 5): themes enabled explicitly in CSS; switch via theme-controller (global); pages never lock data-theme; default marked with --default. Use when implementing light/dark or multiple themes.
 ---
 
-# 主题切换
+# Theme Switching
 
-**适用场景**：明暗切换、多主题（light/dark 等）。
+**When to use**: light/dark switching, multiple themes (light/dark, etc.).
 
-**要点**：
+**Key points**:
 
-1. 主题在 UI 包 CSS 的 `@plugin "daisyui" { themes: ... }` 显式启用，未启用主题名无效。
-2. 切换控件用 `theme-controller`（隐藏 checkbox/radio），机制全局，控件位置不限。
-3. 默认主题用 `--default` 标记；不用 `--prefersdark`（跟随系统会致切换"看似无效"）。
-4. 页面根不硬编码 `data-theme`（会覆盖全局切换）；页面内只保留一个主题入口（多个 `theme-controller` 的 `:root:has()` 规则会互相覆盖）。
+1. Themes are enabled explicitly in the UI package CSS via `@plugin "daisyui" { themes: ... }`; unenabled theme names are invalid.
+2. The switching control uses `theme-controller` (a hidden checkbox/radio); the mechanism is global and the control's position is unrestricted.
+3. The default theme is marked with `--default`; don't use `--prefersdark` (following the system makes switching "appear ineffective").
+4. Page roots never hard-code `data-theme` (it overrides the global switch); keep exactly one theme entry per page (multiple `theme-controller`s create `:root:has()` rules that override each other).
 
-**示例**：
+**Example**:
 
 ```css
 @plugin "daisyui" {
@@ -25,15 +25,15 @@ description: 主题切换规则（daisyUI 5）：主题在 CSS 显式启用，�
 ```vue
 <label class="swap swap-rotate">
   <input type="checkbox" class="theme-controller" value="dark" />
-  <svg class="swap-off h-6 w-6 fill-current"><!-- 太阳 --></svg>
-  <svg class="swap-on h-6 w-6 fill-current"><!-- 月亮 --></svg>
+  <svg class="swap-off h-6 w-6 fill-current"><!-- sun --></svg>
+  <svg class="swap-on h-6 w-6 fill-current"><!-- moon --></svg>
 </label>
 ```
 
-**验证**：
+**Verification**:
 
 ```bash
-# 从应用目录执行；-g 匹配 CSS 产物，避免 PowerShell 把 < > 当重定向
+# Run from the app directory; -g matches the CSS build output, avoiding PowerShell treating < > as redirection
 rg -n 'theme-controller\[value=' -g '*.css' .output
-# 浏览器实测：默认主题 ↔ 切换主题 双向生效
+# Browser check: default theme ↔ switched theme both work
 ```

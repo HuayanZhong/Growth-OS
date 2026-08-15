@@ -1,28 +1,28 @@
 ---
 alwaysApply: false
-description: 前端 token/session 管理规则（supabase-js + secureStorage）：不手读/手写 token，supabase-js 自动注入 Authorization 与自动刷新；session 存储走 secureStorage（Electron 加密 / 浏览器 fallback），持久化前剥离 PII；IPC/storage 异常降级不阻断；getSession 失败视为未登录防守卫死循环。处理 token 存储、登录态判定时使用。
+description: Token/session rule (supabase-js + secureStorage): never touch tokens manually; persist via secureStorage with PII stripped; storage/IPC failures degrade gracefully; failed getSession counts as logged out. Use for token storage or login-state checks.
 ---
 
-# 前端 Token / Session 管理
+# Frontend Token / Session Management
 
-**适用场景**：session 读写、登录态判定、token 安全持久化。
+**When to use**: session read/write, logged-in state checks, secure token persistence.
 
-**要点**：
+**Key points**:
 
-1. **不手读/手写 token**：supabase-js 自动把 access_token 注入请求头、`autoRefreshToken` 自动刷新；业务代码只经 `auth.getSession()` 读 session、`auth.signOut()` 登出。禁止手动拼 `Authorization` 头、禁止手动写/删 localStorage 里的 token key。
-2. **session 存储走 secureStorage adapter**（`useSecureStorage.ts`）：
-   - Electron：经 `window.desktop.secureStore` IPC 由主进程 safeStorage（OS 级加密）落盘，localStorage 不出现明文 token。
-   - 纯浏览器（web 预览/测试，无 Electron preload）：fallback localStorage。
-3. **持久化前剥离 PII**：setItem 前经 `trimSession` 裁剪，磁盘只留 token 字段 + 最小 user（id/email/avatar_url），不落 identities/app_metadata 等全量 PII。
-4. **IPC/storage 异常降级**：
-   - getItem 失败返回 null → 视为未登录，不阻断应用。
-   - setItem 失败不阻断登录（内存 session 仍有效，仅重启后需重新登录）；auth-js 的 storage 异常会 throw 冒泡，必须 catch 兜住。
-5. **明文残留一次性清理**：创建 client 前 `clearLegacyLocalStorageSession`——仅 Electron 环境清理历史明文 key（`supabase.auth.token`、`sb-<ref>-auth-token` 等），纯浏览器不执行，避免误删当前会话。
-6. **client 配置固定四项**：`persistSession: true`、`autoRefreshToken: true`、`detectSessionInUrl: true`、`storage: secureStorage`（见 `useSupabase.ts`）。
-7. **登录态判定统一 getSession**：守卫/页面用 `supabase.auth.getSession()`（client 已注入 secureStorage，无需手读 localStorage）；getSession 失败（storage/IPC 异常）视为未登录，避免守卫抛错把导航打回错误页造成死循环（见 `middleware/auth.global.ts`）。
-8. **过期判定**：`session.expires_at`（秒级 epoch）与 `Date.now() / 1000` 比较；过期视为未登录，退出不请求服务端（见 [flows.md](flows.md)）。
+1. **Never read/write tokens manually**: supabase-js injects the access_token into request headers and `autoRefreshToken` refreshes automatically; business code reads sessions only via `auth.getSession()` and signs out via `auth.signOut()`. Never hand-build the `Authorization` header, and never manually write/delete token keys in localStorage.
+2. **Sessions persist through the secureStorage adapter** (`useSecureStorage.ts`):
+   - Electron: persisted via `window.desktop.secureStore` IPC by the main process using safeStorage (OS-level encryption); plaintext tokens never appear in localStorage.
+   - Plain browser (web preview/tests, no Electron preload): falls back to localStorage.
+3. **Strip PII before persisting**: setItem trims via `trimSession` so only token fields + minimal user (id/email/avatar_url) are written to disk; full identities/app_metadata PII never lands.
+4. **IPC/storage failures degrade gracefully**:
+   - getItem failure returns null → treated as logged out, never blocks the app.
+   - setItem failure does not block login (the in-memory session still works; only a re-login is needed after restart); auth-js storage errors throw and bubble up, so they must be caught.
+5. **One-time plaintext cleanup**: `clearLegacyLocalStorageSession` runs before client creation — Electron only, clearing legacy plaintext keys (`supabase.auth.token`, `sb-<ref>-auth-token`, etc.); skipped in plain browser to avoid deleting the active session.
+6. **Client config is fixed to four items**: `persistSession: true`, `autoRefreshToken: true`, `detectSessionInUrl: true`, `storage: secureStorage` (see `useSupabase.ts`).
+7. **Logged-in checks go through getSession**: guards/pages use `supabase.auth.getSession()` (the client already injects secureStorage, no manual localStorage reads); a failed getSession (storage/IPC error) counts as logged out so guards don't throw and bounce navigation into an error-page loop (see `middleware/auth.global.ts`).
+8. **Expiry check**: compare `session.expires_at` (seconds epoch) with `Date.now() / 1000`; an expired session counts as logged out, and sign-out skips the server (see [flows.md](flows.md)).
 
-**示例**：
+**Example**:
 
 ```ts
 client = createClient(supabaseUrl, supabaseAnonKey, {
@@ -36,13 +36,13 @@ client = createClient(supabaseUrl, supabaseAnonKey, {
 ```
 
 ```ts
-// 守卫：getSession 失败视为未登录，避免异常导致导航死循环
+// Guard: a failed getSession counts as logged out to avoid navigation dead loops
 const { data } = await supabase.auth.getSession().catch(() => ({ data: { session: null } }));
 const loggedIn = !!data.session;
 ```
 
-**验证**：
+**Verification**:
 
-1. `rg -n 'localStorage\.(setItem|getItem|removeItem)|Authorization' apps/desktop/app` 只命中 secureStorage/useSupabase 相关位置，业务代码无手写 token 读写。
-2. 单测覆盖（`apps/desktop/test/unit/use-secure-storage.test.ts`）：trimSession PII 裁剪、浏览器 fallback、Electron IPC 分支、IPC 异常降级。
-3. `pnpm --filter desktop test`、`pnpm --filter desktop typecheck`、`pnpm --filter desktop lint` 全绿。
+1. `rg -n 'localStorage\.(setItem|getItem|removeItem)|Authorization' apps/desktop/app` only matches secureStorage/useSupabase-related locations; no manual token read/write in business code.
+2. Unit tests cover (`apps/desktop/test/unit/use-secure-storage.test.ts`): trimSession PII stripping, browser fallback, Electron IPC branch, IPC failure degradation.
+3. `pnpm --filter desktop test`, `pnpm --filter desktop typecheck`, `pnpm --filter desktop lint` all pass.

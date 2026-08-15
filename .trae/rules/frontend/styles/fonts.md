@@ -1,48 +1,50 @@
 ---
 alwaysApply: false
-description: 字体集成规则（Tailwind CSS v4 + Google Fonts）：品牌/艺术字体本地打包 woff2 禁 CDN；中文字体按 unicode-range 分片按需加载；font-display: swap + 回退栈防护；仅 400 字重的字体加 [font-synthesis:none]；字体文件按字体分子目录存放；语义令牌经 @theme 暴露。新增字体、替换字体、处理字体加载不出来时使用。
+description: Font rule (Tailwind CSS v4): bundle brand fonts locally; Chinese fonts split by unicode-range, load on demand; font-display: swap + fallback stack; 400-only fonts get [font-synthesis:none]. Use when adding/replacing fonts or fixing load failures.
 ---
 
-# 字体规范（本地化 + 按需加载 + 加载防护）
+# Font Spec (Local Bundling + On-demand Loading + Load Protection)
 
-**适用场景**：引入品牌/艺术字体、替换字体、排查字体加载失败。
+**When to use**: introducing brand/display fonts, replacing fonts, debugging font load failures.
 
-**要点**：
+**Key points**:
 
-1. **本地打包，禁止 CDN**：品牌字体一律以 woff2 文件放 `src/assets/fonts/<font-name>/`，`@font-face` 的 `src` 相对 styles 目录引用（`url('../assets/fonts/...')`），严禁保留 `fonts.googleapis.com` / `fonts.gstatic.com` 外链——桌面端必须离线可用。漏替换的 CDN 外链会导致浏览器 font error 且无法离线回退。
-2. **中文字体按 unicode-range 分片，禁止合并单文件**：中文艺术体从 Google Fonts 抓取时保留原始分片结构（92+ 个 woff2 + latin 分片），浏览器按字符集按需加载（实测标题"欢迎回来"仅请求 3 个分片）；合并成全量单文件会使单个字体体积数十 MB，违背按需加载。
-3. **加载防护三件套，缺一不可**：
-   - `font-display: swap`：字体加载中先显示回退字体，不阻塞渲染。
-   - `font-family` 回退栈：语义令牌中目标字体后跟回退链，如 `'Caveat', 'ZCOOL QingKe HuangYou', ui-sans-serif, system-ui, sans-serif`。
-   - 本地打包：无 CDN 即无加载失败路径。
-4. **仅 400 字重的字体加 `[font-synthesis:none]`**（如 ZCOOL 庆科黄油体）：禁用浏览器合成加粗，避免无对应字重时笔画拉伸变形；variable 字体（如 Caveat 400-700）正常使用 `font-bold`。
-5. **语义令牌经 `@theme` 暴露**：在 UI 包 `src/styles/main.css` 声明 `--font-brand` 生成 `font-brand` 工具类，业务代码只引用工具类，不写具体字体名（颜色令牌规则见 [colors.md](colors.md)）。
-6. **字体文件按字体分子目录**：`src/assets/fonts/<font-name>/<file>.woff2`（如 `fonts/caveat/`、`fonts/zcool/`），禁止多字体平铺在一个目录。
-7. **改动字体文件后同步验证**：移动/改名字体文件时，必须同步更新所有 `@font-face` 的 `src` 路径，并重新生产构建确认字体仍进产物。
+1. **Bundle locally, no CDN**: brand fonts are woff2 files under `src/assets/fonts/<font-name>/`; `@font-face` `src` references relative to the styles directory (`url('../assets/fonts/...')`); never keep `fonts.googleapis.com` / `fonts.gstatic.com` links — the desktop app must work offline. Leftover CDN links cause browser font errors and no offline fallback.
+2. **Chinese fonts split by unicode-range, never merged into one file**: when fetching a Chinese display font from Google Fonts, keep the original slice structure (92+ woff2 slices + latin slices); the browser loads slices on demand per charset (measured: the page title requests only 3 slices); merging into one full file makes a single font dozens of MB, defeating on-demand loading.
+3. **Load-protection trio, all three required**:
+   - `font-display: swap`: show the fallback font while loading, no render blocking.
+   - `font-family` fallback stack: the target font in the semantic token followed by a fallback chain, e.g. `'Caveat', 'ZCOOL QingKe HuangYou', ui-sans-serif, system-ui, sans-serif`.
+   - Local bundling: no CDN means no load-failure path.
+4. **Only weight-400-only fonts get `[font-synthesis:none]`** (e.g. ZCOOL QingKe HuangYou): disables browser bold synthesis to avoid stroke stretching when no matching weight exists; variable fonts (e.g. Caveat 400-700) use `font-bold` normally.
+5. **Semantic tokens are exposed via `@theme`**: declare `--font-brand` in the UI package `src/styles/main.css` to generate the `font-brand` utility; business code references only the utility, never concrete font names (color token rules: [colors.md](colors.md)).
+6. **Font files in per-font subdirectories**: `src/assets/fonts/<font-name>/<file>.woff2` (e.g. `fonts/caveat/`, `fonts/zcool/`); never flatten multiple fonts into one directory.
+7. **Verify after font file changes**: when moving/renaming font files, update all `@font-face` `src` paths and run a production build to confirm the fonts still land in the output.
 
-**示例**：
+**Example**:
 
 ```css
 @font-face {
-  font-family: 'ZCOOL QingKe HuangYou';
+  font-family: "ZCOOL QingKe HuangYou";
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url('../assets/fonts/zcool/zcool-5.woff2') format('woff2');
-  unicode-range: /* Google Fonts 原始分片，原样保留 */;
+  src: url("../assets/fonts/zcool/zcool-5.woff2") format("woff2");
+  unicode-range: /* Google Fonts original slices, keep as-is */;
 }
 
 @theme {
-  --font-brand: 'Caveat', 'ZCOOL QingKe HuangYou', ui-sans-serif, system-ui, sans-serif;
+  --font-brand: "Caveat", "ZCOOL QingKe HuangYou", ui-sans-serif, system-ui, sans-serif;
 }
 ```
 
 ```vue
-<h1 class="font-brand text-2xl tracking-tight text-base-content [font-synthesis:none]">欢迎回来</h1>
+<h1
+  class="font-brand text-2xl tracking-tight text-base-content [font-synthesis:none]"
+>Welcome back</h1>
 ```
 
-**验证**：
+**Verification**:
 
-1. `rg -n 'fonts\.googleapis\.com|fonts\.gstatic\.com' packages/ui` 无匹配（无外链残留）。
-2. 生产构建成功，产物 `_nuxt/` 下 woff2 全部带哈希（含 zcool-* 分片与 latin）。
-3. 浏览器 Network 面板：无 font error；只加载页面实际用到的字符分片（而非全部字体）。
+1. `rg -n 'fonts\.googleapis\.com|fonts\.gstatic\.com' packages/ui` — no matches (no leftover CDN links).
+2. Production build succeeds; woff2 files under `_nuxt/` all carry hashes (including zcool-\* slices and latin).
+3. Browser Network panel: no font errors; only the character slices actually used by the page load (not the whole font).

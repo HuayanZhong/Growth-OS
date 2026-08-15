@@ -1,26 +1,26 @@
 ---
 alwaysApply: false
-description: 响应式样式规则（Tailwind CSS v4 + daisyUI 5）：移动优先、断点逐级增强，页面布局用自适应容器，daisyUI size 类不加断点前缀。适配不同窗口尺寸、处理断点与交互区域大小时使用。
+description: Responsive style rule (Tailwind CSS v4 + daisyUI 5): mobile-first, enhance progressively across breakpoints; use adaptive containers; daisyUI size classes never take breakpoint prefixes. Use when adapting layouts or handling touch targets.
 ---
 
-# 响应式样式
+# Responsive Styles
 
-**适用场景**：布局适配不同窗口尺寸、使用断点。
+**When to use**: adapting layouts to different window sizes, using breakpoints.
 
-**要点**：
+**Key points**:
 
-1. 基础类描述移动端，`sm:`/`md:`/`lg:` 逐级增强。
-2. 页面布局用 daisyUI 自适应容器（`hero`/`hero-content`、`card`），宽度用 `max-w-*` + `w-full`，不写死像素。
-3. daisyUI size 类（`btn-lg`、`input-lg` 等）**不能加断点前缀**；需要变尺寸时用标准尺寸类或按断点换形态。
-4. 图标用 Tailwind 尺寸类（`h-4 w-4`），不写死 SVG 宽高。
-5. 交互元素最小可点区域不小于 40px。
+1. Base classes describe mobile; `sm:`/`md:`/`lg:` enhance progressively.
+2. Page layout uses daisyUI adaptive containers (`hero`/`hero-content`, `card`); widths use `max-w-*` + `w-full`, never fixed pixels.
+3. daisyUI size classes (`btn-lg`, `input-lg`, etc.) **must not** take breakpoint prefixes; when a size change is needed, use standard size classes or switch shapes per breakpoint.
+4. Icons use Tailwind size classes (`h-4 w-4`), never fixed SVG width/height.
+5. Interactive elements keep a minimum tappable area of 40px.
 
-**示例**：
+**Example**:
 
 ```vue
-<!-- 错误 -->
+<!-- Wrong -->
 <div class="w-96"><input class="input input-lg w-full" /></div>
-<!-- 正确 -->
+<!-- Correct -->
 <div class="hero min-h-screen">
   <div class="hero-content w-full max-w-sm flex-col">
     <input class="input w-full" />
@@ -28,10 +28,10 @@ description: 响应式样式规则（Tailwind CSS v4 + daisyUI 5）：移动优�
 </div>
 ```
 
-**验证**：
+**Verification**:
 
 ```bash
-# size 类不应出现断点前缀
+# Size classes should have no breakpoint prefixes
 rg -n '(btn|input|select)-(lg|sm|xs):(sm|md|lg|xl)' --glob '*.vue' apps packages
-# 窗口缩至窄屏与宽屏，无横向滚动条
+# Narrow and wide windows: no horizontal scrollbar
 ```

@@ -1,22 +1,22 @@
 ---
 alwaysApply: false
-description: 认证凭证安全规则：测试账号只放仓库根 .env（SUPABASE_TEST_EMAIL / SUPABASE_TEST_PASSWORD），禁止硬编码到代码、测试、rules、提交；.env 已被 gitignore，rules 只能引用变量名不得内联真实值。涉及测试账号、认证测试、凭证引用时使用。
+description: Credential safety: test accounts live only in repo root .env (SUPABASE_TEST_EMAIL / SUPABASE_TEST_PASSWORD); never hard-code them into code, tests, rules, or commits; rules reference variable names only. Use for test accounts or credentials.
 ---
 
-# 认证凭证安全：测试账号只放 .env
+# Auth Credential Safety: Test Accounts Only in .env
 
-**适用场景**：认证测试需要账号密码、引用测试凭证、审查提交内容时。
+**When to use**: when auth tests need account credentials, when referencing test credentials, when reviewing commit contents.
 
-**要点**：
+**Key points**:
 
-1. 测试账号（邮箱 + 密码）只写在仓库根 `.env`：`SUPABASE_TEST_EMAIL`、`SUPABASE_TEST_PASSWORD`。
-2. `.env` 已被 `.gitignore` 忽略（`Local env files` 段），是唯一存放处——严禁在组件、composable、测试文件、规则（`.trae/rules/**`）、提交内容中硬编码账号密码。
-3. 需要测试账号时从环境变量读取：vitest.config 已自动加载根 `.env`，测试内 `process.env.SUPABASE_TEST_EMAIL` 直接可用；AI 测试直接读 `.env` 文件获取。
-4. 规则文件（含本文件）只引用变量名，不得内联真实账号值。
+1. Test accounts (email + password) live only in the repo root `.env`: `SUPABASE_TEST_EMAIL`, `SUPABASE_TEST_PASSWORD`.
+2. `.env` is gitignored (under the `Local env files` section) and is the only allowed location — never hard-code account credentials into components, composables, test files, rules (`.trae/rules/**`), or commit contents.
+3. Read test accounts from environment variables: vitest.config auto-loads the root `.env`, so `process.env.SUPABASE_TEST_EMAIL` works directly inside tests; AI tests read the `.env` file directly.
+4. Rule files (including this one) only reference variable names, never inline real account values.
 
-**验证**：
+**Verification**:
 
 ```bash
-# 除 .env 与规则文件对变量名的引用外，不得出现真实账号值
+# No real account values anywhere except .env and variable-name references in rule files
 rg -n 'SUPABASE_TEST_EMAIL|SUPABASE_TEST_PASSWORD' --glob '!*.env' --glob '!.env*' .
 ```

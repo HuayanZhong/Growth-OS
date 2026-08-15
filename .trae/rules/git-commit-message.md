@@ -1,14 +1,14 @@
 ---
 alwaysApply: false
 scene: git_message
-description: Git 提交信息规则定义
+description: Git commit message rules
 ---
 
-# Git 提交信息规则
+# Git Commit Message Rules
 
-基于 Conventional Commits 规范，适配 monorepo 与中文工作流。
+Based on the Conventional Commits spec, adapted for the monorepo and the Chinese workflow.
 
-## 格式
+## Format
 
 ```
 <type>(<scope>): <subject>
@@ -18,91 +18,91 @@ description: Git 提交信息规则定义
 <footer>
 ```
 
-- **Header**（第一行）：type 必填，scope 可选，subject 必填
-- **Body**（可选）：空一行后开始，解释"为什么改"
-- **Footer**（可选）：空一行后开始，记录 BREAKING CHANGE / 关联 issue
+- **Header** (first line): type required, scope optional, subject required
+- **Body** (optional): starts after a blank line, explains "why"
+- **Footer** (optional): starts after a blank line, records BREAKING CHANGE / related issues
 
-Header 总长度不超过 72 字符。Body 每行不超过 72 字符。
+Header total length ≤ 72 characters. Body lines ≤ 72 characters each.
 
-## Type（必填）
+## Type (required)
 
-| Type       | 使用场景                       |
-| ---------- | ------------------------------ |
-| `feat`     | 新功能                         |
-| `fix`      | 修复 Bug                       |
-| `build`    | 构建系统或外部依赖变更         |
-| `chore`    | 杂项（配置、工具链、脚手架等） |
-| `ci`       | CI/CD 配置或脚本变更           |
-| `docs`     | 纯文档变更                     |
-| `perf`     | 性能优化                       |
-| `refactor` | 代码重构（非功能、非修复）     |
-| `revert`   | 回滚某次提交                   |
-| `style`    | 代码格式变更（非逻辑改动）     |
-| `test`     | 添加或修改测试                 |
+| Type       | Use case                                    |
+| ---------- | ------------------------------------------- |
+| `feat`     | New feature                                 |
+| `fix`      | Bug fix                                     |
+| `build`    | Build system or external dependency changes |
+| `chore`    | Misc (config, toolchain, scaffolding, etc.) |
+| `ci`       | CI/CD config or script changes              |
+| `docs`     | Pure documentation changes                  |
+| `perf`     | Performance optimization                    |
+| `refactor` | Code refactor (non-feature, non-fix)        |
+| `revert`   | Revert a commit                             |
+| `style`    | Code formatting changes (no logic changes)  |
+| `test`     | Add or modify tests                         |
 
-## Scope（可选）
+## Scope (optional)
 
-Scope 是**推荐项而非强制项**：commitlint 不拦截未命中枚举的 scope（`scope-enum` 已关闭），只要求小写。推荐取值：
+Scope is **recommended, not enforced**: commitlint does not block scopes outside the enum (`scope-enum` is off), only lowercase is required. Recommended values:
 
-- `apps/*` — 应用（如 `desktop`、`server`）
-- `packages/*` — 共享包（如 `desktop-core`、`shared`）
-- `tooling/*` — 工程化配置（如 `lint`、`format`、`typescript`、`test`）
+- `apps/*` — applications (e.g. `desktop`, `server`)
+- `packages/*` — shared packages (e.g. `desktop-core`, `shared`)
+- `tooling/*` — tooling config (e.g. `lint`, `format`, `typescript`, `test`)
 
-非目录型 scope（固定）：
+Fixed non-directory scopes:
 
-| Scope   | 含义                     |
-| ------- | ------------------------ |
-| `turbo` | `turbo.json`             |
-| `deps`  | 根依赖或统一版本升级     |
-| `repo`  | 仓库级配置（根目录文件、.trae/、AGENTS.md） |
-| `docs`  | `docs/`                  |
+| Scope   | Meaning                                    |
+| ------- | ------------------------------------------ |
+| `turbo` | `turbo.json`                               |
+| `deps`  | Root dependency or unified version bumps   |
+| `repo`  | Repo-level config (root files, .trae/, AGENTS.md) |
+| `docs`  | `docs/`                                    |
 
-如果改动涉及多个包且不宜拆分提交，可以不写 scope；其他合理 scope 也可以使用（如 `.trae/` 下规则按领域写 `frontend-style`），commitlint 不强制枚举。
+If a change spans multiple packages and is hard to split, scope may be omitted; other reasonable scopes are allowed (e.g. `frontend-style` for rules under `.trae/`); commitlint does not enforce an enum.
 
-## Subject 规范
+## Subject Rules
 
-- 使用中文，简洁陈述做了什么
-- 以动词开头（新增 / 修复 / 重构 / 移除 / 升级 / 迁移 等）
-- 不加句号
-- 不加空泛描述（如"修改了部分代码"）
+- Write in Chinese, a concise statement of what was done
+- Start with a verb (新增 / 修复 / 重构 / 移除 / 升级 / 迁移 etc.)
+- No trailing period
+- No vague phrasing (e.g. "修改了部分代码")
 
-## Body 规范（可选）
+## Body Rules (optional)
 
-- 解释"为什么改"和"设计思路"，不重复 diff 内容
-- 每行不超过 72 字符，超长换行
-- 用空行分隔多个段落
-- 列举关键改动点时用 `-` 起行
+- Explain "why" and the design intent; do not repeat the diff
+- Max 72 characters per line; wrap long lines
+- Separate paragraphs with blank lines
+- Start list items with `-` when enumerating key changes
 
-## Footer 规范（可选）
+## Footer Rules (optional)
 
-| 场景            | 格式                         |
-| --------------- | ---------------------------- |
-| 破坏性变更      | `BREAKING CHANGE: <说明>`    |
-| 关联/关闭 issue | `Closes #123` / `Fixes #123` |
-| 引用相关 issue  | `Refs #123`                  |
-| 引用相关 PR     | `See PR #45`                 |
+| Scenario            | Format                         |
+| ------------------- | ------------------------------ |
+| Breaking change     | `BREAKING CHANGE: <note>`      |
+| Link/close issue    | `Closes #123` / `Fixes #123`   |
+| Reference issue     | `Refs #123`                    |
+| Reference PR        | `See PR #45`                   |
 
-破坏性变更也可在 type 后加 `!` 标记：`feat(server)!: <subject>`，同时 Footer 必须有 `BREAKING CHANGE` 说明。
+Breaking changes can also be marked with `!` after the type: `feat(server)!: <subject>`, and the Footer must carry a `BREAKING CHANGE` note.
 
-## Revert 格式
+## Revert Format
 
 ```
-revert: <原 commit 的 subject>
+revert: <subject of the original commit>
 
 This reverts commit <hash>.
 ```
 
-`<hash>` 是被回滚 commit 的完整 SHA。Revert 的 type 固定为 `revert`，subject 直接复用原 commit 的 subject。
+`<hash>` is the full SHA of the reverted commit. The revert type is always `revert`, and the subject reuses the original commit's subject.
 
-## 完整示例
+## Full Examples
 
-单行提交：
+One-line commit:
 
 ```
 feat(desktop): 新增用户登录页面
 ```
 
-多行提交（含 body + footer）：
+Multi-line commit (with body + footer):
 
 ```
 fix(desktop-core): 修复窗口创建时白屏问题
@@ -114,7 +114,7 @@ Electron loadFile 加载绝对路径资源时无法解析，改为相对路径�
 Closes #42
 ```
 
-破坏性变更：
+Breaking change:
 
 ```
 refactor(server)!: 迁移环境变量校验从 class-validator 到 zod
@@ -123,10 +123,10 @@ BREAKING CHANGE: env.validation.ts 不再导出 class，改导出 zod schema。
 调用方需从 `validate(config)` 改为 `parseEnv(schema, config)`。
 ```
 
-## 规则
+## Rules
 
-1. 一条提交只做一件事。如果改动涉及多个独立逻辑，拆分为多次提交。
-2. Header 用祈使句（动词开头），不写"为什么要改"（放 Body 中），只写"改了什么"。
-3. 破坏性变更必须在 type 后加 `!` 或在 Footer 写 `BREAKING CHANGE`。
-4. 不提交未完成的 WIP 代码。
-5. Revert 提交必须保留原 commit 的 SHA。
+1. One commit does one thing. If a change spans multiple independent concerns, split into multiple commits.
+2. Header uses the imperative mood (verb-first) and states only "what changed", not "why" (that goes in the Body).
+3. Breaking changes must add `!` after the type or a `BREAKING CHANGE` in the Footer.
+4. Never commit unfinished WIP code.
+5. Revert commits must keep the original commit's SHA.

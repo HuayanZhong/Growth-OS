@@ -1,31 +1,35 @@
 ---
 alwaysApply: false
-description: 测试覆盖原则（Vitest）：测行为不测实现；核心逻辑覆盖正常/异常/边界三分支；改动共享逻辑、修复 bug 时同步补测试；纯 UI 空壳页面可不测。判断什么该测、是否需要补测试时使用。
+description: Test coverage principles (Vitest): test behavior, not implementation; core logic covers normal/error/boundary branches; shared-logic changes and bug fixes add tests in the same pass; UI shells may be untested. Use when deciding what to test.
 ---
 
-# 覆盖原则
+# Coverage Principles
 
-**适用场景**：判断哪些代码该测；改代码后要不要同步补测试。
+**When to use**: deciding which code should be tested; whether to add tests after changing code.
 
-**要点**：
+**Key points**:
 
-1. 测行为不测实现细节：断言输入输出与副作用（存储、跳转、toast），不锁定内部调用顺序或私有变量名。
-2. 核心逻辑至少覆盖三条路径：正常（成功路径）、异常（reject/throw）、边界（空值、0、极端时长），例如定时器测"3s 自动移除 / duration=0 常驻 / 手动移除"。
-3. 改动共享行为、composable、路由守卫、IPC 类型契约后必须同步补/改测试；纯 UI 空壳页面（如 dashboard 占位页）可不测。
-4. 异步逻辑用 `resolves/rejects` 断言，不用裸 try/catch 吞掉失败。
-5. 新增 composable 默认配套单测文件（`use-*.test.ts`），与实现同批提交，不攒到后面补。
+1. Test behavior, not implementation details: assert inputs/outputs and side effects (storage, navigation, toast), don't lock in internal call order or private variable names.
+2. Core logic covers at least three paths: normal (success path), error (reject/throw), boundary (empty, zero, extreme durations) — e.g. a timer tests "auto-removes after 3s / duration=0 persists / manual removal".
+3. Changes to shared behavior, composables, route guards, or IPC type contracts must add/update tests in the same pass; pure UI shell pages (e.g. dashboard placeholder) may be untested.
+4. Assert async logic with `resolves/rejects`, never swallow failures with bare try/catch.
+5. A new composable ships with a companion unit test file (`use-*.test.ts`) in the same commit, not deferred.
 
-**示例**：
+**Example**:
 
 ```ts
-// 一个用例覆盖一条路径，语义清晰：
-it('duration=0 常驻，不自动移除', () => { /* ... */ })
-it('默认 3s 后自动移除', () => { /* ... */ })
+// One case covers one path, with clear semantics:
+it("duration=0 persists, never auto-removes", () => {
+  /* ... */
+});
+it("auto-removes after the default 3s", () => {
+  /* ... */
+});
 ```
 
-**验证**：
+**Verification**:
 
 ```bash
 pnpm test
-# 用例随源码增长：新增 composable 时同名单测文件必须存在
+# cases grow with the source: a new composable must come with a same-named unit test file
 ```

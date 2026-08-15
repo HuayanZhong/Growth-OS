@@ -1,25 +1,25 @@
 ---
 alwaysApply: false
-description: 动画规则（Vue 3 + GSAP）：GSAP 经 pnpm catalog 引入；组件切换禁 Vue Transition out-in + JS hooks + 子组件组合（Nuxt 4 bug），改手动 GSAP + timeline 编排；动画目标须归一化真实 DOM（条件渲染组件 $el 是 fragment 锚点）；3D 翻转 perspective 固定父容器，禁 transformPerspective 动画属性；动 transform、结束清理。编写切换动画、入场动效时使用。
+description: Animation rule (Vue 3 + GSAP): use manual GSAP + timeline, not Vue Transition out-in (Nuxt 4 bug); targets must be real DOM; perspective on parent, never transformPerspective; animate transform only; clean up. Use for switch/entrance animations.
 ---
 
-# 动画规范（GSAP）
+# Animation Spec (GSAP)
 
-**适用场景**：页面/组件切换动画、入场动效、弹性过渡等。
+**When to use**: page/component switch animations, entrance effects, elastic transitions, etc.
 
-**要点**：
+**Key points**:
 
-1. 依赖引入：GSAP 版本走 pnpm catalog（`frontend` 目录），包内用 `"gsap": "catalog:frontend"`，不写死版本。
-2. 简单过渡（hover、单元素淡入淡出）优先 CSS transition；弹性/多元素/时序动画才用 GSAP。
-3. 组件切换（登录↔注册等）禁用 Vue `<Transition mode="out-in">` + JS hooks + 子组件组合：Nuxt 4 下 leave 完成后新组件不插入或插入即被移除。改用**手动 GSAP**：旧组件退出动画（await 完成）→ 切 `v-if/v-else` → `nextTick` 后新组件入场。复杂时序用 `gsap.timeline()` 编排（`to` 退出 + `onComplete` 内切内容 + `fromTo` 入场），避免手动 `new Promise` + `async/await` 堆叠。
-4. **动画目标必须是真实 DOM 元素**：Nuxt 4 下条件渲染组件（v-if/v-else）的 `$el` 可能是 fragment 锚点（Text/注释节点），gsap 对其做 CSS 动画报 `Missing plugin?` 且不写样式（表现：内容直接切换、无过渡）。需先归一化——nodeType 命中元素直接返回，否则从父容器 `querySelector` 目标类（如 `.hero-content`）。
-5. **3D 翻转（rotationY/rotationX）的 perspective 固定挂父容器**（Tailwind `[perspective:1200px]` 或 CSS），严禁把 `transformPerspective` 当 tween 属性：GSAP 会从极小值（约 1px）过渡到目标值，近大远小极端变形（元素拉伸）+ 滚动条闪烁（overflow 抖动）。
-6. 动画目标用元素引用/ref，不用全局字符串选择器（防止命中组件外元素与作用域泄漏）。
-7. 只动画 transform（`x/y/scale/rotation`）与 `opacity`，不动画 `top/left/width/height` 等布局属性；多元素错峰用 `stagger`。
-8. 动画结束清理：`onComplete`/`onUnmounted` 里 `gsap.kill()` 或 `clearProps`，防止 transform 残留（残留会导致后续切换"看似无动画"或位置漂移）。
-9. 切换体验：进入动画从目标状态反向 `fromTo`，首帧即应用起始值，避免闪烁。
+1. Dependency: GSAP's version goes through the pnpm catalog (in the `frontend` directory); packages use `"gsap": "catalog:frontend"`, never a pinned version.
+2. Simple transitions (hover, single-element fades) prefer CSS transitions; GSAP is for elastic/multi-element/sequenced animations.
+3. Component switching (login↔register, etc.) forbids Vue `<Transition mode="out-in">` + JS hooks + child component composition: under Nuxt 4 the new component either never mounts after leave completes or is removed right after mounting. Use **manual GSAP instead**: old component exit animation (await completion) → flip `v-if/v-else` → new component entrance after `nextTick`. For complex sequences orchestrate with `gsap.timeline()` (`to` exit + switch content in `onComplete` + `fromTo` entrance), avoiding hand-rolled `new Promise` + `async/await` stacks.
+4. **Animation targets must be real DOM elements**: under Nuxt 4, a conditionally-rendered component's (v-if/v-else) `$el` may be a fragment anchor (Text/comment node); gsap throws `Missing plugin?` on it and writes no styles (symptom: content switches instantly, no transition). Normalize first — return the element when nodeType matches, otherwise `querySelector` the target class from the parent (e.g. `.hero-content`).
+5. **3D flips (rotationY/rotationX) fix perspective on the parent container** (Tailwind `[perspective:1200px]` or CSS); never use `transformPerspective` as a tween property: GSAP tweens perspective from a near-zero value (~1px) to the target, causing extreme near-far distortion (stretched elements) and scrollbar flicker (overflow jitter).
+6. Animation targets use element references/refs, not global string selectors (prevents hitting elements outside the component and scope leaks).
+7. Animate only transform (`x/y/scale/rotation`) and `opacity`, never layout properties like `top/left/width/height`; stagger multi-element timing.
+8. Clean up when done: `gsap.kill()` or `clearProps` in `onComplete`/`onUnmounted` to prevent transform residue (residue makes later switches "look animated-less" or drift positions).
+9. Switch experience: entrance animations run `fromTo` from the target state, applying the start value on the first frame to avoid flicker.
 
-**示例**（3D 翻转切换登录/注册）：
+**Example** (3D flip switch login/register):
 
 ```vue
 <script setup lang="ts">
@@ -27,15 +27,15 @@ import { nextTick, ref } from "vue";
 import { gsap } from "gsap";
 import { CSSPlugin } from "gsap/CSSPlugin";
 
-// 显式注册 CSSPlugin：Vite 预打包 tree-shake 会移除 gsap 的自动注册（sideEffects:false），
-// 不注册则 rotationY/opacity 等 CSS 属性全部被忽略（"Missing plugin"），动画不生效
+// Explicitly register CSSPlugin: Vite pre-bundling tree-shakes gsap's auto-registration (sideEffects:false),
+// without it CSS properties like rotationY/opacity are all ignored ("Missing plugin") and animations don't run
 gsap.registerPlugin(CSSPlugin);
 
 const mode = ref<"a" | "b">("a");
 const aRef = ref<HTMLElement>();
 const bRef = ref<HTMLElement>();
 
-// 归一化动画目标：条件渲染组件的 $el 可能是 fragment 锚点（Text/注释节点），需取真实元素
+// Normalize animation target: a conditionally-rendered component's $el may be a fragment anchor (Text/comment node), grab the real element
 function formRoot(el: unknown): HTMLElement | null {
   if (!el) return null;
   return (el as Node).nodeType === Node.ELEMENT_NODE
@@ -43,9 +43,9 @@ function formRoot(el: unknown): HTMLElement | null {
     : ((el as Node).parentElement?.querySelector(".card") ?? null);
 }
 
-// 3D 半程翻页：旧表单翻出 -90° → 切内容 → 新表单从 +90° 翻入。
-// 透视固定在父容器（如 .hero 上 [perspective:1200px]），翻转只动 rotationY——
-// 若把 transformPerspective 当动画属性，透视值会从极小过渡到目标，极端变形并触发滚动条闪烁。
+// 3D half-page flip: old form flips out to -90° → switch content → new form flips in from +90°.
+// Perspective is fixed on the parent (e.g. [perspective:1200px] on .hero), the flip only animates rotationY —
+// using transformPerspective as an animated property tweens perspective from near-zero to target: extreme distortion + scrollbar flicker
 function switchMode(next: "a" | "b") {
   if (mode.value === next) return;
   const curEl = formRoot(mode.value === "a" ? aRef.value : bRef.value);
@@ -76,9 +76,9 @@ function switchMode(next: "a" | "b") {
 </template>
 ```
 
-**验证**：
+**Verification**:
 
-1. 浏览器实测双向切换：内容正确替换、动画生效、结束后无 transform/opacity 残留（检查 inline transform 为空、computed style 为 `transform: none`）。
-2. 重复切换多次（≥5 次）无卡死、无元素丢失；对比 `documentElement.scrollWidth/Height` 与视口，动画全程无滚动条闪烁（overflow 抖动）。
-3. 动画"看似没生效"（内容直接切换）时按序排查：① 目标是否为真实 DOM（`$el` 可能是 Text/注释节点）；② `gsap.plugins.css` 是否注册；③ 采样中间帧（t≈100/300/700ms 的 inline transform）确认 tween 在写样式。
-4. `pnpm --filter <app> typecheck` 通过。
+1. Browser-tested two-way switching: content swaps correctly, animations run, no transform/opacity residue after finishing (check inline transform is empty, computed style is `transform: none`).
+2. Repeated switching (≥5 times) has no freezes or lost elements; compare `documentElement.scrollWidth/Height` against the viewport — no scrollbar flicker (overflow jitter) during the whole animation.
+3. When an animation "looks like it didn't run" (content switches instantly), check in order: ① is the target real DOM (`$el` may be a Text/comment node); ② is `gsap.plugins.css` registered; ③ sample intermediate frames (inline transform at t≈100/300/700ms) to confirm the tween is writing styles.
+4. `pnpm --filter <app> typecheck` passes.

@@ -1,37 +1,37 @@
 ---
 alwaysApply: false
-description: 认证流程规则（Supabase Auth + Nuxt 4）：登录错误用 mapAuthError 转中文；注册（Confirm email 开启）session 为 null 显示确认视图；退出登录 session 过期/不存在禁止请求服务端 logout，用 signOut({ scope: 'local' })；session_not_found（403）降级本地退出；失败提示信息取自接口返回，成功文案自定义。编写登录、注册、退出流程时使用。
+description: Auth flow rule (Supabase Auth + Nuxt 4): login errors map via mapAuthError; null session after sign-up → confirmation view; expired/missing session → local signOut only; 403 degrades locally. Use for login/sign-up/sign-out flows.
 ---
 
-# 认证流程（登录 / 注册 / 退出）
+# Auth Flows (Login / Sign-up / Sign-out)
 
-**适用场景**：编写或修改登录、注册、退出登录逻辑。
+**When to use**: when writing or modifying login, sign-up, or sign-out logic.
 
-## 登录
+## Login
 
-**要点**：
+**Key points**:
 
-1. `signIn(email, password)`；错误统一 `mapAuthError(error)` 转中文文案展示。
-2. 提交时强制字段级校验（zod），校验失败不请求；提交中禁用按钮防重复。
+1. `signIn(email, password)`; errors uniformly map through `mapAuthError(error)` into Chinese copy for display.
+2. Field-level validation (zod) is enforced before submit; failed validation skips the request; the submit button is disabled while submitting to prevent duplicates.
 
-## 注册
+## Sign-up
 
-**要点**：
+**Key points**:
 
-1. Confirm email 开启：`signUp` 返回 `data.session === null` → 显示"确认邮件已发送"视图，用 `resendConfirmation(email)` 重发。
-2. 若 session 非空（Confirm email 关闭）→ 直接跳转工作台。
-3. 网络/服务端异常时 `signUp` 可能 throw（如 `AuthRetryableFetchError`），需 catch 兜底提示，避免静默失败。
+1. Confirm email is on: `signUp` returns `data.session === null` → show the "confirmation email sent" view, resend via `resendConfirmation(email)`.
+2. If the session is non-null (Confirm email off) → redirect straight to the dashboard.
+3. On network/server errors `signUp` may throw (e.g. `AuthRetryableFetchError`); catch and surface a message so failures never silently pass.
 
-## 退出登录：session 过期/不存在禁止请求服务端 logout
+## Sign-out: never hit the server logout when the session is expired/missing
 
-**要点**：
+**Key points**:
 
-1. 退出前先 `getSession()`：session 为 null 或 `expires_at` 已过（`Date.now() / 1000 >= session.expires_at`）→ 直接 `signOut({ scope: 'local' })`，**不请求服务端**——服务端 session 已失效，请求必 403。
-2. session 有效才调 `signOut()`；返回 `session_not_found`（403）或网络异常 → 降级 `signOut({ scope: 'local' })` 清本地，不抛错。
-3. `signOutWithFallback` 统一封装三路兜底（无 session/过期、接口 error、网络异常），返回 `{ errorMessage?: string }`；UI 失败提示信息取自接口返回（`mapAuthError`），成功文案自定义（toast 类型：失败 warning、成功 success）。
-4. 根因提醒：session 磁盘持久化（Electron 经 secureStorage 加密落盘，跨重启残留）导致 token 过期但本地仍显示"已登录"，退出必 403——桌面端高发场景。token 持久化与判定细节见 [token.md](token.md)。
+1. Call `getSession()` before signing out: session is null or `expires_at` has passed (`Date.now() / 1000 >= session.expires_at`) → call `signOut({ scope: 'local' })` directly, **no server request** — the server-side session is already invalid and the request would 403.
+2. Only call `signOut()` when the session is valid; on `session_not_found` (403) or network error → degrade to `signOut({ scope: 'local' })` to clear locally, never throw.
+3. `signOutWithFallback` wraps the three-way fallback (no/expired session, API error, network error) and returns `{ errorMessage?: string }`; UI failure messages come from the API response (`mapAuthError`), success copy is custom (toast type: warning on failure, success on success).
+4. Root cause reminder: disk-persisted sessions (Electron via secureStorage encrypted storage, survives restarts) mean the token can expire while the UI still shows "logged in" — sign-out then always 403s, a frequent desktop scenario. Token persistence and expiry details: [token.md](token.md).
 
-**示例**：
+**Example**:
 
 ```ts
 signOutWithFallback = async (): Promise<{ errorMessage?: string }> => {
@@ -39,7 +39,7 @@ signOutWithFallback = async (): Promise<{ errorMessage?: string }> => {
   const session = data.session;
   if (!session || (session.expires_at != null && Date.now() / 1000 >= session.expires_at)) {
     await this.forceSignOut();
-    return { errorMessage: "会话已过期或不存在" };
+    return { errorMessage: "Session expired or missing" };
   }
   try {
     const { error } = await this.signOut();
@@ -50,12 +50,12 @@ signOutWithFallback = async (): Promise<{ errorMessage?: string }> => {
     return {};
   } catch (err) {
     await this.forceSignOut();
-    return { errorMessage: err instanceof Error ? err.message : "网络异常，本地会话已清除" };
+    return { errorMessage: err instanceof Error ? err.message : "Network error, local session cleared" };
   }
 };
 ```
 
-**验证**：
+**Verification**:
 
-1. 测试覆盖分支：无 session / 过期 / 有效 / 403 降级 / 网络异常（见 `apps/desktop/test/unit/use-auth.test.ts`）。
-2. `pnpm --filter desktop test`、`pnpm --filter desktop typecheck`、`pnpm --filter desktop lint` 全绿。
+1. Tests cover the branches: no session / expired / valid / 403 degrade / network error (see `apps/desktop/test/unit/use-auth.test.ts`).
+2. `pnpm --filter desktop test`, `pnpm --filter desktop typecheck`, `pnpm --filter desktop lint` all pass.

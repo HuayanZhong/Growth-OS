@@ -1,32 +1,32 @@
 ---
 alwaysApply: false
-description: 测试命令与验证规则（pnpm + turbo）：pnpm test 直接运行（vitest.config 已自动加载根 .env，无需手动注入）；验证顺序 test → typecheck → lint 全绿。运行测试、提交前验证时使用。
+description: Test command & verification rule (pnpm + turbo): pnpm test runs directly (vitest.config auto-loads root .env); verification order is test → typecheck → lint, all green. Use when running tests or verifying before commits.
 ---
 
-# 命令与验证
+# Commands & Verification
 
-**适用场景**：运行测试、提交前整体验证。
+**When to use**: running tests, full verification before committing.
 
-**要点**：
+**Key points**:
 
-1. 运行方式：
-   - 单个应用：`cd apps/desktop && pnpm test`（vitest run）
-   - 指定文件：`pnpm vitest run test/unit/use-auth.test.ts`
-   - 全仓：根目录 `pnpm test`（turbo run test）
-2. `.env` 由 vitest.config.ts 启动时自动从根目录加载并注入 `process.env`，无需手动 `$env:` 注入；不依赖 turbo `globalEnv` 声明（Supabase 变量未列入其中）。
-3. 提交前验证顺序：`pnpm test` → `pnpm typecheck` → `pnpm lint`，三者都必须通过。
-4. typecheck 覆盖 `test/unit`（nuxt.config 的 `typescript.tsConfig.include` 已扩展），测试文件自身的类型错误（如 TS2532）会被捕获，不要绕过。
-5. `test/**` 已豁免 `import/first`（`mockNuxtImport` 需在被 mock 模块 import 之前），lint 不会报该规则。
+1. How to run:
+   - Single app: `cd apps/desktop && pnpm test` (vitest run)
+   - Specific file: `pnpm vitest run test/unit/use-auth.test.ts`
+   - Whole repo: `pnpm test` at the root (turbo run test)
+2. `.env` is auto-loaded from the root and injected into `process.env` by vitest.config.ts at startup; no manual `$env:` injection needed; don't rely on the turbo `globalEnv` declaration (Supabase vars are not listed there).
+3. Pre-commit verification order: `pnpm test` → `pnpm typecheck` → `pnpm lint`; all three must pass.
+4. typecheck covers `test/unit` (nuxt.config's `typescript.tsConfig.include` is extended); type errors inside test files themselves (e.g. TS2532) are caught — don't work around them.
+5. `test/**` is exempt from `import/first` (`mockNuxtImport` must come before importing the mocked module); lint won't flag that rule there.
 
-**示例**：
+**Example**:
 
 ```bash
 pnpm test && pnpm typecheck && pnpm lint
 ```
 
-**验证**：
+**Verification**:
 
 ```bash
 cd apps/desktop && pnpm test
-# 直接通过，不需要任何环境变量前缀
+# passes directly, no environment variable prefix needed
 ```

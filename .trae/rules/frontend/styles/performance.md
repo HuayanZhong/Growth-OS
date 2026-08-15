@@ -1,28 +1,28 @@
 ---
 alwaysApply: false
-description: 样式性能规则（Tailwind CSS v4）：@source 精确扫描源码目录、样式只经 UI 包入口引入一次、少用任意值类、构建后核查 CSS 产物体积。构建体积膨胀、样式未生效或全量生成时使用。
+description: Style performance rule (Tailwind CSS v4): @source scans source dirs precisely; styles import once via the UI package entry; arbitrary-value classes are rare; check CSS output size after builds. Use when the build balloons or styles don't apply.
 ---
 
-# 样式性能
+# Style Performance
 
-**适用场景**：构建体积膨胀、样式未生效或全量生成。
+**When to use**: when the build size balloons, when styles don't apply or everything gets generated.
 
-**要点**：
+**Key points**:
 
-1. Tailwind 内容扫描用 `@source` 精确指向源码目录（如 UI 包自身），新增源码目录时显式补 `@source`。
-2. 样式只经 UI 包入口引入一次（目录约定见 [structure.md](structure.md)），消费方不重复 `@import 'tailwindcss'`。
-3. 少用任意值类（`h-[17px]`、`text-[11px]`），确需时优先落为标准类或语义令牌。
-4. 复用语义类与组件变体，避免重复书写同一视觉。
-5. 构建后核查 CSS 产物体积与类生成（含 gzip）。
+1. Tailwind content scanning uses `@source` pointed precisely at source directories (e.g. the UI package itself); add `@source` explicitly when adding new source directories.
+2. Styles are imported exactly once through the UI package entry (directory conventions: [structure.md](structure.md)); consumers don't repeat `@import 'tailwindcss'`.
+3. Arbitrary-value classes (`h-[17px]`, `text-[11px]`) are rare; when truly needed, prefer a standard class or semantic token instead.
+4. Reuse semantic classes and component variants instead of restating the same visual.
+5. After builds, check CSS output size and class generation (including gzip).
 
-**示例**：
+**Example**:
 
 ```css
 @source "../";
 ```
 
-**验证**：
+**Verification**:
 
-1. 构建成功，产物仅含实际使用的类。
-2. CSS 产物 gzip 大小记录基线，无明显异常膨胀。
-3. `@source` 目录外的类不出现在产物中。
+1. Build succeeds; the output contains only actually-used classes.
+2. CSS output gzip size is recorded as a baseline; no obvious abnormal bloat.
+3. Classes outside the `@source` directories do not appear in the output.
