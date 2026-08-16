@@ -11,7 +11,7 @@ Growth OS human docs ship in English + Chinese: `xxx.md` (English, authoritative
   pnpm verify:pairing --write <path>   # any side of the pair
   ```
 - **Which docs are paired:** the explicit list in `scripts/doc-pairs.manifest.json`. A new bilingual doc joins the system by adding its pair there, then `pnpm verify:pairing --write`.
-- **Scope / exclusions:** this system covers human-facing READMEs and `docs/` guides. Agent-facing files (`AGENTS.md`, `.trae/rules/**`, `.agents/notes/**`, package `AGENTS.md`/`CLAUDE.md`) are English-only by design and are not paired.
+- **Scope / exclusions:** this system covers human-facing READMEs and `docs/` guides. Agent-facing files — root/`apps/`/`packages/`/`tooling/` `AGENTS.md` and `CLAUDE.md`, `.trae/rules/**`, `.agents/notes/**` — are English-only by design and are not paired.
 
 ## Terminology
 

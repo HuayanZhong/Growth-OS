@@ -14,7 +14,7 @@ The runnable applications of Growth OS, built on the packages in `packages/` and
 ## Dependency direction
 
 - Apps depend on `packages/*` (leaf libraries), never the reverse.
-- `desktop` and `server` do not depend on each other; they share contracts only through `@growth-os/shared` and `@growth-os/types`.
+- `desktop` and `server` do not depend on each other: `desktop` depends on `@growth-os/types`, `@growth-os/ui`, `@growth-os/desktop-core`; `server` depends on `@growth-os/shared`.
 - All env vars live in the root `.env` and are injected per app via the dotenv-cli cascade — see the root [AGENTS.md](../AGENTS.md).
 
 ## Conventions

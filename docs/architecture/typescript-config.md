@@ -1,517 +1,100 @@
-# TypeScript 配置架构设计
+# TypeScript 配置架构
 
-## 设计目标
+## 设计原则
 
-Growth OS 是一个 Monorepo 项目，未来将支持：
-
-- Nuxt
-- Vue
-- React
-- Next.js
-- NestJS
-- Tauri
-- 多个 Packages
-- 微前端
-
-因此 TypeScript 配置不能围绕某一个框架设计，而应该采用分层设计。
-
-整个设计遵循：
+Growth OS 是 Monorepo，TypeScript 配置不围绕单一框架设计，采用分层：
 
 > Language → Runtime → Preset → Project
 
-这样可以最大程度保证配置的可维护性与可扩展性。
+每层只负责自己的职责，保证配置可维护、可扩展、支持多框架共存。
 
----
+## 目录结构（现状）
 
-# 目录结构
+配置位于 `tooling/typescript/`：
 
 ```text
-configs/
-└── typescript/
-    ├── base.json
-    │
-    ├── runtime/
-    │   ├── browser.json
-    │   └── node.json
-    │
-    └── presets/
-        ├── vue.json
-        ├── nuxt.json
-        ├── react.json
-        ├── next.json
-        ├── nest.json
-        ├── tauri.json
-        ├── library.json
-        └── test.json
+tooling/typescript/
+├── base.json
+├── runtime/
+│   ├── browser.json
+│   └── node.json
+└── framework/
+    ├── vue.json
+    ├── nuxt.json
+    ├── react.json
+    ├── next.json
+    ├── nest.json
+    ├── tauri.json
+    ├── library.json
+    └── test.json
 ```
 
 ---
 
-# 第一层：Base
+## 第一层：base.json
 
-```
-base.json
-```
+仓库唯一的语言规范，只负责 TypeScript 自身：
 
-Base 是整个仓库唯一的语言规范。
+- `strict`
+- `noUncheckedIndexedAccess`
+- `exactOptionalPropertyTypes`
+- `noImplicitOverride`
+- `noImplicitReturns`
+- `noFallthroughCasesInSwitch`
+- `resolveJsonModule`
+- `verbatimModuleSyntax`
+- `allowImportingTsExtensions`
+- `forceConsistentCasingInFileNames`
+- `skipLibCheck`
 
-它只负责 TypeScript 自身。
+不感知 Browser / Node / 任何框架。
 
-例如：
+## 第二层：runtime/
 
-- strict
-- noUncheckedIndexedAccess
-- exactOptionalPropertyTypes
-- noImplicitReturns
-- noImplicitOverride
-- skipLibCheck
-- forceConsistentCasingInFileNames
+运行环境层，解决"代码跑在哪个平台"。
 
-Base 永远不应该知道：
+- `runtime/node.json`：继承 base；`target: ES2024`、`module/moduleResolution: NodeNext`、`lib: [ES2024]`、`types: [node]`、`noEmit: true`。适用于 NestJS、CLI、Node 脚本。
+- `runtime/browser.json`：继承 base；DOM 相关 lib 与 bundler 模块解析。适用于浏览器运行的前端。
 
-- Browser
-- Node
-- Vue
-- React
-- Nuxt
-- Nest
+## 第三层：framework/
 
-更不能知道：
+框架/场景预设，继承 runtime 或 base，只增加框架自身需要的配置，不修改 runtime。
 
-- DOM
-- JSX
-- Decorator
-- Node Types
+- `framework/nest.json`：继承 node；增加 `experimentalDecorators` + `emitDecoratorMetadata`（Decorator 元数据只 Nest 需要，不进 base）。
+- `framework/vue.json`：继承 browser；Vue 相关类型与 JSX。
+- `framework/nuxt.json` / `react.json` / `next.json` / `tauri.json`：按需扩展；Nuxt 自身生成 `.nuxt/tsconfig.json`，这里不重复维护。
+- `framework/library.json`：继承 base；`declaration`、`declarationMap`、`composite`、`incremental`，适用于需要产出的库。
+- `framework/test.json`：测试环境预设。
 
-它只负责语言规则。
-
-职责：
-
-```
-TypeScript Language Rules
-```
-
----
-
-# 第二层：Runtime
-
-Runtime 表示运行环境。
-
-目前主要分为：
-
-```
-runtime/
-
-browser.json
-
-node.json
-```
-
-它们解决的是：
-
-> 当前代码运行在哪个平台。
-
-而不是：
-
-> 当前代码属于哪个框架。
-
----
-
-## browser.json
-
-适用于：
-
-- Vue
-- Nuxt
-- React
-- Next
-- Tauri Frontend
-
-主要负责：
-
-- DOM
-- DOM.Iterable
-- Browser API
-- Bundler Module Resolution
-
-职责：
-
-```
-Browser Runtime
-```
-
----
-
-## node.json
-
-适用于：
-
-- NestJS
-- CLI
-- Node Scripts
-- Build Tools
-
-主要负责：
-
-- Node Types
-- Node Module Resolution
-- Node Runtime
-
-职责：
-
-```
-Node Runtime
-```
-
----
-
-# 第三层：Preset
-
-Preset 表示：
-
-> 针对不同框架或不同场景的配置预设。
-
-Preset 不应该修改 Runtime。
-
-它只增加：
-
-框架自身需要的配置。
-
----
-
-## vue.json
-
-继承：
-
-```
-browser
-```
-
-增加：
-
-- Vue JSX
-- Vue Types
-
-适用于：
-
-- Vue 项目
-- Vue Packages
-
----
-
-## nuxt.json
-
-继承：
-
-```
-vue
-```
-
-增加：
-
-Nuxt 所需要的类型。
-
-例如：
-
-- Nuxt Runtime
-- Auto Import
-
-注意：
-
-Nuxt 自身会生成：
-
-```
-.nuxt/tsconfig.json
-```
-
-这里不要重复维护。
-
----
-
-## react.json
-
-继承：
-
-```
-browser
-```
-
-增加：
-
-```
-jsx: react-jsx
-```
-
-适用于：
-
-- React
-- React Packages
-
----
-
-## next.json
-
-继承：
-
-```
-react
-```
-
-Next 自身会维护大量配置。
-
-这里只作为统一入口。
-
----
-
-## nest.json
-
-继承：
-
-```
-node
-```
-
-增加：
-
-```
-experimentalDecorators
-
-emitDecoratorMetadata
-```
-
-Decorator Metadata 不应该放到 Base。
-
-只有 Nest 需要。
-
----
-
-## tauri.json
-
-继承：
-
-```
-browser
-```
-
-Tauri 前端本质仍然运行在 WebView。
-
-因此：
-
-它属于 Browser Runtime。
-
-Rust 不属于 TypeScript 配置管理范围。
-
----
-
-## library.json
-
-Library 是整个 Monorepo 最重要的配置之一。
-
-适用于：
-
-```
-packages/
-```
-
-例如：
-
-- ui
-- sdk
-- shared
-
-主要负责：
-
-- declaration
-- declarationMap
-- composite
-- incremental
-
-Library 不依赖任何框架。
-
----
-
-## test.json
-
-适用于：
-
-- Vitest
-- Jest
-- Playwright
-
-增加：
-
-```
-vitest/globals
-
-node
-```
-
-测试环境不应该污染业务代码。
-
----
-
-# 配置继承关系
+## 继承关系（实际）
 
 ```text
                     base
-                 /        \
-          browser         node
-             │              │
-      ┌──────┴──────┐       │
-      │             │       │
-     vue         react     nest
-      │             │
-     nuxt         next
-
-base
- ├── library
- └── test
+                 /      \
+          browser        node
+             │            │
+            vue          nest
 ```
 
----
+## 项目实际继承（现状）
 
-# 项目如何继承
+| 项目                    | 继承                                   | 备注                                            |
+| ----------------------- | -------------------------------------- | ----------------------------------------------- |
+| `apps/server`           | `framework/nest.json`                  | + `declaration: true`（TsMorph 生产需要 .d.ts） |
+| `packages/ui`           | `framework/vue.json`                   |                                                 |
+| `packages/shared`       | `runtime/node.json`                    | 零依赖工具包，无产出要求                        |
+| `packages/types`        | `runtime/node.json`                    |                                                 |
+| `packages/desktop-core` | `runtime/node.json`                    |                                                 |
+| `apps/desktop`          | Nuxt 自动生成（`.nuxt/tsconfig.json`） | 不继承分层预设                                  |
 
-## Web
+说明：`framework/` 下的 `nuxt` / `react` / `next` / `tauri` / `library` / `test` 预设已就位但当前无消费方，供后续项目按需接入；新增消费方时在对应 `tsconfig.json` 中 `extends` 即可。
 
-```
-apps/web
-```
+## 为什么这样设计？
 
-继承：
-
-```
-presets/nuxt.json
-```
-
----
-
-## Server
-
-```
-apps/server
-```
-
-继承：
-
-```
-presets/nest.json
-```
-
----
-
-## Desktop
-
-```
-apps/desktop
-```
-
-继承：
-
-```
-presets/tauri.json
-```
-
----
-
-## UI
-
-```
-packages/ui
-```
-
-继承：
-
-```
-presets/vue.json
-```
-
----
-
-## SDK
-
-```
-packages/sdk
-```
-
-继承：
-
-```
-presets/library.json
-```
-
----
-
-## Shared
-
-```
-packages/shared
-```
-
-继承：
-
-```
-presets/library.json
-```
-
----
-
-# 为什么这样设计？
-
-传统项目通常只有一个 tsconfig。
-
-例如：
-
-```
-tsconfig.json
-```
-
-随着项目不断扩大：
-
-- Web
-- Server
-- Package
-- React
-- Vue
-
-所有配置都会堆积到同一个文件中。
-
-最终变成：
-
-```
-200+
-行配置
-```
-
-几乎没人敢修改。
-
----
-
-采用分层设计以后：
-
-Language
-
-↓
-
-Runtime
-
-↓
-
-Preset
-
-↓
-
-Project
-
-每一层只负责自己的职责。
-
-优点：
+传统单 tsconfig 随项目扩大（Web / Server / Package / 多框架）会堆到 200+ 行、没人敢改。分层后：
 
 - 配置职责单一
-- 易于维护
-- 易于扩展
-- 支持多框架共存
-- 支持 Monorepo
-- 支持未来微前端演进
+- 易于维护与扩展
+- 支持多框架共存、Monorepo、未来微前端演进
 
-这也是大型 Monorepo 中较为推荐的 TypeScript 配置组织方式。
+改动注意：配置树移动时同步更新本文档（见 [tooling/AGENTS.md](../../tooling/AGENTS.md)）。

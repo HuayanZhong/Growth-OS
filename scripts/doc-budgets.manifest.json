@@ -4,6 +4,12 @@
     "docs/AGENTS.md": { "maxWords": 1250 },
     "docs/architecture.md": { "maxWords": 1800 },
     "docs/guide-zh.md": { "maxWords": 800 },
-    ".agents/notes/README.md": { "maxWords": 400 }
+    ".agents/notes/README.md": { "maxWords": 400 },
+    "README.md": { "maxWords": 400 },
+    "apps/README.md": { "maxWords": 400 },
+    "packages/README.md": { "maxWords": 800 },
+    "tooling/README.md": { "maxWords": 400 },
+    "docs/server/database.md": { "maxWords": 900 },
+    "docs/desktop/architecture.md": { "maxWords": 600 }
   }
 }

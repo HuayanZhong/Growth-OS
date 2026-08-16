@@ -14,7 +14,7 @@ Growth OS 的可运行应用，构建在 `packages/` 的共享包和 `tooling/` 
 ## 依赖方向
 
 - 应用依赖 `packages/*`（叶子库），不允许反向。
-- `desktop` 与 `server` 互不依赖，只通过 `@growth-os/shared` 与 `@growth-os/types` 共享契约。
+- `desktop` 与 `server` 互不依赖：`desktop` 依赖 `@growth-os/types`、`@growth-os/ui`、`@growth-os/desktop-core`；`server` 依赖 `@growth-os/shared`。
 - 环境变量统一放根 `.env`，经 dotenv-cli 级联按应用注入——见根 [AGENTS.md](../AGENTS.md)。
 
 ## 约定

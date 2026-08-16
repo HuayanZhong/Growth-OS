@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Docs gate: CLAUDE.md pointer check, markdown link validity, word budgets.
+ * Docs gate: CLAUDE.md pointer check (root + per-layer), markdown link validity across all docs, word budgets, bilingual-pair hashes.
  *
  * Usage:
  *   node scripts/verify-docs.cjs          # check only
@@ -23,6 +23,40 @@ function read(p) {
   return fs.existsSync(p) ? fs.readFileSync(p, 'utf8') : null
 }
 
+const SKIP_DIRS = new Set([
+  'node_modules',
+  '.git',
+  '.trae',
+  '.agents',
+  'dist',
+  'coverage',
+  '.nuxt',
+  '.output',
+])
+
+/** Recursively collect all markdown files under ROOT, minus skip dirs. */
+function collectMarkdown(dir = ROOT) {
+  const out = []
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const abs = path.join(dir, entry.name)
+    if (entry.isDirectory()) {
+      if (!SKIP_DIRS.has(entry.name)) out.push(...collectMarkdown(abs))
+    } else if (entry.name.endsWith('.md')) {
+      out.push(path.relative(ROOT, abs))
+    }
+  }
+  return out
+}
+
+/** Extract relative markdown link targets from content. */
+function linksFrom(content) {
+  const links = []
+  const re = /\[[^\]]*\]\(([^)]+)\)/g
+  let m
+  while ((m = re.exec(content)) !== null) links.push(m[1].trim())
+  return links
+}
+
 function fail(msg) {
   console.error(`[verify-docs] ${msg}`)
   process.exitCode = 1
@@ -35,7 +69,7 @@ function countWords(text) {
   return latin + cjk
 }
 
-// --sync mode: rewrite CLAUDE.md as the thin pointer before checking
+// --sync mode: rewrite root CLAUDE.md as the thin pointer before checking
 if (process.argv.includes('--sync')) {
   fs.writeFileSync(CLAUDE, POINTER)
   console.log('[verify-docs] CLAUDE.md reset to the thin pointer')
@@ -61,7 +95,7 @@ for (const e of checkPairs()) {
   fail(e)
 }
 
-// 3. CLAUDE.md must be exactly the thin pointer
+// 3. Root CLAUDE.md must be exactly the thin pointer
 const claude = read(CLAUDE)
 if (claude == null) {
   fail('CLAUDE.md missing — run `node scripts/verify-docs.cjs --sync`')
@@ -69,20 +103,25 @@ if (claude == null) {
   fail('CLAUDE.md is not the thin pointer — run `node scripts/verify-docs.cjs --sync`')
 }
 
-// 4. Relative markdown link validity across managed docs
-const managed = [
-  'AGENTS.md',
-  'CLAUDE.md',
-  ...Object.keys(manifest.files).filter((f) => f.endsWith('.md')),
-]
-for (const rel of managed) {
+// 3b. Per-layer CLAUDE.md files must be thin pointers: sibling AGENTS.md + root AGENTS.md
+for (const rel of collectMarkdown().filter((f) => f !== 'CLAUDE.md' && f.endsWith('CLAUDE.md'))) {
   const abs = path.join(ROOT, rel)
   const content = read(abs)
   if (content == null) continue
-  const re = /\[[^\]]*\]\(([^)]+)\)/g
-  let m
-  while ((m = re.exec(content)) !== null) {
-    const target = m[1].trim()
+  const links = linksFrom(content)
+  const depth = rel.split(/[\\/]/).slice(0, -1).length
+  const rootLink = '../'.repeat(depth) + 'AGENTS.md'
+  if (!links.includes('AGENTS.md') || !links.includes(rootLink)) {
+    fail(`CLAUDE.md is not a thin pointer to sibling + root AGENTS.md: ${rel}`)
+  }
+}
+
+// 4. Relative markdown link validity across all docs
+for (const rel of collectMarkdown()) {
+  const abs = path.join(ROOT, rel)
+  const content = read(abs)
+  if (content == null) continue
+  for (const target of linksFrom(content)) {
     if (/^(https?:|mailto:|#)/.test(target)) continue
     const clean = target.split('#')[0]
     if (!clean) continue

@@ -48,7 +48,8 @@
 - [architecture.zh.md](architecture.zh.md) — 架构有序地图（中文镜像）
 - [database.md](server/database.md) — 后端数据库与 ORM 工作流（英文）
 - [database.zh.md](server/database.zh.md) — 后端数据库与 ORM 工作流（中文镜像）
-- [desktop/architecture.zh.md](desktop/architecture.zh.md) — Desktop 前端与桌面壳架构（中文）
+- [desktop/architecture.md](desktop/architecture.md) — Desktop 前端与桌面壳架构（英文，真相源）
+- [desktop/architecture.zh.md](desktop/architecture.zh.md) — Desktop 前端与桌面壳架构（中文镜像）
 - [architecture/typescript-config.md](architecture/typescript-config.md) — TypeScript 分层配置设计（中文）
 - [i18n/README.md](i18n/README.md) — 双文配对契约（hash 校验，改双文文档后 `pnpm verify:pairing --write` 重录）
 - [i18n/terminology.md](i18n/terminology.md) — 双文翻译术语对照表

@@ -22,7 +22,7 @@ Growth OS is a Coze-like AI agent desktop platform. This map describes current c
 @growth-os/ui         (design-system components + styles, daisyUI)
 @growth-os/desktop-core (Electron main/preload, standalone)
         ↑
-apps/desktop          (Nuxt 4; depends on shared, types, ui, desktop-core)
+apps/desktop          (Nuxt 4; depends on types, ui, desktop-core)
 apps/server           (NestJS; depends on shared)
 ```
 
@@ -32,8 +32,8 @@ Shared configs live in `tooling/`: layered TypeScript presets (`tooling/typescri
 
 1. **Presentation** (`apps/desktop/app/`): pages, layouts, components, composables. State is kept in composables (`useAuth`, `useSupabase`, `useSecureStorage`, `useToast`); auth flows are governed by `.trae/rules/frontend/auth/`.
 2. **Bridge** (`packages/desktop-core/`): Electron main process + preload, exposing a minimal `window.desktop` API via `contextBridge` (`contextIsolation: true`, `nodeIntegration: false`). IPC channels are typed in `packages/types/src/utils/ipc-channels.ts`.
-3. **API** (`apps/server/`): NestJS modules (auth, agent, chat), guarded by `auth.guard` + DTO validation; MikroORM entities map to Supabase PostgreSQL (config and workflow: [database.md](server/database.md)).
-4. **Data** (Supabase): Auth handles identity; PostgreSQL stores profiles/agents/conversations/messages; RLS enforces per-user isolation.
+3. **API** (`apps/server/`): NestJS bootstrap with env validation (`src/config/env.validation.ts`) and MikroORM wiring; no business modules or entities exist yet — see [database.md](server/database.md) for schema/entity status.
+4. **Data** (Supabase): Auth handles identity; PostgreSQL is the storage target via the session pooler connection string; per-user isolation via RLS is planned but not yet applied.
 5. **UI packages** (`packages/ui/`): reusable components and semantic style tokens (see `.trae/rules/frontend/styles/`).
 
 ```
