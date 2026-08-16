@@ -9,7 +9,8 @@
     "start:prod": "node dist/src/main.js",
     "lint": "oxlint --fix --config .oxlintrc.json",
     "format": "oxfmt --config ../../tooling/format/.oxfmtrc.json",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "mikro-orm:debug": "dotenv -e ../../.env -e ../../.env.development -- mikro-orm debug"
   },
   "dependencies": {
     "@growth-os/shared": "workspace:*",
@@ -35,6 +36,8 @@
     "@types/express": "catalog:backend",
     "@types/node": "catalog:dev",
     "@types/pg": "catalog:dev",
+    "@mikro-orm/seeder": "catalog:backend",
+    "dotenv-cli": "catalog:dev",
     "oxfmt": "catalog:format",
     "oxlint": "catalog:lint",
     "typescript": "catalog:dev"

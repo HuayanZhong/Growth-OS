@@ -77,6 +77,7 @@ catalogs:
     '@mikro-orm/migrations': ^7.1.11
     '@mikro-orm/decorators': ^7.1.11
     '@mikro-orm/reflection': ^7.1.11
+    '@mikro-orm/seeder': ^7.1.11
   # 跨包共享依赖（前后端通用）
   shared:
     zod: ^4.4.3
