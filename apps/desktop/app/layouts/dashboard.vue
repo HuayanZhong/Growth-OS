@@ -3,133 +3,38 @@
 // 进入动画：整体淡入 + 侧边栏左滑入 + 内容区右滑入（GSAP 手动编排，登录→工作台过渡）
 import { gsap } from 'gsap'
 import { CSSPlugin } from 'gsap/CSSPlugin'
-import { useAuth } from '~/composables/useAuth'
-import { ThemeToggle } from '@growth-os/ui'
+import AppSidebar from '~/components/app-sidebar.vue'
 
 // 显式注册 CSSPlugin：Vite 预打包 tree-shake 会移除 gsap 自动注册（sideEffects:false），
 // 不注册则 x/opacity 等 CSS 属性被忽略，动画不生效（registerPlugin 幂等）
 gsap.registerPlugin(CSSPlugin)
 
 const route = useRoute()
-const { getSession, signOutWithFallback } = useAuth()
-const session = ref(await getSession())
-const { showToast } = useToast()
 
-// 导航项激活判断：exact 精确匹配（概览），否则前缀匹配（子路由同样高亮）
-function isActive(path: string, exact = false) {
-  if (exact) return route.path === path
-  return route.path === path || route.path.startsWith(`${path}/`)
-}
-
-// 导航链接样式：激活态浅色底 + primary 文字（对标 Coze），未激活态悬停浅灰
-function navClass(path: string) {
-  return isActive(path)
-    ? 'rounded-lg bg-primary/10 font-medium text-primary transition-colors'
-    : 'rounded-lg text-base-content/70 transition-colors hover:bg-base-300'
-}
-
-// 可展开模块折叠状态（对标 Coze：仅 AGENTS/项目 有二级菜单）
-const expanded = reactive({ agents: true, projects: true })
-
-function toggle(key: keyof typeof expanded) {
-  expanded[key] = !expanded[key]
-}
-
-// 默认智能体（小芽）交互：置顶 + 更多操作（重命名）
-const agentName = ref('小芽')
-const agentPinned = ref(false)
-const agentMenuOpen = ref(false)
-const renameDialog = ref<HTMLDialogElement | null>(null)
-const renameInput = ref('')
-const renameInputEl = ref<HTMLInputElement | null>(null)
-
-// 置顶智能体（小芽）
-function toggleAgentPin() {
-  agentPinned.value = !agentPinned.value
-}
-
-// 更多操作（重命名）
-function toggleAgentMenu() {
-  agentMenuOpen.value = !agentMenuOpen.value
-}
-
-// 重命名智能体（小芽）
-function openRenameDialog() {
-  agentMenuOpen.value = false
-  renameInput.value = agentName.value
-  renameDialog.value?.showModal()
-  nextTick(() => renameInputEl.value?.focus())
-}
-
-// 关闭重命名弹窗
-function closeRenameDialog() {
-  renameDialog.value?.close()
-}
-
-// 保存重命名智能体（小芽）
-function onRename() {
-  const name = renameInput.value.trim()
-  if (name) agentName.value = name
-  closeRenameDialog()
-}
-
-// 点击页面其他区域关闭「更多」菜单
-function onDocClick() {
-  agentMenuOpen.value = false
-}
-
-// 用户头像占位：取邮箱首字母
-const initials = computed(() => (session.value?.user.email?.[0] ?? '?').toUpperCase())
-
-// 退出登录确认弹窗（daisyUI modal）
-const signOutDialog = ref<HTMLDialogElement | null>(null)
-
-// 打开退出登录确认弹窗
-function openSignOutDialog() {
-  signOutDialog.value?.showModal()
-}
-
-// 关闭退出登录确认弹窗
-function closeSignOutDialog() {
-  signOutDialog.value?.close()
-}
-
-// 确认退出登录
-async function onSignOut() {
-  closeSignOutDialog()
-  // 本地会话一定已清除；errorMessage 来自接口返回（如 403 session_not_found），有值说明服务端登出未完成
-  const { errorMessage } = await signOutWithFallback()
-  showToast(
-    errorMessage ? `已退出登录（${errorMessage}）` : '已退出登录',
-    errorMessage ? 'warning' : 'success',
-  )
-  await navigateTo('/auth')
-}
-
-// 进入动画目标（布局自身元素，挂载即存在，不依赖异步页面渲染）
+// 进入动画目标（布局自身元素，挂载即存在，不依赖异步页面渲染；
+// AppSidebar 为多根组件，$el 为 null，通过暴露的 asideEl 取侧边栏元素）
 const rootRef = ref<HTMLElement | null>(null)
-const asideRef = ref<HTMLElement | null>(null)
+const asideRef = ref<{ asideEl: HTMLElement | null } | null>(null)
 const mainRef = ref<HTMLElement | null>(null)
 
 // 登录成功进入工作台：整页淡入，侧边栏从左侧、内容区从右侧滑入（timeline 错峰编排）
-// 同时注册全局点击监听，用于关闭「更多」菜单
 onMounted(async () => {
-  document.addEventListener('click', onDocClick)
   await nextTick()
   const rootEl = rootRef.value
+  const asideEl = asideRef.value?.asideEl ?? null
   if (!rootEl) return
   gsap
     .timeline({
       onComplete: () => {
         // 清理残留 transform/opacity，防止影响后续导航与主题切换
-        gsap.set([rootRef.value, asideRef.value, mainRef.value], {
+        gsap.set([rootEl, asideEl, mainRef.value], {
           clearProps: 'transform,opacity',
         })
       },
     })
     .fromTo(rootEl, { opacity: 0 }, { opacity: 1, duration: 0.4, ease: 'power2.out' }, 0)
     .fromTo(
-      asideRef.value,
+      asideEl,
       { x: -24, opacity: 0 },
       { x: 0, opacity: 1, duration: 0.5, ease: 'power3.out' },
       0.02,
@@ -163,430 +68,18 @@ watch(
 
 // 布局卸载（登出等）时终止进行中的动画，避免泄漏
 onUnmounted(() => {
-  document.removeEventListener('click', onDocClick)
-  gsap.killTweensOf([rootRef.value, asideRef.value, mainRef.value])
+  gsap.killTweensOf([rootRef.value, asideRef.value?.asideEl, mainRef.value])
 })
 </script>
 
 <template>
   <div ref="rootRef" class="flex h-screen overflow-hidden">
     <!-- 左侧导航栏 -->
-    <aside
-      ref="asideRef"
-      class="flex h-full w-60 shrink-0 flex-col border-r border-base-300 bg-base-200"
-    >
-      <!-- 顶部：品牌区 -->
-      <div class="flex h-16 items-center gap-2.5 px-4">
-        <div
-          class="flex h-9 w-9 shrink-0 items-center justify-center text-primary"
-          aria-hidden="true"
-        >
-          <!-- 节点网格：三节点沿对角线上升相连，OS 系统隐喻（线条版，currentColor 继承语义色） -->
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            class="h-6 w-6"
-            role="img"
-            aria-label="Growth OS logo"
-          >
-            <circle cx="6.5" cy="17.5" r="2.2" />
-            <circle cx="12" cy="12" r="2.2" />
-            <circle cx="17.5" cy="6.5" r="2.2" />
-            <path d="M8.5 16l2.1-2.4M13.4 10.4l2.1-2.3" />
-          </svg>
-        </div>
-        <div class="min-w-0 flex-1 leading-tight">
-          <!-- 品牌名用 Caveat 手写体（font-brand，语义令牌）；中文副标题回退系统字体 -->
-          <p class="truncate font-brand text-xl font-bold tracking-tight">Growth OS</p>
-          <p class="truncate text-xs text-base-content/50">个人工作台</p>
-        </div>
-        <ThemeToggle />
-      </div>
-
-      <!-- 中部：导航菜单（技能/文件一级平铺在上，AGENTS/项目二级可展开在下） -->
-      <nav class="flex-1 overflow-y-auto px-2 py-2">
-        <ul class="flex flex-col gap-1">
-          <!-- 技能：一级菜单（平铺链接） -->
-          <li>
-            <NuxtLink
-              to="/dashboard/skills"
-              :class="navClass('/dashboard/skills')"
-              class="flex items-center gap-2 px-2 py-2"
-            >
-              <svg
-                class="h-4 w-4 shrink-0"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"
-                />
-              </svg>
-              <span class="truncate">技能</span>
-            </NuxtLink>
-          </li>
-
-          <!-- 文件：一级菜单（平铺链接） -->
-          <li>
-            <NuxtLink
-              to="/dashboard/files"
-              :class="navClass('/dashboard/files')"
-              class="flex items-center gap-2 px-2 py-2"
-            >
-              <svg
-                class="h-4 w-4 shrink-0"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                viewBox="0 0 24 24"
-              >
-                <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" />
-                <path d="M14 2v4a2 2 0 0 0 2 2h4" />
-                <path d="M16 13H8" />
-                <path d="M16 17H8" />
-                <path d="M10 9H8" />
-              </svg>
-              <span class="truncate">文件</span>
-            </NuxtLink>
-          </li>
-
-          <!-- AGENTS：二级菜单（整行点击展开/收起，箭头仅作指示） -->
-          <li>
-            <div class="group flex items-center rounded-lg transition-colors hover:bg-base-300">
-              <button
-                type="button"
-                class="flex min-w-0 flex-1 items-center gap-2 px-2 py-2 text-base-content/70"
-                :aria-expanded="expanded.agents"
-                @click="toggle('agents')"
-              >
-                <svg
-                  class="h-3.5 w-3.5 shrink-0 transition-transform"
-                  :class="expanded.agents ? 'rotate-90' : ''"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="m9 18 6-6-6-6" />
-                </svg>
-                <svg
-                  class="h-4 w-4 shrink-0"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M12 8V4H8" />
-                  <rect width="16" height="12" x="4" y="8" rx="2" />
-                  <path d="M2 14h2" />
-                  <path d="M20 14h2" />
-                  <path d="M15 13v2" />
-                  <path d="M9 13v2" />
-                </svg>
-                <span class="truncate">AGENTS</span>
-              </button>
-              <button
-                type="button"
-                class="shrink-0 p-2 text-base-content/40 opacity-0 transition-all hover:text-primary group-hover:opacity-100"
-                title="新建 Agent"
-              >
-                <svg
-                  class="h-4 w-4"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M5 12h14" />
-                  <path d="M12 5v14" />
-                </svg>
-              </button>
-            </div>
-            <ul v-if="expanded.agents" class="flex flex-col gap-0.5 pb-1">
-              <li>
-                <div
-                  class="group flex items-center rounded-lg transition-colors"
-                  :class="isActive('/dashboard/agents') ? 'bg-primary/10' : 'hover:bg-base-300'"
-                >
-                  <NuxtLink
-                    to="/dashboard/agents"
-                    class="flex min-w-0 flex-1 items-center gap-2 px-2 py-1.5 text-sm transition-colors"
-                    :class="
-                      isActive('/dashboard/agents')
-                        ? 'font-medium text-primary'
-                        : 'text-base-content/70'
-                    "
-                  >
-                    <span
-                      class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-linear-to-b from-primary to-secondary text-primary-content"
-                    >
-                      <svg
-                        class="h-3 w-3"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        viewBox="0 0 24 24"
-                      >
-                        <path d="M12 21v-9" />
-                        <path d="M12 12c-3.2 0-5.5-1.7-5.5-5 3.2 0 5.5 1.7 5.5 5Z" />
-                        <path d="M12 12c3.2 0 5.5-1.7 5.5-5-3.2 0-5.5 1.7-5.5 5Z" />
-                      </svg>
-                    </span>
-                    <span class="truncate">{{ agentName }}</span>
-                  </NuxtLink>
-                  <!-- 悬停显示的操作：置顶 + 更多（重命名） -->
-                  <div
-                    class="flex shrink-0 items-center gap-0.5 pr-1 opacity-0 transition-opacity"
-                    :class="agentMenuOpen ? 'opacity-100' : 'group-hover:opacity-100'"
-                  >
-                    <button
-                      type="button"
-                      class="p-1 text-base-content/40 transition-colors hover:text-primary"
-                      :title="agentPinned ? '取消置顶' : '置顶'"
-                      @click="toggleAgentPin"
-                    >
-                      <svg
-                        class="h-4 w-4"
-                        :class="agentPinned ? 'text-primary' : ''"
-                        :fill="agentPinned ? 'currentColor' : 'none'"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        viewBox="0 0 24 24"
-                      >
-                        <path d="M12 17v5" />
-                        <path
-                          d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1z"
-                        />
-                      </svg>
-                    </button>
-                    <div class="relative">
-                      <button
-                        type="button"
-                        class="p-1 text-base-content/40 transition-colors hover:text-primary"
-                        title="更多操作"
-                        @click.stop="toggleAgentMenu"
-                      >
-                        <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
-                          <circle cx="12" cy="12" r="1" />
-                          <circle cx="12" cy="5" r="1" />
-                          <circle cx="12" cy="19" r="1" />
-                        </svg>
-                      </button>
-                      <ul
-                        v-if="agentMenuOpen"
-                        class="absolute right-0 top-full z-10 mt-1 w-32 overflow-hidden rounded-lg border border-base-300 bg-base-100 p-1 shadow-lg"
-                      >
-                        <li>
-                          <button
-                            type="button"
-                            class="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors hover:bg-base-200"
-                            @click="openRenameDialog"
-                          >
-                            <svg
-                              class="h-4 w-4"
-                              fill="none"
-                              stroke="currentColor"
-                              stroke-width="2"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"
-                              />
-                              <path d="m15 5 4 4" />
-                            </svg>
-                            重命名
-                          </button>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </li>
-            </ul>
-          </li>
-
-          <!-- 项目：二级菜单（整行点击展开/收起，箭头仅作指示） -->
-          <li>
-            <div
-              class="group flex items-center rounded-lg transition-colors hover:bg-base-300"
-              :class="isActive('/dashboard/projects') ? 'bg-primary/10' : ''"
-            >
-              <button
-                type="button"
-                class="flex min-w-0 flex-1 items-center gap-2 px-2 py-2"
-                :class="
-                  isActive('/dashboard/projects')
-                    ? 'font-medium text-primary'
-                    : 'text-base-content/70'
-                "
-                :aria-expanded="expanded.projects"
-                @click="toggle('projects')"
-              >
-                <svg
-                  class="h-3.5 w-3.5 shrink-0 transition-transform"
-                  :class="expanded.projects ? 'rotate-90' : ''"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="m9 18 6-6-6-6" />
-                </svg>
-                <svg
-                  class="h-4 w-4 shrink-0"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"
-                  />
-                </svg>
-                <span class="truncate">项目</span>
-              </button>
-              <button
-                type="button"
-                class="shrink-0 p-2 text-base-content/40 opacity-0 transition-all hover:text-primary group-hover:opacity-100"
-                title="新建项目"
-              >
-                <svg
-                  class="h-4 w-4"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M5 12h14" />
-                  <path d="M12 5v14" />
-                </svg>
-              </button>
-            </div>
-            <ul v-if="expanded.projects" class="flex flex-col pb-1 pl-9 pr-2">
-              <li class="py-1 text-sm text-base-content/50">暂无项目</li>
-            </ul>
-          </li>
-        </ul>
-      </nav>
-
-      <!-- 底部：用户区 -->
-      <div class="border-t border-base-300 p-3">
-        <div
-          class="flex items-center gap-2.5 rounded-lg p-2 transition-colors hover:bg-base-300/60"
-        >
-          <div class="avatar avatar-placeholder shrink-0">
-            <div class="w-9 rounded-full bg-primary/15 text-sm font-semibold text-primary">
-              <span>{{ initials }}</span>
-            </div>
-          </div>
-          <div class="min-w-0 flex-1">
-            <p class="truncate text-sm font-medium">{{ session?.user.email ?? '未登录' }}</p>
-            <p class="flex items-center gap-1.5 text-xs text-base-content/50">
-              <span class="h-1.5 w-1.5 rounded-full bg-success" />
-              已登录
-            </p>
-          </div>
-          <button
-            type="button"
-            class="btn btn-ghost btn-sm btn-square shrink-0"
-            title="退出登录"
-            @click="openSignOutDialog"
-          >
-            <svg
-              class="h-5 w-5"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              viewBox="0 0 24 24"
-            >
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-              <polyline points="16 17 21 12 16 7" />
-              <line x1="21" x2="9" y1="12" y2="12" />
-            </svg>
-          </button>
-        </div>
-      </div>
-    </aside>
+    <AppSidebar ref="asideRef" />
 
     <!-- 右侧内容区 -->
     <main ref="mainRef" class="flex-1 overflow-auto bg-base-100">
       <slot />
     </main>
   </div>
-
-  <!-- 退出登录确认弹窗 -->
-  <dialog ref="signOutDialog" class="modal">
-    <div class="modal-box">
-      <h3 class="text-lg font-bold">确认退出登录？</h3>
-      <p class="py-4 text-sm text-base-content/70">
-        退出后需重新登录才能访问工作台，确定要继续吗？
-      </p>
-      <div class="modal-action">
-        <button type="button" class="btn" @click="closeSignOutDialog">取消</button>
-        <button type="button" class="btn btn-primary" @click="onSignOut">确认退出</button>
-      </div>
-    </div>
-    <form method="dialog" class="modal-backdrop">
-      <button type="button" @click="closeSignOutDialog">关闭</button>
-    </form>
-  </dialog>
-
-  <!-- 重命名智能体弹窗 -->
-  <dialog ref="renameDialog" class="modal">
-    <div class="modal-box">
-      <h3 class="text-lg font-bold">重命名智能体</h3>
-      <input
-        ref="renameInputEl"
-        v-model="renameInput"
-        type="text"
-        class="input input-bordered mt-4 w-full"
-        placeholder="输入名称"
-        maxlength="20"
-        @keyup.enter="onRename"
-      />
-      <div class="modal-action">
-        <button type="button" class="btn" @click="closeRenameDialog">取消</button>
-        <button
-          type="button"
-          class="btn btn-primary"
-          :disabled="!renameInput.trim()"
-          @click="onRename"
-        >
-          保存
-        </button>
-      </div>
-    </div>
-    <form method="dialog" class="modal-backdrop">
-      <button type="button" @click="closeRenameDialog">关闭</button>
-    </form>
-  </dialog>
 </template>
