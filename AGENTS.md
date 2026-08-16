@@ -24,10 +24,11 @@ Run from the repo root; turbo runs the matching script in every package.
 
 - `pnpm dev` / `pnpm start` / `pnpm build` — dev / production start / build (dotenv cascade, see Secrets)
 - `pnpm lint` / `pnpm format` / `pnpm typecheck` / `pnpm test` — verification suite
-- `pnpm verify:docs` — docs gate: mirror consistency, markdown links, word budgets
+- `pnpm verify:docs` — docs gate: CLAUDE.md thin-pointer sync, markdown links, word budgets
 - `pnpm --filter desktop test` — run desktop tests only (`vitest run`); single file: `pnpm --filter desktop vitest run test/unit/use-auth.test.ts`
 - `pnpm --filter desktop verify:build` — Electron production build smoke test
 - `pnpm --filter server typecheck` — backend typecheck
+- MikroORM CLI (run inside `apps/server`, root env injected by the scripts): `pnpm mikro-orm:debug` / `mikro-orm:migration:create` / `mikro-orm:migration:up` / `mikro-orm:migration:down` / `mikro-orm:seeder:run`; workflow in [database.md](docs/server/database.md)
 
 Before reporting a task done, run `test` → `typecheck` → `lint` and confirm green.
 
@@ -51,7 +52,8 @@ On-demand experts, triggered by description: [frontend-auth-expert.md](.trae/age
 ## Human docs (docs/)
 
 - [AGENTS.md](docs/AGENTS.md) — documentation standard: tier taxonomy, writing rules, slop checklist
-- [architecture.md](docs/architecture.md) — architecture map; read before changing `packages/`
+- [architecture.md](docs/architecture.md) — architecture map; read before changing `packages/` ([中文镜像](docs/architecture.zh.md))
+- [database.md](docs/server/database.md) — server database & ORM workflow ([中文镜像](docs/server/database.zh.md))
 - [guide-zh.md](docs/guide-zh.md) — Chinese navigation index (index only, never restates rules)
 
 ## Decisions (.agents/notes/)
@@ -61,6 +63,7 @@ Agent Notes record the "why": [README.md](.agents/notes/README.md) defines the c
 ## Secrets and .env
 
 - Test accounts live only in the root `.env` (`SUPABASE_TEST_EMAIL`, `SUPABASE_TEST_PASSWORD`); never hard-code them into code, tests, rules, or commits; rules reference variable names only.
+- `DATABASE_URL` (Supabase session pooler string) lives in the root `.env` only; never commit it.
 - Env loads via dotenv-cli cascade: `pnpm dev` → `.env` + `.env.development`; `pnpm build`/`start` → `.env` + `.env.production`.
 - Never commit `.env*`, cert passwords (`CSC_KEY_PASSWORD`), or `GH_TOKEN`.
 

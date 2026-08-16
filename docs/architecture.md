@@ -32,7 +32,7 @@ Shared configs live in `tooling/`: layered TypeScript presets (`tooling/typescri
 
 1. **Presentation** (`apps/desktop/app/`): pages, layouts, components, composables. State is kept in composables (`useAuth`, `useSupabase`, `useSecureStorage`, `useToast`); auth flows are governed by `.trae/rules/frontend/auth/`.
 2. **Bridge** (`packages/desktop-core/`): Electron main process + preload, exposing a minimal `window.desktop` API via `contextBridge` (`contextIsolation: true`, `nodeIntegration: false`). IPC channels are typed in `packages/types/src/utils/ipc-channels.ts`.
-3. **API** (`apps/server/`): NestJS modules (auth, agent, chat), guarded by `auth.guard` + DTO validation; MikroORM entities map to Supabase PostgreSQL.
+3. **API** (`apps/server/`): NestJS modules (auth, agent, chat), guarded by `auth.guard` + DTO validation; MikroORM entities map to Supabase PostgreSQL (config and workflow: [database.md](server/database.md)).
 4. **Data** (Supabase): Auth handles identity; PostgreSQL stores profiles/agents/conversations/messages; RLS enforces per-user isolation.
 5. **UI packages** (`packages/ui/`): reusable components and semantic style tokens (see `.trae/rules/frontend/styles/`).
 
@@ -48,6 +48,7 @@ user → Vue component → composable → IPC (window.desktop) → desktop-core 
 - **Env**: dotenv-cli cascade — `pnpm dev` loads `.env` + `.env.development`, `pnpm build`/`start` load `.env` + `.env.production`. Client-visible keys are `NUXT_PUBLIC_*` (inlined at build).
 - **Electron + Nuxt integration**: `apps/desktop/modules/electron.ts` compiles main/preload via vite-plugin-electron and starts Electron in dev; production build compiles only (electron-builder packages).
 - **Animations**: manual GSAP + timeline for component switches (Vue `Transition mode="out-in"` + JS hooks is broken under Nuxt 4); see [animation.md](../.trae/rules/frontend/styles/animation.md).
+- **Database (server)**: MikroORM via `apps/server/mikro-orm.config.ts`, connecting with the session pooler string; migrations and seeders live in `infra/database/` and run through the `mikro-orm:*` scripts. See [database.md](server/database.md).
 
 ## Change guidance
 

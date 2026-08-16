@@ -10,7 +10,11 @@
     "lint": "oxlint --fix --config .oxlintrc.json",
     "format": "oxfmt --config ../../tooling/format/.oxfmtrc.json",
     "typecheck": "tsc --noEmit",
-    "mikro-orm:debug": "dotenv -e ../../.env -e ../../.env.development -- mikro-orm debug"
+    "mikro-orm:debug": "dotenv -e ../../.env -e ../../.env.development -- mikro-orm debug",
+    "mikro-orm:migration:create": "dotenv -e ../../.env -e ../../.env.development -- mikro-orm migration:create",
+    "mikro-orm:migration:up": "dotenv -e ../../.env -e ../../.env.development -- mikro-orm migration:up",
+    "mikro-orm:migration:down": "dotenv -e ../../.env -e ../../.env.development -- mikro-orm migration:down",
+    "mikro-orm:seeder:run": "dotenv -e ../../.env -e ../../.env.development -- mikro-orm seeder:run"
   },
   "dependencies": {
     "@growth-os/shared": "workspace:*",

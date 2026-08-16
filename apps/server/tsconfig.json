@@ -4,6 +4,8 @@
     "outDir": "./dist",
     "rootDir": ".",
     "noEmit": false,
+    // TsMorph 在 node 运行时靠 dist 同目录的 .d.ts 推断实体类型，必须生成声明文件
+    "declaration": true,
     "rewriteRelativeImportExtensions": true,
     "verbatimModuleSyntax": false,
     "types": [

@@ -14,6 +14,7 @@ Each fact has one home; elsewhere, link to it.
 | `.agents/notes/` | Decision records: the why and what was given up | Migration plans, acceptance checklists |
 | `docs/guide-zh.md` | Chinese navigation index for human readers; indexes, never restates | Rule text, any translation of the rules |
 | `docs/architecture/typescript-config.md` | Chinese detail doc; kept in place, linked from the map | Live behavior that the map must carry |
+| `docs/server/database.md` (+ `.zh.md`) | Server database & ORM detail doc; kept in place, linked from the map | Live behavior that the map must carry |
 | Package README | Per-package contract | JSDoc restatement, other packages' concerns |
 
 Placement: rationale → Agent Notes; standing orders → root `AGENTS.md`; detail → the owning document, linked from the map.
