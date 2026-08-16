@@ -44,7 +44,8 @@
 
 ## 文档（docs/）
 
-- [architecture.md](architecture.md) — 架构有序地图（英文），改 `packages/` 前先读
+- [architecture.md](architecture.md) — 架构有序地图（英文，真相源），改 `packages/` 前先读
+- [architecture.zh.md](architecture.zh.md) — 架构有序地图（中文镜像）
 - [architecture/typescript-config.md](architecture/typescript-config.md) — TypeScript 分层配置设计（中文）
 - [AGENTS.md](AGENTS.md) — 文档治理标准（英文）：事实分层 + 写作规则 + slop checklist
 
