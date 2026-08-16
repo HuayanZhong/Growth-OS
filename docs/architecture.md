@@ -46,7 +46,7 @@ user → Vue component → composable → IPC (window.desktop) → desktop-core 
 
 - **Auth**: supabase-js client injects secureStorage for token persistence; PII is stripped before storage; login state comes from `getSession()`; sign-out falls back to local-only on expired/403 sessions. See [flows.md](../.trae/rules/frontend/auth/flows.md) and [token.md](../.trae/rules/frontend/auth/token.md).
 - **Env**: dotenv-cli cascade — `pnpm dev` loads `.env` + `.env.development`, `pnpm build`/`start` load `.env` + `.env.production`. Client-visible keys are `NUXT_PUBLIC_*` (inlined at build).
-- **Electron + Nuxt integration**: `apps/desktop/modules/electron.ts` compiles main/preload via vite-plugin-electron and starts Electron in dev; production build compiles only (electron-builder packages).
+- **Electron + Nuxt integration**: `apps/desktop/modules/electron.ts` compiles main/preload via vite-plugin-electron and starts Electron in dev; production build compiles only (electron-builder packages). Frontend/shell mechanisms (auth, IPC, styles, tests): [desktop/architecture.md](desktop/architecture.md).
 - **Animations**: manual GSAP + timeline for component switches (Vue `Transition mode="out-in"` + JS hooks is broken under Nuxt 4); see [animation.md](../.trae/rules/frontend/styles/animation.md).
 - **Database (server)**: MikroORM via `apps/server/mikro-orm.config.ts`, connecting with the session pooler string; migrations and seeders live in `infra/database/` and run through the `mikro-orm:*` scripts. See [database.md](server/database.md).
 

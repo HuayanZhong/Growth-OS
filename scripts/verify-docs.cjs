@@ -10,6 +10,7 @@
  */
 const fs = require('node:fs')
 const path = require('node:path')
+const { checkPairs } = require('./verify-translation-pairing.cjs')
 
 const ROOT = path.resolve(__dirname, '..')
 const MANIFEST_PATH = path.join(ROOT, 'scripts/doc-budgets.manifest.json')
@@ -55,7 +56,12 @@ for (const [rel, cfg] of Object.entries(manifest.files)) {
   }
 }
 
-// 2. CLAUDE.md must be exactly the thin pointer
+// 2. Bilingual pairs must match their i18n.yaml records
+for (const e of checkPairs()) {
+  fail(e)
+}
+
+// 3. CLAUDE.md must be exactly the thin pointer
 const claude = read(CLAUDE)
 if (claude == null) {
   fail('CLAUDE.md missing — run `node scripts/verify-docs.cjs --sync`')
@@ -63,7 +69,7 @@ if (claude == null) {
   fail('CLAUDE.md is not the thin pointer — run `node scripts/verify-docs.cjs --sync`')
 }
 
-// 3. Relative markdown link validity across managed docs
+// 4. Relative markdown link validity across managed docs
 const managed = [
   'AGENTS.md',
   'CLAUDE.md',

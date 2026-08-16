@@ -24,7 +24,8 @@ Run from the repo root; turbo runs the matching script in every package.
 
 - `pnpm dev` / `pnpm start` / `pnpm build` — dev / production start / build (dotenv cascade, see Secrets)
 - `pnpm lint` / `pnpm format` / `pnpm typecheck` / `pnpm test` — verification suite
-- `pnpm verify:docs` — docs gate: CLAUDE.md thin-pointer sync, markdown links, word budgets
+- `pnpm verify:docs` — docs gate: CLAUDE.md thin-pointer sync, markdown links, word budgets, bilingual-pair hashes
+- `pnpm verify:pairing --write <path>` — re-record a bilingual pair's hash after a paired change (see [docs/i18n/README.md](docs/i18n/README.md))
 - `pnpm --filter desktop test` — run desktop tests only (`vitest run`); single file: `pnpm --filter desktop vitest run test/unit/use-auth.test.ts`
 - `pnpm --filter desktop verify:build` — Electron production build smoke test
 - `pnpm --filter server typecheck` — backend typecheck
@@ -54,6 +55,8 @@ On-demand experts, triggered by description: [frontend-auth-expert.md](.trae/age
 - [AGENTS.md](docs/AGENTS.md) — documentation standard: tier taxonomy, writing rules, slop checklist
 - [architecture.md](docs/architecture.md) — architecture map; read before changing `packages/` ([中文镜像](docs/architecture.zh.md))
 - [database.md](docs/server/database.md) — server database & ORM workflow ([中文镜像](docs/server/database.zh.md))
+- [desktop/architecture.md](docs/desktop/architecture.md) — desktop frontend & shell mechanisms ([中文镜像](docs/desktop/architecture.zh.md))
+- [i18n/README.md](docs/i18n/README.md) — bilingual pairing contract + terminology (hash-checked by `verify:docs`)
 - [guide-zh.md](docs/guide-zh.md) — Chinese navigation index (index only, never restates rules)
 
 ## Decisions (.agents/notes/)

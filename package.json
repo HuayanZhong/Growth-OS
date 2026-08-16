@@ -15,6 +15,7 @@
     "typecheck": "dotenv -v CI=true -- turbo run typecheck",
     "test": "dotenv -v CI=true -- turbo run test",
     "verify:docs": "node scripts/verify-docs.cjs",
+    "verify:pairing": "node scripts/verify-translation-pairing.cjs",
     "prepare": "husky"
   },
   "devDependencies": {

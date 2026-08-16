@@ -1,10 +1,10 @@
 # Generate Growth OS self-signed code signing test certificate (P3 #18)
 #
 # Usage:
-#   powershell -ExecutionPolicy Bypass -File tools/certs/generate-test-cert.ps1
+#   powershell -ExecutionPolicy Bypass -File scripts/certs/generate-test-cert.ps1
 #   Or with custom password:
 #     $env:CSC_KEY_PASSWORD="your-password"
-#     powershell -ExecutionPolicy Bypass -File tools/certs/generate-test-cert.ps1
+#     powershell -ExecutionPolicy Bypass -File scripts/certs/generate-test-cert.ps1
 #
 # Output:
 #   - growth-os-test.pfx  (with private key, used by electron-builder via CSC_LINK)

@@ -36,7 +36,7 @@ publish:
 #   CSC_LINK          → 证书文件路径（.pfx）
 #   CSC_KEY_PASSWORD  → 证书密码
 #
-# 当前使用自签名测试证书（位于 tools/certs/growth-os-test.pfx）
+# 当前使用自签名测试证书（位于 scripts/certs/growth-os-test.pfx）
 # 注意：自签名证书会被 Windows SmartScreen 拦截，仅用于验证签名链路
 # 正式分发前必须替换为 OV/EV 证书
 

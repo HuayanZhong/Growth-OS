@@ -1,0 +1,18 @@
+{
+  "comment": "Bilingual doc pairs: [en, zh]. The pairing check compares git blob hashes and records them in <en>.i18n.yaml next to the English side. Re-record after editing either side: pnpm verify:pairing --write <path>",
+  "pairs": [
+    ["README.md", "README.zh.md"],
+    ["docs/architecture.md", "docs/architecture.zh.md"],
+    ["docs/server/database.md", "docs/server/database.zh.md"],
+    ["packages/README.md", "packages/README.zh.md"],
+    ["packages/shared/README.md", "packages/shared/README.zh.md"],
+    ["packages/types/README.md", "packages/types/README.zh.md"],
+    ["packages/ui/README.md", "packages/ui/README.zh.md"],
+    ["packages/desktop-core/README.md", "packages/desktop-core/README.zh.md"],
+    ["tooling/README.md", "tooling/README.zh.md"],
+    ["apps/README.md", "apps/README.zh.md"],
+    ["apps/desktop/README.md", "apps/desktop/README.zh.md"],
+    ["apps/server/README.md", "apps/server/README.zh.md"],
+    ["docs/desktop/architecture.md", "docs/desktop/architecture.zh.md"]
+  ]
+}
