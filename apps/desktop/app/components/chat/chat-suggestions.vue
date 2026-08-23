@@ -6,7 +6,7 @@ const emit = defineEmits<{ select: [text: string] }>()
 
 <template>
   <div class="chat chat-start">
-    <div class="chat-image avatar">
+    <div class="chat-image avatar self-start">
       <div
         class="w-8 rounded-full bg-linear-to-b from-primary to-secondary text-primary-content shadow-sm ring-2 ring-primary/10"
       >
@@ -25,7 +25,9 @@ const emit = defineEmits<{ select: [text: string] }>()
         </svg>
       </div>
     </div>
-    <div class="chat-bubble max-w-[75%] rounded-2xl rounded-tl-md bg-base-200/70 text-base-content">
+    <div
+      class="chat-bubble max-w-[85%] rounded-2xl rounded-tl-md bg-base-200/70 text-base-content sm:max-w-[75%]"
+    >
       <p class="mb-3 text-sm font-medium text-base-content/50">你可以让我帮你</p>
       <div class="flex flex-col gap-2">
         <button

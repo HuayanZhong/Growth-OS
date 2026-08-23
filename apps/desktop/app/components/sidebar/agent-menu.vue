@@ -233,6 +233,7 @@ onUnmounted(() => document.removeEventListener('click', onDocClick))
         ref="renameInputEl"
         v-model="renameInput"
         type="text"
+        name="agent-name"
         class="input input-bordered mt-4 w-full"
         placeholder="输入名称"
         maxlength="20"

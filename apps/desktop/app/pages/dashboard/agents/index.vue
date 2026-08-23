@@ -42,7 +42,7 @@ function onSend(text: string) {
       ref="chatScrollEl"
       class="flex-1 overflow-y-auto bg-linear-to-b from-primary/5 to-transparent"
     >
-      <div class="flex w-full flex-col gap-5 px-6 py-8 sm:px-10">
+      <div class="flex w-full flex-col gap-5 px-4 py-6 sm:px-6 sm:py-8">
         <ChatMessageItem v-for="(msg, i) in messages" :key="i" :message="msg" />
 
         <!-- 引导问题卡片（仅对话为空时展示） -->
