@@ -48,7 +48,7 @@ pnpm dev
 ## 前提条件
 
 - **Node.js** >= 20.19（详见根目录 `.node-version`）
-- **pnpm** >= 11.17（启用 corepack 后自动管理）
+- **pnpm** >= 12（启用 corepack 后自动管理）
 - **Windows / macOS / Linux**（Electron 跨平台支持）
 
 ### Electron 二进制下载

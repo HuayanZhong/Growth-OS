@@ -49,7 +49,7 @@ pnpm dev
 ## Prerequisites
 
 - **Node.js** >= 20.19 (see `.node-version` in the repo root)
-- **pnpm** >= 11.17 (managed via Corepack)
+- **pnpm** >= 12 (managed via Corepack)
 - **Windows / macOS / Linux** (Electron is cross-platform)
 
 ### Electron binary download
