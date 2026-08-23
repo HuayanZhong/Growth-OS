@@ -13,10 +13,14 @@ apps/desktop/nuxt.config.ts
        ├── starts the Electron process
        └── restarts Electron on main-process changes
 
-packages/desktop-core/src/
-  ├── main.ts        ← Electron main process entry
-  ├── preload.ts     ← preload script (secure bridge layer)
-  └── types.ts       ← shared types for main/preload
+packages/desktop-core/
+  ├── bootstrap/     ← window creation, app lifecycle, global error handling
+  ├── ipc/           ← IPC handler registration + channel implementations
+  ├── preload/       ← preload implementation (typed invoke + contextBridge bridge)
+  └── src/           ← thin entries + shared types
+      ├── main.ts    ← Electron main process entry (assembles ipc + bootstrap)
+      ├── preload.ts ← preload entry (imports ../preload)
+      └── types.ts   ← global window.desktop type declaration
 ```
 
 ## Quick start
@@ -64,13 +68,16 @@ electron_mirror=https://npmmirror.com/mirrors/electron/
 
 ```
 packages/desktop-core/
+├── bootstrap/        # window creation, app lifecycle, global error handling
+├── ipc/              # IPC handler registration + channel implementations (version/secureStore/updates)
+├── preload/          # preload implementation: typed invoke + contextBridge bridge
 ├── src/
-│   ├── main.ts       # Electron main process: window creation, IPC, lifecycle
-│   ├── preload.ts    # preload script: contextBridge secure bridge
-│   └── types.ts      # shared types
-├── dist/             # TypeScript build output
+│   ├── main.ts       # main process entry (thin: assembles ipc + bootstrap)
+│   ├── preload.ts    # preload entry (thin: imports ../preload)
+│   └── types.ts      # global window.desktop type declaration
+├── dist/             # build output (produced by vite-plugin-electron)
 │   ├── main.js
-│   └── preload.js
+│   └── preload.cjs
 ├── electron-builder.yml
 ├── tsconfig.json
 └── package.json
@@ -78,10 +85,10 @@ packages/desktop-core/
 
 ## Tech stack
 
-| Component | Tech |
-| --- | --- |
-| Desktop shell | Electron 43 |
-| Frontend | Nuxt 4 + Vue 3 |
-| Language | TypeScript |
-| Orchestration | Turborepo |
+| Component       | Tech           |
+| --------------- | -------------- |
+| Desktop shell   | Electron 43    |
+| Frontend        | Nuxt 4 + Vue 3 |
+| Language        | TypeScript     |
+| Orchestration   | Turborepo      |
 | Package manager | pnpm workspace |

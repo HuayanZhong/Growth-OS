@@ -10,6 +10,9 @@ files:
   - '**/*'
   - '!node_modules/**/*'
   - '!src/**/*'
+  - '!bootstrap/**/*'
+  - '!ipc/**/*'
+  - '!preload/**/*'
   - 'dist/**/*'
 
 extraResources:

@@ -13,9 +13,14 @@ apps/desktop/nuxt.config.ts
        ├── 启动 Electron 进程
        └── 改动主进程代码 → 自动重启 Electron
 
-packages/desktop-core/src/
-  ├── main.ts        ← Electron 主进程入口
-  └── preload.ts     ← preload 脚本（安全桥接层）
+packages/desktop-core/
+  ├── bootstrap/     ← 窗口创建、应用生命周期、全局错误处理
+  ├── ipc/           ← IPC handler 注册与各通道实现
+  ├── preload/       ← preload 实现（类型化 invoke + contextBridge 桥接）
+  └── src/           ← 薄入口 + 共享类型
+      ├── main.ts    ← Electron 主进程入口（装配 ipc + bootstrap）
+      ├── preload.ts ← preload 入口（引入 ../preload）
+      └── types.ts   ← window.desktop 全局类型声明
 ```
 
 ## 快速开始
@@ -63,12 +68,17 @@ electron_mirror=https://npmmirror.com/mirrors/electron/
 
 ```
 packages/desktop-core/
+├── bootstrap/        # 窗口创建、应用生命周期、全局错误处理
+├── ipc/              # IPC handler 注册与各通道实现（version/secureStore/updates）
+├── preload/          # preload 实现：类型化 invoke + contextBridge 桥接
 ├── src/
-│   ├── main.ts       # Electron 主进程：窗口创建、IPC、生命周期
-│   └── preload.ts    # preload 脚本：contextBridge 安全桥接
-├── dist/             # TypeScript 编译产物
+│   ├── main.ts       # 主进程入口（薄：装配 ipc + bootstrap）
+│   ├── preload.ts    # preload 入口（薄：引入 ../preload）
+│   └── types.ts      # window.desktop 全局类型声明
+├── dist/             # 编译产物（vite-plugin-electron 产出）
 │   ├── main.js
-│   └── preload.js
+│   └── preload.cjs
+├── electron-builder.yml
 ├── tsconfig.json
 └── package.json
 ```
