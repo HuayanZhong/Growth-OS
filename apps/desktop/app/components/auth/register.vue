@@ -53,7 +53,7 @@ async function onSubmit() {
       registeredEmail.value = email.value
     } else {
       showToast('注册成功', 'success')
-      await navigateTo('/dashboard')
+      await navigateTo('/dashboard/agents')
     }
   } catch (err) {
     // 网络/服务端异常时 signUp 会 throw（如 AuthRetryableFetchError），兜底提示避免静默失败

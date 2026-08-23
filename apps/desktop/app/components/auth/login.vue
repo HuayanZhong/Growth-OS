@@ -57,7 +57,7 @@ async function onSubmit() {
     // 动画目标缺失（ref 未绑定/组件重渲染等）时降级直接跳转，
     // 避免 gsap 对 null 目标静默失败、onComplete 不执行导致卡在登录页
     if (!rootEl.value) {
-      await navigateTo('/dashboard')
+      await navigateTo('/dashboard/agents')
       return
     }
     // 登录成功：表单缩小淡出离场，动画结束再跳转，形成「登录页收起 → 工作台滑入」的过渡
@@ -67,7 +67,7 @@ async function onSubmit() {
       y: -14,
       duration: 0.3,
       ease: 'power2.in',
-      onComplete: () => navigateTo('/dashboard'),
+      onComplete: () => navigateTo('/dashboard/agents'),
     })
   } catch (err) {
     // 网络/服务端异常时 signIn 会 throw（如 AuthRetryableFetchError），兜底提示避免静默失败

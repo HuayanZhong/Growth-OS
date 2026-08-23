@@ -9,12 +9,12 @@ mockNuxtImport('navigateTo', () => mocks.navigateTo)
 import IndexPage from '~/pages/index.vue'
 
 /**
- * 首页测试：入口重定向到 /dashboard
+ * 首页测试：入口重定向到默认智能体聊天页
  */
 describe('首页重定向', () => {
-  it('mount 后跳转 /dashboard', async () => {
+  it('mount 后跳转 /dashboard/agents', async () => {
     await mount(IndexPage)
     await flushPromises()
-    expect(mocks.navigateTo).toHaveBeenCalledWith('/dashboard')
+    expect(mocks.navigateTo).toHaveBeenLastCalledWith('/dashboard/agents')
   })
 })

@@ -29,3 +29,31 @@
     dark,
     cupcake;
 }
+
+/* 滚动条样式：细窄 + 圆角 + 弱化 thumb，颜色跟随主题语义色（--color-base-content）。
+   Firefox 用 scrollbar-width/color；Chromium/WebKit 用 ::-webkit-scrollbar。
+   border + background-clip 让 thumb 两侧留白，视觉更轻 */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklab, var(--color-base-content) 25%, transparent) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  border: 2px solid transparent;
+  border-radius: 9999px;
+  background-color: color-mix(in oklab, var(--color-base-content) 25%, transparent);
+  background-clip: padding-box;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: color-mix(in oklab, var(--color-base-content) 40%, transparent);
+}
