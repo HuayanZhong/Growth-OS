@@ -1,6 +1,6 @@
 # Growth OS — Agent Guide
 
-Growth OS is a Coze-like desktop platform built with Nuxt 4 (frontend), NestJS (backend), Electron (shell), and Supabase (auth/database), orchestrated by Turborepo + pnpm workspaces. This file is the single source of truth for agent behavior; `CLAUDE.md` is a thin pointer to this file.
+Growth OS is a Coze-like desktop platform built with Nuxt 4 (frontend), NestJS (backend), Electron (shell), and Supabase (auth/database), orchestrated by Turborepo + pnpm workspaces. This file is the single source of truth for agent behavior; `CLAUDE.md` is a thin pointer to this file. Layer contracts refine it in nested `AGENTS.md` files (`apps/`, `packages/`, `tooling/`, and per-package); follow the nearest one.
 
 ## Repository layout
 
@@ -22,20 +22,26 @@ Growth OS is a Coze-like desktop platform built with Nuxt 4 (frontend), NestJS (
 
 Run from the repo root; turbo runs the matching script in every package.
 
+Node ≥ 24 required (Corepack supplies the pinned pnpm). Dependency versions come from pnpm catalogs — add deps with the `catalog:` protocol (entries in `pnpm-workspace.yaml`), never a raw version. Production start assumes a prior `pnpm build`: the desktop app launches `packages/desktop-core/dist/main.js`.
+
 - `pnpm dev` / `pnpm start` / `pnpm build` — dev / production start / build (dotenv cascade, see Secrets)
 - `pnpm lint` / `pnpm format` / `pnpm typecheck` / `pnpm test` — verification suite
-- `pnpm verify:docs` — docs gate: CLAUDE.md thin-pointer sync, markdown links, word budgets, bilingual-pair hashes
+- `pnpm verify:docs` — docs gate: CLAUDE.md thin-pointer sync, markdown links, word budgets (limits in [doc-budgets.manifest.json](scripts/doc-budgets.manifest.json), including this file), bilingual-pair hashes
 - `pnpm verify:pairing --write <path>` — re-record a bilingual pair's hash after a paired change (see [docs/i18n/README.md](docs/i18n/README.md))
-- `pnpm --filter desktop test` — run desktop tests only (`vitest run`); single file: `pnpm --filter desktop vitest run test/unit/use-auth.test.ts`
+- `pnpm --filter desktop test` — run desktop tests only (`vitest run`; tests live only in this app); single file: `pnpm --filter desktop vitest run test/unit/use-auth.test.ts`
 - `pnpm --filter desktop verify:build` — Electron production build smoke test
 - `pnpm --filter server typecheck` — backend typecheck
 - MikroORM CLI (run inside `apps/server`, root env injected by the scripts): `pnpm mikro-orm:debug` / `mikro-orm:migration:create` / `mikro-orm:migration:up` / `mikro-orm:migration:down` / `mikro-orm:seeder:run`; workflow in [database.md](docs/server/database.md)
 
 Before reporting a task done, run `test` → `typecheck` → `lint` and confirm green.
 
+## Commits are hook-gated
+
+Husky runs on every commit: pre-commit executes the docs gate (`node scripts/verify-docs.cjs`) then lint-staged (oxfmt with `--threads=1` — a Windows workaround — plus oxlint `--fix`); commit-msg enforces commitlint (conventional type only, header ≤ 72 chars; scope optional and unenforced). If a hook rejects the commit, fix and re-commit; do not bypass hooks.
+
 ## Rules (.trae/rules)
 
-English single source of truth, loaded on demand. Chinese readers use the index in `docs/guide-zh.md` (never restate rule text).
+English single source of truth, loaded on demand; OpenCode sessions additionally get all of them injected via `opencode.json` `instructions`. Chinese readers use the index in `docs/guide-zh.md` (never restate rule text).
 
 - **Auth** (`frontend/auth/`): [credentials.md](.trae/rules/frontend/auth/credentials.md) (test accounts only in root `.env`), [flows.md](.trae/rules/frontend/auth/flows.md) (login/sign-out/403 fallback), [token.md](.trae/rules/frontend/auth/token.md) (secureStorage session persistence)
 - **Styles** (`frontend/styles/`): [animation.md](.trae/rules/frontend/styles/animation.md) (GSAP, no Vue Transition out-in), [colors.md](.trae/rules/frontend/styles/colors.md) (semantic tokens only), [conflict.md](.trae/rules/frontend/styles/conflict.md) (external overrides via `cn()`), [fonts.md](.trae/rules/frontend/styles/fonts.md) (local bundles, unicode-range), [performance.md](.trae/rules/frontend/styles/performance.md), [responsive.md](.trae/rules/frontend/styles/responsive.md), [reuse.md](.trae/rules/frontend/styles/reuse.md) (extract UI components at 3+ uses), [structure.md](.trae/rules/frontend/styles/structure.md), [themes.md](.trae/rules/frontend/styles/themes.md) (theme-controller, never lock data-theme)
