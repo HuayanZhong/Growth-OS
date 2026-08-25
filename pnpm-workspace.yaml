@@ -11,6 +11,7 @@ packages:
 allowBuilds:
   electron-winstaller: true
   esbuild: true
+  unrs-resolver: true
 
 catalogs:
   # 开发目录
@@ -55,6 +56,9 @@ catalogs:
     '@nuxt/test-utils': ^4.1.0
     '@vue/test-utils': ^2.4.11
     happy-dom: ^20.11.1
+    jest: ^30.4.2
+    ts-jest: ^29.4.12
+    '@types/jest': ^30.0.0
   # 后端依赖
   backend:
     '@nestjs/common': ^11.1.19

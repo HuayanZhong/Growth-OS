@@ -23,7 +23,7 @@ Growth OS is a Coze-like AI agent desktop platform. This map describes current c
 @growth-os/desktop-core (Electron main/preload, standalone)
         ↑
 apps/desktop          (Nuxt 4; depends on types, ui, desktop-core)
-apps/server           (NestJS; depends on shared)
+apps/server           (NestJS; depends on shared, types)
 ```
 
 Shared configs live in `tooling/`: layered TypeScript presets (`tooling/typescript/`, see [typescript-config.md](architecture/typescript-config.md)), oxlint rules, oxfmt rules, Vitest base.

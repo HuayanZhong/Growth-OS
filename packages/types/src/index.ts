@@ -6,6 +6,8 @@ export { z } from 'zod'
 export { loginSchema, registerSchema } from './auth.ts'
 export type { LoginInput, RegisterInput } from './auth.ts'
 
+export type { ApiErrorEnvelope } from './api/error-envelope.ts'
+
 export {
   type IpcChannelMap,
   type IpcChannelName,

@@ -23,7 +23,7 @@ Growth OS 是一个类 Coze 的 AI 智能体桌面平台。本文描述当前组
 @growth-os/desktop-core (Electron 主进程/preload，独立)
         ↑
 apps/desktop          (Nuxt 4；依赖 types、ui、desktop-core)
-apps/server           (NestJS；依赖 shared)
+apps/server           (NestJS；依赖 shared 与 types)
 ```
 
 共享配置在 `tooling/`：分层 TypeScript 预设（`tooling/typescript/`，见 [typescript-config.md](architecture/typescript-config.md)）、oxlint 规则、oxfmt 规则、Vitest 基础配置。

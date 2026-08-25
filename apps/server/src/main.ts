@@ -16,9 +16,16 @@ async function bootstrap() {
   // CORS
   app.enableCors()
 
+  // 进程终止信号监听：SIGTERM 时 MikroORM 连接才会随应用关闭（官方要求）
+  app.enableShutdownHooks()
+
   const port = process.env.PORT ?? 4000
   await app.listen(port)
   logger.log(`Server running on http://localhost:${port}`)
 }
 
-bootstrap()
+// 启动失败必须以非零码退出：端口占用等场景下静默假死会骗过子进程监督
+bootstrap().catch((err) => {
+  new Logger('Bootstrap').error(`启动失败: ${err instanceof Error ? err.message : String(err)}`)
+  process.exit(1)
+})
