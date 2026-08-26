@@ -27,5 +27,13 @@
     "node": true,
     "es2024": true
   },
-  "ignorePatterns": ["**/dist/**", "**/.turbo/**", "**/node_modules/**"]
+  "ignorePatterns": ["**/dist/**", "**/.turbo/**", "**/node_modules/**"],
+  "overrides": [
+    {
+      "files": ["**/*.spec.ts", "**/*.test.ts"],
+      "rules": {
+        "import/first": "off"
+      }
+    }
+  ]
 }

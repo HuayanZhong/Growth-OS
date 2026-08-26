@@ -19,6 +19,9 @@ const envSchema = z.object({
   // 缺省 60s / 100 次，覆盖桌面应用正常用量；扫描器/DDoS 通常 >1000 次/分钟会被拦截。
   THROTTLE_TTL_MS: envIntString().optional(),
   THROTTLE_LIMIT: envIntString().optional(),
+  // PostgreSQL statement_timeout（毫秒）：防止单条慢查询无限执行耗尽连接池。
+  // 缺省 10s；开发环境设 0 可禁用（允许慢查询调试）。
+  DB_STATEMENT_TIMEOUT_MS: envIntString().optional(),
 })
 
 /**

@@ -7,6 +7,7 @@ import { LoggerModule } from 'nestjs-pino'
 import dbConfig from '../mikro-orm.config.ts'
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter.ts'
 import { TimeoutInterceptor } from './common/interceptors/timeout.interceptor.ts'
+import { ResponseEnvelopeInterceptor } from './common/interceptors/response-envelope.interceptor.ts'
 import { validate } from './config/env.validation.ts'
 import { AuthModule } from './modules/auth/auth.module.ts'
 import { HealthModule } from './modules/health/health.module.ts'
@@ -74,6 +75,10 @@ const isProd = process.env.NODE_ENV === 'production'
 
     // 请求超时拦截器：普通 REST 端点 30s 超时，SSE 流式端点通过 @SkipTimeout() 豁免。
     { provide: APP_INTERCEPTOR, useClass: TimeoutInterceptor },
+
+    // 成功响应信封：controller 返回值自动包装为 { data: T }，与错误路径 ApiErrorEnvelope 对称。
+    // SSE / 204 端点天然不受影响（SSE 走 res.write 直接输出，204 在拦截器内短路）。
+    { provide: APP_INTERCEPTOR, useClass: ResponseEnvelopeInterceptor },
   ],
 })
 export class AppModule {}

@@ -1,46 +1,60 @@
 import { NestFactory } from '@nestjs/core'
 import { VersioningType } from '@nestjs/common'
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import { Logger } from 'nestjs-pino'
 import { AppModule } from './app.module.ts'
+import { compressionMiddleware } from './main/compression.middleware.ts'
+import { helmetMiddleware } from './main/helmet.middleware.ts'
 
 async function bootstrap() {
-  // bufferLogs: true → NestJS 启动阶段的日志暂存内存，等自定义 Logger 就绪后再统一刷出。
-  // 不加 bufferLogs 的话，启动早期的日志会用 NestJS 内置 ConsoleLogger 输出，
-  // 之后才切换到 pino，导致前几行日志格式不一致（JSON vs 彩色文本混杂）。
   const app = await NestFactory.create(AppModule, { bufferLogs: true })
-
-  // 用 nestjs-pino 的 Logger 替换 NestJS 内置 Logger。
-  // 替换后，所有 controller / service 中通过 DI 注入的 Logger（或 this.logger）都会走 pino，
-  // 自动携带当前请求的 req.id / method / url（通过 AsyncLocalStorage 传播，无需手动传参）。
   app.useLogger(app.get(Logger))
 
-  // 全局路由前缀 + URI 版本控制：所有端点统一 /api/v1/... 前缀。
+  // ---- 响应压缩 ----
+  // 必须在路由注册之前注册，否则中间件不会拦截到请求。
+  // 排除 SSE（text/event-stream）：流式响应逐块发送，压缩会缓冲输出导致浏览器 SSE parser 卡死。
+  // 阈值 1024 字节：小于 1KB 的响应压缩后反而更大（gzip 头部开销约 200 字节）。
+  app.use(compressionMiddleware())
+
+  // ---- 安全头（Helmet）----
+  // 必须在路由注册之前注册。
+  // CSP / COEP 在 Electron 环境下禁用（file:// 协议 + preload 脚本需要跨域加载），
+  // 其余安全头（X-Content-Type-Options、X-Frame-Options 等）保持开启。
+  app.use(helmetMiddleware())
+
   app.setGlobalPrefix('api')
   app.enableVersioning({
     type: VersioningType.URI,
     defaultVersion: '1',
   })
 
-  // CORS 白名单：
-  //   - 配置了 CORS_ORIGINS → 仅允许列表中的 origin（生产环境安全策略）。
-  //   - 未配置 → 允许所有 origin（桌面端开发阶段 file:// 协议无 Origin 头，白名单会误杀）。
   const corsOrigins = process.env.CORS_ORIGINS?.split(',')
     .map((origin) => origin.trim())
     .filter(Boolean)
   app.enableCors(corsOrigins?.length ? { origin: corsOrigins } : {})
 
-  // enableShutdownHooks：监听 SIGTERM / SIGINT，触发 MikroORM 连接池优雅关闭。
-  // 不调用的话，进程被 kill 时数据库连接不会释放，Supabase 连接数会慢慢耗尽。
   app.enableShutdownHooks()
 
   const port = process.env.PORT ?? 4000
+
+  // ---- Swagger / OpenAPI ----
+  // 非生产环境自动生成 API 文档，生产环境不暴露（避免信息泄露）。
+  if (process.env.NODE_ENV !== 'production') {
+    const config = new DocumentBuilder()
+      .setTitle('Growth OS API')
+      .setDescription('Growth OS 后端服务 API 文档（自动生成）')
+      .setVersion('1.0')
+      .addBearerAuth()
+      .build()
+    const document = SwaggerModule.createDocument(app, config)
+    SwaggerModule.setup('docs', app, document)
+    app.get(Logger).log(`Swagger docs: http://localhost:${port}/docs`)
+  }
+
   await app.listen(port)
   app.get(Logger).log(`Server running on http://localhost:${port}`)
 }
 
-// 启动失败（端口占用、env 缺失等）必须以非零码退出。
-// 不 exit 的话，进程会静默假死（监听不到端口但不报错），Docker / PM2 以为进程正常，不会重启。
-// 此处用 process.stderr.write 而非 console.error，因为此时 NestJS Logger 尚未就绪。
 bootstrap().catch((err) => {
   process.stderr.write(`启动失败: ${err instanceof Error ? err.message : String(err)}\n`)
   process.exit(1)

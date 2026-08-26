@@ -15,6 +15,16 @@ export default defineConfig({
   // Supabase Postgres direct connection（长期运行的后端进程用 direct，不用 transaction pooler）
   clientUrl: databaseUrl,
 
+  // PostgreSQL statement_timeout：防止单条慢查询无限执行耗尽连接池。
+  // 缺省 10s；DB_STATEMENT_TIMEOUT_MS=0 可禁用（开发环境允许慢查询调试）。
+  driverOptions: {
+    connection: {
+      options: {
+        statement_timeout: Number(process.env.DB_STATEMENT_TIMEOUT_MS ?? 10_000),
+      },
+    },
+  },
+
   // 开启迁移与种子功能
   extensions: [Migrator, SeedManager],
 
