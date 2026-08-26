@@ -15,6 +15,10 @@ const envSchema = z.object({
   SUPABASE_URL: envString().optional(),
   // 生产 CORS 白名单：逗号分隔 origin；缺省保持全开（桌面端 file:// 无 Origin 头）
   CORS_ORIGINS: envString().optional(),
+  // 限流配置（@nestjs/throttler）：TTL = 窗口时长（毫秒），limit = 窗口内最大请求数。
+  // 缺省 60s / 100 次，覆盖桌面应用正常用量；扫描器/DDoS 通常 >1000 次/分钟会被拦截。
+  THROTTLE_TTL_MS: envIntString().optional(),
+  THROTTLE_LIMIT: envIntString().optional(),
 })
 
 /**

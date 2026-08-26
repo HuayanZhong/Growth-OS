@@ -136,7 +136,18 @@ catalog 新增（backend 组，版本实施时核对后锁定）：`deepagents`�
 
 每期配套：单测（mock 网络/LLM，绝不真调外部服务）、`pnpm --filter server typecheck` → 仓库三件套（test/typecheck/lint）、非平凡改动附 Agent Note、涉及架构图时更新 [docs/architecture.md](../../docs/architecture.md)。
 
-## 十、风险与对策
+## 十、后端基建方案
+
+AI 模块上线前须补齐的非功能性能力（日志、限流、超时、压缩、健康检查、安全头、OpenAPI），详见 [server-infrastructure-plan.md](server-infrastructure-plan.md)。
+
+实施分三批：
+1. 🔴 必须：请求日志 + 请求 ID + 请求超时 + 限流
+2. 🟡 重要：响应压缩 + 健康检查双层 + 成功响应信封
+3. 🟢 可选：Helmet + Swagger + statement_timeout
+
+基建方案在 M2（流式最小闭环）之前或同步实施，确保 AI 模块上线时已有生产级基础设施。
+
+## 十一、风险与对策
 
 1. **deepagents TS 版本迭代快** → 版本锁死 catalog；用法收敛在 `ai/graph/` 一个目录，升级爆炸半径最小
 2. **Supabase JWT 算法差异**（新项目 ES256/JWKS，旧项目 HS256 secret）→ Guard 启动探测 JWKS，保留 `SUPABASE_JWT_SECRET` 回退

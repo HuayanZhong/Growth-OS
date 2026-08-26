@@ -25,6 +25,7 @@ catalogs:
     lint-staged: ^17.2.0
     turbo: ^2.10.7
     typescript: 6.0.3
+    pino-pretty: ^13.0.0
   # 代码检查目录
   lint:
     oxlint: ^1.76.0
@@ -85,6 +86,9 @@ catalogs:
     '@mikro-orm/reflection': ^7.1.11
     '@mikro-orm/seeder': ^7.1.11
     jose: ^5.10.0
+    nestjs-pino: ^4.6.1
+    pino: ^10.3.1
+    '@nestjs/throttler': ^6.5.0
   # 跨包共享依赖（前后端通用）
   shared:
     zod: ^4.4.3
