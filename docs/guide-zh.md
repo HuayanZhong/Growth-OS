@@ -38,6 +38,34 @@
 
 - [git-commit-message.md](../.trae/rules/git-commit-message.md) — conventional commits，subject 语言与改动一致
 
+### 后端认证（server/auth/）
+
+- [verification.md](../.trae/rules/server/auth/verification.md) — JWT 双轨验证（JWKS 本地 + HS256 Auth 探针）
+- [guard.md](../.trae/rules/server/auth/guard.md) — SupabaseJwtGuard、@Public、@CurrentUser
+
+### 后端数据库（server/database/）
+
+- [orm.md](../.trae/rules/server/database/orm.md) — MikroORM v7 配置、entity 放置、@InjectMikroORM('default')
+- [migrations.md](../.trae/rules/server/database/migrations.md) — 迁移工作流（create/up/down）
+
+### 后端 API（server/api/）
+
+- [errors.md](../.trae/rules/server/api/errors.md) — ApiErrorEnvelope、AllExceptionsFilter、STATUS_CODE_MAP
+- [responses.md](../.trae/rules/server/api/responses.md) — ResponseEnvelopeInterceptor、{data: T} 信封
+- [health.md](../.trae/rules/server/api/health.md) — 健康探针双层（liveness 200, readiness 503）
+
+### 后端中间件（server/middleware/）
+
+- [compression.md](../.trae/rules/server/middleware/compression.md) — 响应压缩，SSE 排除（includes 匹配）
+- [helmet.md](../.trae/rules/server/middleware/helmet.md) — 安全头，CSP 仅生产环境
+- [timeout.md](../.trae/rules/server/middleware/timeout.md) — 请求超时，@SkipTimeout 用于 SSE
+
+### 后端测试（server/tests/）
+
+- [structure.md](../.trae/rules/server/tests/structure.md) — 测试目录结构（co-located spec + e2e）
+- [mock.md](../.trae/rules/server/tests/mock.md) — Mock 策略（jest.mock for ESM, fake timers）
+- [commands.md](../.trae/rules/server/tests/commands.md) — 测试命令与验证顺序
+
 ## 专家（.trae/agents）
 
 按 description 触发：auth / style / test 三个前端专家。

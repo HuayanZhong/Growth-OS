@@ -3,7 +3,7 @@
     "AGENTS.md": { "maxWords": 1600 },
     "docs/AGENTS.md": { "maxWords": 1250 },
     "docs/architecture.md": { "maxWords": 1800 },
-    "docs/guide-zh.md": { "maxWords": 800 },
+    "docs/guide-zh.md": { "maxWords": 1000 },
     ".agents/notes/README.md": { "maxWords": 400 },
     "README.md": { "maxWords": 400 },
     "apps/README.md": { "maxWords": 400 },
