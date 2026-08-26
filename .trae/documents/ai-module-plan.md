@@ -24,7 +24,7 @@
 | D3 | 目录归属 | 业务域进 `modules/`，非 `common/infra` | infra = 零业务词汇的技术底座；common = 全模块共享的横切设施；AI 充满业务概念（人设/知识库检索），且 server AGENTS.md 已写明 modules 即业务模块层 |
 | D4 | 编排框架 | **deepagents**（LangChain TS 生态） | 对标 DeepAgent；内置 planning / filesystem / subagent delegation；checkpointer 支持 Postgres 持久化 |
 | D5 | 模型接入 | **OpenAI 兼容协议 + Provider 注册表**，由 agent 配置驱动 | DeepSeek/智谱/通义/Kimi/OpenAI 同一套 `ChatOpenAI` 换 baseURL；换供应商 = 改数据不改代码 |
-| D6 | 鉴权 | **Supabase JWT Guard**（JWKS 验签） | 防 Key 被白嫖；为后续 RLS 打基础 |
+| D6 | 鉴权 | **Supabase JWT Guard**（双轨验证） | 防 Key 被白嫖；为 RLS 打基础。详细流程与组件设计见 [auth-verification-design.md](auth-verification-design.md) |
 | D7 | 持久化 | **双轨**：`message` 表（对外聊天记录）+ Postgres checkpointer（LangGraph 引擎内部状态） | 职责分离，互不污染 |
 
 ## 三、架构总览
@@ -128,7 +128,7 @@ catalog 新增（backend 组，版本实施时核对后锁定）：`deepagents`�
 
 ## 九、迭代里程碑（每步独立验收，全绿再进下一步）
 
-- [ ] **M1 鉴权骨架**：auth Guard + `@CurrentUser` + use-api 封装 + 受保护探针端点。验收：无 token 401 / 有 token 200，测试覆盖两分支
+- [x] **M1 鉴权骨架**（已实现）：auth Guard + `@CurrentUser` + use-api 封装 + 受保护探针端点。验收：无 token 401 / 有 token 200，测试覆盖两分支（设计细节：[auth-verification-design.md](auth-verification-design.md)）
 - [ ] **M2 流式最小闭环**：model-provider + ai 模块（无记忆流式聊天）。验收：agents 页打字机真回复；中途 abort 生效
 - [ ] **M3 会话持久化**：conversation/message 实体+迁移+REST，聊天落库。验收：重启后历史完整加载，会话列表增删改查
 - [ ] **M4 智能体配置**：agent 实体+CRUD+种子「小芽」。验收：切换智能体 → 人设/开场白/模型生效

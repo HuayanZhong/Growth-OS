@@ -11,6 +11,10 @@ const envSchema = z.object({
   DATABASE_URL: envString(),
   // MikroORM 调试日志开关：true 时打印 SQL 查询与参数（缺失视为 false）
   DB_DEBUG: envBoolString().optional(),
+  // Supabase 项目 URL（JWT 验证用）：可选，缺省回退 NUXT_PUBLIC_SUPABASE_URL
+  SUPABASE_URL: envString().optional(),
+  // 生产 CORS 白名单：逗号分隔 origin；缺省保持全开（桌面端 file:// 无 Origin 头）
+  CORS_ORIGINS: envString().optional(),
 })
 
 /**

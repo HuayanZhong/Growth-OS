@@ -79,6 +79,8 @@ export default defineNuxtConfig({
       // Supabase 公开配置（publishable key，非 secret，可暴露给前端）
       supabaseUrl: process.env.NUXT_PUBLIC_SUPABASE_URL ?? '',
       supabaseAnonKey: process.env.NUXT_PUBLIC_SUPABASE_ANON_KEY ?? '',
+      // 自有后端 API 地址（useApi 请求基座），默认本地 dev 服务
+      apiBaseUrl: process.env.NUXT_PUBLIC_API_BASE_URL ?? 'http://localhost:4000',
     },
   },
 

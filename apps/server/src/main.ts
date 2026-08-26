@@ -13,8 +13,12 @@ async function bootstrap() {
     defaultVersion: '1',
   })
 
-  // CORS
-  app.enableCors()
+  // CORS：配置 CORS_ORIGINS（逗号分隔）时收敛为白名单；缺省全开——
+  // 桌面端生产经 file:// 加载无 Origin 头，白名单会误杀本地窗口请求
+  const corsOrigins = process.env.CORS_ORIGINS?.split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean)
+  app.enableCors(corsOrigins?.length ? { origin: corsOrigins } : {})
 
   // 进程终止信号监听：SIGTERM 时 MikroORM 连接才会随应用关闭（官方要求）
   app.enableShutdownHooks()

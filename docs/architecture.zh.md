@@ -32,7 +32,7 @@ apps/server           (NestJS；依赖 shared 与 types)
 
 1. **展示层**（`apps/desktop/app/`）：页面、布局、组件、composables。状态放在 composables（`useAuth`、`useSupabase`、`useSecureStorage`、`useToast`）；认证流程由 `.trae/rules/frontend/auth/` 治理。
 2. **桥接层**（`packages/desktop-core/`）：Electron 主进程 + preload，通过 `contextBridge` 暴露最小 `window.desktop` API（`contextIsolation: true`、`nodeIntegration: false`）。IPC 通道在 `packages/types/src/utils/ipc-channels.ts` 中定义类型。
-3. **API**（`apps/server/`）：NestJS 启动装配，含环境变量校验（`src/config/env.validation.ts`）与 MikroORM 接线；业务模块与实体尚未建立——schema/实体状态见 [database.zh.md](server/database.zh.md)。
+3. **API**（`apps/server/`）：NestJS 启动装配，含环境变量校验（`src/config/env.validation.ts`）、MikroORM 接线与全局 JWT Guard（`modules/auth`，默认拒绝 + `@Public()` 显式豁免；设计见 `.trae/documents/auth-verification-design.md`）。业务实体按模块落地——schema/实体状态见 [database.zh.md](server/database.zh.md)。
 4. **数据**（Supabase）：Auth 处理身份；PostgreSQL 通过 session pooler 连接串作为存储目标；RLS 按用户隔离尚在规划，尚未应用。
 5. **UI 包**（`packages/ui/`）：可复用组件与语义样式 token（见 `.trae/rules/frontend/styles/`）。
 

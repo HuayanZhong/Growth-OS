@@ -9,7 +9,7 @@ description: Token/session rule (supabase-js + secureStorage): never touch token
 
 **Key points**:
 
-1. **Never read/write tokens manually**: supabase-js injects the access_token into request headers and `autoRefreshToken` refreshes automatically; business code reads sessions only via `auth.getSession()` and signs out via `auth.signOut()`. Never hand-build the `Authorization` header, and never manually write/delete token keys in localStorage.
+1. **Never read/write tokens manually**: supabase-js injects the access_token into request headers and `autoRefreshToken` refreshes automatically; business code reads sessions only via `auth.getSession()` and signs out via `auth.signOut()`. Never hand-build the `Authorization` header, and never manually write/delete token keys in localStorage. Single sanctioned exception: `useApi.ts` (`apiFetch`) attaches the session access token to requests targeting our own NestJS API (`NUXT_PUBLIC_API_BASE_URL`) — Supabase's auto-injection only covers Supabase endpoints.
 2. **Sessions persist through the secureStorage adapter** (`useSecureStorage.ts`):
    - Electron: persisted via `window.desktop.secureStore` IPC by the main process using safeStorage (OS-level encryption); plaintext tokens never appear in localStorage.
    - Plain browser (web preview/tests, no Electron preload): falls back to localStorage.

@@ -20,11 +20,11 @@
   },
   "include": [
     "src/**/*.ts",
+    "test/**/*.ts",
     "mikro-orm.config.ts"
   ],
   "exclude": [
     "node_modules",
-    "dist",
-    "test"
+    "dist"
   ]
 }

@@ -59,6 +59,8 @@ catalogs:
     jest: ^30.4.2
     ts-jest: ^29.4.12
     '@types/jest': ^30.0.0
+    supertest: ^7.2.2
+    '@types/supertest': ^7.2.1
   # 后端依赖
   backend:
     '@nestjs/common': ^11.1.19
@@ -82,6 +84,7 @@ catalogs:
     '@mikro-orm/decorators': ^7.1.11
     '@mikro-orm/reflection': ^7.1.11
     '@mikro-orm/seeder': ^7.1.11
+    jose: ^5.10.0
   # 跨包共享依赖（前后端通用）
   shared:
     zod: ^4.4.3
