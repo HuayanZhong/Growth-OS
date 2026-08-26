@@ -13,6 +13,9 @@ const envSchema = z.object({
   DB_DEBUG: envBoolString().optional(),
   // Supabase 项目 URL（JWT 验证用）：可选，缺省回退 NUXT_PUBLIC_SUPABASE_URL
   SUPABASE_URL: envString().optional(),
+  // Supabase anon key（HS256 legacy 项目验签用）：HS256 回退路径需要此值调 Auth 服务器探针。
+  // 非 HS256 项目可不设；缺失时 HS256 token 会静默拒绝（UNAUTHORIZED），但不阻塞 JWKS 项目。
+  NUXT_PUBLIC_SUPABASE_ANON_KEY: envString().optional(),
   // 生产 CORS 白名单：逗号分隔 origin；缺省保持全开（桌面端 file:// 无 Origin 头）
   CORS_ORIGINS: envString().optional(),
   // 限流配置（@nestjs/throttler）：TTL = 窗口时长（毫秒），limit = 窗口内最大请求数。

@@ -1,4 +1,4 @@
-import { Controller, Get, HttpCode, HttpStatus } from '@nestjs/common'
+import { Controller, Get, ServiceUnavailableException } from '@nestjs/common'
 import { SkipThrottle } from '@nestjs/throttler'
 import { Public } from '../../common/decorators/public.decorator.ts'
 import { HealthService } from './health.service.ts'
@@ -28,17 +28,20 @@ export class HealthController {
   }
 
   @Get('readiness')
-  @HttpCode(HttpStatus.OK)
   async readiness() {
     const db = await this.healthService.checkDatabase()
     if (db.status === 'disconnected') {
-      return { status: 'error', db: 'disconnected' }
+      // K8s readiness probe 仅看 HTTP 状态码：2xx = ready，5xx = not ready。
+      // 返回 503 让 K8s 停止向此 Pod 转发流量，而非返回 200 让死 Pod 继续接请求。
+      throw new ServiceUnavailableException({
+        code: 'SERVICE_UNAVAILABLE',
+        message: '数据库连接异常',
+      })
     }
     return { status: 'ok', db: 'connected', latencyMs: db.latencyMs }
   }
 
   @Get()
-  @HttpCode(HttpStatus.OK)
   async check() {
     return this.readiness()
   }

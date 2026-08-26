@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config'
 import { MikroOrmModule } from '@mikro-orm/nestjs'
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core'
 import { ThrottlerGuard } from '@nestjs/throttler'
+import type { IncomingMessage } from 'http'
 import { LoggerModule } from 'nestjs-pino'
 import dbConfig from '../mikro-orm.config.ts'
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter.ts'
@@ -14,6 +15,16 @@ import { HealthModule } from './modules/health/health.module.ts'
 import { ThrottleModule } from './modules/throttle/throttle.module.ts'
 
 const isProd = process.env.NODE_ENV === 'production'
+
+/**
+ * pinoHttp 共享配置：genReqId 和 autoLogging.ignore 在 dev/prod 两个分支完全相同，
+ * 提取为常量消除重复。autoLogging.ignore 精确匹配 /api/v1/health 前缀，
+ * 避免 '/health' 字符串包含匹配误伤 /heartbeat 等路径。
+ */
+const PINO_GEN_REQ_ID: (req: IncomingMessage) => string = (req) =>
+  (req.headers['x-request-id'] as string) ?? crypto.randomUUID()
+const PINO_AUTO_LOGGING_IGNORE: (req: IncomingMessage) => boolean = (req) =>
+  req.url?.startsWith('/api/v1/health') ?? false
 
 @Module({
   imports: [
@@ -29,18 +40,14 @@ const isProd = process.env.NODE_ENV === 'production'
       pinoHttp: isProd
         ? {
             level: process.env.LOG_LEVEL ?? 'info',
-            genReqId: (req) => (req.headers['x-request-id'] as string) ?? crypto.randomUUID(),
-            autoLogging: {
-              ignore: (req) => req.url?.includes('/health') ?? false,
-            },
+            genReqId: PINO_GEN_REQ_ID,
+            autoLogging: { ignore: PINO_AUTO_LOGGING_IGNORE },
           }
         : {
             level: process.env.LOG_LEVEL ?? 'debug',
             transport: { target: 'pino-pretty', options: { colorize: true, singleLine: true } },
-            genReqId: (req) => (req.headers['x-request-id'] as string) ?? crypto.randomUUID(),
-            autoLogging: {
-              ignore: (req) => req.url?.includes('/health') ?? false,
-            },
+            genReqId: PINO_GEN_REQ_ID,
+            autoLogging: { ignore: PINO_AUTO_LOGGING_IGNORE },
           },
     }),
 

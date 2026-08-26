@@ -17,6 +17,14 @@ function createOrmMock(executeFn: () => Promise<unknown>) {
 }
 
 describe('HealthService', () => {
+  beforeEach(() => {
+    jest.useFakeTimers()
+  })
+
+  afterEach(() => {
+    jest.useRealTimers()
+  })
+
   it('DB 连通时返回 connected + 延迟', async () => {
     const orm = createOrmMock(async () => [{ '?column?': 1 }])
     const service = new HealthService(orm)
@@ -34,6 +42,19 @@ describe('HealthService', () => {
     const service = new HealthService(orm)
 
     const result = await service.checkDatabase()
+
+    expect(result.status).toBe('disconnected')
+  })
+
+  it('DB 查询超过 5s 超时返回 disconnected', async () => {
+    // 模拟查询永远不返回（TCP 半开场景）
+    const orm = createOrmMock(() => new Promise<never>(() => {}))
+    const service = new HealthService(orm)
+
+    const resultPromise = service.checkDatabase()
+    // 快进 5s 触发超时
+    jest.advanceTimersByTime(5_000)
+    const result = await resultPromise
 
     expect(result.status).toBe('disconnected')
   })

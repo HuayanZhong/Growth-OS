@@ -53,8 +53,17 @@ export class AllExceptionsFilter implements ExceptionFilter {
       const status = exception.getStatus()
       const res = exception.getResponse()
 
-      // 信封形态的对象响应（如 ZodValidationPipe 抛出 { code, message }）直接透传
-      if (typeof res === 'object' && res !== null && 'code' in res && 'message' in res) {
+      // 信封形态的对象响应（如 ZodValidationPipe 抛出 { code, message }）直接透传。
+      // 额外校验 code/message 类型：防止 HttpException 的 response 恰好含同名非 string 属性时
+      // 透传给客户端，违反 ApiErrorEnvelope 类型契约。
+      if (
+        typeof res === 'object' &&
+        res !== null &&
+        'code' in res &&
+        'message' in res &&
+        typeof (res as Record<string, unknown>).code === 'string' &&
+        typeof (res as Record<string, unknown>).message === 'string'
+      ) {
         return { status, body: res as ApiErrorEnvelope }
       }
 

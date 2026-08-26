@@ -58,8 +58,9 @@ describe('GET /api/v1/auth/me (e2e)', () => {
         .set('Authorization', `Bearer ${accessToken}`)
 
       expect(res.status).toBe(200)
-      expect(res.body.id).toBe(data.user!.id)
-      expect(res.body.email).toBe(EMAIL)
+      // ResponseEnvelopeInterceptor 包装成功响应为 { data: T }
+      expect(res.body.data.id).toBe(data.user!.id)
+      expect(res.body.data.email).toBe(EMAIL)
     })
   })
 })
