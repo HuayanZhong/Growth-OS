@@ -23,6 +23,14 @@ function createCallHandler(result: unknown = 'ok') {
 }
 
 describe('TimeoutInterceptor', () => {
+  beforeEach(() => {
+    jest.useFakeTimers()
+  })
+
+  afterEach(() => {
+    jest.useRealTimers()
+  })
+
   it('正常响应直接透传，不触发超时', async () => {
     const { reflector, context } = createContext()
     const interceptor = new TimeoutInterceptor(reflector)
@@ -43,16 +51,18 @@ describe('TimeoutInterceptor', () => {
     expect(result).toBe('skipped')
   })
 
-  it('慢响应（超过超时阈值）触发 RequestTimeoutException', async () => {
+  it('慢响应（超过 30s 默认阈值）触发 RequestTimeoutException', async () => {
     const { reflector, context } = createContext()
-    jest.spyOn(reflector, 'get').mockReturnValue(1)
     const interceptor = new TimeoutInterceptor(reflector)
+    // 60s 才返回，但默认超时 30s
     const callHandler = {
-      handle: () => timer(100),
+      handle: () => timer(60_000),
     } as unknown as CallHandler
 
-    await expect(interceptor.intercept(context, callHandler).toPromise()).rejects.toThrow(
-      RequestTimeoutException,
-    )
+    const promise = interceptor.intercept(context, callHandler).toPromise()
+    // 快进 30s 触发超时
+    jest.advanceTimersByTime(30_000)
+
+    await expect(promise).rejects.toThrow(RequestTimeoutException)
   })
 })

@@ -5,11 +5,4 @@ describe('compressionMiddleware', () => {
     const middleware = compressionMiddleware()
     expect(typeof middleware).toBe('function')
   })
-
-  it('返回值包含 threshold 配置', () => {
-    const middleware = compressionMiddleware() as ReturnType<typeof compressionMiddleware> & {
-      _threshold?: number
-    }
-    expect(typeof middleware).toBe('function')
-  })
 })

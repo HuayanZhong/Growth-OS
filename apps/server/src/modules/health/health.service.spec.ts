@@ -1,4 +1,4 @@
-// jest.mock 必须在 import 之前（Jest hoisting 要求），eslint-disable 抑制 import/first 警告
+// jest.mock 必须在 import 之前（Jest hoisting 要求）
 jest.mock('@mikro-orm/nestjs', () => ({
   InjectMikroORM: () => () => {},
 }))
@@ -57,5 +57,17 @@ describe('HealthService', () => {
     const result = await resultPromise
 
     expect(result.status).toBe('disconnected')
+  })
+
+  it('DB 查询成功时 timer 被清理，无泄漏', async () => {
+    const clearTimeoutSpy = jest.spyOn(global, 'clearTimeout')
+    const orm = createOrmMock(async () => [{ '?column?': 1 }])
+    const service = new HealthService(orm)
+
+    await service.checkDatabase()
+
+    // 成功路径必须调用 clearTimeout 清理 timer
+    expect(clearTimeoutSpy).toHaveBeenCalled()
+    clearTimeoutSpy.mockRestore()
   })
 })

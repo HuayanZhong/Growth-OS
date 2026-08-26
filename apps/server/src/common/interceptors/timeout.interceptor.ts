@@ -25,7 +25,7 @@ const DEFAULT_TIMEOUT_MS = 30_000
  *   1. Reflector 检查 controller 方法是否带 @SkipTimeout() 装饰器 → 是则直接放行。
  *   2. 否则对 handler 返回的 Observable 施加 rxjs timeout 操作符。
  *   3. 超时触发时，rxjs 抛出 TimeoutError，catchError 将其转为 NestJS 的 RequestTimeoutException，
- *      由 AllExceptionsFilter 统一转为 { code: 'HTTP_408', message: '请求超时...' }。
+ *      由 AllExceptionsFilter 统一转为 { code: 'TIMEOUT', message: '请求超时...' }。
  *
  * 豁免场景：
  *   - SSE 流式端点（/ai/chat）：响应可持续数分钟，不能设固定超时 → @SkipTimeout()。
@@ -42,11 +42,8 @@ export class TimeoutInterceptor implements NestInterceptor {
     ])
     if (skipTimeout) return next.handle()
 
-    const timeoutMs =
-      this.reflector.get<number>('timeoutMs', context.getHandler()) ?? DEFAULT_TIMEOUT_MS
-
     return next.handle().pipe(
-      timeout(timeoutMs),
+      timeout(DEFAULT_TIMEOUT_MS),
       catchError((err) =>
         err.name === 'TimeoutError'
           ? throwError(() => new RequestTimeoutException('请求超时，请稍后重试'))
