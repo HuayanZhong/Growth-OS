@@ -2,5 +2,5 @@
 # as of the last confirmed-consistent state. Both languages carry equal
 # authority; after editing either side, bring the other along and re-record with:
 #   pnpm verify:pairing --write <path>
-README.md: c9c2afaecb9363a67153fd63f9268258525a7d01
-README.zh.md: 709f5a6564a81d7c0633b2df746905289c042619
+README.md: 7541ee752c205f8c56e3ff6d4552edd3f59af198
+README.zh.md: e1eabad3465bf116c7fc63f2ef1f2f10db14de22

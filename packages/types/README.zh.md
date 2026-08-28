@@ -6,11 +6,11 @@
 
 ## 导出
 
-| 模块 | 用途 |
-| --- | --- |
-| `src/auth.ts` | 认证相关共享类型/schema |
+| 模块                        | 用途                                              |
+| --------------------------- | ------------------------------------------------- |
+| `src/auth.ts`               | 认证相关共享类型/schema                           |
 | `src/utils/ipc-channels.ts` | desktop 与 desktop-core 之间的类型化 IPC 通道契约 |
-| `src/index.ts` | barrel 导出 |
+| `src/index.ts`              | barrel 导出                                       |
 
 ## 契约
 

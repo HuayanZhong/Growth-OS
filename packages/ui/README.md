@@ -26,8 +26,8 @@ src/
 ## Usage
 
 ```ts
-import { ThemeToggle } from "@growth-os/ui";
-import "@growth-os/ui/main.css";
+import { ThemeToggle } from '@growth-os/ui'
+import '@growth-os/ui/main.css'
 ```
 
 ## Rules

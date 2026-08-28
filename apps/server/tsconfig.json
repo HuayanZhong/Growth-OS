@@ -8,22 +8,11 @@
     "declaration": true,
     "rewriteRelativeImportExtensions": true,
     "verbatimModuleSyntax": false,
-    "types": [
-      "node"
-    ],
+    "types": ["node"],
     "paths": {
-      "@/*": [
-        "./src/*"
-      ]
+      "@/*": ["./src/*"]
     }
   },
-  "include": [
-    "src/**/*.ts",
-    "test/**/*.ts",
-    "mikro-orm.config.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist"
-  ]
+  "include": ["src/**/*.ts", "test/**/*.ts", "mikro-orm.config.ts"],
+  "exclude": ["node_modules", "dist"]
 }

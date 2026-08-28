@@ -14,7 +14,7 @@ Zero-dependency (except `zod`) cross-package utilities: env validation and URL n
 ## Usage
 
 ```ts
-import { normalizeUrl } from "@growth-os/shared";
+import { normalizeUrl } from '@growth-os/shared'
 ```
 
 ## Contract
