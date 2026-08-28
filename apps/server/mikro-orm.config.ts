@@ -8,6 +8,15 @@ const databaseUrl = process.env.DATABASE_URL
 if (!databaseUrl) throw new Error('缺少 DATABASE_URL：请在根目录 .env 中配置 Supabase 数据库连接串')
 
 export default defineConfig({
+  // 显式 context name：mikro-orm/nestjs@7.0.3-dev 起移除了隐式 'default' 回落，
+  // 不声明时 forRoot 注册的 token 是 MikroORM 类，与 @InjectMikroORM('default') 的
+  // 'default_MikroORM' 字符串 token 对不上，启动即崩。
+  contextName: 'default',
+
+  // M1 阶段尚无实体（entities glob 为空），MikroORM v7 默认对空实体抛
+  // MetadataError: No entities were discovered；M2 实体落地后移除此项
+  discovery: { warnWhenNoEntities: false },
+
   // 实体类路径
   entities: ['dist/**/*.entity.js'],
   entitiesTs: ['src/**/*.entity.ts'],
@@ -17,12 +26,11 @@ export default defineConfig({
 
   // PostgreSQL statement_timeout：防止单条慢查询无限执行耗尽连接池。
   // 缺省 10s；DB_STATEMENT_TIMEOUT_MS=0 可禁用（开发环境允许慢查询调试）。
+  // ⚠️ v7 (kysely) 形态：driverOptions 直接并入 pg 连接配置，statement_timeout 是
+  // pg Client 顶层选项；v6 的 driverOptions.connection.options 嵌套写法会把纯对象
+  // 覆盖到 pg Client 的 connection 字段，导致 con.connect is not a function。
   driverOptions: {
-    connection: {
-      options: {
-        statement_timeout: Number(process.env.DB_STATEMENT_TIMEOUT_MS ?? 10_000),
-      },
-    },
+    statement_timeout: Number(process.env.DB_STATEMENT_TIMEOUT_MS ?? 10_000),
   },
 
   // 开启迁移与种子功能

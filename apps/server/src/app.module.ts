@@ -60,7 +60,10 @@ const PINO_AUTO_LOGGING_IGNORE: (req: IncomingMessage) => boolean = (req) =>
     }),
 
     // MikroORM：直接复用 mikro-orm.config.ts CLI 配置文件，避免 ORM 配置在两处维护导致漂移。
-    MikroOrmModule.forRoot(dbConfig),
+    // registerRequestContext: false——mikro-orm/nestjs@7.0.3-dev 在 contextName 模式下
+    // MikroOrmMiddleware 仍注入未注册的 MikroORM class token（上游不完整），显式关闭
+    // per-request EM 中间件；M2 出现需要 per-request EntityManager 的端点时重开并复评。
+    MikroOrmModule.forRoot({ ...dbConfig, registerRequestContext: false }),
 
     // ---- 限流 ----
     // ThrottleModule 通过 forRootAsync 读取 ConfigService 注入的 THROTTLE_TTL_MS / THROTTLE_LIMIT，

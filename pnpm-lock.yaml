@@ -7,29 +7,29 @@ settings:
 catalogs:
   backend:
     '@mikro-orm/cli':
-      specifier: ^7.1.11
-      version: 7.1.14
+      specifier: 7.1.11
+      version: 7.1.11
     '@mikro-orm/core':
-      specifier: ^7.1.11
-      version: 7.1.14
+      specifier: 7.1.11
+      version: 7.1.11
     '@mikro-orm/decorators':
-      specifier: ^7.1.11
-      version: 7.1.14
+      specifier: 7.1.11
+      version: 7.1.11
     '@mikro-orm/migrations':
-      specifier: ^7.1.11
-      version: 7.1.14
+      specifier: 7.1.11
+      version: 7.1.11
     '@mikro-orm/nestjs':
       specifier: 7.0.3-dev.23
       version: 7.0.3-dev.23
     '@mikro-orm/postgresql':
-      specifier: ^7.1.11
-      version: 7.1.14
+      specifier: 7.1.11
+      version: 7.1.11
     '@mikro-orm/reflection':
-      specifier: ^7.1.11
-      version: 7.1.14
+      specifier: 7.1.11
+      version: 7.1.11
     '@mikro-orm/seeder':
-      specifier: ^7.1.11
-      version: 7.1.14
+      specifier: 7.1.11
+      version: 7.1.11
     '@nestjs/cli':
       specifier: ^12.0.0
       version: 12.0.0
@@ -323,25 +323,25 @@ importers:
         version: link:../../packages/types
       '@mikro-orm/cli':
         specifier: catalog:backend
-        version: 7.1.14
+        version: 7.1.11
       '@mikro-orm/core':
         specifier: catalog:backend
-        version: 7.1.14
+        version: 7.1.11
       '@mikro-orm/decorators':
         specifier: catalog:backend
-        version: 7.1.14(@mikro-orm/core@7.1.14)(reflect-metadata@0.2.2)
+        version: 7.1.11(@mikro-orm/core@7.1.11)(reflect-metadata@0.2.2)
       '@mikro-orm/migrations':
         specifier: catalog:backend
-        version: 7.1.14(@mikro-orm/core@7.1.14)
+        version: 7.1.11(@mikro-orm/core@7.1.11)
       '@mikro-orm/nestjs':
         specifier: catalog:backend
-        version: 7.0.3-dev.23(@mikro-orm/core@7.1.14)(@nestjs/common@12.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2))(@nestjs/core@12.0.1)(reflect-metadata@0.2.2)
+        version: 7.0.3-dev.23(@mikro-orm/core@7.1.11)(@nestjs/common@12.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2))(@nestjs/core@12.0.1)(reflect-metadata@0.2.2)
       '@mikro-orm/postgresql':
         specifier: catalog:backend
-        version: 7.1.14(@mikro-orm/core@7.1.14)
+        version: 7.1.11(@mikro-orm/core@7.1.11)
       '@mikro-orm/reflection':
         specifier: catalog:backend
-        version: 7.1.14(@mikro-orm/core@7.1.14)
+        version: 7.1.11(@mikro-orm/core@7.1.11)
       '@nestjs/common':
         specifier: catalog:backend
         version: 12.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2)
@@ -390,7 +390,7 @@ importers:
     devDependencies:
       '@mikro-orm/seeder':
         specifier: catalog:backend
-        version: 7.1.14(@mikro-orm/core@7.1.14)
+        version: 7.1.11(@mikro-orm/core@7.1.11)
       '@nestjs/cli':
         specifier: catalog:backend
         version: 12.0.0(@swc/core@1.16.1)(@types/node@26.4.0)
@@ -1204,13 +1204,13 @@ packages:
   '@microsoft/tsdoc@0.16.0':
     resolution: {integrity: sha512-xgAyonlVVS+q7Vc7qLW0UrJU7rSFcETRWsqdXZtjzRU8dF+6CkozTK4V4y1LwOX7j8r/vHphjDeMeGI4tNGeGA==}
 
-  '@mikro-orm/cli@7.1.14':
-    resolution: {integrity: sha512-JnkkmMie0KwzuIPjlnpRdWZZUV3DzQvcKY0fjJJOZSSmJK7rM+QDhMrcSTNIxhNWxDaXdOuhZDK7Vpwqcck69w==}
+  '@mikro-orm/cli@7.1.11':
+    resolution: {integrity: sha512-agfFr2r9VOlnm+fZtkfcZkRVTRYNWB7tzd2HOvvnsI1kAjKbZE2Wd9Wqh/E9N2wxitF0bCttUl5rOkC1CJUDTg==}
     engines: {node: '>= 22.17.0'}
     hasBin: true
 
-  '@mikro-orm/core@7.1.14':
-    resolution: {integrity: sha512-q/2UWNX7Z9ZLgwkG6yHtKki3RnQ/ETygrSLXfvBXnaXPQvOY/G9PK/RJLoclo7UtHiHIOmbh/iiwiXiErfpBaQ==}
+  '@mikro-orm/core@7.1.11':
+    resolution: {integrity: sha512-LjxeVx7PYIVqFW4WDwjOYSHa7RygEGK1RJhjUC5ldY1xbvhOgntwrKJSxfJjBxGx6G3CL55jX6xT2HjU1WdyaQ==}
     engines: {node: '>= 22.17.0'}
     peerDependencies:
       dataloader: 2.2.3
@@ -1218,21 +1218,21 @@ packages:
       dataloader:
         optional: true
 
-  '@mikro-orm/decorators@7.1.14':
-    resolution: {integrity: sha512-Bj6VbgIpn5iISeCPqphpPXlud7iUD5+JhwZCoWgsZPAKxU1e6CKflnlHTdr0ASFLBPu3FXQB6sjXFd9a1NtqMA==}
+  '@mikro-orm/decorators@7.1.11':
+    resolution: {integrity: sha512-Gye551HFreA2OlYJDn7YXM+sf6fSh0oVM/+M5fsqS1SSsv9G6eOaSC3xN9/0hK6puyPVx1A4BdR8Mzniv3vzJw==}
     engines: {node: '>= 22.17.0'}
     peerDependencies:
-      '@mikro-orm/core': 7.1.14
+      '@mikro-orm/core': 7.1.11
       reflect-metadata: ^0.1.0 || ^0.2.0
     peerDependenciesMeta:
       reflect-metadata:
         optional: true
 
-  '@mikro-orm/migrations@7.1.14':
-    resolution: {integrity: sha512-9+N1t11hOwalyCb/bSkAkCNKCXrT9MXmmoftu+oqLFLBEGkWsjH4/mvm53I0UGX1uBemYmtY1pWMnyP5iBW/xA==}
+  '@mikro-orm/migrations@7.1.11':
+    resolution: {integrity: sha512-9yMYt1ljTenZaRUIW6BUOJtpV43fBOf7uCMe9sj6aoLXAqqWUQGurDuGpN8vFKwOgECwEGJtOmMBjzx2Lx42rg==}
     engines: {node: '>= 22.17.0'}
     peerDependencies:
-      '@mikro-orm/core': 7.1.14
+      '@mikro-orm/core': 7.1.11
 
   '@mikro-orm/nestjs@7.0.3-dev.23':
     resolution: {integrity: sha512-WR+U11e6JgBgYJ5ohvb8uDxmPzIj9ItvpKnrbVcbUw9mhro+rAJo1SYT1a/nu/hEsja7imBXj4fXZ+Hujjqzrw==}
@@ -1243,29 +1243,29 @@ packages:
       '@nestjs/core': ^11.0.5 || ^12.0.0
       reflect-metadata: ^0.1.0 || ^0.2.0
 
-  '@mikro-orm/postgresql@7.1.14':
-    resolution: {integrity: sha512-O5vZLezOQD881z/qmyFv4F93lWy8kvbS8XsugNF/BWM6Ar4Amgs/YHwVhhibDNIla8rqqU50UeTaDHv2WhzBsw==}
+  '@mikro-orm/postgresql@7.1.11':
+    resolution: {integrity: sha512-FOYB8Q+YudzTJvej1b2zbznDuDXaob8j7P3Hfv9yHvOHxFzXaAndCewuUcnxi3har37pWdeyNlT2WB4oTn1HVA==}
     engines: {node: '>= 22.17.0'}
     peerDependencies:
-      '@mikro-orm/core': 7.1.14
+      '@mikro-orm/core': 7.1.11
 
-  '@mikro-orm/reflection@7.1.14':
-    resolution: {integrity: sha512-kky4RnfPG1FaRhszDJErW0aSlRDi58s+3GcCraNdokJccpUNcN3BaNwOzuzz8GYaT9hbBAvLBBDrXGxSw++LOg==}
+  '@mikro-orm/reflection@7.1.11':
+    resolution: {integrity: sha512-uYC/Ygwx7NNAgxXG1atK0KdjWMrEI6PVi0yL/Kf+BWMxXDeZkuU8+558WYLmv29wjyD8vh7qtgnDRtU1xW70WQ==}
     engines: {node: '>= 22.17.0'}
     peerDependencies:
-      '@mikro-orm/core': 7.1.14
+      '@mikro-orm/core': 7.1.11
 
-  '@mikro-orm/seeder@7.1.14':
-    resolution: {integrity: sha512-xy54kvCPSbl5fswMbNUbiXIm52PAy5dV4NcfbGiwvdWmiZSAGcUqrRyRBKtHdsa0GkDh1fHhpdC6fkI6LA4IUw==}
+  '@mikro-orm/seeder@7.1.11':
+    resolution: {integrity: sha512-s414khvmZ3Iiii+vNRxYhIlc9ZJmloTcNJ1i3ROPtOX4kkpqm72qlhV+j0TmqnTobXvLYtY+/h2/s1HZaayIGA==}
     engines: {node: '>= 22.17.0'}
     peerDependencies:
-      '@mikro-orm/core': 7.1.14
+      '@mikro-orm/core': 7.1.11
 
-  '@mikro-orm/sql@7.1.14':
-    resolution: {integrity: sha512-4deS9ep+CVPx48z6AdE6KUPdUbMRNvCsaA4XQPU8YRf3D501z6SIxwk/9JyIWtR3r1DwHYGdwfYUjckPSC9BmQ==}
+  '@mikro-orm/sql@7.1.11':
+    resolution: {integrity: sha512-FC/YN/LhNYO2poOmG1o+FN79m5ITYQmv3QkStRePIHQlRlFQGq8JUSgZHoJmAQdScKZkv0oJaAoK8GkCGskMlA==}
     engines: {node: '>= 22.17.0'}
     peerDependencies:
-      '@mikro-orm/core': 7.1.14
+      '@mikro-orm/core': 7.1.11
 
   '@napi-rs/lzma-linux-x64-gnu@1.5.1':
     resolution: {integrity: sha512-oTXEIha4SsuXdTA4Iyskj0kpdx2yVXdhd75c2v3xGrHFfVMsbhTPZU/nMPL4sWKo4pBHm3aucLaqGlF696dTyQ==}
@@ -4293,8 +4293,8 @@ packages:
   knitwork@1.3.0:
     resolution: {integrity: sha512-4LqMNoONzR43B1W0ek0fhXMsDNW/zxa1NdFAVMY+k28pgZLovR4G3PB5MrpTxCy1QaZCqNoiaKPr5w5qZHfSNw==}
 
-  kysely@0.29.5:
-    resolution: {integrity: sha512-ooa+eSbBNPTo3MycPEuW5jdrxQdQwdtB3LC3h43FiXQbIry5tR0C5lDG7eealK0E4D7XjrnOP5DIUg/LyjRMYQ==}
+  kysely@0.29.4:
+    resolution: {integrity: sha512-y5mVgQNkMbs1eK9Xyc0pmNdabN2wHhRYY/5r4W5HrUT1rYCEPeVNSj1RUJeSDKT3U0p+mXCvLgkrFuIafYI6BA==}
     engines: {node: '>=22.0.0'}
 
   launch-editor@2.14.1:
@@ -4581,8 +4581,8 @@ packages:
     resolution: {integrity: sha512-PXwfBhYu0hBCPw8Dn0E+WDYb7af3dSLVWKi3HGv84IdF4TyFoC0ysxFd0Goxw7nSv4T/PzEJQxsYsEiFCKo2BA==}
     engines: {node: '>=8.6'}
 
-  mikro-orm@7.1.14:
-    resolution: {integrity: sha512-2HEwjJqldBN2dSlpr+mc/gDUbsDlZTd6nZ4Y0Bv2TIkj/AlsL/UTZryjAr2B4rL0rqUIb13fc3IAFXYlFhPOlQ==}
+  mikro-orm@7.1.11:
+    resolution: {integrity: sha512-Lr9ihIoTAnEKpVF4fcLeyHDQwGHJmBGVuvcPhTGm5WdO8+JFQpEE5Ba6oUNLIz/uDr06fkeBmwf8MMGEbcAOuA==}
     engines: {node: '>= 22.17.0'}
 
   mime-db@1.52.0:
@@ -4996,8 +4996,8 @@ packages:
   pg-connection-string@2.14.0:
     resolution: {integrity: sha512-XwWDGcLRGCXAR8F/AM5bG7Q+A3Wm2s6QeEjlOKZLlH3UYcguiqCWKyWXVag5TLTIjR7oOJUY8kcADaZgWPyLeg==}
 
-  pg-cursor@2.22.0:
-    resolution: {integrity: sha512-knzXLKqarTjOvb3qDSW0JiGsazmxwEKXrqHfWRte7XUsOYccQRafn3BLnQobWwInkzFJSyOej8y8cQRh2z3kGw==}
+  pg-cursor@2.21.0:
+    resolution: {integrity: sha512-IYvk/j+Suhtbo/C3uOf4JLsLK/gWxOTUOmYbDsbKnLaVJDq+KwhwK6ngpRfiCk8eDMS3AmGQABZCv0cREEzHQw==}
     peerDependencies:
       pg: ^8
 
@@ -5017,8 +5017,8 @@ packages:
     resolution: {integrity: sha512-qTAAlrEsl8s4OiEQY69wDvcMIdQN6wdz5ojQiOy6YRMuynxenON0O5oCpJI6lshc6scgAY8qvJ2On/p+CXY0GA==}
     engines: {node: '>=4'}
 
-  pg@8.23.0:
-    resolution: {integrity: sha512-Ip2EQCngowJLGOfCwkFhPXU7/ljlhn6Rxlmy4XYfL2Y+vyRM59+8uR2xqRWKdYmbXmxCFOAmKxBuSUCdF34qLg==}
+  pg@8.22.0:
+    resolution: {integrity: sha512-8wih1vVIBMxoUM2oB4soJsD9tDnDpLv4OXBJ+EJzFsvycD+lfyIreC2gGHq78f8jbLLt+bvlPTFdFZfJkOuzAA==}
     engines: {node: '>= 16.0.0'}
     peerDependencies:
       pg-native: '>=3.0.1'
@@ -7290,60 +7290,60 @@ snapshots:
 
   '@microsoft/tsdoc@0.16.0': {}
 
-  '@mikro-orm/cli@7.1.14':
+  '@mikro-orm/cli@7.1.11':
     dependencies:
-      '@mikro-orm/core': 7.1.14
-      mikro-orm: 7.1.14
+      '@mikro-orm/core': 7.1.11
+      mikro-orm: 7.1.11
       yargs: 17.7.2
     transitivePeerDependencies:
       - dataloader
 
-  '@mikro-orm/core@7.1.14': {}
+  '@mikro-orm/core@7.1.11': {}
 
-  '@mikro-orm/decorators@7.1.14(@mikro-orm/core@7.1.14)(reflect-metadata@0.2.2)':
+  '@mikro-orm/decorators@7.1.11(@mikro-orm/core@7.1.11)(reflect-metadata@0.2.2)':
     dependencies:
-      '@mikro-orm/core': 7.1.14
+      '@mikro-orm/core': 7.1.11
     optionalDependencies:
       reflect-metadata: 0.2.2
 
-  '@mikro-orm/migrations@7.1.14(@mikro-orm/core@7.1.14)':
+  '@mikro-orm/migrations@7.1.11(@mikro-orm/core@7.1.11)':
     dependencies:
-      '@mikro-orm/core': 7.1.14
-      '@mikro-orm/sql': 7.1.14(@mikro-orm/core@7.1.14)
+      '@mikro-orm/core': 7.1.11
+      '@mikro-orm/sql': 7.1.11(@mikro-orm/core@7.1.11)
 
-  '@mikro-orm/nestjs@7.0.3-dev.23(@mikro-orm/core@7.1.14)(@nestjs/common@12.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2))(@nestjs/core@12.0.1)(reflect-metadata@0.2.2)':
+  '@mikro-orm/nestjs@7.0.3-dev.23(@mikro-orm/core@7.1.11)(@nestjs/common@12.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2))(@nestjs/core@12.0.1)(reflect-metadata@0.2.2)':
     dependencies:
-      '@mikro-orm/core': 7.1.14
+      '@mikro-orm/core': 7.1.11
       '@nestjs/common': 12.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2)
       '@nestjs/core': 12.0.1(@nestjs/common@12.0.1(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@10.2.2))(@nestjs/platform-express@12.0.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)
       reflect-metadata: 0.2.2
 
-  '@mikro-orm/postgresql@7.1.14(@mikro-orm/core@7.1.14)':
+  '@mikro-orm/postgresql@7.1.11(@mikro-orm/core@7.1.11)':
     dependencies:
-      '@mikro-orm/core': 7.1.14
-      '@mikro-orm/sql': 7.1.14(@mikro-orm/core@7.1.14)
-      kysely: 0.29.5
-      pg: 8.23.0
-      pg-cursor: 2.22.0(pg@8.23.0)
+      '@mikro-orm/core': 7.1.11
+      '@mikro-orm/sql': 7.1.11(@mikro-orm/core@7.1.11)
+      kysely: 0.29.4
+      pg: 8.22.0
+      pg-cursor: 2.21.0(pg@8.22.0)
       postgres-array: 3.0.4
       postgres-date: 2.1.0
       postgres-interval: 4.1.0
     transitivePeerDependencies:
       - pg-native
 
-  '@mikro-orm/reflection@7.1.14(@mikro-orm/core@7.1.14)':
+  '@mikro-orm/reflection@7.1.11(@mikro-orm/core@7.1.11)':
     dependencies:
-      '@mikro-orm/core': 7.1.14
+      '@mikro-orm/core': 7.1.11
       ts-morph: 28.0.0
 
-  '@mikro-orm/seeder@7.1.14(@mikro-orm/core@7.1.14)':
+  '@mikro-orm/seeder@7.1.11(@mikro-orm/core@7.1.11)':
     dependencies:
-      '@mikro-orm/core': 7.1.14
+      '@mikro-orm/core': 7.1.11
 
-  '@mikro-orm/sql@7.1.14(@mikro-orm/core@7.1.14)':
+  '@mikro-orm/sql@7.1.11(@mikro-orm/core@7.1.11)':
     dependencies:
-      '@mikro-orm/core': 7.1.14
-      kysely: 0.29.5
+      '@mikro-orm/core': 7.1.11
+      kysely: 0.29.4
 
   '@napi-rs/lzma-linux-x64-gnu@1.5.1':
     optional: true
@@ -10495,7 +10495,7 @@ snapshots:
 
   knitwork@1.3.0: {}
 
-  kysely@0.29.5: {}
+  kysely@0.29.4: {}
 
   launch-editor@2.14.1:
     dependencies:
@@ -10726,7 +10726,7 @@ snapshots:
       braces: 3.0.3
       picomatch: 2.3.2
 
-  mikro-orm@7.1.14: {}
+  mikro-orm@7.1.11: {}
 
   mime-db@1.52.0: {}
 
@@ -11330,15 +11330,15 @@ snapshots:
 
   pg-connection-string@2.14.0: {}
 
-  pg-cursor@2.22.0(pg@8.23.0):
+  pg-cursor@2.21.0(pg@8.22.0):
     dependencies:
-      pg: 8.23.0
+      pg: 8.22.0
 
   pg-int8@1.0.1: {}
 
-  pg-pool@3.14.0(pg@8.23.0):
+  pg-pool@3.14.0(pg@8.22.0):
     dependencies:
-      pg: 8.23.0
+      pg: 8.22.0
 
   pg-protocol@1.16.0: {}
 
@@ -11350,10 +11350,10 @@ snapshots:
       postgres-date: 1.0.7
       postgres-interval: 1.2.0
 
-  pg@8.23.0:
+  pg@8.22.0:
     dependencies:
       pg-connection-string: 2.14.0
-      pg-pool: 3.14.0(pg@8.23.0)
+      pg-pool: 3.14.0(pg@8.22.0)
       pg-protocol: 1.16.0
       pg-types: 2.2.0
       pgpass: 1.0.5

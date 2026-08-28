@@ -80,16 +80,18 @@ catalogs:
     '@types/express': ^5.0.0
     class-validator: ^0.15.1
     class-transformer: ^0.5.1
-    '@mikro-orm/core': ^7.1.11
+    # 精确钉 7.1.11（升级前运行版本）：^7.1.11 在 lockfile 重生成时浮动到 7.1.14，
+    # 其连接层存在 con.connect is not a function 回归；上游修复后再浮回
+    '@mikro-orm/core': 7.1.11
     # dev 版精确 pin（semver 区间对 prerelease 不前移）；peer 已声明支持 @nestjs 12，stable 发布后跟随
     '@mikro-orm/nestjs': 7.0.3-dev.23
-    '@mikro-orm/postgresql': ^7.1.11
-    '@mikro-orm/cli': ^7.1.11
+    '@mikro-orm/postgresql': 7.1.11
+    '@mikro-orm/cli': 7.1.11
     tsx: ^4.23.12
-    '@mikro-orm/migrations': ^7.1.11
-    '@mikro-orm/decorators': ^7.1.11
-    '@mikro-orm/reflection': ^7.1.11
-    '@mikro-orm/seeder': ^7.1.11
+    '@mikro-orm/migrations': 7.1.11
+    '@mikro-orm/decorators': 7.1.11
+    '@mikro-orm/reflection': 7.1.11
+    '@mikro-orm/seeder': 7.1.11
     jose: ^5.10.0
     nestjs-pino: ^4.6.1
     pino: ^10.3.1
