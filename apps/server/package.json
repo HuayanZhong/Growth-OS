@@ -53,41 +53,16 @@
     "unplugin-swc": "catalog:test",
     "@types/compression": "catalog:backend",
     "@types/express": "catalog:backend",
-    "@types/jest": "catalog:test",
     "@types/node": "catalog:dev",
     "@types/pg": "catalog:dev",
     "@types/supertest": "catalog:test",
     "@mikro-orm/seeder": "catalog:backend",
     "dotenv-cli": "catalog:dev",
-    "jest": "catalog:test",
     "oxfmt": "catalog:format",
     "oxlint": "catalog:lint",
     "pino-pretty": "catalog:dev",
     "supertest": "catalog:test",
-    "ts-jest": "catalog:test",
     "typescript": "catalog:dev",
     "vitest": "catalog:test"
-  },
-  "jest": {
-    "moduleFileExtensions": ["js", "json", "ts"],
-    "rootDir": "src",
-    "testRegex": ".*\\.spec\\.ts$",
-    "transform": {
-      "^.+\\.(t|j)s$": [
-        "ts-jest",
-        {
-          "diagnostics": {
-            "ignoreCodes": [
-              151002
-            ]
-          }
-        }
-      ]
-    },
-    "moduleNameMapper": {
-      "^(\\.{1,2}/.*)\\.js$": "$1",
-      "^(\\.{1,2}/.*)\\.ts$": "$1"
-    },
-    "testEnvironment": "node"
   }
 }

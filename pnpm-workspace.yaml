@@ -61,9 +61,6 @@ catalogs:
     '@nuxt/test-utils': ^4.1.0
     '@vue/test-utils': ^2.4.11
     happy-dom: ^20.11.1
-    jest: ^30.4.2
-    ts-jest: ^29.4.12
-    '@types/jest': ^30.0.0
     supertest: ^7.2.2
     '@types/supertest': ^7.2.1
     # server e2e 专用：Vitest 转换器不产出 emitDecoratorMetadata，Nest DI 需要 SWC 补

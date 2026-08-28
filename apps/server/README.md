@@ -17,7 +17,7 @@ pnpm start:prod       # node dist/src/main.js
 
 ```bash
 cd apps/server
-pnpm test             # unit tests (jest, src/**/*.spec.ts) — fully mocked, no env needed
+pnpm test             # unit tests (vitest, src/**/*.spec.ts) — fully mocked, no env needed
 pnpm test:e2e         # supertest e2e (test/*.e2e-spec.ts) — needs root .env (real DATABASE_URL / Supabase)
 ```
 

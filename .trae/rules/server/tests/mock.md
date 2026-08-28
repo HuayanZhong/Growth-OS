@@ -1,6 +1,6 @@
 ---
 alwaysApply: false
-description: Backend mock strategy rule (Jest): never call real services (Supabase, DB); mock ESM-only modules with jest.mock before import; cover success + error paths; use jest.useFakeTimers for timer-dependent code. Use when writing tests or mocking dependencies.
+description: Backend mock strategy rule (Vitest): never call real services (Supabase, DB); mock ESM-only modules with vi.mock; cover success + error paths; use vi.useFakeTimers for timer-dependent code. Use when writing tests or mocking dependencies.
 ---
 
 # Mock Strategy
@@ -10,8 +10,8 @@ description: Backend mock strategy rule (Jest): never call real services (Supaba
 **Key points**:
 
 1. **Never call real services**: Supabase network requests, DB connections, and IPC are all mocked. Tests don't depend on the internet, real databases, or Electron.
-2. **ESM-only module mocking**: `@mikro-orm/nestjs` is ESM-only and Jest CJS cannot require it. Mock with `jest.mock('@mikro-orm/nestjs', () => ({ InjectMikroORM: () => () => {} }))` **before** importing the module under test. The `jest.mock` call is hoisted by Jest but must appear at the top of the file.
-3. **Timer mocking**: use `jest.useFakeTimers()` in `beforeEach` and `jest.useRealTimers()` in `afterEach`. Advance with `jest.advanceTimersByTime(ms)`. Use for timeout tests, health probe timeouts, and any time-dependent logic.
+2. **ESM-only module mocking**: Vitest loads ESM packages natively (no CJS interop issues), and modules are still mocked in tests. Mock with `vi.mock('@mikro-orm/nestjs', () => ({ InjectMikroORM: () => () => {} }))`. The `vi.mock` call is hoisted to the top of the file, same as `jest.mock` was.
+3. **Timer mocking**: use `vi.useFakeTimers()` in `beforeEach` and `vi.useRealTimers()` in `afterEach`. Advance with `vi.advanceTimersByTime(ms)`. Use for timeout tests, health probe timeouts, and any time-dependent logic.
 4. **Mock factory pattern**: create helper functions like `createOrmMock(executeFn)` that return typed mock objects. Use `as unknown as MikroORM` to satisfy TypeScript.
 5. **Cover both paths**: every mock should test success AND error/reject paths. Verify that errors are handled gracefully (no unhandled rejections, correct error codes).
 6. **Timer cleanup verification**: when testing timeout logic, verify that `clearTimeout` is called on success paths (no timer leaks).
@@ -19,13 +19,14 @@ description: Backend mock strategy rule (Jest): never call real services (Supaba
 **Example**:
 
 ```ts
-// ESM mock MUST come before imports
-jest.mock('@mikro-orm/nestjs', () => ({
-  InjectMikroORM: () => () => {},
-}))
-
+// vi.mock is hoisted above imports, same semantics as jest.mock
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { MikroORM } from '@mikro-orm/core'
 import { HealthService } from './health.service.ts'
+
+vi.mock('@mikro-orm/nestjs', () => ({
+  InjectMikroORM: () => () => {},
+}))
 
 function createOrmMock(executeFn: () => Promise<unknown>) {
   return {
@@ -34,14 +35,14 @@ function createOrmMock(executeFn: () => Promise<unknown>) {
 }
 
 describe('HealthService', () => {
-  beforeEach(() => jest.useFakeTimers())
-  afterEach(() => jest.useRealTimers())
+  beforeEach(() => vi.useFakeTimers())
+  afterEach(() => vi.useRealTimers())
 
   it('DB ping timeout after 5s', async () => {
     const orm = createOrmMock(() => new Promise<never>(() => {}))
     const service = new HealthService(orm)
     const promise = service.checkDatabase()
-    jest.advanceTimersByTime(5_000)
+    vi.advanceTimersByTime(5_000)
     expect((await promise).status).toBe('disconnected')
   })
 })
@@ -50,7 +51,7 @@ describe('HealthService', () => {
 **Verification**:
 
 ```bash
-rg -n 'jest.mock\(' apps/server/src/**/*.spec.ts
+rg -n 'vi.mock\(' apps/server/src/**/*.spec.ts
 # ESM mocks are at the top of files that need them
 pnpm --filter server test
 # All tests pass, no real service calls

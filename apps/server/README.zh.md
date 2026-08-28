@@ -17,7 +17,7 @@ pnpm start:prod       # node dist/src/main.js
 
 ```bash
 cd apps/server
-pnpm test             # 单元测试（jest，src/**/*.spec.ts）——全 mock，无需环境变量
+pnpm test             # 单元测试（vitest，src/**/*.spec.ts）——全 mock，无需环境变量
 pnpm test:e2e         # supertest e2e（test/*.e2e-spec.ts）——需根 .env（真实 DATABASE_URL / Supabase）
 ```
 
