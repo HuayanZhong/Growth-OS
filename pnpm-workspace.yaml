@@ -11,6 +11,8 @@ packages:
 allowBuilds:
   # @scarf/scarf 是 @nestjs/swagger 的遥测依赖，postinstall 仅上报，跳过（不影响功能）
   '@scarf/scarf': false
+  # server e2e 测试栈：SWC 原生二进制绑定需要 postinstall
+  '@swc/core': true
   electron-winstaller: true
   esbuild: true
   unrs-resolver: true
@@ -64,6 +66,9 @@ catalogs:
     '@types/jest': ^30.0.0
     supertest: ^7.2.2
     '@types/supertest': ^7.2.1
+    # server e2e 专用：Vitest 转换器不产出 emitDecoratorMetadata，Nest DI 需要 SWC 补
+    '@swc/core': ^1.16.1
+    unplugin-swc: ^1.5.11
   # 后端依赖
   backend:
     '@nestjs/common': ^11.1.19

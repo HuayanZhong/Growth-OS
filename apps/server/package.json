@@ -49,6 +49,8 @@
     "@nestjs/schematics": "catalog:backend",
     "@nestjs/testing": "catalog:backend",
     "@supabase/supabase-js": "catalog:frontend",
+    "@swc/core": "catalog:test",
+    "unplugin-swc": "catalog:test",
     "@types/compression": "catalog:backend",
     "@types/express": "catalog:backend",
     "@types/jest": "catalog:test",

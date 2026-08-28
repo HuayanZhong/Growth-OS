@@ -1,3 +1,4 @@
+import { describe, it, expect, beforeAll, afterAll } from 'vitest'
 import { INestApplication } from '@nestjs/common'
 import request from 'supertest'
 import { createE2EApp } from './e2e-app.ts'
