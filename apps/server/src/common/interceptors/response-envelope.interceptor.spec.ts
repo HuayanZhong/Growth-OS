@@ -1,3 +1,4 @@
+import { describe, it, expect, vi } from 'vitest'
 import { CallHandler, ExecutionContext } from '@nestjs/common'
 import { of } from 'rxjs'
 import { ResponseEnvelopeInterceptor } from './response-envelope.interceptor.ts'
@@ -8,8 +9,8 @@ function createContext(statusCode = 200) {
     switchToHttp: () => ({
       getResponse: () => res,
     }),
-    getHandler: () => jest.fn(),
-    getClass: () => jest.fn(),
+    getHandler: () => vi.fn(),
+    getClass: () => vi.fn(),
   } as unknown as ExecutionContext
 }
 

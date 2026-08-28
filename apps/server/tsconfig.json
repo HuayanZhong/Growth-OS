@@ -9,8 +9,7 @@
     "rewriteRelativeImportExtensions": true,
     "verbatimModuleSyntax": false,
     "types": [
-      "node",
-      "jest"
+      "node"
     ],
     "paths": {
       "@/*": [

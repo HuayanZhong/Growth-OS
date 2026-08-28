@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest'
 import { BadRequestException } from '@nestjs/common'
 import { z } from 'zod'
 import { ZodValidationPipe } from './zod-validation.pipe.ts'
@@ -17,7 +18,7 @@ describe('ZodValidationPipe', () => {
   it('非法输入抛 BadRequestException 并携带 VALIDATION_ERROR 信封', () => {
     try {
       pipe.transform({ name: '', age: 'abc' }, metadata)
-      fail('应当抛出 BadRequestException')
+      expect.unreachable('应当抛出 BadRequestException')
     } catch (err) {
       const e = err as BadRequestException
       expect(e).toBeInstanceOf(BadRequestException)

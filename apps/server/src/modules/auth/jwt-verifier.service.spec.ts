@@ -1,3 +1,5 @@
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import type { MockInstance } from 'vitest'
 import { UnauthorizedException } from '@nestjs/common'
 import type { ConfigService } from '@nestjs/config'
 import { Logger } from '@nestjs/common'
@@ -5,19 +7,19 @@ import { createRemoteJWKSet, decodeJwt, decodeProtectedHeader, jwtVerify } from 
 import { JwtVerifierService } from './jwt-verifier.service.ts'
 
 // jose 是纯函数库，直接整体 mock：隔离网络（JWKS 拉取）与真实密码学运算。
-// jest.mock 由 ts-jest 自动提升到所有 import 之前，写在 import 后是官方惯用形态
-jest.mock('jose', () => ({
-  decodeProtectedHeader: jest.fn(),
-  decodeJwt: jest.fn(),
-  jwtVerify: jest.fn(),
-  createRemoteJWKSet: jest.fn(() => Symbol('jwks')),
+// vi.mock 由 Vitest 提升到所有 import 之前，写在 import 后是官方惯用形态
+vi.mock('jose', () => ({
+  decodeProtectedHeader: vi.fn(),
+  decodeJwt: vi.fn(),
+  jwtVerify: vi.fn(),
+  createRemoteJWKSet: vi.fn(() => Symbol('jwks')),
 }))
 
 const jose = {
-  decodeProtectedHeader: jest.mocked(decodeProtectedHeader),
-  decodeJwt: jest.mocked(decodeJwt),
-  jwtVerify: jest.mocked(jwtVerify),
-  createRemoteJWKSet: jest.mocked(createRemoteJWKSet),
+  decodeProtectedHeader: vi.mocked(decodeProtectedHeader),
+  decodeJwt: vi.mocked(decodeJwt),
+  jwtVerify: vi.mocked(jwtVerify),
+  createRemoteJWKSet: vi.mocked(createRemoteJWKSet),
 }
 
 function createService(env: Record<string, string> = {}): JwtVerifierService {
@@ -42,17 +44,17 @@ function verifyOk(payload: Record<string, unknown>): ReturnType<typeof jwtVerify
 }
 
 describe('JwtVerifierService', () => {
-  let warnSpy: jest.SpyInstance
+  let warnSpy: MockInstance
 
   beforeEach(() => {
     // 清空跨用例累积的调用记录（实现由 afterEach 恢复）
-    jest.clearAllMocks()
-    warnSpy = jest.spyOn(Logger.prototype, 'warn').mockImplementation(() => {})
+    vi.clearAllMocks()
+    warnSpy = vi.spyOn(Logger.prototype, 'warn').mockImplementation(() => {})
   })
 
   afterEach(() => {
     warnSpy.mockRestore()
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
     // restoreAllMocks 会把模块级 mock 的实现重置为 undefined，重建默认行为
     jose.createRemoteJWKSet.mockImplementation((() =>
       Symbol('jwks')) as unknown as typeof createRemoteJWKSet)
@@ -89,7 +91,7 @@ describe('JwtVerifierService', () => {
   it('HS256 token：不本地验签，转 Auth 服务器探针校验', async () => {
     jose.decodeProtectedHeader.mockReturnValue({ alg: 'HS256' })
     jose.decodeJwt.mockReturnValue({ sub: 'u-2', role: 'authenticated' })
-    const fetchSpy = jest
+    const fetchSpy = vi
       .spyOn(globalThis, 'fetch')
       .mockResolvedValue(new Response(null, { status: 200 }))
 
@@ -109,14 +111,14 @@ describe('JwtVerifierService', () => {
 
   it('HS256 探针返回非 200：按未认证拒绝', async () => {
     jose.decodeProtectedHeader.mockReturnValue({ alg: 'HS256' })
-    jest.spyOn(globalThis, 'fetch').mockResolvedValue(new Response(null, { status: 401 }))
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response(null, { status: 401 }))
 
     await expect(createService(ENV).verify('bad')).rejects.toThrow(UnauthorizedException)
   })
 
   it('探针网络异常：按未认证拒绝，不放大为 500', async () => {
     jose.decodeProtectedHeader.mockReturnValue({ alg: 'HS256' })
-    jest.spyOn(globalThis, 'fetch').mockRejectedValue(new Error('network down'))
+    vi.spyOn(globalThis, 'fetch').mockRejectedValue(new Error('network down'))
 
     await expect(createService(ENV).verify('x')).rejects.toBeInstanceOf(UnauthorizedException)
   })

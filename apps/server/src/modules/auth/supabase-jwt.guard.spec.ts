@@ -1,3 +1,4 @@
+import { describe, it, expect, vi } from 'vitest'
 import { ExecutionContext, UnauthorizedException } from '@nestjs/common'
 import type { Reflector } from '@nestjs/core'
 import { SupabaseJwtGuard } from './supabase-jwt.guard.ts'
@@ -15,16 +16,16 @@ function createContext(authHeader?: string) {
 
 function createGuard(options: { isPublic?: boolean; verify?: (t: string) => Promise<unknown> }) {
   const reflector = {
-    getAllAndOverride: jest.fn().mockReturnValue(options.isPublic ?? false),
+    getAllAndOverride: vi.fn().mockReturnValue(options.isPublic ?? false),
   } as unknown as Reflector
-  const verifier = { verify: options.verify ?? jest.fn() } as unknown as JwtVerifierService
+  const verifier = { verify: options.verify ?? vi.fn() } as unknown as JwtVerifierService
   return new SupabaseJwtGuard(reflector, verifier)
 }
 
 describe('SupabaseJwtGuard', () => {
   it('@Public() 路由直接放行，不做任何验证', async () => {
     const { context } = createContext()
-    const verify = jest.fn()
+    const verify = vi.fn()
     const guard = createGuard({ isPublic: true, verify })
 
     await expect(guard.canActivate(context)).resolves.toBe(true)
@@ -54,7 +55,7 @@ describe('SupabaseJwtGuard', () => {
   it('验证通过：token 交给 verifier，身份挂载到 request.user 并放行', async () => {
     const { context, request } = createContext('Bearer good-token')
     const user = { id: 'u-1', email: 'a@b.com', role: 'authenticated' }
-    const verify = jest.fn().mockResolvedValue(user)
+    const verify = vi.fn().mockResolvedValue(user)
     const guard = createGuard({ verify })
 
     await expect(guard.canActivate(context)).resolves.toBe(true)

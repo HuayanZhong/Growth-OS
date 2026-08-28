@@ -1,15 +1,16 @@
+import { describe, it, expect, vi } from 'vitest'
 import { ArgumentsHost, BadRequestException, HttpStatus } from '@nestjs/common'
 import type { ApiErrorEnvelope } from '@growth-os/types'
 import type { Logger } from 'nestjs-pino'
 import { AllExceptionsFilter } from './all-exceptions.filter.ts'
 
 function createLogger() {
-  return { error: jest.fn(), log: jest.fn(), warn: jest.fn() } as unknown as Logger
+  return { error: vi.fn(), log: vi.fn(), warn: vi.fn() } as unknown as Logger
 }
 
 function createHost() {
-  const json = jest.fn()
-  const status = jest.fn().mockReturnThis()
+  const json = vi.fn()
+  const status = vi.fn().mockReturnThis()
   const response = { status, json }
   const request = { method: 'GET', originalUrl: '/api/v1/demo' }
   const host = {

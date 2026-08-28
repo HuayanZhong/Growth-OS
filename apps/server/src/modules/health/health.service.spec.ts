@@ -1,10 +1,11 @@
-// jest.mock 必须在 import 之前（Jest hoisting 要求）
-jest.mock('@mikro-orm/nestjs', () => ({
-  InjectMikroORM: () => () => {},
-}))
-
+// vi.mock 由 Vitest 提升到 import 之前（与 jest.mock 语义一致，且 Vitest 原生可加载 ESM 包）
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { MikroORM } from '@mikro-orm/core'
 import { HealthService } from './health.service.ts'
+
+vi.mock('@mikro-orm/nestjs', () => ({
+  InjectMikroORM: () => () => {},
+}))
 
 function createOrmMock(executeFn: () => Promise<unknown>) {
   return {
@@ -18,11 +19,11 @@ function createOrmMock(executeFn: () => Promise<unknown>) {
 
 describe('HealthService', () => {
   beforeEach(() => {
-    jest.useFakeTimers()
+    vi.useFakeTimers()
   })
 
   afterEach(() => {
-    jest.useRealTimers()
+    vi.useRealTimers()
   })
 
   it('DB 连通时返回 connected + 延迟', async () => {
@@ -53,14 +54,14 @@ describe('HealthService', () => {
 
     const resultPromise = service.checkDatabase()
     // 快进 5s 触发超时
-    jest.advanceTimersByTime(5_000)
+    vi.advanceTimersByTime(5_000)
     const result = await resultPromise
 
     expect(result.status).toBe('disconnected')
   })
 
   it('DB 查询成功时 timer 被清理，无泄漏', async () => {
-    const clearTimeoutSpy = jest.spyOn(global, 'clearTimeout')
+    const clearTimeoutSpy = vi.spyOn(global, 'clearTimeout')
     const orm = createOrmMock(async () => [{ '?column?': 1 }])
     const service = new HealthService(orm)
 

@@ -9,7 +9,8 @@ packages:
   - 'tooling/*'
 
 allowBuilds:
-  '@scarf/scarf': set this to true or false
+  # @scarf/scarf 是 @nestjs/swagger 的遥测依赖，postinstall 仅上报，跳过（不影响功能）
+  '@scarf/scarf': false
   electron-winstaller: true
   esbuild: true
   unrs-resolver: true

@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest'
 import { compressionMiddleware } from './compression.middleware.ts'
 
 describe('compressionMiddleware', () => {

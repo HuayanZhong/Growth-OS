@@ -7,8 +7,8 @@
     "build": "nest build",
     "dev": "nest start --watch",
     "start:prod": "node dist/src/main.js",
-    "test": "jest",
-    "test:e2e": "dotenv -e ../../.env -e ../../.env.development -- jest --config test/jest-e2e.json --runInBand",
+    "test": "vitest run",
+    "test:e2e": "dotenv -e ../../.env -e ../../.env.development -- vitest run --config vitest.e2e.config.ts",
     "lint": "oxlint --fix --config .oxlintrc.json",
     "format": "oxfmt --config ../../tooling/format/.oxfmtrc.json",
     "typecheck": "tsc --noEmit",
@@ -63,7 +63,8 @@
     "pino-pretty": "catalog:dev",
     "supertest": "catalog:test",
     "ts-jest": "catalog:test",
-    "typescript": "catalog:dev"
+    "typescript": "catalog:dev",
+    "vitest": "catalog:test"
   },
   "jest": {
     "moduleFileExtensions": ["js", "json", "ts"],

@@ -1,3 +1,4 @@
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { CallHandler, ExecutionContext, RequestTimeoutException } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
 import { of, timer } from 'rxjs'
@@ -6,12 +7,12 @@ import { SKIP_TIMEOUT } from '../decorators/skip-timeout.decorator.ts'
 
 function createContext(metadata: Record<string, unknown> = {}) {
   const reflector = new Reflector()
-  jest
-    .spyOn(reflector, 'getAllAndOverride')
-    .mockImplementation((metadataKey: unknown) => metadata[String(metadataKey)] ?? undefined)
+  vi.spyOn(reflector, 'getAllAndOverride').mockImplementation(
+    (metadataKey: unknown) => metadata[String(metadataKey)] ?? undefined,
+  )
   const context = {
-    getHandler: () => jest.fn(),
-    getClass: () => jest.fn(),
+    getHandler: () => vi.fn(),
+    getClass: () => vi.fn(),
   } as unknown as ExecutionContext
   return { reflector, context }
 }
@@ -24,11 +25,11 @@ function createCallHandler(result: unknown = 'ok') {
 
 describe('TimeoutInterceptor', () => {
   beforeEach(() => {
-    jest.useFakeTimers()
+    vi.useFakeTimers()
   })
 
   afterEach(() => {
-    jest.useRealTimers()
+    vi.useRealTimers()
   })
 
   it('正常响应直接透传，不触发超时', async () => {
@@ -61,7 +62,7 @@ describe('TimeoutInterceptor', () => {
 
     const promise = interceptor.intercept(context, callHandler).toPromise()
     // 快进 30s 触发超时
-    jest.advanceTimersByTime(30_000)
+    vi.advanceTimersByTime(30_000)
 
     await expect(promise).rejects.toThrow(RequestTimeoutException)
   })
