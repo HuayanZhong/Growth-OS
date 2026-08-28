@@ -68,20 +68,21 @@ catalogs:
     unplugin-swc: ^1.5.11
   # 后端依赖
   backend:
-    '@nestjs/common': ^11.1.19
-    '@nestjs/core': ^11.1.19
-    '@nestjs/platform-express': ^11.1.19
-    '@nestjs/config': ^4.0.2
-    '@nestjs/cli': ^11.0.7
-    '@nestjs/schematics': ^11.0.5
-    '@nestjs/testing': ^11.1.19
+    '@nestjs/common': ^12.0.1
+    '@nestjs/core': ^12.0.1
+    '@nestjs/platform-express': ^12.0.1
+    '@nestjs/config': ^12.0.0
+    '@nestjs/cli': ^12.0.0
+    '@nestjs/schematics': ^12.0.0
+    '@nestjs/testing': ^12.0.1
     reflect-metadata: ^0.2.2
     rxjs: ^7.8.2
     '@types/express': ^5.0.0
     class-validator: ^0.15.1
     class-transformer: ^0.5.1
     '@mikro-orm/core': ^7.1.11
-    '@mikro-orm/nestjs': ^7.0.2
+    # dev 版精确 pin（semver 区间对 prerelease 不前移）；peer 已声明支持 @nestjs 12，stable 发布后跟随
+    '@mikro-orm/nestjs': 7.0.3-dev.23
     '@mikro-orm/postgresql': ^7.1.11
     '@mikro-orm/cli': ^7.1.11
     tsx: ^4.23.12
@@ -96,7 +97,20 @@ catalogs:
     compression: ^1.8.1
     '@types/compression': ^1.8.1
     helmet: ^8.0.0
-    '@nestjs/swagger': ^11.0.0
+    '@nestjs/swagger': ^12.0.1
   # 跨包共享依赖（前后端通用）
   shared:
     zod: ^4.4.3
+
+# NestJS 12 线（2026-08-27 发布）低于 pnpm 12 供应链默认最低包龄，显式豁免；稳定后可清理
+minimumReleaseAgeExclude:
+  - '@nestjs/common@12.0.1'
+  - '@nestjs/core@12.0.1'
+  - '@nestjs/platform-express@12.0.1'
+  - '@nestjs/config@12.0.0'
+  - '@nestjs/cli@12.0.0'
+  - '@nestjs/schematics@12.0.0'
+  - '@nestjs/testing@12.0.1'
+  - '@nestjs/swagger@12.0.1'
+  - '@nestjs/mapped-types@12.0.0'
+  - '@mikro-orm/nestjs@7.0.3-dev.23'
