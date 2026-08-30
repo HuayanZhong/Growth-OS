@@ -39,7 +39,7 @@ catalogs:
     oxfmt: ^0.61.0
   # 前端依赖
   frontend:
-    electron: ^43.2.0
+    electron: ^44.0.0
     electron-builder: ^26.15.3
     electron-updater: ^6.8.9
     nuxt: ^4.5.1
