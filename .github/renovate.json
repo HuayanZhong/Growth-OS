@@ -54,7 +54,7 @@
         "^rxjs$",
         "^jose$",
         "^nestjs-pino$",
-        "^pino$",
+        "^pino",
         "^compression$",
         "^helmet$"
       ]
