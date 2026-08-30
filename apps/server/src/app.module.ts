@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common'
+import { Module, RequestMethod } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
 import { MikroOrmModule } from '@mikro-orm/nestjs'
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core'
@@ -37,6 +37,9 @@ const PINO_AUTO_LOGGING_IGNORE: (req: IncomingMessage) => boolean = (req) =>
     // ⚠️ LoggerModule.forRoot 只能在根模块调一次，且必须是顶层 import；
     //    如果在子模块再 import 裸 LoggerModule 类会导致 pino-http 中间件重复注册，请求日志翻倍（静默失败，无报错）。
     LoggerModule.forRoot({
+      // nestjs-pino 默认 forRoutes('*') 在 Nest 12 触发 LegacyRouteConverter 警告，
+      // 显式传 v12 具名通配语法消除（上游 v12 兼容版发布后可移除）
+      forRoutes: [{ path: '{*path}', method: RequestMethod.ALL }],
       pinoHttp: isProd
         ? {
             level: process.env.LOG_LEVEL ?? 'info',
