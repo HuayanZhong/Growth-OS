@@ -15,12 +15,17 @@
       "matchPackagePatterns": [
         "^vue$",
         "^vue-router$",
+        "^vue-tsc$",
         "^nuxt$",
         "^@nuxt/",
         "^@vue/",
         "^tailwindcss$",
         "^@tailwindcss/",
-        "^daisyui$"
+        "^daisyui$",
+        "^tailwind-merge$",
+        "^gsap$",
+        "^clsx$",
+        "^@supabase/"
       ]
     },
     {
@@ -29,7 +34,15 @@
     },
     {
       "groupName": "testing",
-      "matchPackagePatterns": ["^vitest$", "^@vue/test-utils$", "^@nuxt/test-utils$", "^happy-dom$"]
+      "matchPackagePatterns": [
+        "^vitest$",
+        "^@vue/test-utils$",
+        "^@nuxt/test-utils$",
+        "^happy-dom$",
+        "^supertest$",
+        "^@swc/core$",
+        "^unplugin-swc$"
+      ]
     },
     {
       "groupName": "backend",
@@ -38,12 +51,32 @@
         "^class-validator$",
         "^class-transformer$",
         "^reflect-metadata$",
-        "^rxjs$"
+        "^rxjs$",
+        "^jose$",
+        "^nestjs-pino$",
+        "^pino$",
+        "^compression$",
+        "^helmet$"
       ]
     },
     {
       "groupName": "tooling",
-      "matchPackagePatterns": ["^turbo$", "^oxlint", "^oxfmt$", "^@types/"]
+      "matchPackagePatterns": [
+        "^turbo$",
+        "^oxlint",
+        "^oxfmt$",
+        "^@types/",
+        "^typescript$",
+        "^tsx$",
+        "^dotenv-cli$",
+        "^husky$",
+        "^lint-staged$",
+        "^@commitlint/"
+      ]
+    },
+    {
+      "groupName": "shared",
+      "matchPackagePatterns": ["^zod$"]
     },
     {
       "groupName": "github-actions",
