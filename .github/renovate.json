@@ -48,6 +48,11 @@
     {
       "groupName": "github-actions",
       "matchManagers": ["github-actions"]
+    },
+    {
+      "matchPackagePatterns": ["^@mikro-orm/"],
+      "enabled": false,
+      "description": "精确钉 7.1.11（7.1.14 连接层有问题）；浮回复验通过后再启用"
     }
   ]
 }
