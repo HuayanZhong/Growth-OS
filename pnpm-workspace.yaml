@@ -92,7 +92,7 @@ catalogs:
     '@mikro-orm/decorators': 7.1.11
     '@mikro-orm/reflection': 7.1.11
     '@mikro-orm/seeder': 7.1.11
-    jose: ^5.10.0
+    jose: ^6.0.0
     nestjs-pino: ^4.6.1
     pino: ^10.3.1
     '@nestjs/throttler': ^6.5.0
