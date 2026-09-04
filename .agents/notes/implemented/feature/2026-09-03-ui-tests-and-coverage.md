@@ -19,4 +19,4 @@ Status: implemented
 
 ## Consequences
 
-`pnpm test` runs all six packages. Coverage baselines captured in the 2026-09-03 review: shared 97%, types 100% on tested schema (pure-type files excluded naturally), ui 100% on shipped units, server 64.5%, desktop 57.75% after the chat component tests, desktop-core 88.75% after the autoUpdater state machine tests (the preload bridge and main entry stay untested Electron host code) — server/desktop are the coverage debt targets, tracked as action items in the iteration plan.
+`pnpm test` runs all six packages. Coverage baselines captured in the 2026-09-03 review: shared 97%, types 100% on tested schema (pure-type files excluded naturally), ui 100% on shipped units, server 64.5%, desktop 58.2% after the chat component and session-replay tests, desktop-core 88.75% after the autoUpdater state machine tests (the preload bridge and main entry stay untested Electron host code) — server/desktop are the coverage debt targets, tracked as action items in the iteration plan.

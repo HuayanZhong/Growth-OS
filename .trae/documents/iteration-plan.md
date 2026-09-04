@@ -73,7 +73,7 @@ Growth OS 是一个类 Coze 的 AI Agent 桌面平台，采用 Nuxt 4 + NestJS +
 |------|--------|----------|--------|
 | 单 job 内改用 Turborepo 任务图并行（`turbo lint typecheck test`） | P0 | 0.5 天 | |
 | 量测耗时，仅当仍超 5 分钟才拆分为多 job | P1 | 视量测结果 | |
-| 添加 Turborepo 远程缓存（Vercel 或自建） | P1 | 1 天 | |
+| 添加 Turborepo 远程缓存（Vercel 或自建） | P1 | 跳过（用户决策：需登录） | |
 | 添加 `pnpm verify:docs` 到 CI | P1 | 0.5 天 | |
 | 添加 commitlint 检查到 CI | P2 | 0.5 天 | |
 
@@ -141,13 +141,13 @@ jobs:
 
 ### 1.4 前端监控
 
-**当前状态**：无错误上报，无结构化日志。
+**当前状态**：无错误上报，无结构化日志。**决策（2026-09-03）：本节跳过，暂不做前端监控**——桌面端早期阶段用户面小，监控平台选型（SaaS/自托管）与 DSN 管理暂无收益；需要时按 DSN 驱动的 `@sentry/vue` 渲染进程方案重启（代码与后端解耦，实现成本约半天）。
 
 | 任务 | 优先级 | 预估工时 | 负责人 |
 |------|--------|----------|--------|
-| 集成 Sentry（错误跟踪 + 性能监控） | P1 | 2-3 天 | |
-| 添加前端错误边界组件 | P1 | 1 天 | |
-| 结构化 console 日志（开发环境） | P2 | 1 天 | |
+| 集成 Sentry（错误跟踪 + 性能监控） | P1 | 跳过（用户决策） | |
+| 添加前端错误边界组件 | P1 | 跳过（用户决策） | |
+| 结构化 console 日志（开发环境） | P2 | 跳过（用户决策） | |
 
 **实现要点**：
 
@@ -166,12 +166,12 @@ export default defineNuxtPlugin((nuxtApp) => {
 
 ### 1.5 API 文档
 
-**当前状态**：Swagger 已配置但无装饰器。
+**当前状态**：Swagger UI 已挂 `/docs`（非生产环境），auth/health 全部端点已加 `@ApiTags`/`@ApiOperation` 装饰器；`openapi.json` 经 `pnpm --filter server openapi:export` 导出入库（与 main.ts 同一份 DocumentBuilder 配置）。
 
 | 任务 | 优先级 | 预估工时 | 负责人 |
 |------|--------|----------|--------|
-| 给现有 controller 添加 `@ApiTags` / `@ApiOperation` 装饰器 | P1 | 1-2 天 | |
-| 导出 OpenAPI spec 到 CI 校验 | P2 | 1 天 | |
+| 给现有 controller 添加 `@ApiTags` / `@ApiOperation` 装饰器 | P1 | 完成 | |
+| 导出 OpenAPI spec 到 CI 校验（导出脚本已落地；CI diff 校验需 CI 环境有 DB，待 2.4 配置层） | P2 | 脚本完成 | |
 
 ### 阶段一验证清单
 
@@ -179,9 +179,8 @@ export default defineNuxtPlugin((nuxtApp) => {
 - [ ] 会话录制-回放在无 key 的 CI 中通过
 - [ ] knip / publint 在 CI 中运行
 - [ ] 共享包与核心 composables 覆盖率 > 80%
-- [ ] Sentry 可接收前端错误
 - [ ] Swagger 文档可读可用
-- [ ] `pnpm verify:docs` 在 CI 中运行
+- [x] `pnpm verify:docs` 在 CI 中运行
 
 ---
 

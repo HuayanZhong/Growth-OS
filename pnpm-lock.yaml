@@ -355,6 +355,9 @@ importers:
 
   apps/desktop:
     dependencies:
+      '@growth-os/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
       '@growth-os/types':
         specifier: workspace:*
         version: link:../../packages/types

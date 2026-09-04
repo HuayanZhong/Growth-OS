@@ -1,4 +1,5 @@
 import { Controller, Get, ServiceUnavailableException } from '@nestjs/common'
+import { ApiOperation, ApiTags } from '@nestjs/swagger'
 import { SkipThrottle } from '@nestjs/throttler'
 import { Public } from '../../common/decorators/public.decorator.ts'
 import { HealthService } from './health.service.ts'
@@ -16,6 +17,7 @@ import { HealthService } from './health.service.ts'
  * autoLogging.ignore 在 app.module.ts 的 pinoHttp 配置中排除了 /health 路径，
  * 探针请求不会产生日志输出（避免日志洪泛）。
  */
+@ApiTags('health')
 @Public()
 @SkipThrottle()
 @Controller('health')
@@ -23,11 +25,13 @@ export class HealthController {
   constructor(private readonly healthService: HealthService) {}
 
   @Get('liveness')
+  @ApiOperation({ summary: '存活探针：无外部依赖，200 即存活' })
   liveness(): { status: 'ok' } {
     return { status: 'ok' }
   }
 
   @Get('readiness')
+  @ApiOperation({ summary: '就绪探针：校验 DB 连通性，失败返回 503' })
   async readiness() {
     const db = await this.healthService.checkDatabase()
     if (db.status === 'disconnected') {
@@ -42,6 +46,7 @@ export class HealthController {
   }
 
   @Get()
+  @ApiOperation({ summary: '健康检查（等价 readiness，向后兼容）' })
   async check() {
     return this.readiness()
   }

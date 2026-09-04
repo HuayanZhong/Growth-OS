@@ -19,6 +19,7 @@
     "verify:build": "electron scripts/verify-build.cjs"
   },
   "dependencies": {
+    "@growth-os/shared": "workspace:*",
     "@growth-os/types": "workspace:*",
     "@growth-os/ui": "workspace:*",
     "@nuxt/schema": "catalog:frontend",
