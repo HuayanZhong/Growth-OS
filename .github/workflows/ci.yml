@@ -13,12 +13,15 @@ concurrency:
 
 jobs:
   ci:
-    name: Lint + Typecheck + Test + Build
+    name: Docs + Lint + Typecheck + Test + Build
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v7
+        with:
+          # commitlint 需要完整的提交历史来确定检查范围
+          fetch-depth: 0
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v6
@@ -33,14 +36,20 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Lint
-        run: pnpm lint
+      - name: Verify docs
+        run: pnpm verify:docs
 
-      - name: Typecheck
-        run: pnpm typecheck
+      - name: Commitlint
+        if: github.event_name == 'pull_request'
+        run: pnpm exec commitlint --from "${{ github.event.pull_request.base.sha }}" --to "${{ github.sha }}"
 
-      - name: Test
-        run: pnpm test
+      # turbo 按任务图并行执行 lint/typecheck/test
+      - name: Lint + Typecheck + Test
+        run: pnpm turbo lint typecheck test
+
+      # knip（死代码/未用依赖）+ publint（包 exports 正确性），见 .agents notes 与 iteration-plan 1.3
+      - name: Hygiene (knip + publint)
+        run: pnpm hygiene
 
       - name: Build
         run: pnpm build

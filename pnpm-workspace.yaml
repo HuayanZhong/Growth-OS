@@ -23,9 +23,10 @@ catalogs:
     '@commitlint/cli': ^21.2.1
     '@commitlint/config-conventional': ^21.2.0
     '@types/node': ^26.1.1
-    '@types/pg': ^8.21.0
     dotenv-cli: ^11.0.0
     husky: ^9.1.7
+    knip: ^6.34.0
+    publint: ^0.3.24
     lint-staged: ^17.2.0
     turbo: ^2.10.7
     typescript: 6.0.3
@@ -44,13 +45,13 @@ catalogs:
     electron-updater: ^6.8.9
     nuxt: ^4.5.1
     vue: ^3.5.40
-    vue-router: ^5.2.0
     vite-plugin-electron: ^1.1.0
     tailwindcss: ^4.3.3
     '@tailwindcss/vite': ^4.3.3
     daisyui: ^5.7.4
     gsap: ^3.15.0
     '@supabase/supabase-js': ^2.111.0
+    '@nuxt/schema': ^4.5.2
     clsx: ^2.1.1
     tailwind-merge: ^3.6.0
     vue-tsc: ^3.3.8
@@ -58,6 +59,8 @@ catalogs:
   # 测试依赖
   test:
     vitest: ^4.1.10
+    '@vitest/coverage-v8': ^4.1.10
+    '@vitejs/plugin-vue': ^6.0.8
     '@nuxt/test-utils': ^4.1.0
     '@vue/test-utils': ^2.4.11
     happy-dom: ^20.11.1
@@ -78,8 +81,6 @@ catalogs:
     reflect-metadata: ^0.2.2
     rxjs: ^7.8.2
     '@types/express': ^5.0.0
-    class-validator: ^0.15.1
-    class-transformer: ^0.5.1
     # 精确钉 7.1.11（升级前运行版本）：^7.1.11 在 lockfile 重生成时浮动到 7.1.14，
     # 其连接层存在 con.connect is not a function 回归；上游修复后再浮回
     '@mikro-orm/core': 7.1.11
@@ -89,7 +90,6 @@ catalogs:
     '@mikro-orm/cli': 7.1.11
     tsx: ^4.23.12
     '@mikro-orm/migrations': 7.1.11
-    '@mikro-orm/decorators': 7.1.11
     '@mikro-orm/reflection': 7.1.11
     '@mikro-orm/seeder': 7.1.11
     jose: ^6.0.0

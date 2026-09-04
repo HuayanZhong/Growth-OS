@@ -44,5 +44,5 @@ const loggedIn = !!data.session;
 **Verification**:
 
 1. `rg -n 'localStorage\.(setItem|getItem|removeItem)|Authorization' apps/desktop/app` only matches secureStorage/useSupabase-related locations; no manual token read/write in business code.
-2. Unit tests cover (`apps/desktop/test/unit/use-secure-storage.test.ts`): trimSession PII stripping, browser fallback, Electron IPC branch, IPC failure degradation.
+2. Unit tests cover (`apps/desktop/test/nuxt/use-secure-storage.test.ts`): trimSession PII stripping, browser fallback, Electron IPC branch, IPC failure degradation.
 3. `pnpm --filter desktop test`, `pnpm --filter desktop typecheck`, `pnpm --filter desktop lint` all pass.

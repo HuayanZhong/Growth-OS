@@ -1,8 +1,8 @@
 import { describe, it, expect, vi } from 'vitest'
 import { ExecutionContext, UnauthorizedException } from '@nestjs/common'
 import type { Reflector } from '@nestjs/core'
-import { SupabaseJwtGuard } from './supabase-jwt.guard.ts'
-import type { JwtVerifierService } from './jwt-verifier.service.ts'
+import { SupabaseJwtGuard } from '../../../src/modules/auth/supabase-jwt.guard.ts'
+import type { JwtVerifierService } from '../../../src/modules/auth/jwt-verifier.service.ts'
 
 function createContext(authHeader?: string) {
   const request = { headers: { authorization: authHeader } }

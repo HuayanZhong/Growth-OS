@@ -9,6 +9,7 @@
 | 模块                        | 用途                                              |
 | --------------------------- | ------------------------------------------------- |
 | `src/auth.ts`               | 认证相关共享类型/schema                           |
+| `src/events/session.ts`     | 会话事件词汇表、消息类型与事件日志契约            |
 | `src/utils/ipc-channels.ts` | desktop 与 desktop-core 之间的类型化 IPC 通道契约 |
 | `src/index.ts`              | barrel 导出                                       |
 

@@ -1,6 +1,7 @@
 import { existsSync, readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
-import { defineVitestConfig } from '@nuxt/test-utils/config'
+import { defineConfig } from 'vitest/config'
+import { defineVitestProject } from '@nuxt/test-utils/config'
 import { baseTestConfig } from '../../tooling/test/base.ts'
 
 /**
@@ -27,12 +28,33 @@ process.env.NUXT_PUBLIC_SUPABASE_URL ??= 'https://placeholder.supabase.co'
 process.env.NUXT_PUBLIC_SUPABASE_ANON_KEY ??= 'sb_publishable__placeholder'
 
 /**
- * desktop 应用测试配置
- * 使用 Nuxt 测试环境，支持 auto-import 和 composables
+ * desktop 应用测试配置（官方 4.x projects 设置，环境由目录 + 项目决定）：
+ * - `test/unit/` → node 环境纯单元测试（不依赖 Nuxt 运行时功能，快）
+ * - `test/nuxt/` → Nuxt 运行时环境（auto-import / mountSuspended / mockNuxtImport），
+ *   并自动纳入 Nuxt TypeScript 上下文（别名与自动导入可识别）
+ * defineVitestProject 仅用于 Nuxt 环境项目；unit/e2e 项目用常规 node 环境。
  */
-export default defineVitestConfig({
+export default defineConfig({
   test: {
     ...baseTestConfig,
-    environment: 'nuxt',
+    coverage: {
+      include: ['app/**'],
+    },
+    projects: [
+      {
+        test: {
+          name: 'unit',
+          include: ['test/unit/*.{test,spec}.ts'],
+          environment: 'node',
+        },
+      },
+      await defineVitestProject({
+        test: {
+          name: 'nuxt',
+          include: ['test/nuxt/*.{test,spec}.ts'],
+          environment: 'nuxt',
+        },
+      }),
+    ],
   },
 })

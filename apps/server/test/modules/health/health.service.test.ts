@@ -1,7 +1,7 @@
 // vi.mock 由 Vitest 提升到 import 之前（与 jest.mock 语义一致，且 Vitest 原生可加载 ESM 包）
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { MikroORM } from '@mikro-orm/core'
-import { HealthService } from './health.service.ts'
+import { HealthService } from '../../../src/modules/health/health.service.ts'
 
 vi.mock('@mikro-orm/nestjs', () => ({
   InjectMikroORM: () => () => {},

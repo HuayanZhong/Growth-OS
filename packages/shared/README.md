@@ -2,14 +2,15 @@
 
 English | [中文](README.zh.md)
 
-Zero-dependency (except `zod`) cross-package utilities: env validation and URL normalization.
+Zero-runtime-dependency (except `zod`) cross-package utilities: env validation, URL normalization, and session event projection.
 
 ## Exports
 
-| Module             | Purpose                                               |
-| ------------------ | ----------------------------------------------------- |
-| `src/env.ts`       | Env validation helpers (shared by server and desktop) |
-| `src/normalize.ts` | URL normalization helpers                             |
+| Module                  | Purpose                                                               |
+| ----------------------- | --------------------------------------------------------------------- |
+| `src/env.ts`            | Env validation helpers (shared by server and desktop)                 |
+| `src/normalize.ts`      | URL normalization helpers                                             |
+| `src/session-events.ts` | Session event projection (`deriveMessages` for model-visible history) |
 
 ## Usage
 

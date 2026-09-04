@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { ArgumentsHost, BadRequestException, HttpStatus } from '@nestjs/common'
 import type { ApiErrorEnvelope } from '@growth-os/types'
 import type { Logger } from 'nestjs-pino'
-import { AllExceptionsFilter } from './all-exceptions.filter.ts'
+import { AllExceptionsFilter } from '../../../src/common/filters/all-exceptions.filter.ts'
 
 function createLogger() {
   return { error: vi.fn(), log: vi.fn(), warn: vi.fn() } as unknown as Logger

@@ -5,13 +5,13 @@
   "description": "桌面端核心模块——Electron 主进程和 preload 源码",
   "type": "module",
   "main": "dist/main.js",
-  "exports": {
-    ".": "./src"
-  },
   "scripts": {
     "lint": "oxlint --fix --config .oxlintrc.json",
     "format": "oxfmt --config ../../tooling/format/.oxfmtrc.json",
-    "typecheck": "tsc --noEmit"
+    "publint": "publint",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
     "@growth-os/types": "workspace:*",
@@ -19,9 +19,12 @@
   },
   "devDependencies": {
     "@types/node": "catalog:dev",
+    "@vitest/coverage-v8": "catalog:test",
     "electron": "catalog:frontend",
     "electron-builder": "catalog:frontend",
     "oxfmt": "catalog:format",
-    "oxlint": "catalog:lint"
+    "oxlint": "catalog:lint",
+    "publint": "catalog:dev",
+    "vitest": "catalog:test"
   }
 }

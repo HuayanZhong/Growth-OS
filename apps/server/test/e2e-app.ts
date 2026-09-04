@@ -59,7 +59,8 @@ const StubMikroOrmDynamicModule: DynamicModule = {
     { provide: APP_INTERCEPTOR, useClass: ResponseEnvelopeInterceptor },
   ],
 })
-export class E2EAppModule {}
+// 仅被同文件的 createE2EApp 消费，无需导出
+class E2EAppModule {}
 
 export async function createE2EApp(): Promise<INestApplication> {
   const moduleRef = await Test.createTestingModule({ imports: [E2EAppModule] }).compile()

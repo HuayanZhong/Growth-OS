@@ -36,6 +36,10 @@ import '@growth-os/ui/main.css'
 - 外部样式覆盖走 `cn()` 合并——见 [conflict.md](../../.trae/rules/frontend/styles/conflict.md)。
 - 重复 3+ 次的类组合抽成组件放这里——见 [reuse.md](../../.trae/rules/frontend/styles/reuse.md)。
 
+## 测试
+
+镜像布局：`test/` 与 `src/` 平级（`src/x/y.ts` → `test/x/y.test.ts`）；在本包运行 `pnpm test` / `pnpm test:coverage`。组件测试通过 `@vue/test-utils` 挂载在 happy-dom 上。
+
 ## 已知限制
 
 - 目前只交付了 `theme-toggle`；其余组件待类组合达到 3+ 次复用时再抽取（[reuse.md](../../.trae/rules/frontend/styles/reuse.md)）。

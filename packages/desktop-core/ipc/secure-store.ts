@@ -36,7 +36,7 @@ export async function secureStoreHandler({
     switch (action) {
       case 'get': {
         if (!existsSync(file)) return null
-        // Electron 43+ 异步 API 返回 { result, isBackupDecrypted }，取 result 字段
+        // Electron 43+ 异步 API 返回 { result, shouldReEncrypt }，取 result 字段
         const { result } = await safeStorage.decryptStringAsync(readFileSync(file))
         return result
       }

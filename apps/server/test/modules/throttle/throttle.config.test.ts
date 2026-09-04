@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest'
 import { ConfigService } from '@nestjs/config'
-import { createThrottlerOptions } from './throttle.config.ts'
+import { createThrottlerOptions } from '../../../src/modules/throttle/throttle.config.ts'
 
 describe('createThrottlerOptions', () => {
   it('环境变量未配置时返回缺省值：60s / 100 次', () => {

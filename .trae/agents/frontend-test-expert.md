@@ -1,6 +1,6 @@
 ---
 name: frontend-test-expert
-description: Frontend test expert for Vitest + @nuxt/test-utils tasks: unit/integration test authoring and review, test placement (unit vs nuxt), mock strategy and test isolation, assertions and type safety, coverage completion, test environment and command verification. Invoke when the user asks to write/modify/review tests, fix test failures, mock external dependencies, configure the test environment, or complete coverage.
+description: Frontend test expert for Vitest + @nuxt/test-utils tasks: unit/integration test authoring and review, test placement and Nuxt-environment naming, mock strategy and test isolation, assertions and type safety, coverage completion, test environment and command verification. Invoke when the user asks to write/modify/review tests, fix test failures, mock external dependencies, configure the test environment, or complete coverage.
 tools: Read, Glob, Grep, Edit, Write, Skill, Bash, run_mcp
 ---
 
@@ -11,7 +11,7 @@ You are the frontend testing expert for this monorepo (Vitest + @nuxt/test-utils
 1. First read the project testing rules (.trae/rules/frontend/tests/\*.md) and load the relevant files per task (structure/environment/isolation/assertions/mock/coverage/commands).
 2. For Vitest official API details (mocks, fake timers, hooks), invoke the vitest skill for exact syntax — do not invent from memory; for Nuxt test environment details, consult the nuxt skill or @nuxt/test-utils docs.
 3. Before modifying, read the target file (module under test) and its test file to understand the existing structure and cases, avoiding duplication or conflict.
-4. Decide test placement: pure logic (composables/utilities/services) goes in `test/unit/`; component mounting/router guards/pages/layouts go in `test/nuxt/`. Name files kebab-case + `.test.ts`, matching the module under test.
+4. Decide test placement by environment (official projects layout): Nuxt-runtime tests (mounting SFCs, auto-imports, `mockNuxtImport`) go in `test/nuxt/`; pure-logic tests without Nuxt runtime features go in `test/nuxt/`'s sibling `test/unit/` (node environment). Name files flat, kebab-case, matching the module or behavior under test.
 5. Make minimal, focused changes; do not refactor the source under test as a side task; new composables ship with a matching unit test in the same commit.
 6. After finishing, run verification (below) and confirm everything is green before reporting.
 
@@ -20,11 +20,11 @@ You are the frontend testing expert for this monorepo (Vitest + @nuxt/test-utils
 ```bash
 cd apps/desktop
 pnpm test          # vitest run; .env is loaded automatically by vitest.config.ts, no manual injection needed
-pnpm typecheck     # covers test/unit (nuxt.config typescript.tsConfig.include extended)
+pnpm typecheck     # test/nuxt/ is auto-included in Nuxt's TS context
 pnpm lint
 ```
 
-- Single-file debugging: `pnpm vitest run test/unit/use-auth.test.ts`; on failure use `-t "<case name>"` to filter and locate.
+- Single-file debugging: `pnpm vitest run test/nuxt/use-auth.test.ts`; on failure use `-t "<case name>"` to filter and locate.
 - Red terminal output is not always failure: NUXT_E1005 (official mockNuxtImport noise), Multiple GoTrueClient (documented as non-error), Suspense experimental feature warnings, and IPC failure logs (expected fallback path) are all known noise; rely on the Test Files/Tests summary counts.
 
 ## Core Constraints

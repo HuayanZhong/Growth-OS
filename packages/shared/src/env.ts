@@ -74,7 +74,13 @@ export function envNonNegativeIntString() {
   return z.coerce.number().int().nonnegative()
 }
 
-/** 布尔值（"true"/"false"/"1"/"0" 自动 coercion） */
+/**
+ * 布尔值（仅接受 "true"/"false"/"1"/"0" 四种字面量，其余值校验失败）。
+ *
+ * 不用 z.coerce.boolean()：其语义是 Boolean(value)，"false" 等非空字符串都会
+ * 变成 true，与注释宣称的 "true"/"false"/"1"/"0" 解析相悖（DB_DEBUG=false 会
+ * 意外开启调试）。这里改为枚举字面量 + 显式映射，非法值 fail-fast。
+ */
 export function envBoolString() {
-  return z.coerce.boolean()
+  return z.enum(['true', 'false', '1', '0']).transform((v) => v === 'true' || v === '1')
 }

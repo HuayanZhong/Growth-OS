@@ -15,24 +15,25 @@
     "format": "oxfmt --config ../../tooling/format/.oxfmtrc.json",
     "typecheck": "nuxt typecheck",
     "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
     "verify:build": "electron scripts/verify-build.cjs"
   },
   "dependencies": {
-    "@growth-os/desktop-core": "workspace:*",
     "@growth-os/types": "workspace:*",
     "@growth-os/ui": "workspace:*",
+    "@nuxt/schema": "catalog:frontend",
     "@supabase/supabase-js": "catalog:frontend",
     "@tailwindcss/vite": "catalog:frontend",
     "daisyui": "catalog:frontend",
     "gsap": "catalog:frontend",
     "nuxt": "catalog:frontend",
     "tailwindcss": "catalog:frontend",
-    "vue": "catalog:frontend",
-    "vue-router": "catalog:frontend"
+    "vue": "catalog:frontend"
   },
   "devDependencies": {
     "@nuxt/kit": "catalog:frontend",
     "@nuxt/test-utils": "catalog:test",
+    "@vitest/coverage-v8": "catalog:test",
     "@vue/test-utils": "catalog:test",
     "electron": "catalog:frontend",
     "happy-dom": "catalog:test",

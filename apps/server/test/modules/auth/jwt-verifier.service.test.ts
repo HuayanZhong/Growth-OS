@@ -4,7 +4,7 @@ import { UnauthorizedException } from '@nestjs/common'
 import type { ConfigService } from '@nestjs/config'
 import { Logger } from '@nestjs/common'
 import { createRemoteJWKSet, decodeJwt, decodeProtectedHeader, jwtVerify } from 'jose'
-import { JwtVerifierService } from './jwt-verifier.service.ts'
+import { JwtVerifierService } from '../../../src/modules/auth/jwt-verifier.service.ts'
 
 // jose 是纯函数库，直接整体 mock：隔离网络（JWKS 拉取）与真实密码学运算。
 // vi.mock 由 Vitest 提升到所有 import 之前，写在 import 后是官方惯用形态

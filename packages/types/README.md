@@ -9,6 +9,7 @@ Repo-wide type distribution: shared zod schemas, business types, and the typed I
 | Module                      | Purpose                                                     |
 | --------------------------- | ----------------------------------------------------------- |
 | `src/auth.ts`               | Auth-related shared types/schemas                           |
+| `src/events/session.ts`     | Session event vocabulary, message types, event-log contract |
 | `src/utils/ipc-channels.ts` | Typed IPC channel contract between desktop and desktop-core |
 | `src/index.ts`              | Barrel export                                               |
 

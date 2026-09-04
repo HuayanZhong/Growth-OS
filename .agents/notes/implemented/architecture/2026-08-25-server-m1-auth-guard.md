@@ -33,5 +33,5 @@
 ## Verification
 
 - `pnpm --filter server test`（23 例）/ `test:e2e`（4 例，含真实登录链路）
-- `pnpm --filter desktop vitest run test/unit/use-api.test.ts`（6 例）
+- `pnpm --filter desktop vitest run test/nuxt/use-api.test.ts`（6 例）
 - `pnpm --filter server typecheck && pnpm --filter server build`

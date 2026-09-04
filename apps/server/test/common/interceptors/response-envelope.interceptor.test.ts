@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import { CallHandler, ExecutionContext } from '@nestjs/common'
 import { of } from 'rxjs'
-import { ResponseEnvelopeInterceptor } from './response-envelope.interceptor.ts'
+import { ResponseEnvelopeInterceptor } from '../../../src/common/interceptors/response-envelope.interceptor.ts'
 
 function createContext(statusCode = 200) {
   const res = { statusCode }

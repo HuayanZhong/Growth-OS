@@ -11,11 +11,12 @@ description: Test command & verification rule (pnpm + turbo): pnpm test runs dir
 
 1. How to run:
    - Single app: `cd apps/desktop && pnpm test` (vitest run)
-   - Specific file: `pnpm vitest run test/unit/use-auth.test.ts`
+   - Specific file: `pnpm vitest run test/nuxt/use-auth.test.ts`
+   - Single project (per official projects setup): `pnpm vitest run --project nuxt` or `--project unit`
    - Whole repo: `pnpm test` at the root (turbo run test)
 2. `.env` is auto-loaded from the root and injected into `process.env` by vitest.config.ts at startup; no manual `$env:` injection needed; don't rely on the turbo `globalEnv` declaration (Supabase vars are not listed there).
 3. Pre-commit verification order: `pnpm test` → `pnpm typecheck` → `pnpm lint`; all three must pass.
-4. typecheck covers `test/unit` (nuxt.config's `typescript.tsConfig.include` is extended); type errors inside test files themselves (e.g. TS2532) are caught — don't work around them.
+4. typecheck covers `test/` (nuxt.config's `typescript.tsConfig.include` is extended); type errors inside test files themselves (e.g. TS2532) are caught — don't work around them.
 5. `test/**` is exempt from `import/first` (`mockNuxtImport` must come before importing the mocked module); lint won't flag that rule there.
 
 **Example**:

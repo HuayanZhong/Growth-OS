@@ -31,5 +31,5 @@ afterEach(() => {
 
 ```bash
 # Running a file alone vs the full suite gives identical results (isolation doesn't depend on order)
-pnpm vitest run test/unit/use-toast.test.ts
+pnpm vitest run test/nuxt/use-toast.test.ts
 ```

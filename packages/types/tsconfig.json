@@ -1,8 +1,7 @@
 {
   "extends": "../../tooling/typescript/runtime/node.json",
   "compilerOptions": {
-    "types": ["node"],
-    "rootDir": "src"
+    "types": ["node"]
   },
-  "include": ["src/**/*.ts"]
+  "include": ["src/**/*.ts", "test/**/*.ts"]
 }

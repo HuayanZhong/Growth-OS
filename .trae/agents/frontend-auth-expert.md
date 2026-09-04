@@ -23,7 +23,7 @@ pnpm typecheck
 pnpm lint
 ```
 
-- Single-file debugging: `pnpm vitest run test/unit/use-auth.test.ts` (or use-secure-storage.test.ts); on failure use `-t "<case name>"` to filter and locate.
+- Single-file debugging: `pnpm vitest run test/nuxt/use-auth.test.ts` (or use-secure-storage.test.ts); on failure use `-t "<case name>"` to filter and locate.
 
 ## Core Constraints
 

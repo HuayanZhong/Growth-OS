@@ -4,6 +4,9 @@ node_modules
 # 忽略 dist 目录
 dist
 
+# Vitest 覆盖率产物
+coverage
+
 # 忽略 .turbo 目录
 .turbo
 

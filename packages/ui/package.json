@@ -13,6 +13,9 @@
   "scripts": {
     "lint": "oxlint --fix --config .oxlintrc.json",
     "format": "oxfmt --config ../../tooling/format/.oxfmtrc.json",
+    "publint": "publint",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
     "typecheck": "vue-tsc --noEmit"
   },
   "dependencies": {
@@ -22,9 +25,15 @@
     "tailwindcss": "catalog:frontend"
   },
   "devDependencies": {
+    "@vitejs/plugin-vue": "catalog:test",
+    "@vitest/coverage-v8": "catalog:test",
+    "@vue/test-utils": "catalog:test",
+    "happy-dom": "catalog:test",
     "oxfmt": "catalog:format",
     "oxlint": "catalog:lint",
+    "publint": "catalog:dev",
     "typescript": "catalog:dev",
+    "vitest": "catalog:test",
     "vue": "catalog:frontend",
     "vue-tsc": "catalog:frontend"
   },

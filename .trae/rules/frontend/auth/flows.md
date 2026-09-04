@@ -57,5 +57,5 @@ signOutWithFallback = async (): Promise<{ errorMessage?: string }> => {
 
 **Verification**:
 
-1. Tests cover the branches: no session / expired / valid / 403 degrade / network error (see `apps/desktop/test/unit/use-auth.test.ts`).
+1. Tests cover the branches: no session / expired / valid / 403 degrade / network error (see `apps/desktop/test/nuxt/use-auth.test.ts`).
 2. `pnpm --filter desktop test`, `pnpm --filter desktop typecheck`, `pnpm --filter desktop lint` all pass.

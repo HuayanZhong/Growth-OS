@@ -26,9 +26,11 @@ Node ≥ 24 required (Corepack supplies the pinned pnpm). Dependency versions co
 
 - `pnpm dev` / `pnpm start` / `pnpm build` — dev / production start / build (dotenv cascade, see Secrets)
 - `pnpm lint` / `pnpm format` / `pnpm typecheck` / `pnpm test` — verification suite
+- `pnpm test:coverage` — per-package coverage (v8) aggregated via turbo
+- `pnpm hygiene` — knip (dead code/unused deps, config in `knip.json`) + publint (package exports) via turbo; runs in CI
 - `pnpm verify:docs` — docs gate: CLAUDE.md thin-pointer sync, markdown links, word budgets (limits in [doc-budgets.manifest.json](scripts/doc-budgets.manifest.json), including this file), bilingual-pair hashes
 - `pnpm verify:pairing --write <path>` — re-record a bilingual pair's hash after a paired change (see [docs/i18n/README.md](docs/i18n/README.md))
-- `pnpm --filter desktop test` / `pnpm --filter server test` — per-app tests (both `vitest run`); single file: `pnpm --filter desktop vitest run test/unit/use-auth.test.ts`
+- `pnpm --filter desktop test` / `pnpm --filter server test` — per-app tests (both `vitest run`); single file: `pnpm --filter desktop vitest run test/nuxt/use-auth.test.ts`
 - `pnpm --filter desktop verify:build` — Electron production build smoke test
 - `pnpm --filter server typecheck` — backend typecheck
 - MikroORM CLI (run inside `apps/server`, root env injected by the scripts): `pnpm mikro-orm:debug` / `mikro-orm:migration:create` / `mikro-orm:migration:up` / `mikro-orm:migration:down` / `mikro-orm:seeder:run`; workflow in [database.md](docs/server/database.md)
@@ -50,7 +52,7 @@ English single source of truth, loaded on demand; OpenCode sessions additionally
 - **Server Database** (`server/database/`): [orm.md](.trae/rules/server/database/orm.md) (MikroORM v7, entity placement, @InjectMikroORM('default')), [migrations.md](.trae/rules/server/database/migrations.md) (create/up/down workflow)
 - **Server API** (`server/api/`): [errors.md](.trae/rules/server/api/errors.md) (ApiErrorEnvelope, STATUS_CODE_MAP), [responses.md](.trae/rules/server/api/responses.md) (ResponseEnvelopeInterceptor, {data: T}), [health.md](.trae/rules/server/api/health.md) (liveness 200, readiness 503)
 - **Server Middleware** (`server/middleware/`): [compression.md](.trae/rules/server/middleware/compression.md) (SSE exclusion via includes), [helmet.md](.trae/rules/server/middleware/helmet.md) (CSP prod-only), [timeout.md](.trae/rules/server/middleware/timeout.md) (@SkipTimeout for SSE)
-  - **Server Tests** (`server/tests/`): [structure.md](.trae/rules/server/tests/structure.md) (co-located spec, e2e in test/), [mock.md](.trae/rules/server/tests/mock.md) (vi.mock for ESM, fake timers), [commands.md](.trae/rules/server/tests/commands.md) (pnpm --filter server test/typecheck/lint)
+  - **Server Tests** (`server/tests/`): [structure.md](.trae/rules/server/tests/structure.md) (test/ mirrors src/, e2e in test/), [mock.md](.trae/rules/server/tests/mock.md) (vi.mock for ESM, fake timers), [commands.md](.trae/rules/server/tests/commands.md) (pnpm --filter server test/typecheck/lint)
 - **Git**: [git-commit-message.md](.trae/rules/git-commit-message.md) (conventional commits, subject language matches the change)
 
 ## Agents (.trae/agents)

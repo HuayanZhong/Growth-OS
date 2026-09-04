@@ -2,8 +2,8 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { CallHandler, ExecutionContext, RequestTimeoutException } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
 import { of, timer } from 'rxjs'
-import { TimeoutInterceptor } from './timeout.interceptor.ts'
-import { SKIP_TIMEOUT } from '../decorators/skip-timeout.decorator.ts'
+import { TimeoutInterceptor } from '../../../src/common/interceptors/timeout.interceptor.ts'
+import { SKIP_TIMEOUT } from '../../../src/common/decorators/skip-timeout.decorator.ts'
 
 function createContext(metadata: Record<string, unknown> = {}) {
   const reflector = new Reflector()

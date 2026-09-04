@@ -3,6 +3,7 @@
   "ui": "tui",
   "globalEnv": [
     "NODE_ENV",
+    "CI",
     "NUXT_APP_BASE_URL",
     "NUXT_PUBLIC_SITE_URL",
     "NUXT_PUBLIC_APP_NAME",
@@ -23,7 +24,11 @@
     },
     "lint": {
       "dependsOn": [],
-      "cache": false
+      "outputs": []
+    },
+    "publint": {
+      "dependsOn": [],
+      "outputs": []
     },
     "format": {
       "dependsOn": [],
@@ -31,11 +36,18 @@
     },
     "typecheck": {
       "dependsOn": [],
-      "cache": false
+      "outputs": [],
+      "inputs": ["$TURBO_DEFAULT$", "../../packages/*/src/**", "../../tooling/**"]
     },
     "test": {
       "dependsOn": [],
-      "cache": false
+      "outputs": [],
+      "inputs": ["$TURBO_DEFAULT$", "../../packages/*/src/**", "../../tooling/**"]
+    },
+    "test:coverage": {
+      "dependsOn": [],
+      "outputs": ["coverage/**"],
+      "inputs": ["$TURBO_DEFAULT$", "../../packages/*/src/**", "../../tooling/**"]
     }
   }
 }

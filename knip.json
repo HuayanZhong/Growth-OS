@@ -1,0 +1,41 @@
+{
+  "$schema": "./node_modules/knip/schema.json",
+  "workspaces": {
+    ".": {
+      "entry": ["scripts/**/*.cjs"],
+      "ignore": [".agents/**"],
+      "ignoreDependencies": ["publint"]
+    },
+    "apps/desktop": {
+      "entry": [
+        "app/pages/**/*.vue",
+        "app/layouts/**/*.vue",
+        "app/middleware/**/*.ts",
+        "app/composables/**/*.ts",
+        "app/types/**/*.ts",
+        "modules/**/*.ts",
+        "scripts/*.cjs",
+        "vitest.config.ts",
+        "test/**/*.{test,spec}.ts"
+      ],
+      "ignoreDependencies": ["daisyui", "tailwindcss", "vue-tsc"],
+      "vitest": false
+    },
+    "apps/server": {
+      "entry": ["src/main.ts", "mikro-orm.config.ts", "test/**/*.e2e-spec.ts"],
+      "ignoreDependencies": ["tsx", "pino-pretty"],
+      "ignoreIssues": {
+        "src/infra/database/seeders/DatabaseSeeder.ts": ["files"],
+        "src/common/decorators/skip-timeout.decorator.ts": ["exports"]
+      }
+    },
+    "packages/desktop-core": {
+      "entry": ["src/main.ts", "src/preload.ts"],
+      "ignore": ["src/types.ts"],
+      "ignoreDependencies": ["electron-builder"]
+    },
+    "packages/shared": {},
+    "packages/types": {},
+    "packages/ui": {}
+  }
+}

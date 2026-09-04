@@ -11,9 +11,11 @@
     "start": "dotenv -c production -- turbo run start:prod",
     "build": "dotenv -c production -- turbo run build",
     "lint": "turbo run lint",
+    "hygiene": "knip && turbo run publint",
     "format": "turbo run format --concurrency=1",
     "typecheck": "dotenv -v CI=true -- turbo run typecheck",
     "test": "dotenv -v CI=true -- turbo run test",
+    "test:coverage": "dotenv -v CI=true -- turbo run test:coverage",
     "verify:docs": "node scripts/verify-docs.cjs",
     "verify:pairing": "node scripts/verify-translation-pairing.cjs",
     "prepare": "husky"
@@ -23,12 +25,13 @@
     "@commitlint/config-conventional": "catalog:dev",
     "dotenv-cli": "catalog:dev",
     "husky": "catalog:dev",
+    "knip": "catalog:dev",
     "lint-staged": "catalog:dev",
     "oxfmt": "catalog:format",
     "oxlint": "catalog:lint",
+    "publint": "catalog:dev",
     "turbo": "catalog:dev",
-    "typescript": "catalog:dev",
-    "vitest": "catalog:test"
+    "typescript": "catalog:dev"
   },
   "devEngines": {
     "packageManager": {

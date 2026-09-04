@@ -99,21 +99,33 @@ jobs:
 
 **分层策略**：unit（共享包高覆盖）+ e2e（无凭证自动跳过）+ **会话录制-回放**。
 
+**目录约定（镜像 + Nuxt 官方约定）**：
+
+- 镜像约定适用于共享包与 server：每个包在包根建 `test/`，与 `src/` 平级，路径一一镜像：`src/a/b.ts` → `test/a/b.test.ts`；fixture 等测试资源放对应目录。
+- `apps/desktop` 例外——遵循 Nuxt 4.x 官方 projects 布局：`test/unit/`（node 环境纯逻辑）+ `test/nuxt/`（Nuxt 运行时，自动纳入 Nuxt TS 上下文），环境由目录 + Vitest projects（`defineVitestProject`）决定，不强造镜像或类型分组目录。
+- **每个包都必须有测试**——包括此前无测试落点的 `packages/ui` 与 `packages/desktop-core`。
+- 工具配置随约定对齐：`tsconfig include` 覆盖 `test/`，vitest `include` 指向 `test/**/*.test.ts`。
+- `packages/shared`、`packages/types` 已按镜像约定迁移完成（env/normalize/session-events/auth 四个测试 + fixture）。
+- 存量迁移已完成：server 的 co-located spec 迁入镜像目录；desktop 测试按 Nuxt 4.x 官方 projects 布局组织（`test/unit/` + `test/nuxt/`），`.trae/rules` 对应的 tests/structure 规则已同步；`packages/desktop-core` 以 secureStore IPC handler 测试补齐六包最后一环。
+
 录制-回放的落点是现有 vitest 基建：录制产物存为 test fixture（事件序列 JSON），回放测试用现有 `apiFetch` mock 路径注入 fixture，断言消息投影与 UI 关键状态——CI 无 API key 也能跑，不新增测试框架。
 
 | 任务 | 优先级 | 预估工时 | 负责人 |
 |------|--------|----------|--------|
 | 会话录制-回放测试（fixture + 现有 mock 路径，事件格式提前借用 2.3 的定义） | P0 | 1 周 | |
-| `packages/shared` 测试（env.ts, normalize.ts） | P0 | 1 天 | |
-| `packages/types` zod schema 测试 | P0 | 1 天 | |
-| Chat 组件测试（chat-input, chat-message-item） | P1 | 2 天 | |
+| `packages/shared` 测试（env.ts, normalize.ts, session-events.ts，已按镜像目录落地） | P0 | 完成 | |
+| `packages/types` zod schema 测试（已按镜像目录落地） | P0 | 完成 | |
+| server co-located spec 迁移到 `test/` 镜像目录 + rules 同步 | P1 | 完成 | |
+| desktop 测试重组为 Nuxt 官方 projects 布局（`test/unit/` + `test/nuxt/` + `defineVitestProject`） | P1 | 完成 | |
+| Chat 组件测试（chat-input, chat-message-item, chat-suggestions） | P1 | 完成 | |
 | Dashboard 页面测试（agents, files, projects, skills） | P2 | 2-3 天 | |
-| `packages/desktop-core` IPC 测试 | P2 | 2-3 天 | |
-| `packages/ui` 组件测试 | P2 | 1-2 天 | |
+| `packages/desktop-core` IPC 测试（每包必须有测试） | P1 | 完成 | |
+| `packages/ui` 组件测试（每包必须有测试） | P1 | 完成 | |
 
 **验证标准**：
 - 共享包与核心 composables 覆盖率 > 80%；页面测试不作覆盖率主要来源。
 - 会话录制-回放在 CI（无 API key）中可重放并断言消息投影与 UI 关键状态。
+- 测试目录布局按各包约定落位（共享包/server 镜像、desktop 官方 projects 布局），且每个包至少有测试在跑（`pnpm test` 六个包全绿）。
 
 ### 1.3 Hygiene 工具链
 

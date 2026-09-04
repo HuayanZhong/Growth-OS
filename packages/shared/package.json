@@ -12,15 +12,22 @@
   "scripts": {
     "lint": "oxlint --fix --config .oxlintrc.json",
     "format": "oxfmt --config ../../tooling/format/.oxfmtrc.json",
-    "typecheck": "tsc --noEmit"
+    "publint": "publint",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
     "zod": "catalog:shared"
   },
   "devDependencies": {
+    "@growth-os/types": "workspace:*",
     "@types/node": "catalog:dev",
+    "@vitest/coverage-v8": "catalog:test",
     "oxfmt": "catalog:format",
     "oxlint": "catalog:lint",
-    "typescript": "catalog:dev"
+    "publint": "catalog:dev",
+    "typescript": "catalog:dev",
+    "vitest": "catalog:test"
   }
 }

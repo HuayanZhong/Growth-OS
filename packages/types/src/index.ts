@@ -8,6 +8,26 @@ export type { LoginInput, RegisterInput } from './auth.ts'
 
 export type { ApiErrorEnvelope } from './api/error-envelope.ts'
 
+export type {
+  MessageRole,
+  ToolCallRef,
+  Message,
+  MessageEventType,
+  BookkeepingEventType,
+  SessionEventType,
+  UserMessagePayload,
+  AssistantMessagePayload,
+  ToolCallPayload,
+  ToolResultPayload,
+  SystemPromptPayload,
+  ContextInjectionPayload,
+  MessageEventPayloadMap,
+  SessionEvent,
+  TypedSessionEvent,
+  EventFilter,
+  SessionEventLog,
+} from './events/session.ts'
+
 export {
   type IpcChannelMap,
   type IpcChannelName,
