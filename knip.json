@@ -3,7 +3,7 @@
   "workspaces": {
     ".": {
       "entry": ["scripts/**/*.cjs"],
-      "ignore": [".agents/**"],
+      "ignore": [".agents/**", ".trae/**"],
       "ignoreDependencies": ["publint"]
     },
     "apps/desktop": {
@@ -23,7 +23,7 @@
     },
     "apps/server": {
       "entry": ["src/main.ts", "mikro-orm.config.ts", "test/**/*.e2e-spec.ts"],
-      "ignoreDependencies": ["tsx", "pino-pretty"],
+      "ignoreDependencies": ["pino-pretty"],
       "ignoreIssues": {
         "src/infra/database/seeders/DatabaseSeeder.ts": ["files"],
         "src/common/decorators/skip-timeout.decorator.ts": ["exports"]
