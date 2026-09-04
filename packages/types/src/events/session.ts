@@ -32,6 +32,12 @@ export interface Message {
   toolCalls?: ToolCallRef[]
 }
 
+/** UI 聊天消息：聊天组件消费的窄角色子集（完整四角色模型历史见 Message） */
+export interface ChatMessage {
+  role: 'user' | 'assistant'
+  content: string
+}
+
 /** 可投影为模型消息的事件（deriveMessages 只取这些） */
 export type MessageEventType =
   | 'user_message'

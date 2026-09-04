@@ -12,6 +12,7 @@ export type {
   MessageRole,
   ToolCallRef,
   Message,
+  ChatMessage,
   MessageEventType,
   BookkeepingEventType,
   SessionEventType,

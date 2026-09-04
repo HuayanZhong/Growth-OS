@@ -243,7 +243,7 @@ export interface LLMAdapter {
 
 ### 2.3 会话事件类型定义（从阶段三提前）
 
-**当前状态**：无事件词汇表，无持久化。前端 chat 类型目前散在 `app/components/chat/types.ts`，需升格到 `packages/types` 统一。
+**当前状态**：词汇表已定稿并交付——`packages/types/src/events/session.ts`（消息/簿记事件分离、四角色 Message、payload 映射、SessionEventLog 契约），投影函数 `deriveMessages` 在 `@growth-os/shared`（含 ProjectionError 运行时断言 + 词汇表漂移防护），聊天 UI 的 ChatMessage 已升格为 types 包类型的窄角色子集。单元测试在 `packages/shared/test/`（fixture 即录制-回放格式）。
 
 **设计约束**（学习 OpenHands 事件溯源的两条核心经验 + dsh 的一条不变量）：
 
