@@ -20,9 +20,16 @@ const crypto = require('node:crypto')
 const ROOT = path.resolve(__dirname, '..')
 const MANIFEST_PATH = path.join(ROOT, 'scripts/doc-pairs.manifest.json')
 
-/** Git blob hash (sha1 of `blob <len>\0<content>`), matching `git hash-object`. */
+/**
+ * Git blob hash (sha1 of `blob <len>\0<content>`) over LF-normalized content.
+ *
+ * 工作区行尾随平台不同（Windows autocrlf 检出为 CRLF，CI 检出为 LF），
+ * 哈希前归一化为 LF：记录与校验在任意平台得到同一结果，文本文件归一化后
+ * 也与提交进仓库的 blob 内容一致。
+ */
 function gitBlobHash(content) {
-  const buf = Buffer.from(content, 'utf8')
+  const normalized = content.replace(/\r\n/g, '\n')
+  const buf = Buffer.from(normalized, 'utf8')
   return crypto.createHash('sha1').update(`blob ${buf.length}\0`).update(buf).digest('hex')
 }
 
