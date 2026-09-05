@@ -13,6 +13,11 @@ import { validate } from './config/env.validation.ts'
 import { AuthModule } from './modules/auth/auth.module.ts'
 import { HealthModule } from './modules/health/health.module.ts'
 import { ThrottleModule } from './modules/throttle/throttle.module.ts'
+import { AgentsModule } from './modules/agents/agents.module.ts'
+import { SessionsModule } from './modules/sessions/sessions.module.ts'
+import { SkillsModule } from './modules/skills/skills.module.ts'
+import { FilesModule } from './modules/files/files.module.ts'
+import { ProjectsModule } from './modules/projects/projects.module.ts'
 
 const isProd = process.env.NODE_ENV === 'production'
 
@@ -77,6 +82,13 @@ const PINO_AUTO_LOGGING_IGNORE: (req: IncomingMessage) => boolean = (req) =>
 
     AuthModule,
     HealthModule,
+
+    // ---- 产品域骨架（迭代计划 2.6）：controller/service 空实现，持久化在阶段三落地 ----
+    AgentsModule,
+    SessionsModule,
+    SkillsModule,
+    FilesModule,
+    ProjectsModule,
   ],
   providers: [
     // 全局异常过滤器：所有未捕获异常统一归一化为 ApiErrorEnvelope { code, message, details? }。

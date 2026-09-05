@@ -344,7 +344,7 @@ export interface SessionEventLog {
 
 | 任务 | 优先级 | 预估工时 | 负责人 |
 |------|--------|----------|--------|
-| 后端五个域模块骨架（controller/service/entities 空实现 + 路由注册，遵守域间只走 service 注入） | P0 | 1 周 | |
+| 后端五个域模块骨架（controller/service 空实现 + 路由注册，遵守域间只走 service 注入；读路径空态、写路径 501，entities 随阶段三持久化落地） | P0 | 完成 | |
 | `packages/types` 补 HTTP API 契约类型（对齐 error-envelope 与响应信封，复用 IPC 契约派生模式；apiFetch 同步解包 { data } 信封） | P0 | 完成 | |
 | 前端 feature 目录约定 + agents 域 typed client 与 composables 样板 | P1 | 1 周 | |
 | 其余四域 typed client 与 composables 迁移 | P2 | 1-2 周 | |
@@ -353,8 +353,8 @@ export interface SessionEventLog {
 
 ### 阶段二验证清单
 
-- [ ] 四个能力适配器接口就位，实现方与调用方互不 import
-- [ ] 五个产品域的 server 模块骨架与 HTTP API 契约类型就位
+- [x] 四个能力适配器接口就位，实现方与调用方互不 import
+- [x] 五个产品域的 server 模块骨架与 HTTP API 契约类型就位
 - [ ] agents 域完成前端 feature 化样板（typed client + composables，页面只做组装）
 - [ ] 会话事件词汇表定稿：消息事件与簿记事件分离，含 turn/step 边界
 - [ ] 文档 ts 代码块受 `pnpm verify:docs` 门禁保护
