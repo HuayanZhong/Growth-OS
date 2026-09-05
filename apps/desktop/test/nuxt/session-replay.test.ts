@@ -59,7 +59,8 @@ describe('会话录制-回放（apiFetch 注入 fixture）', () => {
     mocks.auth.getSession.mockResolvedValue({
       data: { session: { access_token: 'tok-replay' } },
     })
-    fetchMock.mockResolvedValue(jsonResponse(200, sessionRecordingFixture))
+    // 线上响应经响应信封包裹为 { data }，apiFetch 负责解包
+    fetchMock.mockResolvedValue(jsonResponse(200, { data: sessionRecordingFixture }))
   })
 
   afterEach(() => {
@@ -113,7 +114,7 @@ describe('会话录制-回放（apiFetch 注入 fixture）', () => {
   })
 
   it('空录制：投影为空历史，UI 不渲染气泡', async () => {
-    fetchMock.mockResolvedValue(jsonResponse(200, []))
+    fetchMock.mockResolvedValue(jsonResponse(200, { data: [] }))
     const wrapper = mount(ReplayHarness)
     await flushPromises()
 

@@ -345,7 +345,7 @@ export interface SessionEventLog {
 | 任务 | 优先级 | 预估工时 | 负责人 |
 |------|--------|----------|--------|
 | 后端五个域模块骨架（controller/service/entities 空实现 + 路由注册，遵守域间只走 service 注入） | P0 | 1 周 | |
-| `packages/types` 补 HTTP API 契约类型（对齐 error-envelope 与响应信封，复用 IPC 契约派生模式） | P0 | 3-5 天 | |
+| `packages/types` 补 HTTP API 契约类型（对齐 error-envelope 与响应信封，复用 IPC 契约派生模式；apiFetch 同步解包 { data } 信封） | P0 | 完成 | |
 | 前端 feature 目录约定 + agents 域 typed client 与 composables 样板 | P1 | 1 周 | |
 | 其余四域 typed client 与 composables 迁移 | P2 | 1-2 周 | |
 

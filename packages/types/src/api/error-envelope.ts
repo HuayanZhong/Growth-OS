@@ -2,7 +2,8 @@
  * REST 错误统一信封 —— 所有非 2xx 响应的响应体契约。
  *
  * 约定：
- * - 成功响应返回裸 JSON 数据（不加包装层）；仅错误使用信封
+ * - 成功响应经 ResponseEnvelopeInterceptor 包装为 { data: T }（见 api/http.ts 的 ApiSuccess），
+ *   与错误信封对称；仅 204 无响应体和 SSE 流式接口例外
  * - `code` 为机器可读错误码（SCREAMING_SNAKE），前端按码分支处理
  * - `message` 为面向用户的人类可读文案
  * - SSE 流式接口的错误通过 ChatStreamEvent 的 error 事件传递，不使用此信封

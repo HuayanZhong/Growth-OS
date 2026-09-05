@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import type { HttpEndpoint } from './api/http.ts'
 
 /**
  * 认证相关 zod schema。
@@ -25,3 +26,8 @@ export type LoginInput = z.infer<typeof loginSchema>
 
 /** 注册入参的类型 */
 export type RegisterInput = z.infer<typeof registerSchema>
+
+/** Auth 域 HTTP 契约（JWT 保护；Supabase Auth 承担登录/注册，自有后端只暴露身份查询） */
+export interface AuthApiMap {
+  'GET /auth/me': HttpEndpoint<'GET', undefined, { id: string; email?: string }>
+}

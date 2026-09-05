@@ -48,7 +48,7 @@ describe('apiFetch', () => {
     mocks.auth.getSession.mockResolvedValue({
       data: { session: { access_token: 'tok-1' } },
     })
-    fetchMock.mockResolvedValue(jsonResponse(200, [{ id: 'a1' }]))
+    fetchMock.mockResolvedValue(jsonResponse(200, { data: [{ id: 'a1' }] }))
 
     await expect(apiFetch('/agents')).resolves.toEqual([{ id: 'a1' }])
     expect(fetchMock).toHaveBeenCalledWith(
@@ -64,7 +64,7 @@ describe('apiFetch', () => {
     mocks.auth.getSession.mockResolvedValue({
       data: { session: { access_token: 'tok-1' } },
     })
-    fetchMock.mockResolvedValue(jsonResponse(200, { ok: true }))
+    fetchMock.mockResolvedValue(jsonResponse(200, { data: { ok: true } }))
 
     await apiFetch('/conversations', { method: 'POST', body: { agentId: 'a1' } })
 

@@ -1,4 +1,4 @@
-import type { ApiErrorEnvelope } from '@growth-os/types'
+import type { ApiErrorEnvelope, ApiSuccess } from '@growth-os/types'
 
 /** 后端错误：携带状态码与信封错误码，UI 层据此分流（401 → 引导重登） */
 export class ApiError extends Error {
@@ -25,7 +25,9 @@ interface ApiFetchOptions {
  * 自有后端 API 的唯一请求入口：
  * - 自动从 supabase-js 会话取 access_token 拼 Authorization 头（token.md 规则的
  *   唯一例外点——Supabase API 由 supabase-js 自动注入，自有后端必须手动携带）；
- * - 非 2xx 统一解析 ApiErrorEnvelope 并抛 ApiError。
+ * - 非 2xx 统一解析 ApiErrorEnvelope 并抛 ApiError；
+ * - 成功响应解包 ResponseEnvelopeInterceptor 的 { data: T } 信封，调用方直取业务
+ *   数据（T 即 packages/types 各域契约里的 response 类型）。
  * 服务端地址来自 NUXT_PUBLIC_API_BASE_URL（nuxt.config runtimeConfig）。
  */
 export async function apiFetch<T>(path: string, options: ApiFetchOptions = {}): Promise<T> {
@@ -55,5 +57,7 @@ export async function apiFetch<T>(path: string, options: ApiFetchOptions = {}): 
         : { code: `HTTP_${response.status}`, message: '请求失败，请稍后重试' },
     )
   }
-  return (await response.json()) as T
+  // 解包成功信封 { data: T }（ResponseEnvelopeInterceptor 全局包装，204 除外）
+  const payload = (await response.json()) as ApiSuccess<T>
+  return payload.data
 }
