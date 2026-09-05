@@ -80,7 +80,7 @@ Agent Notes record the "why": [README.md](.agents/notes/README.md) defines the c
 
 - Test accounts live only in the root `.env` (`SUPABASE_TEST_EMAIL`, `SUPABASE_TEST_PASSWORD`); never hard-code them into code, tests, rules, or commits; rules reference variable names only.
 - `DATABASE_URL` (Supabase session pooler string) lives in the root `.env` only; never commit it.
-- Env loads via dotenv-cli cascade: `pnpm dev` → `.env` + `.env.development`; `pnpm build`/`start` → `.env` + `.env.production`.
+- Env loads via dotenv-cli `-e` chains (first file wins, missing files skipped): `.env.local` (personal/deploy override layer, git-ignored, highest priority) → `.env.development`/`.env.production` → `.env`.
 - Never commit `.env*`, cert passwords (`CSC_KEY_PASSWORD`), or `GH_TOKEN`.
 
 ## Documentation rules (core four)

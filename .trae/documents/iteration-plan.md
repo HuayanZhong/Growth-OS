@@ -304,22 +304,25 @@ export interface SessionEventLog {
 
 ### 2.4 配置分层：扩展现有 .env 级联
 
-**当前状态**：dotenv-cli 级联（`pnpm dev` → `.env` + `.env.development`；`build`/`start` → `.env` + `.env.production`）+ `env.validation.ts` zod 校验已就位。
+**当前状态**：dotenv-cli 显式 `-e` 链已含 `.env.local` 个人/部署覆盖层（根 dev/build/start 与 server 全部脚本），桌面 vitest.config 按"外部 process.env > `.env.local` > `.env`"三级注入；`env.validation.ts` zod 校验已就位。
 
-**差距**：无个人/部署覆盖层，前端无法运行时读取，校验仅后端有。
+**差距**：前端配置尚未走 runtimeConfig 打通，env schema 尚未前后端共用。
 
-**做法**：不引入 YAML 或新的配置系统，在现有级联上补两层——
+**做法**：不引入 YAML 或新的配置系统，在现有级联上补一层——
 
 ```text
-.env                     # 基础层（已存在）
+.env.local               # 个人/部署覆盖层（新增，git-ignore，链首加载 = 优先级最高，缺失静默跳过）
 .env.development         # 环境层（已存在）
 .env.production          # 环境层（已存在）
-.env.local               # 个人/部署覆盖层（新增，git-ignore，级联最后加载）
+.env                     # 基础层（已存在）
 ```
+
+优先级：`-e` 链中先列的文件胜出（dotenv-cli v11 实测语义），最终为
+外部 process.env > `.env.local` > `.env.development`/`.env.production` > `.env`。
 
 | 任务 | 优先级 | 预估工时 | 负责人 |
 |------|--------|----------|--------|
-| dotenv-cli 级联加入 `.env.local` 覆盖层 + 文档说明优先级 | P0 | 1 天 | |
+| dotenv-cli 级联加入 `.env.local` 覆盖层 + 文档说明优先级 | P0 | 完成 | |
 | zod env schema 提到 `packages/shared`，前后端共用（后端 `env.validation.ts`、前端 `packages/shared/env.ts` 收敛为一份） | P1 | 2-3 天 | |
 | 前端配置走 Nuxt `runtimeConfig` 打通（构建时不内联、启动时可覆盖） | P1 | 2-3 天 | |
 | 开发环境配置热更新（仅前端 runtimeConfig 部分） | P2 | 3-5 天 | |

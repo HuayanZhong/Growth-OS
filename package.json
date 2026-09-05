@@ -7,9 +7,9 @@
   "author": "",
   "type": "module",
   "scripts": {
-    "dev": "dotenv -c development -- turbo run dev",
-    "start": "dotenv -c production -- turbo run start:prod",
-    "build": "dotenv -c production -- turbo run build",
+    "dev": "dotenv -e .env.local -e .env.development -e .env -- turbo run dev",
+    "start": "dotenv -e .env.local -e .env.production -e .env -- turbo run start:prod",
+    "build": "dotenv -e .env.local -e .env.production -e .env -- turbo run build",
     "lint": "turbo run lint",
     "hygiene": "knip && turbo run publint",
     "format": "turbo run format --concurrency=1",
