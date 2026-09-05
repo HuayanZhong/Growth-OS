@@ -84,3 +84,21 @@ export function envNonNegativeIntString() {
 export function envBoolString() {
   return z.enum(['true', 'false', '1', '0']).transform((v) => v === 'true' || v === '1')
 }
+
+// ============================================================
+// 跨端共享的公开 env schema（NUXT_PUBLIC_*）——前后端校验共用一份规则
+// ============================================================
+
+/**
+ * 公开运行时配置（迭代计划 2.4）：前端经 Nuxt runtimeConfig 消费，
+ * server 端（JWT 验证回退路径等）同样可见。URL/密钥格式规则收敛在此，
+ * 防止两端校验规则漂移。
+ */
+export const publicEnvSchema = z.object({
+  NUXT_PUBLIC_SUPABASE_URL: envUrlString(),
+  NUXT_PUBLIC_SUPABASE_ANON_KEY: envString(),
+  NUXT_PUBLIC_API_BASE_URL: envUrlString(),
+})
+
+/** 公开运行时配置的类型（z.infer 结果） */
+export type PublicEnv = z.infer<typeof publicEnvSchema>

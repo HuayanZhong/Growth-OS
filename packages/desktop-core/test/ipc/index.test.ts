@@ -37,11 +37,17 @@ describe('registerIpc', () => {
     expect(setupAutoUpdater).toHaveBeenCalledTimes(1)
   })
 
-  it('注册全部 4 个 IPC 通道', () => {
+  it('注册全部 5 个 IPC 通道', () => {
     registerIpc()
 
     const channels = mockHandle.mock.calls.map(([channel]) => channel)
-    expect(channels).toEqual(['version', 'secureStore', 'checkForUpdates', 'quitAndInstall'])
+    expect(channels).toEqual([
+      'version',
+      'secureStore',
+      'checkForUpdates',
+      'quitAndInstall',
+      'launchEnv',
+    ])
   })
 
   it('version 通道返回 app.getVersion()（同步返回值原样透传）', () => {

@@ -69,7 +69,30 @@ export interface IpcChannelMap {
     }
     response: string | null
   }
+  /**
+   * 启动环境注入（迭代计划 2.4）：主进程把启动时可用的 NUXT_PUBLIC_* 白名单
+   * 交给渲染层，插件在应用装配前合并进 runtimeConfig——桌面端"启动时可覆盖"
+   * 配置，构建产物不再内联最终值。白名单仅含公开变量（non-secret）。
+   */
+  launchEnv: {
+    request: void
+    response: LaunchEnv
+  }
 }
+
+/**
+ * 启动时允许注入的公开配置键白名单。
+ * 只收 NUXT_PUBLIC_*（设计上可暴露给前端）；secret 一律不进此通道。
+ */
+export type LaunchEnvKey =
+  | 'NUXT_PUBLIC_SUPABASE_URL'
+  | 'NUXT_PUBLIC_SUPABASE_ANON_KEY'
+  | 'NUXT_PUBLIC_API_BASE_URL'
+  | 'NUXT_PUBLIC_APP_NAME'
+  | 'NUXT_PUBLIC_SITE_URL'
+
+/** 启动环境注入载荷：仅包含主进程环境中实际存在的键 */
+export type LaunchEnv = Partial<Record<LaunchEnvKey, string>>
 
 /** 所有 IPC 通道名（字符串字面量联合类型） */
 export type IpcChannelName = keyof IpcChannelMap

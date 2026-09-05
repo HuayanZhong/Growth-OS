@@ -10,6 +10,7 @@
  */
 import { app } from 'electron'
 import { handleIpc } from './handle.ts'
+import { launchEnvHandler } from './launch-env.ts'
 import { secureStoreHandler } from './secure-store.ts'
 import { checkForUpdatesHandler, quitAndInstallHandler, setupAutoUpdater } from './updates.ts'
 
@@ -24,4 +25,5 @@ export function registerIpc(): void {
   handleIpc('secureStore', secureStoreHandler)
   handleIpc('checkForUpdates', checkForUpdatesHandler)
   handleIpc('quitAndInstall', quitAndInstallHandler)
+  handleIpc('launchEnv', launchEnvHandler)
 }

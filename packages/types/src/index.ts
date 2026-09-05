@@ -82,4 +82,6 @@ export {
   type IpcResponse,
   type DesktopAPI,
   type UpdateCheckResult,
+  type LaunchEnvKey,
+  type LaunchEnv,
 } from './utils/ipc-channels.ts'

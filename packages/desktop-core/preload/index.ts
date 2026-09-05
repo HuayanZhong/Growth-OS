@@ -37,6 +37,7 @@ export const api: DesktopAPI = {
   checkForUpdates: () => invokeIpc('checkForUpdates'),
   quitAndInstall: () => invokeIpc('quitAndInstall'),
   secureStore: (request) => invokeIpc('secureStore', request),
+  launchEnv: () => invokeIpc('launchEnv'),
 }
 
 contextBridge.exposeInMainWorld('desktop', api)

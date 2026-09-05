@@ -10,7 +10,10 @@ export {
   envIntString,
   envNonNegativeIntString,
   envBoolString,
+  publicEnvSchema,
 } from './env.ts'
+
+export type { PublicEnv } from './env.ts'
 
 export { normalizeBaseUrl, normalizePrefix, joinUrl } from './normalize.ts'
 

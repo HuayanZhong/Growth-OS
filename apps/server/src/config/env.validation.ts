@@ -1,11 +1,18 @@
-import { z, parseEnv, envString, envIntString, envBoolString } from '@growth-os/shared'
+import {
+  parseEnv,
+  envString,
+  envIntString,
+  envBoolString,
+  publicEnvSchema,
+} from '@growth-os/shared'
 
 /**
  * 服务端环境变量 schema。
  * 每个字段对应 .env.example 中"后端服务配置"区的变量。
- * 客户端可访问的 NUXT_PUBLIC_* 不在此校验，由 Nuxt 侧负责。
+ * NUXT_PUBLIC_* 公开变量的校验规则收敛在 shared 的 publicEnvSchema（前后端
+ * 共用一份），server 侧全部可选（仅 JWT 验证回退路径消费），故 partial 合并。
  */
-const envSchema = z.object({
+const envSchema = publicEnvSchema.partial().extend({
   PORT: envIntString(),
   // MikroORM 数据库连接串（Supabase Postgres direct connection，见 .env.example）
   DATABASE_URL: envString(),
@@ -13,9 +20,6 @@ const envSchema = z.object({
   DB_DEBUG: envBoolString().optional(),
   // Supabase 项目 URL（JWT 验证用）：可选，缺省回退 NUXT_PUBLIC_SUPABASE_URL
   SUPABASE_URL: envString().optional(),
-  // Supabase anon key（HS256 legacy 项目验签用）：HS256 回退路径需要此值调 Auth 服务器探针。
-  // 非 HS256 项目可不设；缺失时 HS256 token 会静默拒绝（UNAUTHORIZED），但不阻塞 JWKS 项目。
-  NUXT_PUBLIC_SUPABASE_ANON_KEY: envString().optional(),
   // 生产 CORS 白名单：逗号分隔 origin；缺省保持全开（桌面端 file:// 无 Origin 头）
   CORS_ORIGINS: envString().optional(),
   // 限流配置（@nestjs/throttler）：TTL = 窗口时长（毫秒），limit = 窗口内最大请求数。
