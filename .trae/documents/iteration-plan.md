@@ -198,10 +198,10 @@ export default defineNuxtPlugin((nuxtApp) => {
 
 | 适配器 | 定义位置 | 预估工时 | 负责人 |
 |--------|----------|----------|--------|
-| **LLM 适配器** | `packages/types/src/adapters/llm.ts` | 2-3 天 | |
-| **Storage 适配器** | `packages/types/src/adapters/storage.ts` | 1-2 天 | |
-| **Auth 适配器** | `packages/types/src/adapters/auth.ts` | 1-2 天 | |
-| **Shell 适配器** | `packages/types/src/adapters/shell.ts` | 2-3 天 | |
+| **LLM 适配器** | `packages/types/src/adapters/llm.ts` | 完成 | |
+| **Storage 适配器** | `packages/types/src/adapters/storage.ts` | 完成 | |
+| **Auth 适配器** | `packages/types/src/adapters/auth.ts` | 完成 | |
+| **Shell 适配器** | `packages/types/src/adapters/shell.ts` | 完成 | |
 
 **LLM 适配器接口**：
 

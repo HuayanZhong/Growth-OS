@@ -36,6 +36,24 @@ export type {
 } from './api/projects.ts'
 export type { HealthApiMap } from './api/health.ts'
 
+// ---- 能力适配器契约（迭代计划 2.1）——实现方与调用方的唯一耦合点 ----
+export type {
+  LLMMessage,
+  LLMChatParams,
+  LLMUsage,
+  LLMChatResponse,
+  LLMChunk,
+  LLMAdapter,
+} from './adapters/llm.ts'
+export type {
+  StorageUploadInput,
+  StoredFile,
+  StorageDownload,
+  StorageAdapter,
+} from './adapters/storage.ts'
+export type { AuthCredentials, AuthUser, AuthSession, AuthAdapter } from './adapters/auth.ts'
+export type { ShellSecureStore, ShellAdapter } from './adapters/shell.ts'
+
 export type {
   MessageRole,
   ToolCallRef,
