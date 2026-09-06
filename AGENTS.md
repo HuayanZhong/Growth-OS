@@ -22,7 +22,7 @@ Growth OS is a Coze-like desktop platform built with Nuxt 4 (frontend), NestJS (
 
 Run from the repo root; turbo runs the matching script in every package.
 
-Node ≥ 24 required (Corepack supplies the pinned pnpm). Dependency versions come from pnpm catalogs — add deps with the `catalog:` protocol (entries in `pnpm-workspace.yaml`), never a raw version. Production start assumes a prior `pnpm build`: the desktop app launches `packages/desktop-core/dist/main.js`.
+Node ≥ 24 required; pnpm 12.1.0 is pinned via `packageManager` + `devEngines` (install pnpm itself — e.g. `npm i -g pnpm@12.1.0` — and keep the version matched to the pin). Dependency versions come from pnpm catalogs — add deps with the `catalog:` protocol (entries in `pnpm-workspace.yaml`), never a raw version. Production start assumes a prior `pnpm build`: the desktop app launches `packages/desktop-core/dist/main.js`.
 
 - `pnpm dev` / `pnpm start` / `pnpm build` — dev / production start / build (dotenv cascade, see Secrets)
 - `pnpm lint` / `pnpm format` / `pnpm typecheck` / `pnpm test` — verification suite
