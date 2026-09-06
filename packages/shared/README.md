@@ -15,7 +15,7 @@ Zero-runtime-dependency (except `zod`) cross-package utilities: env validation, 
 ## Usage
 
 ```ts
-import { normalizeUrl } from '@growth-os/shared'
+import { normalizeBaseUrl } from '@growth-os/shared'
 ```
 
 ## Contract

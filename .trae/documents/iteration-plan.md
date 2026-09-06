@@ -329,13 +329,13 @@ export interface SessionEventLog {
 
 ### 2.5 文档系统升级：并入 verify-docs 门禁
 
-**当前状态**：`scripts/verify-docs.cjs` 已覆盖链接/字数/双语 hash。缺口：文档内 ts 代码块不受编译检查（类型 drift 无法发现）、无生成式目录、无 cookbook。
+**当前状态**：`scripts/verify-docs.cjs` 已覆盖链接/字数/双语 hash/ts 代码块编译（`packages/*/README*.md` 的 ts 块经 TypeScript API 对真实包源码编译）。缺口：无生成式目录、无 cookbook。
 
 **做法**：全部作为 `verify-docs.cjs` 的新增检查项或 `scripts/` 下的配套脚本，同一条 `pnpm verify:docs` 门禁命令，不引入独立工具链。
 
 | 任务 | 优先级 | 预估工时 | 负责人 |
 |------|--------|----------|--------|
-| verify-docs 新增 ts 代码块检查：提取文档内 `ts` 块做编译，引用的类型必须从 `packages/types` 真实导出 | P0 | 1 周 | |
+| verify-docs 新增 ts 代码块检查：提取文档内 `ts` 块做编译，引用的类型必须从 `packages/types` 真实导出 | P0 | 完成 | |
 | 生成式目录（`scripts/` 生成脚本 + verify-docs freshness 检查）：config-catalog / event 映射 / module-graph | P1 | 1-2 周 | |
 | cookbook（`docs/cookbook/`）：『如何加一个包/工具/LLM 适配器』分步 how-to，带编号验证步骤 | P1 | 1 周 | |
 
@@ -360,7 +360,7 @@ export interface SessionEventLog {
 - [x] 五个产品域的 server 模块骨架与 HTTP API 契约类型就位
 - [ ] agents 域完成前端 feature 化样板（typed client + composables，页面只做组装）
 - [ ] 会话事件词汇表定稿：消息事件与簿记事件分离，含 turn/step 边界
-- [ ] 文档 ts 代码块受 `pnpm verify:docs` 门禁保护
+- [x] 文档 ts 代码块受 `pnpm verify:docs` 门禁保护
 - [ ] `.env.local` 覆盖层生效，env schema 前后端一份
 - [ ] cookbook 至少覆盖『加一个 LLM 适配器』路径
 

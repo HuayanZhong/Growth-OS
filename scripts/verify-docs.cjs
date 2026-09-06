@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Docs gate: CLAUDE.md pointer check (root + per-layer), markdown link validity across all docs, word budgets, bilingual-pair hashes.
+ * Docs gate: CLAUDE.md pointer check (root + per-layer), markdown link validity across all docs, word budgets, bilingual-pair hashes, ts snippet compilation for package READMEs.
  *
  * Usage:
  *   node scripts/verify-docs.cjs          # check only
@@ -9,7 +9,9 @@
  * Exits non-zero on any violation.
  */
 const fs = require('node:fs')
+const os = require('node:os')
 const path = require('node:path')
+const ts = require('typescript')
 const { checkPairs } = require('./verify-translation-pairing.cjs')
 
 const ROOT = path.resolve(__dirname, '..')
@@ -131,6 +133,84 @@ for (const rel of collectMarkdown()) {
     }
   }
 }
+
+// 5. Compile ```ts blocks in packages/*/README*.md against real workspace sources.
+// Package READMEs are the executable surface of "documented exports must exist";
+// `.css` side-effect imports are style assets, not type contracts — stripped.
+// Diagnostics inside resolved package sources are owned by `turbo typecheck` and ignored here.
+
+/** Extract non-empty compilable ```ts blocks, with style side-effect imports stripped. */
+function extractTsBlocks(md) {
+  const blocks = []
+  const re = /```ts\r?\n([\s\S]*?)```/g
+  let m
+  while ((m = re.exec(md)) !== null) {
+    const code = m[1].replace(/^[ \t]*import[ \t]+['"][^'"]+\.css['"];?[ \t]*$/gm, '').trim()
+    if (code) blocks.push(code)
+  }
+  return blocks
+}
+
+function checkTsSnippets() {
+  const snippets = []
+  const packagesDir = path.join(ROOT, 'packages')
+  for (const name of fs.readdirSync(packagesDir)) {
+    const pkgDir = path.join(packagesDir, name)
+    if (!fs.statSync(pkgDir).isDirectory()) continue
+    for (const f of fs.readdirSync(pkgDir)) {
+      if (!/^README.*\.md$/.test(f)) continue
+      const blocks = extractTsBlocks(read(path.join(pkgDir, f)))
+      for (const [i, code] of blocks.entries()) {
+        snippets.push({ origin: `packages/${name}/${f}#block-${i + 1}`, code })
+      }
+    }
+  }
+  if (snippets.length === 0) return
+
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'verify-docs-snippets-'))
+  try {
+    const rootNames = []
+    for (const [i, s] of snippets.entries()) {
+      const file = path.join(tmp, `snippet-${i}.ts`)
+      fs.writeFileSync(file, s.code)
+      rootNames.push(file)
+    }
+    const program = ts.createProgram(rootNames, {
+      strict: true,
+      noEmit: true,
+      target: ts.ScriptTarget.ES2022,
+      module: ts.ModuleKind.ESNext,
+      moduleResolution: ts.ModuleResolutionKind.Bundler,
+      allowImportingTsExtensions: true,
+      esModuleInterop: true,
+      skipLibCheck: true,
+      types: [],
+      // TS 6 deprecates baseUrl; an absolute forward-slash paths entry resolves independently of cwd
+      paths: { '@growth-os/*': [`${ROOT.replace(/\\/g, '/')}/packages/*/src/index.ts`] },
+    })
+    const tmpNorm = tmp.replace(/\\/g, '/')
+    for (const d of ts.getPreEmitDiagnostics(program)) {
+      if (d.file == null || typeof d.start !== 'number') {
+        fail(
+          `ts snippet check config error: ${ts.flattenDiagnosticMessageText(d.messageText, ' ')}`,
+        )
+        continue
+      }
+      // TS normalizes diagnostic file names to forward slashes, even on Windows
+      const fileName = d.file.fileName.replace(/\\/g, '/')
+      if (!fileName.startsWith(tmpNorm)) continue
+      const idx = Number(path.basename(fileName, '.ts').split('-')[1])
+      const origin = snippets[idx] ? snippets[idx].origin : fileName
+      const { line, character } = d.file.getLineAndCharacterOfPosition(d.start)
+      fail(
+        `${origin}:${line + 1}:${character + 1} - ${ts.flattenDiagnosticMessageText(d.messageText, ' ')}`,
+      )
+    }
+  } finally {
+    fs.rmSync(tmp, { recursive: true, force: true })
+  }
+}
+checkTsSnippets()
 
 if (process.exitCode) {
   console.error('[verify-docs] FAILED')

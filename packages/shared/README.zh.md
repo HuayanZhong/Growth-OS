@@ -15,7 +15,7 @@
 ## 用法
 
 ```ts
-import { normalizeUrl } from '@growth-os/shared'
+import { normalizeBaseUrl } from '@growth-os/shared'
 ```
 
 ## 契约
