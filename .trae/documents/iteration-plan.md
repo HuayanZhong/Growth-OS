@@ -323,8 +323,8 @@ export interface SessionEventLog {
 | 任务 | 优先级 | 预估工时 | 负责人 |
 |------|--------|----------|--------|
 | dotenv-cli 级联加入 `.env.local` 覆盖层 + 文档说明优先级 | P0 | 完成 | |
-| zod env schema 提到 `packages/shared`，前后端共用（后端 `env.validation.ts`、前端 `packages/shared/env.ts` 收敛为一份） | P1 | 2-3 天 | |
-| 前端配置走 Nuxt `runtimeConfig` 打通（构建时不内联、启动时可覆盖） | P1 | 2-3 天 | |
+| zod env schema 提到 `packages/shared`，前后端共用（`publicEnvSchema` 收敛 URL/key 规则，server 与桌面启动插件共用） | P1 | 完成 | |
+| 前端配置走 Nuxt `runtimeConfig` 打通（构建时不内联、启动时可覆盖；`launchEnv` IPC + runtime-env 插件落地） | P1 | 完成 | |
 | 开发环境配置热更新（仅前端 runtimeConfig 部分） | P2 | 3-5 天 | |
 
 ### 2.5 文档系统升级：并入 verify-docs 门禁
