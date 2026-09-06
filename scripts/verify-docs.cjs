@@ -13,6 +13,7 @@ const os = require('node:os')
 const path = require('node:path')
 const ts = require('typescript')
 const { checkPairs } = require('./verify-translation-pairing.cjs')
+const { generateConfigCatalog } = require('./generate-config-catalog.cjs')
 
 const ROOT = path.resolve(__dirname, '..')
 const MANIFEST_PATH = path.join(ROOT, 'scripts/doc-budgets.manifest.json')
@@ -211,6 +212,13 @@ function checkTsSnippets() {
   }
 }
 checkTsSnippets()
+
+// 6. Generated catalogs must be fresh — a stale file means the source changed
+//    without regenerating (or the doc was hand-edited; it is generated-only)
+const catalogPath = path.join(ROOT, 'docs/config-catalog.md')
+if (read(catalogPath) !== generateConfigCatalog()) {
+  fail('stale generated doc: docs/config-catalog.md — run `pnpm generate:config` and commit')
+}
 
 if (process.exitCode) {
   console.error('[verify-docs] FAILED')

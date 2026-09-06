@@ -81,6 +81,7 @@
 - [architecture/typescript-config.md](architecture/typescript-config.md) — TypeScript 分层配置设计（中文）
 - [i18n/README.md](i18n/README.md) — 双文配对契约（hash 校验，改双文文档后 `pnpm verify:pairing --write` 重录）
 - [i18n/terminology.md](i18n/terminology.md) — 双文翻译术语对照表
+- [config-catalog.md](config-catalog.md) — 配置目录（生成物，英文）：`pnpm generate:config` 再生成
 - [AGENTS.md](AGENTS.md) — 文档治理标准（英文）：事实分层 + 写作规则 + slop checklist
 
 ## 决策库（.agents/notes/）
@@ -93,4 +94,4 @@ Agent Notes 记录"为什么"（Problem → Decision → Alternatives → Conseq
 
 ## 文档门禁
 
-`pnpm verify:docs` 校验：CLAUDE.md 保持薄指针（指向 [AGENTS.md](../AGENTS.md)）、相对链接有效、字数预算、双文配对 hash。提交前 pre-commit 自动运行；CLAUDE.md 被改动会被拦截，用 `node scripts/verify-docs.cjs --sync` 恢复；双文文档两侧漂移会被拦截，用 `pnpm verify:pairing --write <path>` 重录。
+`pnpm verify:docs` 校验：CLAUDE.md 保持薄指针（指向 [AGENTS.md](../AGENTS.md)）、相对链接有效、字数预算、双文配对 hash、ts 代码块编译（packages README 对真实包源码）、生成式目录新鲜度（[config-catalog.md](config-catalog.md)）。提交前 pre-commit 自动运行；CLAUDE.md 被改动会被拦截，用 `node scripts/verify-docs.cjs --sync` 恢复；双文文档两侧漂移会被拦截，用 `pnpm verify:pairing --write <path>` 重录。
