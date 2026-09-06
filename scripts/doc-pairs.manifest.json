@@ -14,6 +14,8 @@
     ["apps/desktop/README.md", "apps/desktop/README.zh.md"],
     ["apps/server/README.md", "apps/server/README.zh.md"],
     ["docs/desktop/architecture.md", "docs/desktop/architecture.zh.md"],
-    ["docs/cookbook/llm-adapter.md", "docs/cookbook/llm-adapter.zh.md"]
+    ["docs/cookbook/llm-adapter.md", "docs/cookbook/llm-adapter.zh.md"],
+    ["docs/cookbook/package.md", "docs/cookbook/package.zh.md"],
+    ["docs/cookbook/tool.md", "docs/cookbook/tool.zh.md"]
   ]
 }

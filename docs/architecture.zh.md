@@ -16,15 +16,7 @@ Growth OS 是一个类 Coze 的 AI 智能体桌面平台。本文描述当前组
 
 ## 包拓扑
 
-```
-@growth-os/shared     (env/normalize 工具，零依赖)
-@growth-os/types      (共享类型，IPC 通道契约)
-@growth-os/ui         (设计系统组件与样式，daisyUI)
-@growth-os/desktop-core (Electron 主进程/preload，独立)
-        ↑
-apps/desktop          (Nuxt 4；依赖 types、ui、desktop-core)
-apps/server           (NestJS；依赖 shared 与 types)
-```
+workspace 依赖图从各包 package.json 生成：[module-graph.md](module-graph.md)——`pnpm generate:graph` 再生成，`verify:docs` 校验新鲜度。各包职责与恒成立的依赖规则——叶子包、无环、禁止包依赖应用——见 [packages/README.md](../packages/README.md)。
 
 共享配置在 `tooling/`：分层 TypeScript 预设（`tooling/typescript/`，见 [typescript-config.md](architecture/typescript-config.md)）、oxlint 规则、oxfmt 规则、Vitest 基础配置。
 

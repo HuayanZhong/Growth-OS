@@ -16,15 +16,7 @@ Growth OS is a Coze-like AI agent desktop platform. This map describes current c
 
 ## Package topology
 
-```
-@growth-os/shared     (env/normalize helpers, zero deps)
-@growth-os/types      (shared types, IPC channel contracts)
-@growth-os/ui         (design-system components + styles, daisyUI)
-@growth-os/desktop-core (Electron main/preload, standalone)
-        ↑
-apps/desktop          (Nuxt 4; depends on types, ui, desktop-core)
-apps/server           (NestJS; depends on shared, types)
-```
+The workspace dependency graph is generated from the package.json files: [module-graph.md](module-graph.md) — regenerate with `pnpm generate:graph`, freshness enforced by `verify:docs`. Package roles and the dependency rules that always hold — leaves, no cycles, no package → app deps — live in [packages/README.md](../packages/README.md).
 
 Shared configs live in `tooling/`: layered TypeScript presets (`tooling/typescript/`, see [typescript-config.md](architecture/typescript-config.md)), oxlint rules, oxfmt rules, Vitest base.
 

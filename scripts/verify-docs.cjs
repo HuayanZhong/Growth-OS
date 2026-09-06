@@ -14,6 +14,7 @@ const path = require('node:path')
 const ts = require('typescript')
 const { checkPairs } = require('./verify-translation-pairing.cjs')
 const { generateConfigCatalog } = require('./generate-config-catalog.cjs')
+const { generateModuleGraph } = require('./generate-module-graph.cjs')
 
 const ROOT = path.resolve(__dirname, '..')
 const MANIFEST_PATH = path.join(ROOT, 'scripts/doc-budgets.manifest.json')
@@ -213,11 +214,20 @@ function checkTsSnippets() {
 }
 checkTsSnippets()
 
-// 6. Generated catalogs must be fresh — a stale file means the source changed
+// 6. Generated docs must be fresh — a stale file means the source changed
 //    without regenerating (or the doc was hand-edited; it is generated-only)
-const catalogPath = path.join(ROOT, 'docs/config-catalog.md')
-if (read(catalogPath) !== generateConfigCatalog()) {
-  fail('stale generated doc: docs/config-catalog.md — run `pnpm generate:config` and commit')
+const GENERATED_DOCS = [
+  {
+    file: 'docs/config-catalog.md',
+    regen: 'pnpm generate:config',
+    generate: generateConfigCatalog,
+  },
+  { file: 'docs/module-graph.md', regen: 'pnpm generate:graph', generate: generateModuleGraph },
+]
+for (const { file, regen, generate } of GENERATED_DOCS) {
+  if (read(path.join(ROOT, file)) !== generate()) {
+    fail(`stale generated doc: ${file} — run \`${regen}\` and commit`)
+  }
 }
 
 if (process.exitCode) {

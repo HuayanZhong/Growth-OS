@@ -82,7 +82,7 @@
 - [i18n/README.md](i18n/README.md) — 双文配对契约（hash 校验，改双文文档后 `pnpm verify:pairing --write` 重录）
 - [i18n/terminology.md](i18n/terminology.md) — 双文翻译术语对照表
 - [config-catalog.md](config-catalog.md) — 配置目录（生成物，英文）：`pnpm generate:config` 再生成
-- [cookbook/llm-adapter.md](cookbook/llm-adapter.md) — LLM 适配器接入指南（双语配对）
+- [cookbook/](cookbook/) — how-to：加 LLM 适配器 / 加包 / 加工具
 - [AGENTS.md](AGENTS.md) — 文档治理标准（英文）：事实分层 + 写作规则 + slop checklist
 
 ## 决策库（.agents/notes/）

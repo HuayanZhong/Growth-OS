@@ -329,7 +329,7 @@ export interface SessionEventLog {
 
 ### 2.5 文档系统升级：并入 verify-docs 门禁
 
-**当前状态**：`scripts/verify-docs.cjs` 已覆盖链接/字数/双语 hash/ts 代码块编译（`packages/*/README*.md` 的 ts 块经 TypeScript API 对真实包源码编译）/config-catalog 生成式目录。缺口：module-graph、event 映射、cookbook。
+**当前状态**：`scripts/verify-docs.cjs` 已覆盖链接/字数/双语 hash/ts 代码块编译（`packages/*/README*.md` 的 ts 块经 TypeScript API 对真实包源码编译）/生成式目录（config-catalog + module-graph，freshness 门禁）/cookbook（LLM 适配器、加包、加工具）。缺口：event 映射（后置阶段三）。
 
 **做法**：全部作为 `verify-docs.cjs` 的新增检查项或 `scripts/` 下的配套脚本，同一条 `pnpm verify:docs` 门禁命令，不引入独立工具链。
 
@@ -337,7 +337,7 @@ export interface SessionEventLog {
 |------|--------|----------|--------|
 | verify-docs 新增 ts 代码块检查：提取文档内 `ts` 块做编译，引用的类型必须从 `packages/types` 真实导出 | P0 | 完成 | |
 | 生成式目录：config-catalog（env schema / launchEnv 白名单 → 生成 `docs/config-catalog.md` + verify-docs freshness 门禁，`pnpm generate:config` 再生成） | P1 | 完成 | |
-| 生成式目录：module-graph（模块依赖图 + freshness 检查） | P1 | 1 周 | |
+| 生成式目录：module-graph（workspace 依赖图 → 生成 `docs/module-graph.md` + verify-docs freshness 门禁，`pnpm generate:graph`；架构地图手绘 ASCII 拓扑已替换为链接） | P1 | 完成 | |
 | 生成式目录：event 映射（producer-consumer 映射表） | P2 | 后置到阶段三收尾（依赖事件系统） | |
 | cookbook：『加一个 LLM 适配器』（`docs/cookbook/llm-adapter.md` 双语配对，分步带编号验证；实现落点 `apps/server/src/infra/adapters/llm/` + DI token） | P1 | 完成 | |
 | cookbook：『加一个包/工具』 | P1 | 待办（无在途消费方，防先写先 drift） | |
