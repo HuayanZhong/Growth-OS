@@ -1,4 +1,4 @@
-import { Injectable, NotImplementedException } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import type { Project, CreateProjectInput, UpdateProjectInput } from '@growth-os/types'
 import { notImplemented } from '../../common/errors/not-implemented.ts'
 

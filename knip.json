@@ -3,7 +3,7 @@
   "workspaces": {
     ".": {
       "entry": ["scripts/**/*.cjs"],
-      "ignore": [".agents/**", ".trae/**"],
+      "ignore": [".agents/**"],
       "ignoreDependencies": ["publint"]
     },
     "apps/desktop": {

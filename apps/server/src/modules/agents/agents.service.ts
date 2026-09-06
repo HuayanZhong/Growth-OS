@@ -1,4 +1,4 @@
-import { Injectable, NotImplementedException } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import type { Agent, CreateAgentInput, UpdateAgentInput } from '@growth-os/types'
 import { notImplemented } from '../../common/errors/not-implemented.ts'
 
