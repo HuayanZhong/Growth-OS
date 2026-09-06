@@ -45,7 +45,7 @@ user → Vue 组件 → composable → IPC (window.desktop) → desktop-core 处
 ## 关键机制
 
 - **认证**：supabase-js 客户端注入 secureStorage 持久化 token；存储前剥离 PII；登录状态来自 `getSession()`；过期/403 会话时仅本地登出。见 [flows.md](../.trae/rules/frontend/auth/flows.md) 与 [token.md](../.trae/rules/frontend/auth/token.md)。
-- **环境变量**：dotenv-cli 级联——`pnpm dev` 加载 `.env` + `.env.development`，`pnpm build`/`start` 加载 `.env` + `.env.production`。客户端可见键为 `NUXT_PUBLIC_*`（构建期内联）。
+- **环境变量**：dotenv-cli `-e` 链——`.env.local`（个人/部署覆盖层，不入库）→ `.env.development`/`.env.production` → `.env`；先列文件胜出，缺失文件静默跳过。客户端可见键为 `NUXT_PUBLIC_*`，由共享的 `publicEnvSchema` 校验；桌面端渲染层经 `launchEnv` IPC 通道在启动时覆盖，不再构建期内联。变量目录：[config-catalog.md](config-catalog.md)。
 - **Electron + Nuxt 集成**：`apps/desktop/modules/electron.ts` 通过 vite-plugin-electron 编译 main/preload 并在开发时启动 Electron；生产构建只编译（electron-builder 打包）。
 - **动画**：组件切换用手写 GSAP + timeline（Nuxt 4 下 Vue `Transition mode="out-in"` + JS hooks 有 bug）；见 [animation.md](../.trae/rules/frontend/styles/animation.md)。
 - **数据库（server）**：通过 `apps/server/mikro-orm.config.ts` 使用 MikroORM，连接 session pooler 串；迁移与种子在 `infra/database/`，由 `mikro-orm:*` 脚本运行。见 [database.zh.md](server/database.zh.md)。

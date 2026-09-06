@@ -339,7 +339,8 @@ export interface SessionEventLog {
 | 生成式目录：config-catalog（env schema / launchEnv 白名单 → 生成 `docs/config-catalog.md` + verify-docs freshness 门禁，`pnpm generate:config` 再生成） | P1 | 完成 | |
 | 生成式目录：module-graph（模块依赖图 + freshness 检查） | P1 | 1 周 | |
 | 生成式目录：event 映射（producer-consumer 映射表） | P2 | 后置到阶段三收尾（依赖事件系统） | |
-| cookbook（`docs/cookbook/`）：『如何加一个包/工具/LLM 适配器』分步 how-to，带编号验证步骤 | P1 | 1 周 | |
+| cookbook：『加一个 LLM 适配器』（`docs/cookbook/llm-adapter.md` 双语配对，分步带编号验证；实现落点 `apps/server/src/infra/adapters/llm/` + DI token） | P1 | 完成 | |
+| cookbook：『加一个包/工具』 | P1 | 待办（无在途消费方，防先写先 drift） | |
 
 **说明**：ts 代码块检查对 2.1 适配器接口文档尤为关键——接口文档与源码 drift 会直接误导实现方。生成式目录中的 event 映射依赖阶段三事件系统，可后置到阶段三收尾。
 
@@ -363,8 +364,8 @@ export interface SessionEventLog {
 - [ ] agents 域完成前端 feature 化样板（typed client + composables，页面只做组装）
 - [ ] 会话事件词汇表定稿：消息事件与簿记事件分离，含 turn/step 边界
 - [x] 文档 ts 代码块受 `pnpm verify:docs` 门禁保护
-- [ ] `.env.local` 覆盖层生效，env schema 前后端一份
-- [ ] cookbook 至少覆盖『加一个 LLM 适配器』路径
+- [x] `.env.local` 覆盖层生效，env schema 前后端一份
+- [x] cookbook 至少覆盖『加一个 LLM 适配器』路径
 
 ---
 

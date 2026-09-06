@@ -10,6 +10,7 @@
     "packages/README.md": { "maxWords": 800 },
     "tooling/README.md": { "maxWords": 400 },
     "docs/server/database.md": { "maxWords": 900 },
-    "docs/desktop/architecture.md": { "maxWords": 600 }
+    "docs/desktop/architecture.md": { "maxWords": 600 },
+    "docs/cookbook/llm-adapter.md": { "maxWords": 1000 }
   }
 }
