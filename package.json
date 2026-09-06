@@ -19,6 +19,7 @@
     "verify:docs": "node scripts/verify-docs.cjs",
     "verify:pairing": "node scripts/verify-translation-pairing.cjs",
     "generate:config": "node scripts/generate-config-catalog.cjs",
+    "generate:graph": "node scripts/generate-module-graph.cjs",
     "prepare": "husky"
   },
   "devDependencies": {
