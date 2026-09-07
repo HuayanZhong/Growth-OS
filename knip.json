@@ -1,4 +1,4 @@
-﻿{
+{
   "$schema": "./node_modules/knip/schema.json",
   "workspaces": {
     ".": {
@@ -23,6 +23,7 @@
     },
     "apps/server": {
       "entry": ["src/main.ts", "mikro-orm.config.ts", "test/**/*.e2e-spec.ts"],
+      "ignore": ["src/infra/database/migrations/**"],
       "ignoreDependencies": ["pino-pretty"],
       "ignoreIssues": {
         "src/infra/database/seeders/DatabaseSeeder.ts": ["files"],

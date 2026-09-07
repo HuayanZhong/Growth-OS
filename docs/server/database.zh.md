@@ -12,7 +12,8 @@ MikroORM 不自己读 `.env`；每次 CLI 调用都通过 `dotenv -e ../../.env 
 
 - `metadataProvider: TsMorphMetadataProvider` —— 类型从源码/`.d.ts` 推断，生产同样可用；tsconfig 保持 `declaration: true` 让编译产物 dist 携带 `.d.ts`（或跑 `mikro-orm cache:generate` 生成元数据缓存随产物部署）。
 - `schemaGenerator.ignoreSchema` —— 排除 Supabase 系统 schema（auth、storage、realtime、vault 等），保证 `migration:create` 的 diff 干净。
-- `migrations: { path: 'dist/migrations', pathTs: 'src/migrations' }` —— dev/CLI 用 tsx 跑 `.ts` 源，生产跑 dist 编译后的 `.js`。
+- `schemaGenerator.ignoreTriggers / ignoreRoutines` —— Supabase 侧管理的函数/触发器（如 `public.rls_auto_enable`）对 schema 生成器 create-only，`migration:create` 永不为 Supabase 管理的对象生成 drop。
+- `migrations: { path: 'dist/infra/database/migrations', pathTs: 'src/infra/database/migrations' }` —— dev/CLI 用 tsx 跑 `.ts` 源，生产跑 dist 编译后的 `.js`。
 - `seeder: { path: 'dist/seeders', pathTs: 'src/seeders', defaultSeeder: 'DatabaseSeeder' }` —— 通过 `@mikro-orm/seeder` 灌种子数据。
 - `debug: process.env.DB_DEBUG === 'true'` —— SQL 日志开关。
 
@@ -36,14 +37,14 @@ apps/server/src/
 
 在 `apps/server` 目录运行；每条命令调用 CLI 前先注入根 env：
 
-| 命令 | 用途 |
-| --- | --- |
-| `pnpm mikro-orm:debug` | 配置/连接/实体发现诊断 |
+| 命令                              | 用途                           |
+| --------------------------------- | ------------------------------ |
+| `pnpm mikro-orm:debug`            | 配置/连接/实体发现诊断         |
 | `pnpm mikro-orm:migration:create` | 根据实体与 schema 差异生成迁移 |
-| `pnpm mikro-orm:migration:up` | 应用待执行迁移 |
-| `pnpm mikro-orm:migration:down` | 回滚最近一次迁移 |
-| `pnpm mikro-orm:seeder:run` | 运行 `DatabaseSeeder` |
+| `pnpm mikro-orm:migration:up`     | 应用待执行迁移                 |
+| `pnpm mikro-orm:migration:down`   | 回滚最近一次迁移               |
+| `pnpm mikro-orm:seeder:run`       | 运行 `DatabaseSeeder`          |
 
 ## 实体
 
-实体放在 `modules/<业务>/entities/`，由 `entities` glob 发现（`dist/**/*.entity.js` / `src/**/*.entity.ts`）。目前尚无实体，首个实体落地前 discovery 保持为空。
+实体放在 `modules/<业务>/entities/`，由 `entities` glob 发现（`dist/**/*.entity.js` / `src/**/*.entity.ts`）。首个实体是 `SessionEventEntity`（[session-event.entity.ts](../../apps/server/src/modules/sessions/entities/session-event.entity.ts)）——会话事件日志的 append-only `session_events` 表；`SessionsService.appendEvent/queryEvents` 在其上实现 `SessionEventLog` 契约。

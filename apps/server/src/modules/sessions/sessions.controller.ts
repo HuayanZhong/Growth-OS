@@ -19,8 +19,8 @@ import type {
 import { SessionsService } from './sessions.service.ts'
 
 /**
- * Session 域端点（骨架）：CRUD 同其余域（空列表 / 404 / 写路径 501）；
- * events 返回事件序列（阶段三接入存储），messages 返回投影后的模型可见历史。
+ * Session 域端点：CRUD 同其余域（空列表 / 404 / 写路径 501）；
+ * events 返回持久化的事件序列（升序），messages 返回投影后的模型可见历史。
  */
 @ApiTags('sessions')
 @Controller('sessions')
@@ -35,13 +35,13 @@ export class SessionsController {
 
   @Get(':id/events')
   @ApiOperation({ summary: '会话事件序列（升序，录制-回放同构）' })
-  listEvents(@Param('id') id: string): SessionEvent[] {
+  async listEvents(@Param('id') id: string): Promise<SessionEvent[]> {
     return this.sessionsService.listEvents(id)
   }
 
   @Get(':id/messages')
   @ApiOperation({ summary: '投影后的模型可见消息历史' })
-  listMessages(@Param('id') id: string): Message[] {
+  async listMessages(@Param('id') id: string): Promise<Message[]> {
     return this.sessionsService.listMessages(id)
   }
 

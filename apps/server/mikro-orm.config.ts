@@ -13,10 +13,6 @@ export default defineConfig({
   // 'default_MikroORM' 字符串 token 对不上，启动即崩。
   contextName: 'default',
 
-  // M1 阶段尚无实体（entities glob 为空），MikroORM v7 默认对空实体抛
-  // MetadataError: No entities were discovered；M2 实体落地后移除此项
-  discovery: { warnWhenNoEntities: false },
-
   // 实体类路径
   entities: ['dist/**/*.entity.js'],
   entitiesTs: ['src/**/*.entity.ts'],
@@ -52,6 +48,11 @@ export default defineConfig({
       'supabase_migrations',
       'pgbouncer',
     ],
+    // Supabase 侧管理的函数/触发器（如 public.rls_auto_enable）不归 ORM 管：
+    // create-only——实体声明的照常创建，已存在的永不 drop/alter，否则每次
+    // migration:create 都会生成对 Supabase 管理对象的 drop 噪音
+    ignoreTriggers: true,
+    ignoreRoutines: true,
   },
 
   // 迁移文件：src 下 .ts 源（CLI/tsx 用），dist 下编译后的 .js（生产 node 用）

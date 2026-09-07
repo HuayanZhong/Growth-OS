@@ -377,9 +377,9 @@ export interface SessionEventLog {
 
 | 任务 | 优先级 | 预估工时 | 负责人 |
 |------|--------|----------|--------|
-| 实现事件日志存储（前端 IndexedDB / 后端 PostgreSQL，append-only；后端走现有 MikroORM + migrations 工作流） | P0 | 2 周 | |
-| 实现事件查询和过滤 | P1 | 1 周 | |
-| 运行时不变量断言：模型可见输入可从日志重建 | P0 | 3-5 天 | |
+| 实现事件日志存储（前端 IndexedDB / 后端 PostgreSQL，append-only；后端走现有 MikroORM + migrations 工作流） | P0 | 完成 | |
+| 实现事件查询和过滤 | P1 | 完成 | |
+| 运行时不变量断言：模型可见输入可从日志重建 | P0 | 完成 | |
 
 ### 3.2 事件回放与 fork
 
@@ -422,8 +422,8 @@ export interface SessionEventBus {
 
 ### 阶段三验证清单
 
-- [ ] 会话事件可持久化（append-only）
-- [ ] 运行时断言通过：模型可见输入可从日志重建
+- [x] 会话事件可持久化（append-only）
+- [x] 运行时断言通过：模型可见输入可从日志重建
 - [ ] 支持事件回放和恢复
 - [ ] 支持会话 fork（turn/step 边界）
 - [ ] 审计日志完整

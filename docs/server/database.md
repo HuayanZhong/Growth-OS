@@ -12,7 +12,8 @@ MikroORM does not read `.env` itself; every CLI invocation injects it via `doten
 
 - `metadataProvider: TsMorphMetadataProvider` — types are inferred from source/`.d.ts`, usable in production; tsconfig keeps `declaration: true` so compiled `dist` carries `.d.ts` (or run `mikro-orm cache:generate` to ship a metadata cache instead).
 - `schemaGenerator.ignoreSchema` — Supabase system schemas (auth, storage, realtime, vault, ...) are excluded from schema diff/sync so `migration:create` stays clean.
-- `migrations: { path: 'dist/migrations', pathTs: 'src/migrations' }` — dev/CLI runs `.ts` sources via tsx; production runs compiled `.js` from `dist`.
+- `schemaGenerator.ignoreTriggers / ignoreRoutines` — Supabase-managed routines/triggers (e.g. `public.rls_auto_enable`) are create-only for the schema generator, so `migration:create` never emits drops for objects Supabase owns.
+- `migrations: { path: 'dist/infra/database/migrations', pathTs: 'src/infra/database/migrations' }` — dev/CLI runs `.ts` sources via tsx; production runs compiled `.js` from `dist`.
 - `seeder: { path: 'dist/seeders', pathTs: 'src/seeders', defaultSeeder: 'DatabaseSeeder' }` — seed data via `@mikro-orm/seeder`.
 - `debug: process.env.DB_DEBUG === 'true'` — SQL logging toggle.
 
@@ -46,4 +47,4 @@ Run from `apps/server`; each injects root env before invoking the CLI:
 
 ## Entities
 
-Entities live in `modules/<business>/entities/` and are discovered by the `entities` globs (`dist/**/*.entity.js` / `src/**/*.entity.ts`). None exist yet; discovery stays empty until the first entity is added.
+Entities live in `modules/<business>/entities/` and are discovered by the `entities` globs (`dist/**/*.entity.js` / `src/**/*.entity.ts`). The first entity is `SessionEventEntity` ([session-event.entity.ts](../../apps/server/src/modules/sessions/entities/session-event.entity.ts)) — the append-only `session_events` table backing the session event log; `SessionsService.appendEvent/queryEvents` implement the `SessionEventLog` contract on top of it.

@@ -1,28 +1,43 @@
 import { NotFoundException, NotImplementedException } from '@nestjs/common'
 import { Test } from '@nestjs/testing'
-import { describe, it, expect, beforeEach } from 'vitest'
+import { getMikroORMToken } from '@mikro-orm/nestjs'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { SessionsController } from '../../../src/modules/sessions/sessions.controller.ts'
 import { SessionsService } from '../../../src/modules/sessions/sessions.service.ts'
 
 /**
- * Session 域骨架行为：事件序列与消息投影为空（事件存储阶段三接入），
- * CRUD 写路径 501 NOT_IMPLEMENTED。
+ * Session 域端点：事件序列与消息投影走真实 service（EM 以空查询假对象注入，
+ * 空态返回空序列）；会话 CRUD 仍为骨架（详情 404、写路径 501）。
  */
-describe('SessionsController（骨架）', () => {
+describe('SessionsController', () => {
   let controller: SessionsController
 
   beforeEach(async () => {
     const moduleRef = await Test.createTestingModule({
       controllers: [SessionsController],
-      providers: [SessionsService],
+      providers: [
+        SessionsService,
+        {
+          provide: getMikroORMToken('default'),
+          useValue: {
+            em: {
+              fork: () => ({
+                find: vi.fn<() => Promise<never[]>>().mockResolvedValue([]),
+                create: vi.fn<(data: unknown) => unknown>(),
+                flush: vi.fn<() => Promise<void>>(),
+              }),
+            },
+          },
+        },
+      ],
     }).compile()
     controller = moduleRef.get(SessionsController)
   })
 
-  it('列表与事件序列为空，消息投影为空历史', () => {
+  it('列表为空，事件序列与消息投影为空历史', async () => {
     expect(controller.list()).toEqual([])
-    expect(controller.listEvents('s1')).toEqual([])
-    expect(controller.listMessages('s1')).toEqual([])
+    expect(await controller.listEvents('s1')).toEqual([])
+    expect(await controller.listMessages('s1')).toEqual([])
   })
 
   it('详情无数据抛 NotFoundException', () => {
