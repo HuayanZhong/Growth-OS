@@ -47,4 +47,6 @@ Run from `apps/server`; each injects root env before invoking the CLI:
 
 ## Entities
 
-Entities live in `modules/<business>/entities/` and are discovered by the `entities` globs (`dist/**/*.entity.js` / `src/**/*.entity.ts`). The first entity is `SessionEventEntity` ([session-event.entity.ts](../../apps/server/src/modules/sessions/entities/session-event.entity.ts)) — the append-only `session_events` table backing the session event log; `SessionsService.appendEvent/queryEvents` implement the `SessionEventLog` contract on top of it.
+Entities live in `modules/<business>/entities/` and are discovered by the `entities` globs (`dist/**/*.entity.js` / `src/**/*.entity.ts`). The sessions module hosts both:
+- `SessionEventEntity` ([session-event.entity.ts](../../apps/server/src/modules/sessions/entities/session-event.entity.ts)) — the append-only `session_events` table backing the session event log;
+- `SessionRecordEntity` ([session-record.entity.ts](../../apps/server/src/modules/sessions/entities/session-record.entity.ts)) — the `session_records` table with session lifecycle metadata. `session_events.session_id` carries no FK; the service cascades event deletion in the same transaction that removes the record.

@@ -12,13 +12,17 @@ import type {
   CreateSessionInput,
   UpdateSessionInput,
 } from '@growth-os/types'
-import { notImplemented } from '../../common/errors/not-implemented.ts'
 import {
   SessionEventEntity,
   toSessionEvent,
   toSessionEventRow,
 } from './entities/session-event.entity.ts'
 import type { SessionEventRow } from './entities/session-event.entity.ts'
+import {
+  SessionRecordEntity,
+  toSessionRecord,
+  toSessionRecordRow,
+} from './entities/session-record.entity.ts'
 
 /** turn/step 边界事件：fork 的合法 boundary（BookkeepingEventType 的边界子集） */
 const FORK_BOUNDARY_TYPES: ReadonlySet<string> = new Set([
@@ -29,13 +33,12 @@ const FORK_BOUNDARY_TYPES: ReadonlySet<string> = new Set([
 ])
 
 /**
- * Session 域 service：事件日志（唯一事实源）的 append-only 存储与查询，
- * 实现 SessionEventLog 契约的 append/query（deriveMessages 投影由
- * @growth-os/shared 提供，"模型可见即已记录"的运行时断言在投影处生效）。
+ * Session 域 service：会话记录 CRUD + 事件日志（唯一事实源）的 append-only
+ * 存储与查询，实现 SessionEventLog 契约的 append/query/fork（deriveMessages
+ * 投影由 @growth-os/shared 提供，"模型可见即已记录"的运行时断言在投影处生效）。
  *
- * 会话记录 CRUD 仍是骨架（写路径 501），随会话生命周期落地；
- * fork/回放恢复在 3.2 落地。无 per-request EM（registerRequestContext: false），
- * 每次操作显式 fork 保证 EM 隔离。
+ * 无 per-request EM（registerRequestContext: false），每次操作显式 fork 保证
+ * EM 隔离；多写操作单 flush/事务保证原子性。
  */
 @Injectable()
 export class SessionsService {
@@ -43,6 +46,73 @@ export class SessionsService {
     @InjectMikroORM('default')
     private readonly orm: MikroORM,
   ) {}
+
+  // ---- 会话记录 CRUD ----
+
+  /** 会话列表（按更新时间倒序） */
+  async list(): Promise<SessionRecord[]> {
+    const em = this.orm.em.fork()
+    const rows = await em.find(
+      SessionRecordEntity,
+      {},
+      {
+        orderBy: { updatedAt: QueryOrder.DESC },
+      },
+    )
+    return rows.map(toSessionRecord)
+  }
+
+  async getById(id: string): Promise<SessionRecord> {
+    const row = await this.orm.em.fork().findOne(SessionRecordEntity, { id })
+    if (!row) {
+      throw new NotFoundException({ code: 'NOT_FOUND', message: '会话不存在' })
+    }
+    return toSessionRecord(row)
+  }
+
+  async create(input: CreateSessionInput): Promise<SessionRecord> {
+    const em = this.orm.em.fork()
+    const now = Date.now()
+    const record: SessionRecord = {
+      id: crypto.randomUUID(),
+      agentId: input.agentId,
+      title: input.title ?? '新会话',
+      createdAt: now,
+      updatedAt: now,
+    }
+    em.persist(em.create(SessionRecordEntity, toSessionRecordRow(record)))
+    await em.flush()
+    return record
+  }
+
+  async update(id: string, input: UpdateSessionInput): Promise<SessionRecord> {
+    const em = this.orm.em.fork()
+    const row = await em.findOne(SessionRecordEntity, { id })
+    if (!row) {
+      throw new NotFoundException({ code: 'NOT_FOUND', message: '会话不存在' })
+    }
+    if (input.title !== undefined) {
+      row.title = input.title
+      row.updatedAt = new Date()
+    }
+    await em.flush()
+    return toSessionRecord(row)
+  }
+
+  /** 删除会话：记录与事件日志同事务级联删除（事件表无 FK，由 service 显式删） */
+  async remove(id: string): Promise<void> {
+    const em = this.orm.em.fork()
+    await em.transactional(async (tem) => {
+      const row = await tem.findOne(SessionRecordEntity, { id })
+      if (!row) {
+        throw new NotFoundException({ code: 'NOT_FOUND', message: '会话不存在' })
+      }
+      tem.remove(row)
+      await tem.nativeDelete(SessionEventEntity, { sessionId: id })
+    })
+  }
+
+  // ---- 事件日志（append-only） ----
 
   /** 追加事件（append-only）：重复 id 由 unique 约束在存储层拒绝 */
   async appendEvent(event: SessionEvent): Promise<void> {
@@ -54,8 +124,9 @@ export class SessionsService {
 
   /**
    * 从 turn/step 边界事件分叉新会话（SessionEventLog.fork 的服务端实现）：
-   * 复制源会话 seq ≤ boundary 的全部事件（含 boundary）到新会话，单 flush 单事务。
-   * 事件行 id 重新生成（id 全局 unique），payload 内的 callId 等关联保持不变。
+   * 复制源会话 seq ≤ boundary 的全部事件（含 boundary）到新会话，并补插新
+   * 会话记录，单 flush 单事务。事件行 id 重新生成（id 全局 unique），
+   * payload 内的 callId 等关联保持不变。
    */
   async forkSession(sourceSessionId: string, boundaryEventId: string): Promise<ForkSessionResult> {
     const em = this.orm.em.fork()
@@ -90,6 +161,21 @@ export class SessionsService {
         }),
       )
     }
+    // fork 产物补会话记录：源有记录 → 继承 agentId/title（加分叉标记）；
+    // 源无记录（事件先于记录存在）→ agentId 从复制事件推导
+    const sourceRecord = await em.findOne(SessionRecordEntity, { id: sourceSessionId })
+    const agentId = sourceRecord?.agentId ?? rows.find((r) => r.agentId !== null)?.agentId ?? ''
+    const title = sourceRecord ? `${sourceRecord.title}（分叉）` : '新会话（分叉）'
+    const now = new Date()
+    em.persist(
+      em.create(SessionRecordEntity, {
+        id: newSessionId,
+        agentId,
+        title,
+        createdAt: now,
+        updatedAt: now,
+      }),
+    )
     await em.flush()
     return { sessionId: newSessionId, copiedEvents: rows.length }
   }
@@ -118,26 +204,6 @@ export class SessionsService {
       ...(filter.limit !== undefined ? { limit: filter.limit } : {}),
     })
     return rows.map(toSessionEvent)
-  }
-
-  list(): SessionRecord[] {
-    return []
-  }
-
-  getById(_id: string): SessionRecord | null {
-    return null
-  }
-
-  create(_input: CreateSessionInput): SessionRecord {
-    throw notImplemented('创建会话')
-  }
-
-  update(_id: string, _input: UpdateSessionInput): SessionRecord {
-    throw notImplemented('更新会话')
-  }
-
-  remove(_id: string): void {
-    throw notImplemented('删除会话')
   }
 
   /** 会话事件序列（升序），即 GET /sessions/:id/events 的数据源 */

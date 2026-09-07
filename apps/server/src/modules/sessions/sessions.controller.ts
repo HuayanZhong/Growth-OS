@@ -1,13 +1,4 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  NotFoundException,
-  Param,
-  Patch,
-  Post,
-} from '@nestjs/common'
+import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common'
 import { ApiOperation, ApiTags } from '@nestjs/swagger'
 import type {
   Message,
@@ -21,8 +12,8 @@ import type {
 import { SessionsService } from './sessions.service.ts'
 
 /**
- * Session 域端点：CRUD 同其余域（空列表 / 404 / 写路径 501）；
- * events 返回持久化的事件序列（升序），messages 返回投影后的模型可见历史。
+ * Session 域端点：会话记录 CRUD 与事件日志/投影全部接入持久化存储
+ * （不存在 → 404 由 service 抛出）；fork 从 turn/step 边界事件分叉新会话。
  */
 @ApiTags('sessions')
 @Controller('sessions')
@@ -30,8 +21,8 @@ export class SessionsController {
   constructor(private readonly sessionsService: SessionsService) {}
 
   @Get()
-  @ApiOperation({ summary: '会话列表' })
-  list(): SessionRecord[] {
+  @ApiOperation({ summary: '会话列表（按更新时间倒序）' })
+  async list(): Promise<SessionRecord[]> {
     return this.sessionsService.list()
   }
 
@@ -49,17 +40,13 @@ export class SessionsController {
 
   @Get(':id')
   @ApiOperation({ summary: '获取单个会话' })
-  get(@Param('id') id: string): SessionRecord {
-    const session = this.sessionsService.getById(id)
-    if (!session) {
-      throw new NotFoundException({ code: 'NOT_FOUND', message: '会话不存在' })
-    }
-    return session
+  async get(@Param('id') id: string): Promise<SessionRecord> {
+    return this.sessionsService.getById(id)
   }
 
   @Post()
   @ApiOperation({ summary: '创建会话' })
-  create(@Body() input: CreateSessionInput): SessionRecord {
+  async create(@Body() input: CreateSessionInput): Promise<SessionRecord> {
     return this.sessionsService.create(input)
   }
 
@@ -71,13 +58,13 @@ export class SessionsController {
 
   @Patch(':id')
   @ApiOperation({ summary: '更新会话' })
-  update(@Param('id') id: string, @Body() input: UpdateSessionInput): SessionRecord {
+  async update(@Param('id') id: string, @Body() input: UpdateSessionInput): Promise<SessionRecord> {
     return this.sessionsService.update(id, input)
   }
 
   @Delete(':id')
-  @ApiOperation({ summary: '删除会话' })
-  remove(@Param('id') id: string): void {
-    this.sessionsService.remove(id)
+  @ApiOperation({ summary: '删除会话（级联删除事件日志）' })
+  async remove(@Param('id') id: string): Promise<void> {
+    await this.sessionsService.remove(id)
   }
 }

@@ -47,4 +47,6 @@ apps/server/src/
 
 ## 实体
 
-实体放在 `modules/<业务>/entities/`，由 `entities` glob 发现（`dist/**/*.entity.js` / `src/**/*.entity.ts`）。首个实体是 `SessionEventEntity`（[session-event.entity.ts](../../apps/server/src/modules/sessions/entities/session-event.entity.ts)）——会话事件日志的 append-only `session_events` 表；`SessionsService.appendEvent/queryEvents` 在其上实现 `SessionEventLog` 契约。
+实体放在 `modules/<业务>/entities/`，由 `entities` glob 发现（`dist/**/*.entity.js` / `src/**/*.entity.ts`）。sessions 模块承载两个：
+- `SessionEventEntity`（[session-event.entity.ts](../../apps/server/src/modules/sessions/entities/session-event.entity.ts)）——会话事件日志的 append-only `session_events` 表；
+- `SessionRecordEntity`（[session-record.entity.ts](../../apps/server/src/modules/sessions/entities/session-record.entity.ts)）——会话生命周期元数据 `session_records` 表。`session_events.session_id` 不建 FK，删除会话时由 service 在同一事务内级联删除事件。

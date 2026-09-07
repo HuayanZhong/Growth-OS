@@ -22,6 +22,7 @@ Status: implemented
 
 ## Consequences
 
-- HTTP 契约新增 `POST /sessions/:id/fork`（`ForkSessionInput`/`ForkSessionResult`），前端 `sessionsApi.fork` 同步镜像；fork 产物目前只有事件日志，会话记录表落地后需为新会话补 `SessionRecord`。
+- HTTP 契约新增 `POST /sessions/:id/fork`（`ForkSessionInput`/`ForkSessionResult`），前端 `sessionsApi.fork` 同步镜像。
+- fork 产物补插 `SessionRecord`（`session_records` 表）：源有记录 → 继承 agentId、标题加「（分叉）」；源无记录（事件先于记录存在）→ agentId 从复制事件推导，title 用缺省。会话 CRUD 同步接存储（create 缺省标题「新会话」，remove 在事务内级联删事件——事件表无 FK，由 service 显式删）。
 - fork 前的"回放/恢复"路径无新机制：`GET events`（重放源）+ `GET messages`（恢复投影）+ 前端 `useSessionReplay` 已覆盖。
-- 真实库冒烟验证过完整链路（append → query → fork → 投影 → 404 → 清理），冒烟脚本为一次性产物已删除。
+- 真实库冒烟验证过完整链路（create → append → fork（有/无记录源）→ list/update → remove 级联 → 清理），冒烟脚本为一次性产物已删除。
