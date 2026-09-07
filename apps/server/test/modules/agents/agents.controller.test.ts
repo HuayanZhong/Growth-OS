@@ -1,49 +1,65 @@
-import { NotFoundException, NotImplementedException } from '@nestjs/common'
+import { NotFoundException } from '@nestjs/common'
 import { Test } from '@nestjs/testing'
-import { describe, it, expect, beforeEach } from 'vitest'
+import { getMikroORMToken } from '@mikro-orm/nestjs'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { AuditService } from '../../../src/modules/audit/audit.service.ts'
 import { AgentsController } from '../../../src/modules/agents/agents.controller.ts'
 import { AgentsService } from '../../../src/modules/agents/agents.service.ts'
 
-/**
- * Agent 域骨架行为：读路径空态（列表 [] / 详情 404），写路径 501 NOT_IMPLEMENTED。
- */
-describe('AgentsController（骨架）', () => {
+/** Agent 域端点走真实 service（EM 假对象注入）：空态 / 404 / create 透传 */
+describe('AgentsController', () => {
   let controller: AgentsController
 
   beforeEach(async () => {
+    vi.resetAllMocks()
     const moduleRef = await Test.createTestingModule({
       controllers: [AgentsController],
-      providers: [AgentsService],
+      providers: [
+        AgentsService,
+        {
+          provide: AuditService,
+          useValue: { record: vi.fn<(entry: unknown) => Promise<void>>() },
+        },
+        {
+          provide: getMikroORMToken('default'),
+          useValue: {
+            em: {
+              fork: () => ({
+                find: vi.fn<() => Promise<unknown[]>>().mockResolvedValue([]),
+                findOne: vi.fn<() => Promise<unknown>>().mockResolvedValue(null),
+                create: vi.fn<(entity: unknown, data: unknown) => unknown>(),
+                persist: vi.fn<(entity: unknown) => unknown>(),
+                remove: vi.fn<(entity: unknown) => unknown>(),
+                flush: vi.fn<() => Promise<void>>(),
+              }),
+            },
+          },
+        },
+      ],
     }).compile()
     controller = moduleRef.get(AgentsController)
   })
 
-  it('列表返回空数组（骨架空存储）', () => {
-    expect(controller.list()).toEqual([])
+  it('列表为空数组', async () => {
+    expect(await controller.list()).toEqual([])
   })
 
-  it('详情无数据抛 NotFoundException（信封码 NOT_FOUND）', () => {
-    expect(() => controller.get('a1')).toThrow(NotFoundException)
-    try {
-      controller.get('a1')
-    } catch (err) {
-      expect((err as NotFoundException).getResponse()).toMatchObject({ code: 'NOT_FOUND' })
-    }
+  it('详情不存在抛 NotFoundException（信封码 NOT_FOUND）', async () => {
+    await expect(controller.get('a1')).rejects.toThrow(NotFoundException)
   })
 
-  it('创建/更新/删除抛 501 NOT_IMPLEMENTED', () => {
-    expect(() => controller.create({ name: 'a', systemPrompt: 'p', model: 'm' })).toThrow(
-      NotImplementedException,
+  it('create 透传 service（actor 来自 JWT）', async () => {
+    const agent = await controller.create(
+      { name: 'n', systemPrompt: 'p', model: 'deepseek-chat' },
+      { id: 'user-1', role: 'authenticated' },
     )
-    expect(() => controller.update('a1', { name: 'b' })).toThrow(NotImplementedException)
-    expect(() => controller.remove('a1')).toThrow(NotImplementedException)
+    expect(agent.name).toBe('n')
+    expect(agent.enabled).toBe(true)
+  })
 
-    try {
-      controller.create({ name: 'a', systemPrompt: 'p', model: 'm' })
-    } catch (err) {
-      expect((err as NotImplementedException).getResponse()).toMatchObject({
-        code: 'NOT_IMPLEMENTED',
-      })
-    }
+  it('remove 不存在抛 NotFoundException', async () => {
+    await expect(controller.remove('a1', { id: 'user-1', role: 'authenticated' })).rejects.toThrow(
+      NotFoundException,
+    )
   })
 })

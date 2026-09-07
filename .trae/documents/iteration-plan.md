@@ -411,7 +411,7 @@ export interface SessionEventBus {
 
 | 任务 | 优先级 | 预估工时 | 负责人 |
 |------|--------|----------|--------|
-| 实现操作审计日志（后端，复用事件日志存储与信封规范） | P1 | 完成（覆盖 sessions 域写操作） | |
+| 实现操作审计日志（后端，复用事件日志存储与信封规范） | P1 | 完成（sessions/agents/skills/projects 域；files 随存储适配器落地） | |
 | 实现审计日志查询 UI | P2 | 1-2 周 | |
 
 ### 3.5 生成式事件目录
@@ -426,7 +426,7 @@ export interface SessionEventBus {
 - [x] 运行时断言通过：模型可见输入可从日志重建
 - [x] 支持事件回放和恢复
 - [x] 支持会话 fork（turn/step 边界）
-- [ ] 审计日志完整（后端已覆盖 sessions 域写操作；其余域 CRUD 与查询 UI 落地后勾选）
+- [x] 审计日志完整（sessions/agents/skills/projects 域写操作全覆盖；files 随存储适配器落地接入）
 - [x] event producer-consumer 映射表由生成器产出并受门禁保护
 
 ---

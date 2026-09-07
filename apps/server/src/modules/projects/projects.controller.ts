@@ -1,56 +1,50 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  NotFoundException,
-  Param,
-  Patch,
-  Post,
-} from '@nestjs/common'
+import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common'
 import { ApiOperation, ApiTags } from '@nestjs/swagger'
-import type { Project, CreateProjectInput, UpdateProjectInput } from '@growth-os/types'
+import type { CreateProjectInput, Project, UpdateProjectInput } from '@growth-os/types'
+import { CurrentUser } from '../../common/decorators/current-user.decorator.ts'
+import type { AuthenticatedUser } from '../../shared/types/auth.types.ts'
 import { ProjectsService } from './projects.service.ts'
 
-/**
- * Project 域端点（骨架）：语义与 agents 一致——空列表 / 404 / 写路径 501。
- */
+/** Project 域端点：CRUD 接持久化存储（不存在 → 404 由 service 抛出），写操作记审计 */
 @ApiTags('projects')
 @Controller('projects')
 export class ProjectsController {
   constructor(private readonly projectsService: ProjectsService) {}
 
   @Get()
-  @ApiOperation({ summary: '项目列表' })
-  list(): Project[] {
+  @ApiOperation({ summary: '项目列表（按更新时间倒序）' })
+  async list(): Promise<Project[]> {
     return this.projectsService.list()
   }
 
   @Get(':id')
   @ApiOperation({ summary: '获取单个项目' })
-  get(@Param('id') id: string): Project {
-    const project = this.projectsService.getById(id)
-    if (!project) {
-      throw new NotFoundException({ code: 'NOT_FOUND', message: '项目不存在' })
-    }
-    return project
+  async get(@Param('id') id: string): Promise<Project> {
+    return this.projectsService.getById(id)
   }
 
   @Post()
   @ApiOperation({ summary: '创建项目' })
-  create(@Body() input: CreateProjectInput): Project {
-    return this.projectsService.create(input)
+  async create(
+    @Body() input: CreateProjectInput,
+    @CurrentUser() user: AuthenticatedUser,
+  ): Promise<Project> {
+    return this.projectsService.create(input, user.id)
   }
 
   @Patch(':id')
   @ApiOperation({ summary: '更新项目' })
-  update(@Param('id') id: string, @Body() input: UpdateProjectInput): Project {
-    return this.projectsService.update(id, input)
+  async update(
+    @Param('id') id: string,
+    @Body() input: UpdateProjectInput,
+    @CurrentUser() user: AuthenticatedUser,
+  ): Promise<Project> {
+    return this.projectsService.update(id, input, user.id)
   }
 
   @Delete(':id')
   @ApiOperation({ summary: '删除项目' })
-  remove(@Param('id') id: string): void {
-    this.projectsService.remove(id)
+  async remove(@Param('id') id: string, @CurrentUser() user: AuthenticatedUser): Promise<void> {
+    await this.projectsService.remove(id, user.id)
   }
 }

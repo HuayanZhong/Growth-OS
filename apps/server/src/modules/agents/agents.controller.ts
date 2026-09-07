@@ -1,57 +1,50 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  NotFoundException,
-  Param,
-  Patch,
-  Post,
-} from '@nestjs/common'
+import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common'
 import { ApiOperation, ApiTags } from '@nestjs/swagger'
 import type { Agent, CreateAgentInput, UpdateAgentInput } from '@growth-os/types'
+import { CurrentUser } from '../../common/decorators/current-user.decorator.ts'
+import type { AuthenticatedUser } from '../../shared/types/auth.types.ts'
 import { AgentsService } from './agents.service.ts'
 
-/**
- * Agent 域端点（骨架）：GET 列表返回空态，GET :id 无数据 404，
- * 写路径 501 NOT_IMPLEMENTED（服务层抛出）。
- */
+/** Agent 域端点：CRUD 接持久化存储（不存在 → 404 由 service 抛出），写操作记审计 */
 @ApiTags('agents')
 @Controller('agents')
 export class AgentsController {
   constructor(private readonly agentsService: AgentsService) {}
 
   @Get()
-  @ApiOperation({ summary: 'Agent 列表' })
-  list(): Agent[] {
+  @ApiOperation({ summary: 'Agent 列表（按更新时间倒序）' })
+  async list(): Promise<Agent[]> {
     return this.agentsService.list()
   }
 
   @Get(':id')
   @ApiOperation({ summary: '获取单个 Agent' })
-  get(@Param('id') id: string): Agent {
-    const agent = this.agentsService.getById(id)
-    if (!agent) {
-      throw new NotFoundException({ code: 'NOT_FOUND', message: 'Agent 不存在' })
-    }
-    return agent
+  async get(@Param('id') id: string): Promise<Agent> {
+    return this.agentsService.getById(id)
   }
 
   @Post()
   @ApiOperation({ summary: '创建 Agent' })
-  create(@Body() input: CreateAgentInput): Agent {
-    return this.agentsService.create(input)
+  async create(
+    @Body() input: CreateAgentInput,
+    @CurrentUser() user: AuthenticatedUser,
+  ): Promise<Agent> {
+    return this.agentsService.create(input, user.id)
   }
 
   @Patch(':id')
   @ApiOperation({ summary: '更新 Agent' })
-  update(@Param('id') id: string, @Body() input: UpdateAgentInput): Agent {
-    return this.agentsService.update(id, input)
+  async update(
+    @Param('id') id: string,
+    @Body() input: UpdateAgentInput,
+    @CurrentUser() user: AuthenticatedUser,
+  ): Promise<Agent> {
+    return this.agentsService.update(id, input, user.id)
   }
 
   @Delete(':id')
   @ApiOperation({ summary: '删除 Agent' })
-  remove(@Param('id') id: string): void {
-    this.agentsService.remove(id)
+  async remove(@Param('id') id: string, @CurrentUser() user: AuthenticatedUser): Promise<void> {
+    await this.agentsService.remove(id, user.id)
   }
 }

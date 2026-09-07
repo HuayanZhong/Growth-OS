@@ -47,9 +47,7 @@ apps/server/src/
 
 ## 实体
 
-实体放在 `modules/<业务>/entities/`，由 `entities` glob 发现（`dist/**/*.entity.js` / `src/**/*.entity.ts`）。sessions 模块承载两个：
-
-- `SessionEventEntity`（[session-event.entity.ts](../../apps/server/src/modules/sessions/entities/session-event.entity.ts)）——会话事件日志的 append-only `session_events` 表；
-- `SessionRecordEntity`（[session-record.entity.ts](../../apps/server/src/modules/sessions/entities/session-record.entity.ts)）——会话生命周期元数据 `session_records` 表。`session_events.session_id` 不建 FK，删除会话时由 service 在同一事务内级联删除事件。
-
-audit 模块承载 `AuditLogEntity`（[audit-log.entity.ts](../../apps/server/src/modules/audit/entities/audit-log.entity.ts)）——append-only 的 `audit_logs` 表，记录服务端写操作（操作者/动作/资源）。
+实体放在 `modules/<业务>/entities/`，由 `entities` glob 发现（`dist/**/*.entity.js` / `src/**/*.entity.ts`）。当前表：
+- `sessions` 模块：`SessionEventEntity`（[session-event.entity.ts](../../apps/server/src/modules/sessions/entities/session-event.entity.ts)）——append-only 的 `session_events` 事件日志；`SessionRecordEntity`（[session-record.entity.ts](../../apps/server/src/modules/sessions/entities/session-record.entity.ts)）——`session_records` 生命周期元数据。`session_events.session_id` 不建 FK，删除会话时由 service 在同一事务内级联删除事件。
+- `agents` / `skills` / `projects` 模块：各一张表（`agents`、`skills`、`projects`）；id 引用列表（`toolIds`、`agentIds` 等）以 `jsonb` 存储——成员资源仍归各自域所有。
+- `audit` 模块：`AuditLogEntity`（[audit-log.entity.ts](../../apps/server/src/modules/audit/entities/audit-log.entity.ts)）——append-only 的 `audit_logs` 表，记录服务端写操作（操作者/动作/资源）。
