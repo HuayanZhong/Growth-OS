@@ -443,8 +443,8 @@ export interface SessionEventBus {
 
 | 任务 | 优先级 | 预估工时 | 负责人 |
 |------|--------|----------|--------|
-| 设计适配器插件接口规范 | P0 | 1 周 | |
-| 定义插件元数据格式（package.json `growthos` 字段） | P0 | 2-3 天 | |
+| 设计适配器插件接口规范 | P0 | 提案就绪（[proposed note](../../.agents/notes/proposed/feature/2026-09-07-plugin-interface.md)，契约已随附 types/plugin.ts，待批准后进加载器） | |
+| 定义插件元数据格式（package.json `growthos` 字段） | P0 | 提案就绪（同上） | |
 | 实现插件加载器 | P1 | 2-3 周 | |
 
 **插件接口设计**：

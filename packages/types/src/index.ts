@@ -39,6 +39,17 @@ export type {
 export type { HealthApiMap } from './api/health.ts'
 export type { AuditLog, AuditLogQuery, AuditApiMap } from './api/audit.ts'
 
+// ---- 插件契约（迭代计划 4.1）----
+export type {
+  AdapterType,
+  AdapterRef,
+  PluginMetadata,
+  PluginContext,
+  Plugin,
+  PluginStatus,
+  PluginRecord,
+} from './plugin.ts'
+
 // ---- 能力适配器契约（迭代计划 2.1）——实现方与调用方的唯一耦合点 ----
 export type {
   LLMMessage,
