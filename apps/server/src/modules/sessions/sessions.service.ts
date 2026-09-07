@@ -23,6 +23,7 @@ import {
   toSessionRecord,
   toSessionRecordRow,
 } from './entities/session-record.entity.ts'
+import { AuditService } from '../audit/audit.service.ts'
 
 /** turn/step 边界事件：fork 的合法 boundary（BookkeepingEventType 的边界子集） */
 const FORK_BOUNDARY_TYPES: ReadonlySet<string> = new Set([
@@ -45,6 +46,8 @@ export class SessionsService {
   constructor(
     @InjectMikroORM('default')
     private readonly orm: MikroORM,
+    /** 跨域审计（域间只走 service 注入）：写操作成功后记录审计日志 */
+    private readonly auditService: AuditService,
   ) {}
 
   // ---- 会话记录 CRUD ----
@@ -70,7 +73,7 @@ export class SessionsService {
     return toSessionRecord(row)
   }
 
-  async create(input: CreateSessionInput): Promise<SessionRecord> {
+  async create(input: CreateSessionInput, actorId: string): Promise<SessionRecord> {
     const em = this.orm.em.fork()
     const now = Date.now()
     const record: SessionRecord = {
@@ -82,10 +85,17 @@ export class SessionsService {
     }
     em.persist(em.create(SessionRecordEntity, toSessionRecordRow(record)))
     await em.flush()
+    await this.auditService.record({
+      actorId,
+      action: 'create',
+      resourceType: 'session',
+      resourceId: record.id,
+      details: { title: record.title, agentId: record.agentId },
+    })
     return record
   }
 
-  async update(id: string, input: UpdateSessionInput): Promise<SessionRecord> {
+  async update(id: string, input: UpdateSessionInput, actorId: string): Promise<SessionRecord> {
     const em = this.orm.em.fork()
     const row = await em.findOne(SessionRecordEntity, { id })
     if (!row) {
@@ -96,11 +106,18 @@ export class SessionsService {
       row.updatedAt = new Date()
     }
     await em.flush()
+    await this.auditService.record({
+      actorId,
+      action: 'update',
+      resourceType: 'session',
+      resourceId: id,
+      ...(input.title !== undefined ? { details: { title: input.title } } : {}),
+    })
     return toSessionRecord(row)
   }
 
   /** 删除会话：记录与事件日志同事务级联删除（事件表无 FK，由 service 显式删） */
-  async remove(id: string): Promise<void> {
+  async remove(id: string, actorId: string): Promise<void> {
     const em = this.orm.em.fork()
     await em.transactional(async (tem) => {
       const row = await tem.findOne(SessionRecordEntity, { id })
@@ -109,6 +126,13 @@ export class SessionsService {
       }
       tem.remove(row)
       await tem.nativeDelete(SessionEventEntity, { sessionId: id })
+      await this.auditService.record({
+        actorId,
+        action: 'delete',
+        resourceType: 'session',
+        resourceId: id,
+        details: { title: row.title },
+      })
     })
   }
 
@@ -128,7 +152,11 @@ export class SessionsService {
    * 会话记录，单 flush 单事务。事件行 id 重新生成（id 全局 unique），
    * payload 内的 callId 等关联保持不变。
    */
-  async forkSession(sourceSessionId: string, boundaryEventId: string): Promise<ForkSessionResult> {
+  async forkSession(
+    sourceSessionId: string,
+    boundaryEventId: string,
+    actorId: string,
+  ): Promise<ForkSessionResult> {
     const em = this.orm.em.fork()
     const boundary = await em.findOne(SessionEventEntity, {
       id: boundaryEventId,
@@ -177,6 +205,13 @@ export class SessionsService {
       }),
     )
     await em.flush()
+    await this.auditService.record({
+      actorId,
+      action: 'fork',
+      resourceType: 'session',
+      resourceId: newSessionId,
+      details: { sourceSessionId, boundaryEventId, copiedEvents: rows.length },
+    })
     return { sessionId: newSessionId, copiedEvents: rows.length }
   }
 

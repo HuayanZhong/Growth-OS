@@ -2,6 +2,7 @@ import { NotFoundException } from '@nestjs/common'
 import { Test } from '@nestjs/testing'
 import { getMikroORMToken } from '@mikro-orm/nestjs'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { AuditService } from '../../../src/modules/audit/audit.service.ts'
 import { SessionsController } from '../../../src/modules/sessions/sessions.controller.ts'
 import { SessionsService } from '../../../src/modules/sessions/sessions.service.ts'
 
@@ -40,6 +41,10 @@ describe('SessionsController', () => {
       providers: [
         SessionsService,
         {
+          provide: AuditService,
+          useValue: { record: vi.fn<(entry: unknown) => Promise<void>>() },
+        },
+        {
           provide: getMikroORMToken('default'),
           useValue: { em: { fork: () => fakeEm } },
         },
@@ -58,20 +63,29 @@ describe('SessionsController', () => {
     await expect(controller.get('s1')).rejects.toThrow(NotFoundException)
   })
 
-  it('create 透传 service：返回服务端生成的记录', async () => {
-    const record = await controller.create({ agentId: 'a1' })
+  it('create 透传 service：返回服务端生成的记录（actor 来自 JWT）', async () => {
+    const record = await controller.create(
+      { agentId: 'a1' },
+      { id: 'user-1', role: 'authenticated' },
+    )
     expect(record.agentId).toBe('a1')
     expect(record.title).toBe('新会话')
     expect(fakeEm.flush).toHaveBeenCalledTimes(1)
   })
 
   it('fork 透传 service：boundary 不存在时 404', async () => {
-    await expect(controller.fork('s1', { boundaryEventId: 'missing' })).rejects.toThrow(
-      NotFoundException,
-    )
+    await expect(
+      controller.fork(
+        's1',
+        { boundaryEventId: 'missing' },
+        { id: 'user-1', role: 'authenticated' },
+      ),
+    ).rejects.toThrow(NotFoundException)
   })
 
   it('remove 不存在抛 NotFoundException', async () => {
-    await expect(controller.remove('s1')).rejects.toThrow(NotFoundException)
+    await expect(controller.remove('s1', { id: 'user-1', role: 'authenticated' })).rejects.toThrow(
+      NotFoundException,
+    )
   })
 })

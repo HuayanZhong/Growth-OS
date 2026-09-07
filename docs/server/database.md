@@ -48,5 +48,8 @@ Run from `apps/server`; each injects root env before invoking the CLI:
 ## Entities
 
 Entities live in `modules/<business>/entities/` and are discovered by the `entities` globs (`dist/**/*.entity.js` / `src/**/*.entity.ts`). The sessions module hosts both:
+
 - `SessionEventEntity` ([session-event.entity.ts](../../apps/server/src/modules/sessions/entities/session-event.entity.ts)) — the append-only `session_events` table backing the session event log;
 - `SessionRecordEntity` ([session-record.entity.ts](../../apps/server/src/modules/sessions/entities/session-record.entity.ts)) — the `session_records` table with session lifecycle metadata. `session_events.session_id` carries no FK; the service cascades event deletion in the same transaction that removes the record.
+
+The audit module hosts `AuditLogEntity` ([audit-log.entity.ts](../../apps/server/src/modules/audit/entities/audit-log.entity.ts)) — the append-only `audit_logs` table recording server-side write operations (actor/action/resource).

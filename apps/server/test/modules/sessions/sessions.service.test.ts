@@ -8,6 +8,7 @@ import type { EventFilter, SessionEvent, SessionRecord } from '@growth-os/types'
 import { SessionsService } from '../../../src/modules/sessions/sessions.service.ts'
 import { SessionEventEntity } from '../../../src/modules/sessions/entities/session-event.entity.ts'
 import { SessionRecordEntity } from '../../../src/modules/sessions/entities/session-record.entity.ts'
+import { AuditService } from '../../../src/modules/audit/audit.service.ts'
 import type {
   SessionEventInsert,
   SessionEventRow,
@@ -23,6 +24,7 @@ describe('SessionsService 存储与 fork', () => {
   const T0 = 1_700_000_000_000
 
   let service: SessionsService
+  const auditService = { record: vi.fn<(entry: unknown) => Promise<void>>() }
   const fakeEm = {
     find: vi.fn<(entity: unknown, where?: unknown, options?: unknown) => Promise<unknown[]>>(),
     findOne: vi.fn<(entity: unknown, where?: unknown) => Promise<unknown>>(),
@@ -40,6 +42,7 @@ describe('SessionsService 存储与 fork', () => {
     const moduleRef = await Test.createTestingModule({
       providers: [
         SessionsService,
+        { provide: AuditService, useValue: auditService },
         {
           provide: getMikroORMToken('default'),
           useValue: { em: { fork: () => fakeEm } },
@@ -85,8 +88,8 @@ describe('SessionsService 存储与 fork', () => {
   }
 
   describe('会话记录 CRUD', () => {
-    it('create：id/时间戳服务端生成，title 缺省「新会话」', async () => {
-      const record = await service.create({ agentId: 'a1' })
+    it('create：id/时间戳服务端生成，title 缺省「新会话」，记审计', async () => {
+      const record = await service.create({ agentId: 'a1' }, 'user-1')
       expect(record.agentId).toBe('a1')
       expect(record.title).toBe('新会话')
       expect(record.id).toMatch(/^[0-9a-f-]{36}$/)
@@ -99,10 +102,17 @@ describe('SessionsService 存储与 fork', () => {
       })
       expect(fakeEm.persist).toHaveBeenCalledTimes(1)
       expect(fakeEm.flush).toHaveBeenCalledTimes(1)
+      expect(auditService.record).toHaveBeenCalledWith({
+        actorId: 'user-1',
+        action: 'create',
+        resourceType: 'session',
+        resourceId: record.id,
+        details: { title: '新会话', agentId: 'a1' },
+      })
     })
 
     it('create：显式 title 透传', async () => {
-      const record = await service.create({ agentId: 'a1', title: '自定义' })
+      const record = await service.create({ agentId: 'a1', title: '自定义' }, 'user-1')
       expect(record.title).toBe('自定义')
     })
 
@@ -137,29 +147,45 @@ describe('SessionsService 存储与 fork', () => {
       })
     })
 
-    it('update：不存在 404；成功改 title 并刷新 updatedAt', async () => {
+    it('update：不存在 404；成功改 title、刷 updatedAt 并记审计', async () => {
       fakeEm.findOne.mockResolvedValue(null)
-      await expect(service.update('missing', { title: 'x' })).rejects.toThrow(NotFoundException)
+      await expect(service.update('missing', { title: 'x' }, 'user-1')).rejects.toThrow(
+        NotFoundException,
+      )
 
       const row = makeRecordRow()
       fakeEm.findOne.mockResolvedValue(row)
-      const result = await service.update('s1', { title: '新标题' })
+      const result = await service.update('s1', { title: '新标题' }, 'user-1')
       expect(result.title).toBe('新标题')
       expect(result.updatedAt).toBeGreaterThan(T0)
       expect(fakeEm.flush).toHaveBeenCalledTimes(1)
+      expect(auditService.record).toHaveBeenCalledWith({
+        actorId: 'user-1',
+        action: 'update',
+        resourceType: 'session',
+        resourceId: 's1',
+        details: { title: '新标题' },
+      })
     })
 
-    it('remove：事务内删记录并级联删事件；不存在 404', async () => {
+    it('remove：事务内删记录并级联删事件、记审计；不存在 404', async () => {
       fakeEm.transactional.mockImplementation((cb) => cb(fakeEm))
 
       fakeEm.findOne.mockResolvedValue(null)
-      await expect(service.remove('missing')).rejects.toThrow(NotFoundException)
+      await expect(service.remove('missing', 'user-1')).rejects.toThrow(NotFoundException)
 
       const row = makeRecordRow()
       fakeEm.findOne.mockResolvedValue(row)
-      await service.remove('s1')
+      await service.remove('s1', 'user-1')
       expect(fakeEm.remove).toHaveBeenCalledWith(row)
       expect(fakeEm.nativeDelete).toHaveBeenCalledWith(SessionEventEntity, { sessionId: 's1' })
+      expect(auditService.record).toHaveBeenCalledWith({
+        actorId: 'user-1',
+        action: 'delete',
+        resourceType: 'session',
+        resourceId: 's1',
+        details: { title: '会话' },
+      })
     })
   })
 
@@ -206,7 +232,7 @@ describe('SessionsService 存储与 fork', () => {
         boundary,
       ])
 
-      const result = await service.forkSession('s1', 'b1')
+      const result = await service.forkSession('s1', 'b1', 'user-1')
 
       // boundary 定位限定在源会话内
       expect(fakeEm.findOne).toHaveBeenCalledWith(SessionEventEntity, {
@@ -252,6 +278,13 @@ describe('SessionsService 存储与 fork', () => {
         agentId: 'a1',
         title: '新会话（分叉）',
       })
+      expect(auditService.record).toHaveBeenCalledWith({
+        actorId: 'user-1',
+        action: 'fork',
+        resourceType: 'session',
+        resourceId: newSessionId,
+        details: { sourceSessionId: 's1', boundaryEventId: 'b1', copiedEvents: 3 },
+      })
     })
 
     it('源有会话记录：新记录继承 agentId 并加「（分叉）」标题', async () => {
@@ -261,7 +294,7 @@ describe('SessionsService 存储与 fork', () => {
         .mockResolvedValueOnce(makeRecordRow({ agentId: 'src-agent', title: '源标题' }))
       fakeEm.find.mockResolvedValue([boundary])
 
-      const result = await service.forkSession('s1', 'b1')
+      const result = await service.forkSession('s1', 'b1', 'user-1')
       const persistedRecord = fakeEm.create.mock.calls.find(
         ([entity]) => entity === SessionRecordEntity,
       )?.[1] as SessionRecordRow
@@ -275,13 +308,15 @@ describe('SessionsService 存储与 fork', () => {
 
     it('boundary 事件不存在（或不在源会话内）→ NotFoundException', async () => {
       fakeEm.findOne.mockResolvedValue(null)
-      await expect(service.forkSession('s1', 'missing')).rejects.toThrow(NotFoundException)
+      await expect(service.forkSession('s1', 'missing', 'user-1')).rejects.toThrow(
+        NotFoundException,
+      )
       expect(fakeEm.flush).not.toHaveBeenCalled()
     })
 
     it('boundary 非 turn/step 边界事件 → BadRequestException', async () => {
       fakeEm.findOne.mockResolvedValue(makeEventRow({ id: 'u1', type: 'user_message', seq: 1 }))
-      await expect(service.forkSession('s1', 'u1')).rejects.toThrow(BadRequestException)
+      await expect(service.forkSession('s1', 'u1', 'user-1')).rejects.toThrow(BadRequestException)
       expect(fakeEm.flush).not.toHaveBeenCalled()
     })
   })

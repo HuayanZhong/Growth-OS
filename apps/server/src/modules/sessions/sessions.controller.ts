@@ -9,11 +9,14 @@ import type {
   ForkSessionResult,
   UpdateSessionInput,
 } from '@growth-os/types'
+import { CurrentUser } from '../../common/decorators/current-user.decorator.ts'
+import type { AuthenticatedUser } from '../../shared/types/auth.types.ts'
 import { SessionsService } from './sessions.service.ts'
 
 /**
  * Session 域端点：会话记录 CRUD 与事件日志/投影全部接入持久化存储
  * （不存在 → 404 由 service 抛出）；fork 从 turn/step 边界事件分叉新会话。
+ * 写操作以 JWT 身份（actorId = sub）记入审计日志。
  */
 @ApiTags('sessions')
 @Controller('sessions')
@@ -46,25 +49,36 @@ export class SessionsController {
 
   @Post()
   @ApiOperation({ summary: '创建会话' })
-  async create(@Body() input: CreateSessionInput): Promise<SessionRecord> {
-    return this.sessionsService.create(input)
+  async create(
+    @Body() input: CreateSessionInput,
+    @CurrentUser() user: AuthenticatedUser,
+  ): Promise<SessionRecord> {
+    return this.sessionsService.create(input, user.id)
   }
 
   @Post(':id/fork')
   @ApiOperation({ summary: '从 turn/step 边界事件分叉新会话（复制 seq ≤ boundary 的事件）' })
-  fork(@Param('id') id: string, @Body() input: ForkSessionInput): Promise<ForkSessionResult> {
-    return this.sessionsService.forkSession(id, input.boundaryEventId)
+  async fork(
+    @Param('id') id: string,
+    @Body() input: ForkSessionInput,
+    @CurrentUser() user: AuthenticatedUser,
+  ): Promise<ForkSessionResult> {
+    return this.sessionsService.forkSession(id, input.boundaryEventId, user.id)
   }
 
   @Patch(':id')
   @ApiOperation({ summary: '更新会话' })
-  async update(@Param('id') id: string, @Body() input: UpdateSessionInput): Promise<SessionRecord> {
-    return this.sessionsService.update(id, input)
+  async update(
+    @Param('id') id: string,
+    @Body() input: UpdateSessionInput,
+    @CurrentUser() user: AuthenticatedUser,
+  ): Promise<SessionRecord> {
+    return this.sessionsService.update(id, input, user.id)
   }
 
   @Delete(':id')
   @ApiOperation({ summary: '删除会话（级联删除事件日志）' })
-  async remove(@Param('id') id: string): Promise<void> {
-    await this.sessionsService.remove(id)
+  async remove(@Param('id') id: string, @CurrentUser() user: AuthenticatedUser): Promise<void> {
+    await this.sessionsService.remove(id, user.id)
   }
 }

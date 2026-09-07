@@ -18,6 +18,7 @@ import { SessionsModule } from './modules/sessions/sessions.module.ts'
 import { SkillsModule } from './modules/skills/skills.module.ts'
 import { FilesModule } from './modules/files/files.module.ts'
 import { ProjectsModule } from './modules/projects/projects.module.ts'
+import { AuditModule } from './modules/audit/audit.module.ts'
 
 const isProd = process.env.NODE_ENV === 'production'
 
@@ -89,6 +90,9 @@ const PINO_AUTO_LOGGING_IGNORE: (req: IncomingMessage) => boolean = (req) =>
     SkillsModule,
     FilesModule,
     ProjectsModule,
+
+    // ---- 审计日志（迭代计划 3.4）：sessions 等域写操作经 AuditService 显式记录 ----
+    AuditModule,
   ],
   providers: [
     // 全局异常过滤器：所有未捕获异常统一归一化为 ApiErrorEnvelope { code, message, details? }。
