@@ -19,5 +19,9 @@ export { normalizeBaseUrl, normalizePrefix, joinUrl } from './normalize.ts'
 
 export { deriveMessages, ProjectionError } from './session-events.ts'
 
+export { createSessionEventBus, EventVocabularyError } from './events/bus.ts'
+
+export type { SessionEventBus } from './events/bus.ts'
+
 // 注意：IPC 类型契约（IpcChannelMap/DesktopAPI 等）已迁至 @growth-os/types，
 // 需要时从 '@growth-os/types' 导入。
