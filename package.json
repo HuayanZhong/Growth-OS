@@ -20,6 +20,7 @@
     "verify:pairing": "node scripts/verify-translation-pairing.cjs",
     "generate:config": "node scripts/generate-config-catalog.cjs",
     "generate:graph": "node scripts/generate-module-graph.cjs",
+    "generate:events": "node scripts/generate-event-catalog.cjs",
     "prepare": "husky"
   },
   "devDependencies": {

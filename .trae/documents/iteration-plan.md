@@ -418,7 +418,7 @@ export interface SessionEventBus {
 
 | 任务 | 优先级 | 预估工时 | 负责人 |
 |------|--------|----------|--------|
-| 从源码生成 event producer-consumer 映射表 + verify-docs freshness 检查（依赖 2.5 的生成器框架） | P2 | 3-5 天 | |
+| 从源码生成 event producer-consumer 映射表 + verify-docs freshness 检查（依赖 2.5 的生成器框架） | P2 | 完成 | |
 
 ### 阶段三验证清单
 
@@ -426,8 +426,8 @@ export interface SessionEventBus {
 - [x] 运行时断言通过：模型可见输入可从日志重建
 - [x] 支持事件回放和恢复
 - [x] 支持会话 fork（turn/step 边界）
-- [ ] 审计日志完整
-- [ ] event producer-consumer 映射表由生成器产出并受门禁保护
+- [ ] 审计日志完整（后端已覆盖 sessions 域写操作；其余域 CRUD 与查询 UI 落地后勾选）
+- [x] event producer-consumer 映射表由生成器产出并受门禁保护
 
 ---
 

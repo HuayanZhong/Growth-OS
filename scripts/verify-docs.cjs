@@ -15,6 +15,7 @@ const ts = require('typescript')
 const { checkPairs } = require('./verify-translation-pairing.cjs')
 const { generateConfigCatalog } = require('./generate-config-catalog.cjs')
 const { generateModuleGraph } = require('./generate-module-graph.cjs')
+const { generateEventCatalog } = require('./generate-event-catalog.cjs')
 
 const ROOT = path.resolve(__dirname, '..')
 const MANIFEST_PATH = path.join(ROOT, 'scripts/doc-budgets.manifest.json')
@@ -223,6 +224,7 @@ const GENERATED_DOCS = [
     generate: generateConfigCatalog,
   },
   { file: 'docs/module-graph.md', regen: 'pnpm generate:graph', generate: generateModuleGraph },
+  { file: 'docs/event-catalog.md', regen: 'pnpm generate:events', generate: generateEventCatalog },
 ]
 for (const { file, regen, generate } of GENERATED_DOCS) {
   if (read(path.join(ROOT, file)) !== generate()) {
