@@ -361,8 +361,8 @@ export interface SessionEventLog {
 
 - [x] 四个能力适配器接口就位，实现方与调用方互不 import
 - [x] 五个产品域的 server 模块骨架与 HTTP API 契约类型就位
-- [ ] agents 域完成前端 feature 化样板（typed client + composables，页面只做组装）
-- [ ] 会话事件词汇表定稿：消息事件与簿记事件分离，含 turn/step 边界
+- [x] agents 域完成前端 feature 化样板（typed client + composables，页面只做组装；四域 typed client 已照抄迁移，composables 等消费方落地）
+- [x] 会话事件词汇表定稿：消息事件与簿记事件分离，含 turn/step 边界
 - [x] 文档 ts 代码块受 `pnpm verify:docs` 门禁保护
 - [x] `.env.local` 覆盖层生效，env schema 前后端一份
 - [x] cookbook 至少覆盖『加一个 LLM 适配器』路径

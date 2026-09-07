@@ -42,9 +42,17 @@ export async function apiFetch<T>(path: string, options: ApiFetchOptions = {}): 
     method: options.method ?? 'GET',
     headers: {
       Authorization: `Bearer ${token}`,
-      ...(options.body !== undefined ? { 'Content-Type': 'application/json' } : {}),
+      // FormData（multipart 上传）原样透传，Content-Type（含 boundary）交由浏览器生成
+      ...(options.body !== undefined && !(options.body instanceof FormData)
+        ? { 'Content-Type': 'application/json' }
+        : {}),
     },
-    body: options.body !== undefined ? JSON.stringify(options.body) : undefined,
+    body:
+      options.body === undefined
+        ? undefined
+        : options.body instanceof FormData
+          ? options.body
+          : JSON.stringify(options.body),
     signal: options.signal,
   })
 

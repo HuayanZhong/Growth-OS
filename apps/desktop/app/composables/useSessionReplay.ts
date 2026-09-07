@@ -1,6 +1,6 @@
 import type { Message, SessionEvent } from '@growth-os/types'
 import { deriveMessages } from '@growth-os/shared'
-import { apiFetch } from './useApi'
+import { sessionsApi } from '~/features/sessions/api'
 
 /**
  * 会话录制回放（迭代计划 1.2 P0）。
@@ -20,7 +20,7 @@ export function useSessionReplay(sessionId: string) {
 
   /** 拉取录制的事件序列（升序）并触发重投影 */
   async function load(): Promise<void> {
-    events.value = await apiFetch<SessionEvent[]>(`/sessions/${sessionId}/events`)
+    events.value = await sessionsApi.events(sessionId)
   }
 
   return { events, messages, load }

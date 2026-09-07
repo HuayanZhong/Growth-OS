@@ -25,5 +25,7 @@ Status: implemented
 ## Consequences
 
 - 后端 Agent 持久化落地后，侧边栏自动展示真实列表，重命名/新建即时生效，无需改 feature 层。
-- 后续域照抄此形状：`features/<domain>/api.ts` + `use-<domain>.ts`，错误透传，页面组装。约定记录在 `apps/desktop/README.md` 的 Layout 一节。
+- 四域 typed client 已照抄 `api.ts` 形状落地（`features/{sessions,skills,files,projects}/api.ts` + 各自镜像测试）；域 composable 暂不迁移——四个 dashboard 页面均为空壳、无真实消费方，先落 `use-<domain>.ts` 是死代码样态，待业务实现接线时再照抄 `use-agents.ts`。
+- `apiFetch` 增加 FormData 透传分支：files 域上传按契约是 multipart/form-data（file 二进制 + name/mimeType 表单字段），Content-Type（含 boundary）交由浏览器生成，JSON 分支行为不变。这是传输层职责，不算业务膨胀。
+- `useSessionReplay` 的手拼 `/sessions/:id/events` 路径收敛到 `sessionsApi.events()`——域 typed client 是路径拼接的唯一家，回放消费路径不变（仍走 apiFetch 链路）。
 - `systemPrompt` 留空与默认模型 `deepseek-chat` 内置在菜单组件——模型配置目录（config-catalog 扩展）落地后应改为从配置读取。
