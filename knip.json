@@ -1,9 +1,9 @@
-{
+﻿{
   "$schema": "./node_modules/knip/schema.json",
   "workspaces": {
     ".": {
       "entry": ["scripts/**/*.cjs"],
-      "ignore": [".agents/**"],
+      "ignore": [".agents/**", ".trae/**"],
       "ignoreDependencies": ["publint"]
     },
     "apps/desktop": {
