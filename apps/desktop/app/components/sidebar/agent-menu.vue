@@ -1,39 +1,71 @@
 <script setup lang="ts">
-// AGENTS 二级菜单：折叠头部 + 智能体列表项（默认智能体「小芽」）
-// 列表项悬停显示置顶 / 更多操作（重命名）（对标 Coze）
+// AGENTS 二级菜单：折叠头部 + 智能体列表（列表数据来自 agents 域 feature，
+// 空态退回内置占位「小芽」）；悬停显示置顶 / 更多操作（重命名）（对标 Coze）
 import { useNavActive } from '~/composables/useNavActive'
+import { useToast } from '~/composables/useToast'
+import { ApiError } from '~/composables/useApi'
+import { useAgents } from '~/features/agents/use-agents'
 
 const { isActive } = useNavActive()
+const { showToast } = useToast()
+const { agents, refresh, createAgent, renameAgent } = useAgents()
 
 // 菜单折叠状态（与项目菜单互相独立）
 const expanded = ref(true)
 
-// 默认智能体交互：名称、置顶态、更多菜单、重命名弹窗
-const agentName = ref('小芽')
-const agentPinned = ref(false)
-const agentMenuOpen = ref(false)
+// 内置占位智能体：后端无数据时的空态保底。id 为空串标识非持久化实体——
+// 重命名仅写本地状态，置顶同理；Agent 持久化落地后由真实列表替代
+const builtinName = ref('小芽')
+const builtinPinned = ref(false)
+
+/** 菜单展示项：后端有数据用真实列表，否则退回内置占位 */
+const menuAgents = computed(() =>
+  agents.value.length > 0
+    ? agents.value.map((a) => ({ id: a.id, name: a.name }))
+    : [{ id: '', name: builtinName.value }],
+)
+
+// 「更多」菜单当前展开项 id（'' = 未展开 / 占位项自身）
+const openMenuId = ref('')
+
+// 重命名弹窗
 const renameDialog = ref<HTMLDialogElement | null>(null)
 const renameInput = ref('')
 const renameInputEl = ref<HTMLInputElement | null>(null)
+const renameTarget = ref<{ id: string; name: string } | null>(null)
+
+// 新建弹窗
+const createDialog = ref<HTMLDialogElement | null>(null)
+const createInput = ref('')
+const createInputEl = ref<HTMLInputElement | null>(null)
+const isCreating = ref(false)
+
+// 初次挂载拉取真实列表；失败透出提示（列表保持空 → 空态保底占位）
+onMounted(() => {
+  refresh().catch((error: unknown) => {
+    showToast(error instanceof ApiError ? error.message : 'Agent 列表加载失败', 'error')
+  })
+})
 
 function toggle() {
   expanded.value = !expanded.value
 }
 
-// 置顶智能体（小芽）
-function toggleAgentPin() {
-  agentPinned.value = !agentPinned.value
+// 置顶内置占位智能体（置顶字段随持久化落地，真实 Agent 暂不支持）
+function toggleBuiltinPin() {
+  builtinPinned.value = !builtinPinned.value
 }
 
-// 更多操作菜单（重命名）
-function toggleAgentMenu() {
-  agentMenuOpen.value = !agentMenuOpen.value
+// 更多操作菜单（按项开合）
+function toggleAgentMenu(id: string) {
+  openMenuId.value = openMenuId.value === id ? '' : id
 }
 
 // 打开重命名弹窗
-function openRenameDialog() {
-  agentMenuOpen.value = false
-  renameInput.value = agentName.value
+function openRenameDialog(agent: { id: string; name: string }) {
+  openMenuId.value = ''
+  renameTarget.value = agent
+  renameInput.value = agent.name
   renameDialog.value?.showModal()
   nextTick(() => renameInputEl.value?.focus())
 }
@@ -41,18 +73,58 @@ function openRenameDialog() {
 // 关闭重命名弹窗
 function closeRenameDialog() {
   renameDialog.value?.close()
+  renameTarget.value = null
 }
 
-// 保存重命名智能体（小芽）
-function onRename() {
+// 保存重命名：占位项写本地状态；真实 Agent 走 PATCH，失败透出信封文案（骨架期 501）
+async function onRename() {
+  const target = renameTarget.value
   const name = renameInput.value.trim()
-  if (name) agentName.value = name
-  closeRenameDialog()
+  if (!target || !name) return
+  if (target.id === '') {
+    builtinName.value = name
+    closeRenameDialog()
+    return
+  }
+  try {
+    await renameAgent(target.id, name)
+    closeRenameDialog()
+  } catch (error) {
+    showToast(error instanceof ApiError ? error.message : '重命名 Agent 失败', 'error')
+  }
+}
+
+// 打开新建弹窗
+function openCreateDialog() {
+  createInput.value = ''
+  createDialog.value?.showModal()
+  nextTick(() => createInputEl.value?.focus())
+}
+
+// 关闭新建弹窗
+function closeCreateDialog() {
+  createDialog.value?.close()
+}
+
+// 创建 Agent：骨架期写路径 501，错误信封文案经 toast 透出；
+// systemPrompt 留空、model 先内置默认（模型配置目录落地后改由配置提供）
+async function onCreate() {
+  const name = createInput.value.trim()
+  if (!name || isCreating.value) return
+  isCreating.value = true
+  try {
+    await createAgent({ name, systemPrompt: '', model: 'deepseek-chat' })
+    closeCreateDialog()
+  } catch (error) {
+    showToast(error instanceof ApiError ? error.message : '创建 Agent 失败', 'error')
+  } finally {
+    isCreating.value = false
+  }
 }
 
 // 点击页面其他区域关闭「更多」菜单
 function onDocClick() {
-  agentMenuOpen.value = false
+  openMenuId.value = ''
 }
 
 onMounted(() => document.addEventListener('click', onDocClick))
@@ -103,6 +175,7 @@ onUnmounted(() => document.removeEventListener('click', onDocClick))
         type="button"
         class="shrink-0 p-2 text-base-content/40 opacity-0 transition-all hover:text-primary group-hover:opacity-100"
         title="新建 Agent"
+        @click="openCreateDialog"
       >
         <svg
           class="h-4 w-4"
@@ -119,16 +192,20 @@ onUnmounted(() => document.removeEventListener('click', onDocClick))
       </button>
     </div>
     <ul v-if="expanded" class="flex flex-col gap-0.5 pb-1">
-      <li>
+      <li v-for="agent in menuAgents" :key="agent.id || 'builtin'">
         <div
           class="group flex items-center rounded-lg transition-colors"
-          :class="isActive('/dashboard/agents') ? 'bg-primary/10' : 'hover:bg-base-300'"
+          :class="
+            isActive('/dashboard/agents') && agent.id === '' ? 'bg-primary/10' : 'hover:bg-base-300'
+          "
         >
           <NuxtLink
             to="/dashboard/agents"
             class="flex min-w-0 flex-1 items-center gap-2 px-2 py-1.5 text-sm transition-colors"
             :class="
-              isActive('/dashboard/agents') ? 'font-medium text-primary' : 'text-base-content/70'
+              isActive('/dashboard/agents') && agent.id === ''
+                ? 'font-medium text-primary'
+                : 'text-base-content/70'
             "
           >
             <span
@@ -148,23 +225,24 @@ onUnmounted(() => document.removeEventListener('click', onDocClick))
                 <path d="M12 12c3.2 0 5.5-1.7 5.5-5-3.2 0-5.5 1.7-5.5 5Z" />
               </svg>
             </span>
-            <span class="truncate">{{ agentName }}</span>
+            <span class="truncate">{{ agent.name }}</span>
           </NuxtLink>
-          <!-- 悬停显示的操作：置顶 + 更多（重命名） -->
+          <!-- 悬停显示的操作：置顶（仅内置占位）+ 更多（重命名） -->
           <div
             class="flex shrink-0 items-center gap-0.5 pr-1 opacity-0 transition-opacity"
-            :class="agentMenuOpen ? 'opacity-100' : 'group-hover:opacity-100'"
+            :class="openMenuId === agent.id ? 'opacity-100' : 'group-hover:opacity-100'"
           >
             <button
+              v-if="agent.id === ''"
               type="button"
               class="p-1 text-base-content/40 transition-colors hover:text-primary"
-              :title="agentPinned ? '取消置顶' : '置顶'"
-              @click="toggleAgentPin"
+              :title="builtinPinned ? '取消置顶' : '置顶'"
+              @click="toggleBuiltinPin"
             >
               <svg
                 class="h-4 w-4"
-                :class="agentPinned ? 'text-primary' : ''"
-                :fill="agentPinned ? 'currentColor' : 'none'"
+                :class="builtinPinned ? 'text-primary' : ''"
+                :fill="builtinPinned ? 'currentColor' : 'none'"
                 stroke="currentColor"
                 stroke-width="2"
                 stroke-linecap="round"
@@ -182,7 +260,7 @@ onUnmounted(() => document.removeEventListener('click', onDocClick))
                 type="button"
                 class="p-1 text-base-content/40 transition-colors hover:text-primary"
                 title="更多操作"
-                @click.stop="toggleAgentMenu"
+                @click.stop="toggleAgentMenu(agent.id)"
               >
                 <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
                   <circle cx="12" cy="12" r="1" />
@@ -191,14 +269,14 @@ onUnmounted(() => document.removeEventListener('click', onDocClick))
                 </svg>
               </button>
               <ul
-                v-if="agentMenuOpen"
+                v-if="openMenuId === agent.id"
                 class="absolute right-0 top-full z-10 mt-1 w-32 overflow-hidden rounded-lg border border-base-300 bg-base-100 p-1 shadow-lg"
               >
                 <li>
                   <button
                     type="button"
                     class="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors hover:bg-base-200"
-                    @click="openRenameDialog"
+                    @click="openRenameDialog(agent)"
                   >
                     <svg
                       class="h-4 w-4"
@@ -225,7 +303,7 @@ onUnmounted(() => document.removeEventListener('click', onDocClick))
     </ul>
   </li>
 
-  <!-- 重命名智能体弹窗 -->
+  <!-- 重命名 Agent 弹窗 -->
   <dialog ref="renameDialog" class="modal">
     <div class="modal-box">
       <h3 class="text-lg font-bold">重命名智能体</h3>
@@ -253,6 +331,37 @@ onUnmounted(() => document.removeEventListener('click', onDocClick))
     </div>
     <form method="dialog" class="modal-backdrop">
       <button type="button" @click="closeRenameDialog">关闭</button>
+    </form>
+  </dialog>
+
+  <!-- 新建 Agent 弹窗 -->
+  <dialog ref="createDialog" class="modal">
+    <div class="modal-box">
+      <h3 class="text-lg font-bold">新建 Agent</h3>
+      <input
+        ref="createInputEl"
+        v-model="createInput"
+        type="text"
+        name="new-agent-name"
+        class="input input-bordered mt-4 w-full"
+        placeholder="输入名称"
+        maxlength="20"
+        @keyup.enter="onCreate"
+      />
+      <div class="modal-action">
+        <button type="button" class="btn" @click="closeCreateDialog">取消</button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          :disabled="!createInput.trim() || isCreating"
+          @click="onCreate"
+        >
+          {{ isCreating ? '创建中…' : '创建' }}
+        </button>
+      </div>
+    </div>
+    <form method="dialog" class="modal-backdrop">
+      <button type="button" @click="closeCreateDialog">关闭</button>
     </form>
   </dialog>
 </template>

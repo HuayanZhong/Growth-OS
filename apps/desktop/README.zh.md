@@ -18,11 +18,12 @@ nuxi nuxt dev         # 仅 Nuxt，浏览器调试
 
 ```
 app/               # Nuxt 源码
-├── components/    # auth（login/register）、ToastContainer
-├── composables/   # useAuth、useSecureStorage、useSupabase、useToast
+├── components/    # 跨域通用：auth（login/register）、chat、sidebar、ToastContainer
+├── composables/   # 传输/认证/状态单例：useApi、useAuth、useSecureStorage、useSupabase、useToast
+├── features/      # 域 feature：<domain>/api.ts（typed client，类型派生自 @growth-os/types）+ <domain>/use-*.ts（域 composable）
 ├── layouts/       # default、dashboard
 ├── middleware/    # auth.global.ts
-└── pages/         # auth、dashboard（agents/files/projects/skills）
+└── pages/         # 只做路由组装（auth、dashboard：agents/files/projects/skills）
 modules/electron.ts    # vite-plugin-electron 接线
 scripts/verify-build.cjs
 test/              # nuxt/（集成）+ unit/

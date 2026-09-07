@@ -352,7 +352,7 @@ export interface SessionEventLog {
 |------|--------|----------|--------|
 | 后端五个域模块骨架（controller/service 空实现 + 路由注册，遵守域间只走 service 注入；读路径空态、写路径 501，entities 随阶段三持久化落地） | P0 | 完成 | |
 | `packages/types` 补 HTTP API 契约类型（对齐 error-envelope 与响应信封，复用 IPC 契约派生模式；apiFetch 同步解包 { data } 信封） | P0 | 完成 | |
-| 前端 feature 目录约定 + agents 域 typed client 与 composables 样板 | P1 | 1 周 | |
+| 前端 feature 目录约定 + agents 域 typed client 与 composables 样板（`app/features/agents/`，首个消费方 agent-menu） | P1 | 完成 | |
 | 其余四域 typed client 与 composables 迁移 | P2 | 1-2 周 | |
 
 **说明**：骨架先行（空实现 + 契约），业务功能随后填充；这为阶段三 sessions 域事件系统和阶段四适配器插件化给出确定落点，避免业务代码长完再搬家。
