@@ -385,8 +385,8 @@ export interface SessionEventLog {
 
 | 任务 | 优先级 | 预估工时 | 负责人 |
 |------|--------|----------|--------|
-| 实现事件回放和恢复 | P1 | 1 周 | |
-| 实现会话 fork（boundary 为 turn/step 边界事件） | P1 | 1 周 | |
+| 实现事件回放和恢复 | P1 | 完成 | |
+| 实现会话 fork（boundary 为 turn/step 边界事件） | P1 | 完成 | |
 
 ### 3.3 事件总线
 
@@ -424,8 +424,8 @@ export interface SessionEventBus {
 
 - [x] 会话事件可持久化（append-only）
 - [x] 运行时断言通过：模型可见输入可从日志重建
-- [ ] 支持事件回放和恢复
-- [ ] 支持会话 fork（turn/step 边界）
+- [x] 支持事件回放和恢复
+- [x] 支持会话 fork（turn/step 边界）
 - [ ] 审计日志完整
 - [ ] event producer-consumer 映射表由生成器产出并受门禁保护
 

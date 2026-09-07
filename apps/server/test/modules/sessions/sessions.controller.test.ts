@@ -23,6 +23,7 @@ describe('SessionsController', () => {
             em: {
               fork: () => ({
                 find: vi.fn<() => Promise<never[]>>().mockResolvedValue([]),
+                findOne: vi.fn<() => Promise<null>>().mockResolvedValue(null),
                 create: vi.fn<(data: unknown) => unknown>(),
                 flush: vi.fn<() => Promise<void>>(),
               }),
@@ -42,6 +43,12 @@ describe('SessionsController', () => {
 
   it('详情无数据抛 NotFoundException', () => {
     expect(() => controller.get('s1')).toThrow(NotFoundException)
+  })
+
+  it('fork 透传 service：boundary 不存在时 404', async () => {
+    await expect(controller.fork('s1', { boundaryEventId: 'missing' })).rejects.toThrow(
+      NotFoundException,
+    )
   })
 
   it('创建/更新/删除抛 501 NOT_IMPLEMENTED', () => {

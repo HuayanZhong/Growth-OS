@@ -1,4 +1,5 @@
 import { Test } from '@nestjs/testing'
+import { BadRequestException, NotFoundException } from '@nestjs/common'
 import { QueryOrder } from '@mikro-orm/core'
 import { getMikroORMToken } from '@mikro-orm/nestjs'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
@@ -22,12 +23,15 @@ describe('SessionsService 事件存储', () => {
   let service: SessionsService
   const fakeEm = {
     find: vi.fn<() => Promise<SessionEventRow[]>>(),
+    findOne: vi.fn<() => Promise<SessionEventRow | null>>(),
     create: vi.fn<(entity: unknown, data: SessionEventInsert) => unknown>(),
+    persist: vi.fn<(entity: unknown) => unknown>(),
     flush: vi.fn<() => Promise<void>>(),
   }
 
   beforeEach(async () => {
-    vi.clearAllMocks()
+    // reset 而非 clear：mockRejectedValue 等实现必须一并重置，防止用例间泄漏
+    vi.resetAllMocks()
     const moduleRef = await Test.createTestingModule({
       providers: [
         SessionsService,
@@ -66,6 +70,8 @@ describe('SessionsService 事件存储', () => {
 
   describe('appendEvent（append-only）', () => {
     it('持久化映射数据：epoch ms 转 Date，缺省 agentId 归一为 null', async () => {
+      const created = { marker: 'entity' }
+      fakeEm.create.mockReturnValue(created)
       await service.appendEvent(makeEvent())
       expect(fakeEm.create).toHaveBeenCalledWith(SessionEventEntity, {
         id: 'e1',
@@ -75,6 +81,7 @@ describe('SessionsService 事件存储', () => {
         timestamp: new Date(T0),
         payload: { content: 'hi' },
       })
+      expect(fakeEm.persist).toHaveBeenCalledWith(created)
       expect(fakeEm.flush).toHaveBeenCalledTimes(1)
     })
 
@@ -83,6 +90,72 @@ describe('SessionsService 事件存储', () => {
         new Error('duplicate key value violates unique constraint "session_events_id_unique"'),
       )
       await expect(service.appendEvent(makeEvent())).rejects.toThrow(/duplicate key/)
+    })
+  })
+
+  describe('forkSession（回放与分叉）', () => {
+    it('从 turn/step 边界复制 seq ≤ boundary 的事件到新会话（含 boundary，行 id 重生成）', async () => {
+      const boundary = makeRow({ id: 'b1', type: 'turn_end', seq: 3 })
+      fakeEm.findOne.mockResolvedValue(boundary)
+      fakeEm.find.mockResolvedValue([
+        makeRow({ seq: 1 }),
+        makeRow({
+          id: 'e2',
+          seq: 2,
+          agentId: 'a1',
+          type: 'assistant_message',
+          timestamp: new Date(T0 + 5),
+          payload: { content: 'yo' },
+        }),
+        boundary,
+      ])
+
+      const result = await service.forkSession('s1', 'b1')
+
+      // boundary 定位限定在源会话内
+      expect(fakeEm.findOne).toHaveBeenCalledWith(SessionEventEntity, {
+        id: 'b1',
+        sessionId: 's1',
+      })
+      // 复制范围按 seq 截断查询，升序
+      expect(fakeEm.find).toHaveBeenCalledWith(
+        SessionEventEntity,
+        { sessionId: 's1', seq: { $lte: 3 } },
+        { orderBy: { seq: QueryOrder.ASC } },
+      )
+      expect(fakeEm.flush).toHaveBeenCalledTimes(1)
+
+      const persisted = fakeEm.create.mock.calls.map(([, data]) => data)
+      expect(persisted).toHaveLength(3)
+      // 新会话 id 统一且不同于源
+      const newSessionId = persisted[0]?.sessionId
+      expect(newSessionId).toBeDefined()
+      expect(newSessionId).not.toBe('s1')
+      expect(result.sessionId).toBe(newSessionId)
+      expect(persisted.every((d) => d.sessionId === newSessionId)).toBe(true)
+      // 事件行 id 全部重生成（id 全局 unique）
+      expect(persisted.every((d) => !['e1', 'e2', 'b1'].includes(d.id))).toBe(true)
+      // 原事件内容按序保留，boundary（turn_end）也被复制
+      expect(persisted.map((d) => d.type)).toEqual([
+        'user_message',
+        'assistant_message',
+        'turn_end',
+      ])
+      expect(persisted[1]?.agentId).toBe('a1')
+      expect(persisted[1]?.payload).toEqual({ content: 'yo' })
+      expect(result.copiedEvents).toBe(3)
+    })
+
+    it('boundary 事件不存在（或不在源会话内）→ NotFoundException', async () => {
+      fakeEm.findOne.mockResolvedValue(null)
+      await expect(service.forkSession('s1', 'missing')).rejects.toThrow(NotFoundException)
+      expect(fakeEm.flush).not.toHaveBeenCalled()
+    })
+
+    it('boundary 非 turn/step 边界事件 → BadRequestException', async () => {
+      fakeEm.findOne.mockResolvedValue(makeRow({ id: 'u1', type: 'user_message', seq: 1 }))
+      await expect(service.forkSession('s1', 'u1')).rejects.toThrow(BadRequestException)
+      expect(fakeEm.flush).not.toHaveBeenCalled()
     })
   })
 

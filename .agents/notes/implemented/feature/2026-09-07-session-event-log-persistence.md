@@ -13,7 +13,7 @@ Status: implemented
 - 回放顺序键用插入序 `seq`（serial 主键）而非 timestamp：epoch ms 同毫秒事件无法定序；`timestamp`（timestamptz(3)，与契约 epoch ms 无损互转）只做过滤列。事件 `id` 加 unique 约束，重复 append 在 DB 层失败。
 - `schemaGenerator.ignoreTriggers / ignoreRoutines` 置 true：Supabase 侧管理的 `public.rls_auto_enable` 等对象归 Supabase 管，ORM 对其 create-only；否则 `migration:create` 每次都生成对 Supabase 管理对象的 drop（首版迁移实际出现过，已删除重生成并手工清理 down）。
 - type 列用 text 不用 pg enum：词汇表漂移防护已在投影处（`deriveMessages` 抛 `ProjectionError`）兜底，DB 层不重复锁字面量，避免词汇表演进时的 enum 迁移成本。
-- 写入走 `em.create(SessionEventEntity, insert)`，插入数据用显式 `SessionEventInsert`（不含 seq）而非 `RequiredEntityData`：后者的属性联合掺入 `Raw | null`，无法安全回灌给读侧映射函数复用。
+- 写入走 `em.persist(em.create(SessionEventEntity, insert))`，插入数据用显式 `SessionEventInsert`（不含 seq）而非 `RequiredEntityData`：后者的属性联合掺入 `Raw | null`，无法安全回灌给读侧映射函数复用。`em.create` 默认不进入持久化上下文，缺 `persist` 时 flush 不产生 INSERT（单测 mock 掩盖过该问题，真实库冒烟发现后修复）。
 
 ## Alternatives considered
 

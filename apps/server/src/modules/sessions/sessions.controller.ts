@@ -14,6 +14,8 @@ import type {
   SessionEvent,
   SessionRecord,
   CreateSessionInput,
+  ForkSessionInput,
+  ForkSessionResult,
   UpdateSessionInput,
 } from '@growth-os/types'
 import { SessionsService } from './sessions.service.ts'
@@ -59,6 +61,12 @@ export class SessionsController {
   @ApiOperation({ summary: '创建会话' })
   create(@Body() input: CreateSessionInput): SessionRecord {
     return this.sessionsService.create(input)
+  }
+
+  @Post(':id/fork')
+  @ApiOperation({ summary: '从 turn/step 边界事件分叉新会话（复制 seq ≤ boundary 的事件）' })
+  fork(@Param('id') id: string, @Body() input: ForkSessionInput): Promise<ForkSessionResult> {
+    return this.sessionsService.forkSession(id, input.boundaryEventId)
   }
 
   @Patch(':id')

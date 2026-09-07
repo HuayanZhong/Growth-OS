@@ -16,6 +16,7 @@ type UpdateSession = SessionsApiMap['PATCH /sessions/:id']
 type DeleteSession = SessionsApiMap['DELETE /sessions/:id']
 type GetSessionEvents = SessionsApiMap['GET /sessions/:id/events']
 type GetSessionMessages = SessionsApiMap['GET /sessions/:id/messages']
+type ForkSession = SessionsApiMap['POST /sessions/:id/fork']
 
 /**
  * Session 域 HTTP 客户端：SessionsApiMap 的完整镜像。
@@ -40,4 +41,10 @@ export const sessionsApi = {
   /** GET /sessions/:id/messages → Message[]（服务端投影的模型可见历史） */
   messages: (id: string) =>
     apiFetch<EndpointResponse<GetSessionMessages>>(`/sessions/${id}/messages`),
+  /** POST /sessions/:id/fork → ForkSessionResult（从 turn/step 边界事件分叉新会话） */
+  fork: (id: string, input: EndpointRequest<ForkSession>) =>
+    apiFetch<EndpointResponse<ForkSession>>(`/sessions/${id}/fork`, {
+      method: 'POST',
+      body: input,
+    }),
 }

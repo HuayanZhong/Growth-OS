@@ -29,6 +29,17 @@ export type UpdateSessionInput = {
   title?: string
 }
 
+/** fork 入参：boundary 必须是源会话中 turn/step 边界事件的 id */
+export type ForkSessionInput = {
+  boundaryEventId: string
+}
+
+/** fork 结果：新会话 id 与复制的事件数（复制范围含 boundary 事件） */
+export interface ForkSessionResult {
+  sessionId: string
+  copiedEvents: number
+}
+
 export interface SessionsApiMap {
   'GET /sessions': HttpEndpoint<'GET', undefined, SessionRecord[]>
   'POST /sessions': HttpEndpoint<'POST', CreateSessionInput, SessionRecord>
@@ -39,4 +50,9 @@ export interface SessionsApiMap {
   'GET /sessions/:id/events': HttpEndpoint<'GET', undefined, SessionEvent[]>
   /** 服务端投影后的模型可见消息历史（等价于对 events 跑 deriveMessages） */
   'GET /sessions/:id/messages': HttpEndpoint<'GET', undefined, Message[]>
+  /**
+   * 从 turn/step 边界事件处分叉新会话：复制源会话 seq ≤ boundary 的事件到新会话
+   * （boundary 非边界类型 → 400 BAD_REQUEST；boundary 不存在 → 404 NOT_FOUND）
+   */
+  'POST /sessions/:id/fork': HttpEndpoint<'POST', ForkSessionInput, ForkSessionResult>
 }

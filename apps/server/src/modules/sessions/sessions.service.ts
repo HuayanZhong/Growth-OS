@@ -1,10 +1,11 @@
-import { Injectable } from '@nestjs/common'
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
 import { MikroORM, QueryOrder } from '@mikro-orm/core'
 import type { FilterQuery } from '@mikro-orm/core'
 import { InjectMikroORM } from '@mikro-orm/nestjs'
 import { deriveMessages } from '@growth-os/shared'
 import type {
   EventFilter,
+  ForkSessionResult,
   Message,
   SessionEvent,
   SessionRecord,
@@ -18,6 +19,14 @@ import {
   toSessionEventRow,
 } from './entities/session-event.entity.ts'
 import type { SessionEventRow } from './entities/session-event.entity.ts'
+
+/** turn/step 边界事件：fork 的合法 boundary（BookkeepingEventType 的边界子集） */
+const FORK_BOUNDARY_TYPES: ReadonlySet<string> = new Set([
+  'turn_start',
+  'turn_end',
+  'step_start',
+  'step_end',
+])
 
 /**
  * Session 域 service：事件日志（唯一事实源）的 append-only 存储与查询，
@@ -38,8 +47,51 @@ export class SessionsService {
   /** 追加事件（append-only）：重复 id 由 unique 约束在存储层拒绝 */
   async appendEvent(event: SessionEvent): Promise<void> {
     const em = this.orm.em.fork()
-    em.create(SessionEventEntity, toSessionEventRow(event))
+    // em.create 默认不进入持久化上下文，必须显式 persist 后 flush 才落库
+    em.persist(em.create(SessionEventEntity, toSessionEventRow(event)))
     await em.flush()
+  }
+
+  /**
+   * 从 turn/step 边界事件分叉新会话（SessionEventLog.fork 的服务端实现）：
+   * 复制源会话 seq ≤ boundary 的全部事件（含 boundary）到新会话，单 flush 单事务。
+   * 事件行 id 重新生成（id 全局 unique），payload 内的 callId 等关联保持不变。
+   */
+  async forkSession(sourceSessionId: string, boundaryEventId: string): Promise<ForkSessionResult> {
+    const em = this.orm.em.fork()
+    const boundary = await em.findOne(SessionEventEntity, {
+      id: boundaryEventId,
+      sessionId: sourceSessionId,
+    })
+    if (!boundary) {
+      throw new NotFoundException({ code: 'NOT_FOUND', message: '边界事件不存在' })
+    }
+    if (!FORK_BOUNDARY_TYPES.has(boundary.type)) {
+      throw new BadRequestException({
+        code: 'BAD_REQUEST',
+        message: `事件 ${boundaryEventId}（${boundary.type}）不是 turn/step 边界事件，不能作为 fork 边界`,
+      })
+    }
+    const rows = await em.find(
+      SessionEventEntity,
+      { sessionId: sourceSessionId, seq: { $lte: boundary.seq } },
+      { orderBy: { seq: QueryOrder.ASC } },
+    )
+    const newSessionId = crypto.randomUUID()
+    for (const row of rows) {
+      em.persist(
+        em.create(SessionEventEntity, {
+          id: crypto.randomUUID(),
+          sessionId: newSessionId,
+          agentId: row.agentId,
+          type: row.type,
+          timestamp: row.timestamp,
+          payload: row.payload,
+        }),
+      )
+    }
+    await em.flush()
+    return { sessionId: newSessionId, copiedEvents: rows.length }
   }
 
   /** 事件查询：过滤条件（会话/Agent/类型/时间窗）+ 升序 + limit */
