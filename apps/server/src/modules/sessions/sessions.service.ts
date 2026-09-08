@@ -73,6 +73,12 @@ export class SessionsService {
     return toSessionRecord(row)
   }
 
+  /** 非抛错读取（跨域消费方如 turn 管线自行处理缺失语义） */
+  async findRecordById(id: string): Promise<SessionRecord | null> {
+    const row = await this.orm.em.fork().findOne(SessionRecordEntity, { id })
+    return row ? toSessionRecord(row) : null
+  }
+
   async create(input: CreateSessionInput, actorId: string): Promise<SessionRecord> {
     const em = this.orm.em.fork()
     const now = Date.now()

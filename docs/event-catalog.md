@@ -24,9 +24,10 @@
 
 ## 生产 / 消费调用点
 
-**Producers**（10）：
+**Producers**（11）：
 
-- `apps/server/src/modules/sessions/sessions.service.ts:142 (appendEvent)`
+- `apps/server/src/modules/sessions/sessions.service.ts:148 (appendEvent)`
+- `apps/server/src/modules/sessions/turn.service.ts:46 (appendEvent)`
 - `apps/server/test/modules/sessions/sessions.service.test.ts:196 (appendEvent)`
 - `apps/server/test/modules/sessions/sessions.service.test.ts:213 (appendEvent)`
 - `packages/shared/test/events/bus.test.ts:27 (bus emit)`
@@ -44,7 +45,7 @@
 - `apps/desktop/test/nuxt/session-replay.test.ts:43 (useSessionReplay)`
 - `apps/desktop/test/nuxt/session-replay.test.ts:7 (useSessionReplay)`
 - `apps/desktop/test/nuxt/session-replay.test.ts:72 (useSessionReplay)`
-- `apps/server/src/modules/sessions/sessions.service.ts:251 (deriveMessages)`
+- `apps/server/src/modules/sessions/sessions.service.ts:257 (deriveMessages)`
 - `packages/shared/src/session-events.ts:59 (deriveMessages)`
 - `packages/shared/test/events/bus.test.ts:24 (bus on)`
 - `packages/shared/test/events/bus.test.ts:25 (bus on)`
@@ -67,14 +68,14 @@
 
 | 事件 | 引用文件数 | 文件 |
 | --- | --- | --- |
-| `user_message` | 10 | `packages/shared/src/events/bus.ts`<br>`packages/shared/src/session-events.ts`<br>`packages/shared/test/events/bus.test.ts`<br>`packages/shared/test/session-events.fixture.ts`<br>`packages/shared/test/session-events.test.ts`<br>`packages/types/src/events/session.ts`<br>`apps/server/test/modules/sessions/entities/session-event.entity.test.ts`<br>`apps/server/test/modules/sessions/sessions.service.test.ts`<br>`apps/desktop/test/fixtures/session-recording.ts`<br>`apps/desktop/test/nuxt/sessions-api.test.ts` |
-| `assistant_message` | 8 | `packages/shared/src/events/bus.ts`<br>`packages/shared/src/session-events.ts`<br>`packages/shared/test/session-events.fixture.ts`<br>`packages/shared/test/session-events.test.ts`<br>`packages/types/src/events/session.ts`<br>`apps/server/test/modules/sessions/entities/session-event.entity.test.ts`<br>`apps/server/test/modules/sessions/sessions.service.test.ts`<br>`apps/desktop/test/fixtures/session-recording.ts` |
+| `user_message` | 12 | `packages/shared/src/events/bus.ts`<br>`packages/shared/src/session-events.ts`<br>`packages/shared/test/events/bus.test.ts`<br>`packages/shared/test/session-events.fixture.ts`<br>`packages/shared/test/session-events.test.ts`<br>`packages/types/src/events/session.ts`<br>`apps/server/src/modules/sessions/turn.service.ts`<br>`apps/server/test/modules/sessions/entities/session-event.entity.test.ts`<br>`apps/server/test/modules/sessions/sessions.service.test.ts`<br>`apps/server/test/modules/sessions/turn.service.test.ts`<br>`apps/desktop/test/fixtures/session-recording.ts`<br>`apps/desktop/test/nuxt/sessions-api.test.ts` |
+| `assistant_message` | 10 | `packages/shared/src/events/bus.ts`<br>`packages/shared/src/session-events.ts`<br>`packages/shared/test/session-events.fixture.ts`<br>`packages/shared/test/session-events.test.ts`<br>`packages/types/src/events/session.ts`<br>`apps/server/src/modules/sessions/turn.service.ts`<br>`apps/server/test/modules/sessions/entities/session-event.entity.test.ts`<br>`apps/server/test/modules/sessions/sessions.service.test.ts`<br>`apps/server/test/modules/sessions/turn.service.test.ts`<br>`apps/desktop/test/fixtures/session-recording.ts` |
 | `tool_call` | 5 | `packages/shared/src/events/bus.ts`<br>`packages/shared/src/session-events.ts`<br>`packages/shared/test/session-events.fixture.ts`<br>`packages/types/src/events/session.ts`<br>`apps/desktop/test/fixtures/session-recording.ts` |
 | `tool_result` | 7 | `packages/shared/src/events/bus.ts`<br>`packages/shared/src/session-events.ts`<br>`packages/shared/test/events/bus.test.ts`<br>`packages/shared/test/session-events.fixture.ts`<br>`packages/shared/test/session-events.test.ts`<br>`packages/types/src/events/session.ts`<br>`apps/desktop/test/fixtures/session-recording.ts` |
 | `system_prompt` | 5 | `packages/shared/src/events/bus.ts`<br>`packages/shared/src/session-events.ts`<br>`packages/shared/test/session-events.fixture.ts`<br>`packages/types/src/events/session.ts`<br>`apps/desktop/test/fixtures/session-recording.ts` |
 | `context_injection` | 5 | `packages/shared/src/events/bus.ts`<br>`packages/shared/src/session-events.ts`<br>`packages/shared/test/session-events.fixture.ts`<br>`packages/types/src/events/session.ts`<br>`apps/desktop/test/fixtures/session-recording.ts` |
-| `turn_start` | 9 | `packages/shared/src/events/bus.ts`<br>`packages/shared/src/session-events.ts`<br>`packages/shared/test/events/bus.test.ts`<br>`packages/shared/test/session-events.fixture.ts`<br>`packages/shared/test/session-events.test.ts`<br>`packages/types/src/events/session.ts`<br>`apps/server/src/modules/sessions/sessions.service.ts`<br>`apps/server/test/modules/sessions/sessions.service.test.ts`<br>`apps/desktop/test/fixtures/session-recording.ts` |
-| `turn_end` | 8 | `packages/shared/src/events/bus.ts`<br>`packages/shared/src/session-events.ts`<br>`packages/shared/test/session-events.fixture.ts`<br>`packages/shared/test/session-events.test.ts`<br>`packages/types/src/events/session.ts`<br>`apps/server/src/modules/sessions/sessions.service.ts`<br>`apps/server/test/modules/sessions/sessions.service.test.ts`<br>`apps/desktop/test/fixtures/session-recording.ts` |
+| `turn_start` | 11 | `packages/shared/src/events/bus.ts`<br>`packages/shared/src/session-events.ts`<br>`packages/shared/test/events/bus.test.ts`<br>`packages/shared/test/session-events.fixture.ts`<br>`packages/shared/test/session-events.test.ts`<br>`packages/types/src/events/session.ts`<br>`apps/server/src/modules/sessions/sessions.service.ts`<br>`apps/server/src/modules/sessions/turn.service.ts`<br>`apps/server/test/modules/sessions/sessions.service.test.ts`<br>`apps/server/test/modules/sessions/turn.service.test.ts`<br>`apps/desktop/test/fixtures/session-recording.ts` |
+| `turn_end` | 10 | `packages/shared/src/events/bus.ts`<br>`packages/shared/src/session-events.ts`<br>`packages/shared/test/session-events.fixture.ts`<br>`packages/shared/test/session-events.test.ts`<br>`packages/types/src/events/session.ts`<br>`apps/server/src/modules/sessions/sessions.service.ts`<br>`apps/server/src/modules/sessions/turn.service.ts`<br>`apps/server/test/modules/sessions/sessions.service.test.ts`<br>`apps/server/test/modules/sessions/turn.service.test.ts`<br>`apps/desktop/test/fixtures/session-recording.ts` |
 | `step_start` | 7 | `packages/shared/src/events/bus.ts`<br>`packages/shared/src/session-events.ts`<br>`packages/shared/test/session-events.fixture.ts`<br>`packages/shared/test/session-events.test.ts`<br>`packages/types/src/events/session.ts`<br>`apps/server/src/modules/sessions/sessions.service.ts`<br>`apps/desktop/test/fixtures/session-recording.ts` |
 | `step_end` | 7 | `packages/shared/src/events/bus.ts`<br>`packages/shared/src/session-events.ts`<br>`packages/shared/test/events/bus.test.ts`<br>`packages/shared/test/session-events.test.ts`<br>`packages/types/src/events/session.ts`<br>`apps/server/src/modules/sessions/sessions.service.ts`<br>`apps/desktop/test/fixtures/session-recording.ts` |
 | `condensation` | 6 | `packages/shared/src/events/bus.ts`<br>`packages/shared/src/session-events.ts`<br>`packages/shared/test/events/bus.test.ts`<br>`packages/shared/test/session-events.fixture.ts`<br>`packages/shared/test/session-events.test.ts`<br>`packages/types/src/events/session.ts` |

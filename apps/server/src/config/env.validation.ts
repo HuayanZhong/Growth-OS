@@ -1,6 +1,7 @@
 import {
   parseEnv,
   envString,
+  envUrlString,
   envIntString,
   envBoolString,
   publicEnvSchema,
@@ -29,6 +30,10 @@ const envSchema = publicEnvSchema.partial().extend({
   // PostgreSQL statement_timeout（毫秒）：防止单条慢查询无限执行耗尽连接池。
   // 缺省 10s；开发环境设 0 可禁用（允许慢查询调试）。
   DB_STATEMENT_TIMEOUT_MS: envIntString().optional(),
+  // LLM 供应商凭证（DeepSeek/OpenAI 兼容网关）：可选，缺 key 时适配器调用即抛错
+  LLM_API_KEY: envString().optional(),
+  // LLM API 基址（OpenAI 兼容）：缺省 https://api.deepseek.com
+  LLM_BASE_URL: envUrlString().optional(),
 })
 
 /**

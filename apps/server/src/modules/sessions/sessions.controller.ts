@@ -7,11 +7,14 @@ import type {
   CreateSessionInput,
   ForkSessionInput,
   ForkSessionResult,
+  SendMessageInput,
+  TurnResult,
   UpdateSessionInput,
 } from '@growth-os/types'
 import { CurrentUser } from '../../common/decorators/current-user.decorator.ts'
 import type { AuthenticatedUser } from '../../shared/types/auth.types.ts'
 import { SessionsService } from './sessions.service.ts'
+import { TurnService } from './turn.service.ts'
 
 /**
  * Session 域端点：会话记录 CRUD 与事件日志/投影全部接入持久化存储
@@ -21,7 +24,10 @@ import { SessionsService } from './sessions.service.ts'
 @ApiTags('sessions')
 @Controller('sessions')
 export class SessionsController {
-  constructor(private readonly sessionsService: SessionsService) {}
+  constructor(
+    private readonly sessionsService: SessionsService,
+    private readonly turnService: TurnService,
+  ) {}
 
   @Get()
   @ApiOperation({ summary: '会话列表（按更新时间倒序）' })
@@ -54,6 +60,12 @@ export class SessionsController {
     @CurrentUser() user: AuthenticatedUser,
   ): Promise<SessionRecord> {
     return this.sessionsService.create(input, user.id)
+  }
+
+  @Post(':id/messages')
+  @ApiOperation({ summary: '发送用户消息并执行一个回合（turn_start→user→assistant→turn_end）' })
+  async send(@Param('id') id: string, @Body() input: SendMessageInput): Promise<TurnResult> {
+    return this.turnService.execute(id, input)
   }
 
   @Post(':id/fork')

@@ -28,6 +28,8 @@ Source: [apps/server/src/config/env.validation.ts](../apps/server/src/config/env
 | `THROTTLE_TTL_MS` | `envIntString().optional()` | 限流配置（@nestjs/throttler）：TTL = 窗口时长（毫秒），limit = 窗口内最大请求数。 缺省 60s / 100 次，覆盖桌面应用正常用量；扫描器/DDoS 通常 >1000 次/分钟会被拦截。 |
 | `THROTTLE_LIMIT` | `envIntString().optional()` | — |
 | `DB_STATEMENT_TIMEOUT_MS` | `envIntString().optional()` | PostgreSQL statement_timeout（毫秒）：防止单条慢查询无限执行耗尽连接池。 缺省 10s；开发环境设 0 可禁用（允许慢查询调试）。 |
+| `LLM_API_KEY` | `envString().optional()` | LLM 供应商凭证（DeepSeek/OpenAI 兼容网关）：可选，缺 key 时适配器调用即抛错 |
+| `LLM_BASE_URL` | `envUrlString().optional()` | LLM API 基址（OpenAI 兼容）：缺省 https://api.deepseek.com |
 
 ## Desktop launch allowlist
 

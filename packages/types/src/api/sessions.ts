@@ -40,6 +40,17 @@ export interface ForkSessionResult {
   copiedEvents: number
 }
 
+/** 发送用户消息（触发一个回合：turn_start → user → assistant → turn_end） */
+export type SendMessageInput = {
+  content: string
+}
+
+/** 回合结果：本回合写入的事件 id（按序）与 assistant 回复 */
+export interface TurnResult {
+  eventIds: string[]
+  reply: Message
+}
+
 export interface SessionsApiMap {
   'GET /sessions': HttpEndpoint<'GET', undefined, SessionRecord[]>
   'POST /sessions': HttpEndpoint<'POST', CreateSessionInput, SessionRecord>
@@ -50,6 +61,11 @@ export interface SessionsApiMap {
   'GET /sessions/:id/events': HttpEndpoint<'GET', undefined, SessionEvent[]>
   /** 服务端投影后的模型可见消息历史（等价于对 events 跑 deriveMessages） */
   'GET /sessions/:id/messages': HttpEndpoint<'GET', undefined, Message[]>
+  /**
+   * 发送用户消息并执行一个回合：会话绑定 Agent 的模型生成回复，
+   * 事件序 turn_start → user_message → assistant_message → turn_end 落库
+   */
+  'POST /sessions/:id/messages': HttpEndpoint<'POST', SendMessageInput, TurnResult>
   /**
    * 从 turn/step 边界事件处分叉新会话：复制源会话 seq ≤ boundary 的事件到新会话
    * （boundary 非边界类型 → 400 BAD_REQUEST；boundary 不存在 → 404 NOT_FOUND）

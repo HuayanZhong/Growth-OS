@@ -26,6 +26,8 @@ export type {
   UpdateSessionInput,
   ForkSessionInput,
   ForkSessionResult,
+  SendMessageInput,
+  TurnResult,
   SessionsApiMap,
 } from './api/sessions.ts'
 export type { Skill, CreateSkillInput, UpdateSkillInput, SkillsApiMap } from './api/skills.ts'

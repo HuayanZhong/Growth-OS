@@ -9,5 +9,6 @@ import { AgentsService } from './agents.service.ts'
   imports: [MikroOrmModule.forFeature([AgentEntity]), AuditModule],
   controllers: [AgentsController],
   providers: [AgentsService],
+  exports: [AgentsService],
 })
 export class AgentsModule {}

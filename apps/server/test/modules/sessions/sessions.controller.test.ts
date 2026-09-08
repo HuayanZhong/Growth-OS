@@ -5,6 +5,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { AuditService } from '../../../src/modules/audit/audit.service.ts'
 import { SessionsController } from '../../../src/modules/sessions/sessions.controller.ts'
 import { SessionsService } from '../../../src/modules/sessions/sessions.service.ts'
+import { TurnService } from '../../../src/modules/sessions/turn.service.ts'
 
 /**
  * Session 域端点走真实 service（EM 以假对象注入，绝不连真实 DB）：
@@ -41,6 +42,22 @@ describe('SessionsController', () => {
       providers: [
         SessionsService,
         {
+          provide: TurnService,
+          useValue: {
+            execute: vi
+              .fn<
+                (
+                  id: string,
+                  input: { content: string },
+                ) => Promise<{ eventIds: string[]; reply: { role: 'assistant'; content: string } }>
+              >()
+              .mockResolvedValue({
+                eventIds: ['e1', 'e2', 'e3', 'e4'],
+                reply: { role: 'assistant', content: '回复' },
+              }),
+          },
+        },
+        {
           provide: AuditService,
           useValue: { record: vi.fn<(entry: unknown) => Promise<void>>() },
         },
@@ -71,6 +88,12 @@ describe('SessionsController', () => {
     expect(record.agentId).toBe('a1')
     expect(record.title).toBe('新会话')
     expect(fakeEm.flush).toHaveBeenCalledTimes(1)
+  })
+
+  it('send 透传 TurnService：返回回合结果', async () => {
+    const result = await controller.send('s1', { content: '你好' })
+    expect(result.reply).toEqual({ role: 'assistant', content: '回复' })
+    expect(result.eventIds).toHaveLength(4)
   })
 
   it('fork 透传 service：boundary 不存在时 404', async () => {

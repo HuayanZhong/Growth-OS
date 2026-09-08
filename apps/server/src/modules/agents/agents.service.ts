@@ -27,11 +27,17 @@ export class AgentsService {
   }
 
   async getById(id: string): Promise<Agent> {
-    const row = await this.orm.em.fork().findOne(AgentEntity, { id })
-    if (!row) {
+    const agent = await this.findById(id)
+    if (!agent) {
       throw new NotFoundException({ code: 'NOT_FOUND', message: 'Agent 不存在' })
     }
-    return toAgent(row)
+    return agent
+  }
+
+  /** 非抛错读取（跨域消费方如 turn 管线自行处理缺失语义） */
+  async findById(id: string): Promise<Agent | null> {
+    const row = await this.orm.em.fork().findOne(AgentEntity, { id })
+    return row ? toAgent(row) : null
   }
 
   async create(input: CreateAgentInput, actorId: string): Promise<Agent> {
