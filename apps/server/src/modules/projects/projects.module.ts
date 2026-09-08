@@ -6,7 +6,7 @@ import { ProjectsController } from './projects.controller.ts'
 import { ProjectsService } from './projects.service.ts'
 
 @Module({
-  imports: [MikroOrmModule.forFeature([ProjectEntity]), AuditModule],
+  imports: [MikroOrmModule.forFeature([ProjectEntity], 'default'), AuditModule],
   controllers: [ProjectsController],
   providers: [ProjectsService],
 })

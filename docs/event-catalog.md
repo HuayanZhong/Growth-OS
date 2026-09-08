@@ -46,7 +46,7 @@
 - `apps/desktop/test/nuxt/session-replay.test.ts:7 (useSessionReplay)`
 - `apps/desktop/test/nuxt/session-replay.test.ts:72 (useSessionReplay)`
 - `apps/server/src/modules/sessions/sessions.service.ts:260 (deriveMessages)`
-- `packages/shared/src/session-events.ts:59 (deriveMessages)`
+- `packages/shared/src/session-events.ts:62 (deriveMessages)`
 - `packages/shared/test/events/bus.test.ts:24 (bus on)`
 - `packages/shared/test/events/bus.test.ts:25 (bus on)`
 - `packages/shared/test/events/bus.test.ts:34 (bus on)`

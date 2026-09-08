@@ -21,11 +21,14 @@ import type {
 
 /** 投影失败：事件类型不在词汇表，或内容型 payload 缺失必需字段 */
 export class ProjectionError extends Error {
-  constructor(
-    message: string,
-    readonly eventId: string,
-  ) {
+  readonly eventId: string
+
+  constructor(message: string, eventId: string) {
     super(message)
+    // 显式赋值而非 parameter property：shared 以源码直引被 Node strip-only
+    // 模式加载，parameter property 属于需代码生成的语法，运行时会报
+    // ERR_UNSUPPORTED_TYPESCRIPT_SYNTAX
+    this.eventId = eventId
     this.name = 'ProjectionError'
   }
 }

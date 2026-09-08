@@ -6,7 +6,7 @@ import { SkillsController } from './skills.controller.ts'
 import { SkillsService } from './skills.service.ts'
 
 @Module({
-  imports: [MikroOrmModule.forFeature([SkillEntity]), AuditModule],
+  imports: [MikroOrmModule.forFeature([SkillEntity], 'default'), AuditModule],
   controllers: [SkillsController],
   providers: [SkillsService],
 })

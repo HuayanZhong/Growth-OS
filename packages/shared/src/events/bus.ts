@@ -16,11 +16,12 @@ import type { SessionEvent, SessionEventType, TypedSessionEvent } from '@growth-
 
 /** 事件类型不在会话事件词汇表内 */
 export class EventVocabularyError extends Error {
-  constructor(
-    message: string,
-    readonly eventType: string,
-  ) {
+  readonly eventType: string
+
+  constructor(message: string, eventType: string) {
     super(message)
+    // 同 ProjectionError：不用 parameter property，保持 Node strip-only 兼容
+    this.eventType = eventType
     this.name = 'EventVocabularyError'
   }
 }

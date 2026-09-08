@@ -5,7 +5,7 @@ import { AuditController } from './audit.controller.ts'
 import { AuditService } from './audit.service.ts'
 
 @Module({
-  imports: [MikroOrmModule.forFeature([AuditLogEntity])],
+  imports: [MikroOrmModule.forFeature([AuditLogEntity], 'default')],
   controllers: [AuditController],
   providers: [AuditService],
   exports: [AuditService],

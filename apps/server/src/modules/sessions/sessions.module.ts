@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common'
 import { MikroOrmModule } from '@mikro-orm/nestjs'
+import { LlmModule } from '../../infra/adapters/llm/llm.module.ts'
 import { AgentsModule } from '../agents/agents.module.ts'
 import { AuditModule } from '../audit/audit.module.ts'
 import { SessionEventEntity } from './entities/session-event.entity.ts'
@@ -10,9 +11,10 @@ import { TurnService } from './turn.service.ts'
 
 @Module({
   imports: [
-    MikroOrmModule.forFeature([SessionEventEntity, SessionRecordEntity]),
+    MikroOrmModule.forFeature([SessionEventEntity, SessionRecordEntity], 'default'),
     AuditModule,
     AgentsModule,
+    LlmModule,
   ],
   controllers: [SessionsController],
   providers: [SessionsService, TurnService],
