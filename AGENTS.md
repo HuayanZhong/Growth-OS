@@ -39,7 +39,7 @@ Before reporting a task done, run `test` → `typecheck` → `lint` and confirm 
 
 ## Commits are hook-gated
 
-Husky runs on every commit: pre-commit executes the docs gate (`node scripts/verify-docs.cjs`) then lint-staged (oxfmt with `--threads=1` — a Windows workaround — plus oxlint `--fix`); commit-msg enforces commitlint (conventional type only, header ≤ 72 chars; scope optional and unenforced). If a hook rejects the commit, fix and re-commit; do not bypass hooks.
+Husky runs on every commit: pre-commit runs lint-staged first (oxfmt with `--threads=1` — a Windows workaround — plus oxlint `--fix`) so the docs gate afterwards (`node scripts/verify-docs.cjs`) sees the formatted output; commit-msg enforces commitlint (conventional type only, header ≤ 72 chars; scope optional and unenforced). If a hook rejects the commit, fix and re-commit; do not bypass hooks.
 
 ## Rules (.trae/rules)
 

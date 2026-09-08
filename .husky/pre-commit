@@ -1,2 +1,2 @@
-node scripts/verify-docs.cjs
 pnpm exec lint-staged --relative
+node scripts/verify-docs.cjs

@@ -27,7 +27,7 @@
 **Producers**（11）：
 
 - `apps/server/src/modules/sessions/sessions.service.ts:148 (appendEvent)`
-- `apps/server/src/modules/sessions/turn.service.ts:46 (appendEvent)`
+- `apps/server/src/modules/sessions/turn.service.ts:41 (appendEvent)`
 - `apps/server/test/modules/sessions/sessions.service.test.ts:196 (appendEvent)`
 - `apps/server/test/modules/sessions/sessions.service.test.ts:213 (appendEvent)`
 - `packages/shared/test/events/bus.test.ts:27 (bus emit)`
