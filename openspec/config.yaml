@@ -20,6 +20,9 @@ context: |
   Verification: pnpm verify (invariants + docs + gates), then test -> typecheck -> lint must be green.
   Conventions: conventional commits (header <= 72 chars); harness assets under .trae/ and .agents/ follow
   docs/AGENTS.md tier taxonomy; read AGENTS.md before changing packages/.
+  Language: write all planning artifacts (proposal, specs, design, tasks) in Simplified Chinese;
+  keep structural spec markers (### Requirement:, #### Scenario:, WHEN/THEN, SHALL), code, commands,
+  and file paths verbatim in English so openspec validate keeps parsing them.
 
 # Per-artifact rules (optional)
 # Add custom rules for specific artifacts.
