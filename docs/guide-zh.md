@@ -101,7 +101,7 @@ Agent Notes 记录"为什么"（Problem → Decision → Alternatives → Conseq
 
 ## 变更工作流（OpenSpec）
 
-非平凡变更走规格流程：`/opsx-propose` → `/opsx-apply` → `/opsx-archive`；命令/技能在 `.trae/`，规格库与项目 context 在 [openspec/](../openspec/config.yaml)。跨平台共享：其他 agent `openspec init --tools <id>` 后读同一规格库。
+非平凡变更走规格流程：`/opsx-propose` → `/opsx-apply` → `/opsx-archive`；Trae 用 `.trae/commands/`，其他 agent 平台用 `.agents/skills/openspec-*` 共享技能；规格库与项目 context 在 [openspec/](../openspec/config.yaml)。新平台接入：`openspec init --tools <id>`。
 
 ## 文档门禁
 

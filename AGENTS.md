@@ -33,7 +33,7 @@ Node ≥ 24 required; pnpm 12.1.0 is pinned via `packageManager` + `devEngines` 
 - `pnpm verify:invariants` — structural invariant checks (ZodValidationPipe mounting, forFeature contextName, shared/types strip-only syntax, server ESM constraints); runs in CI and pre-commit; line-level exemption: `// invariant: skip`
 - `pnpm verify:gates` — gate self-monitoring (gate/hook script syntax, `hooks.json` structure, hook liveness smoke); runs in CI and pre-commit
 - `pnpm verify` — one-shot: invariants + docs + gates; agent wrap-up runs this single command
-- OpenSpec change workflow — non-trivial changes go through `openspec/` (delta specs + proposal + tasks): invoke `/opsx-propose` → `/opsx-apply` → `/opsx-archive` via `.trae/commands` (or the `openspec-*` skills); project context in [openspec/config.yaml](openspec/config.yaml)
+- OpenSpec change workflow — non-trivial changes go through `openspec/` (delta specs + proposal + tasks): invoke `/opsx-propose` → `/opsx-apply` → `/opsx-archive` via `.trae/commands` (Trae) or the shared `openspec-*` skills in `.agents/skills` (any agent platform reading `.agents/skills`); project context in [openspec/config.yaml](openspec/config.yaml)
 - `pnpm verify:pairing --write <path>` — re-record a bilingual pair's hash after a paired change (see [docs/i18n/README.md](docs/i18n/README.md))
 - `pnpm --filter desktop test` / `pnpm --filter server test` — per-app tests (both `vitest run`); single file: `pnpm --filter desktop vitest run test/nuxt/use-auth.test.ts`
 - `pnpm --filter desktop verify:build` — Electron production build smoke test

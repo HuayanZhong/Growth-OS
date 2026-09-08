@@ -161,30 +161,37 @@ function checkHarnessAssets() {
       report(`${rel}: tools must be a comma-separated list without empty entries`)
     }
   }
-  const skillsDir = path.join(ROOT, '.trae/skills')
-  for (const entry of fs.readdirSync(skillsDir, { withFileTypes: true })) {
-    if (!entry.isDirectory()) continue
-    const skillMd = path.join(skillsDir, entry.name, 'SKILL.md')
-    if (!fs.existsSync(skillMd)) {
-      report(`.trae/skills/${entry.name}: directory has no SKILL.md (Agent Skills spec)`)
-      continue
+  const skillRoots = ['.trae/skills', '.agents/skills']
+  for (const skillRoot of skillRoots) {
+    const skillsDir = path.join(ROOT, skillRoot)
+    if (!fs.existsSync(skillsDir)) continue
+    for (const entry of fs.readdirSync(skillsDir, { withFileTypes: true })) {
+      if (!entry.isDirectory()) continue
+      const skillMd = path.join(skillsDir, entry.name, 'SKILL.md')
+      if (!fs.existsSync(skillMd)) {
+        report(`${skillRoot}/${entry.name}: directory has no SKILL.md (Agent Skills spec)`)
+        continue
+      }
+      const rel = path.relative(ROOT, skillMd).replace(/\\/g, '/')
+      const content = fs.readFileSync(skillMd, 'utf8')
+      const fm = frontmatterOf(content)
+      if (fm === null) {
+        report(`${rel}: missing YAML frontmatter (Agent Skills spec requires name/description)`)
+        continue
+      }
+      const nameMatch = fm.match(/^name:\s*(\S+)\s*$/m)
+      if (!nameMatch) report(`${rel}: frontmatter missing name`)
+      else if (nameMatch[1] !== entry.name)
+        report(
+          `${rel}: skill name "${nameMatch[1]}" must match the parent directory "${entry.name}"`,
+        )
+      else if (!SKILL_NAME_RE.test(nameMatch[1]) || nameMatch[1].length > 64)
+        report(`${rel}: skill name "${nameMatch[1]}" violates the kebab-case/length constraints`)
+      const descMatch = fm.match(/^description:\s*(.+)$/m)
+      if (!descMatch || descMatch[1].trim() === '')
+        report(`${rel}: frontmatter missing description`)
+      else if (descMatch[1].length > 1024) report(`${rel}: description exceeds 1024 chars`)
     }
-    const rel = path.relative(ROOT, skillMd).replace(/\\/g, '/')
-    const content = fs.readFileSync(skillMd, 'utf8')
-    const fm = frontmatterOf(content)
-    if (fm === null) {
-      report(`${rel}: missing YAML frontmatter (Agent Skills spec requires name/description)`)
-      continue
-    }
-    const nameMatch = fm.match(/^name:\s*(\S+)\s*$/m)
-    if (!nameMatch) report(`${rel}: frontmatter missing name`)
-    else if (nameMatch[1] !== entry.name)
-      report(`${rel}: skill name "${nameMatch[1]}" must match the parent directory "${entry.name}"`)
-    else if (!SKILL_NAME_RE.test(nameMatch[1]) || nameMatch[1].length > 64)
-      report(`${rel}: skill name "${nameMatch[1]}" violates the kebab-case/length constraints`)
-    const descMatch = fm.match(/^description:\s*(.+)$/m)
-    if (!descMatch || descMatch[1].trim() === '') report(`${rel}: frontmatter missing description`)
-    else if (descMatch[1].length > 1024) report(`${rel}: description exceeds 1024 chars`)
   }
   try {
     const mcp = JSON.parse(read('.trae/mcp.json'))
