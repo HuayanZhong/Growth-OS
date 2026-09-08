@@ -17,6 +17,7 @@
     "test": "dotenv -v CI=true -- turbo run test",
     "test:coverage": "dotenv -v CI=true -- turbo run test:coverage",
     "verify:docs": "node scripts/verify-docs.cjs",
+    "verify:invariants": "node scripts/verify-invariants.cjs",
     "verify:pairing": "node scripts/verify-translation-pairing.cjs",
     "generate:config": "node scripts/generate-config-catalog.cjs",
     "generate:graph": "node scripts/generate-module-graph.cjs",

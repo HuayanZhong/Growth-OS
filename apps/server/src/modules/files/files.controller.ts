@@ -30,6 +30,7 @@ export class FilesController {
 
   @Post()
   @ApiOperation({ summary: '上传文件（multipart/form-data）' })
+  // invariant: skip — multipart 原始 body，非 JSON 契约
   upload(@Body() input: FileUploadInput): FileRecord {
     return this.filesService.upload(input)
   }

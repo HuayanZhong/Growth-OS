@@ -39,6 +39,10 @@ jobs:
       - name: Verify docs
         run: pnpm verify:docs
 
+      # 结构不变量：ZodValidationPipe 挂载、forFeature contextName、strip-only 源、server ESM 约束
+      - name: Verify invariants
+        run: pnpm verify:invariants
+
       - name: Commitlint
         if: github.event_name == 'pull_request'
         run: pnpm exec commitlint --from "${{ github.event.pull_request.base.sha }}" --to "${{ github.sha }}"

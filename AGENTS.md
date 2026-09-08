@@ -29,6 +29,7 @@ Node ≥ 24 required; pnpm 12.1.0 is pinned via `packageManager` + `devEngines` 
 - `pnpm test:coverage` — per-package coverage (v8) aggregated via turbo
 - `pnpm hygiene` — knip (dead code/unused deps, config in `knip.json`) + publint (package exports) via turbo; runs in CI
 - `pnpm verify:docs` — docs gate: CLAUDE.md thin-pointer sync, markdown links, word budgets (limits in [doc-budgets.manifest.json](scripts/doc-budgets.manifest.json), including this file), bilingual-pair hashes
+- `pnpm verify:invariants` — structural invariant checks (ZodValidationPipe mounting, forFeature contextName, shared/types strip-only syntax, server ESM constraints); runs in CI and pre-commit; line-level exemption: `// invariant: skip`
 - `pnpm verify:pairing --write <path>` — re-record a bilingual pair's hash after a paired change (see [docs/i18n/README.md](docs/i18n/README.md))
 - `pnpm --filter desktop test` / `pnpm --filter server test` — per-app tests (both `vitest run`); single file: `pnpm --filter desktop vitest run test/nuxt/use-auth.test.ts`
 - `pnpm --filter desktop verify:build` — Electron production build smoke test
