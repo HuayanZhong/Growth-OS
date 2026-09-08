@@ -4,19 +4,19 @@ Growth OS is a Coze-like desktop platform built with Nuxt 4 (frontend), NestJS (
 
 ## Repository layout
 
-| Path                    | Role                                                                      |
-| ----------------------- | ------------------------------------------------------------------------- |
-| `apps/desktop`          | Nuxt 4 frontend + Electron shell app (`app/` source, `modules/`, `test/`) |
-| `apps/server`           | NestJS backend with MikroORM (`src/`)                                     |
-| `packages/desktop-core` | Electron main process + preload (`src/main.ts`, `src/preload.ts`)         |
-| `packages/ui`           | Design system components and styles (Tailwind CSS v4 + daisyUI 5)         |
-| `packages/shared`       | Shared env/normalize utilities                                            |
-| `packages/types`        | Shared types and IPC channel contracts                                    |
-| `tooling/`              | Shared TypeScript / lint / format / test configs                          |
-| `docs/`                 | Human-facing docs (architecture map, Chinese guide, doc standard)         |
-| `.trae/`                | Trae harness: `rules/`, `agents/`, `skills/`, `documents/`, `mcp.json`    |
-| `.agents/`              | Agent Skills (`skills/`) and decision notes (`notes/`)                    |
-| `scripts/`              | Repo scripts including `verify-docs.cjs` (docs gate)                      |
+| Path                    | Role                                                                                 |
+| ----------------------- | ------------------------------------------------------------------------------------ |
+| `apps/desktop`          | Nuxt 4 frontend + Electron shell app (`app/` source, `modules/`, `test/`)            |
+| `apps/server`           | NestJS backend with MikroORM (`src/`)                                                |
+| `packages/desktop-core` | Electron main process + preload (`src/main.ts`, `src/preload.ts`)                    |
+| `packages/ui`           | Design system components and styles (Tailwind CSS v4 + daisyUI 5)                    |
+| `packages/shared`       | Shared env/normalize utilities                                                       |
+| `packages/types`        | Shared types and IPC channel contracts                                               |
+| `tooling/`              | Shared TypeScript / lint / format / test configs                                     |
+| `docs/`                 | Human-facing docs (architecture map, Chinese guide, doc standard)                    |
+| `.trae/`                | Trae harness: `rules/`, `agents/`, `skills/`, `documents/`, `hooks.json`, `mcp.json` |
+| `.agents/`              | Agent Skills (`skills/`) and decision notes (`notes/`)                               |
+| `scripts/`              | Repo scripts including `verify-docs.cjs` (docs gate)                                 |
 
 ## Commands
 

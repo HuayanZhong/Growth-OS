@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node scripts/hook-guard-harness.cjs",
+            "timeout": 15
+          }
+        ]
+      }
+    ]
+  }
+}

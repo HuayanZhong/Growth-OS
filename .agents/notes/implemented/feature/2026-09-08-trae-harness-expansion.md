@@ -12,6 +12,7 @@ harness 资产与后端工作失衡：`.trae/agents/` 只有三个前端专家�
 - **新增 `.trae/agents/server-architect.md`**：后端架构专家（格式对齐既有前端专家），核心约束覆盖 ESM、contextName、EM fork/persist、审计、测试隔离。
 - **新增 `.trae/skills/rule-decay-audit/`**：把本次审查方法论固化为可重复工作流——枚举 harness 资产 → 提取可验证锚点（命令/API/路径/版本/示例保真）→ grep/跑命令对照 → 英文真相源修复 + 中文镜像同步 + 配对 hash 重录 → 索引完整性检查。原则：只审可机器验证的锚点；不为一次性观察加规则。
 - **verify-docs 扩展第 7 项检查（harness 资产登记完整性）**：`.trae/rules/**/*.md` 与 `.trae/agents/*.md` 必须被根 AGENTS.md 引用，否则 FAIL（负例已验证：未登记文件被拦截）。防新资产成为对按需加载不可见的孤岛。
+- **新增 Trae 原生 Hook（`.trae/hooks.json`）**：官方 Hook 机制（docs.trae.cn，PreToolUse/PostToolUse/Stop 事件，stdin JSON 进、stdout JSON `{decision: "block", reason}` 出）。配置 `PreToolUse` + matcher `Write|Edit` 执行 `scripts/hook-guard-harness.cjs`：agent 写 harness 资产前校验官方资产格式——rules 文件必须声明 `alwaysApply`/`description`（智能生效），agents 文件 `name` 合法（字母开头、字母数字连字符、≤50）且 `description` 必填、`tools` 逗号分隔，SKILL.md 的 `name` 必须匹配父目录（Agent Skills 规范）。违规即 block 并把理由回喂给 agent。三个新资产的格式已对照官方文档确认合规，hook 防回归；Edit 事件不在前置校验内，由 pre-commit 门禁兜底。
 - 索引同步：根 AGENTS.md（Rules + Agents 节）、guide-zh.md（规则/专家/门禁三节，顺手修正 mock 描述的 Jest 残留）。
 
 ## Alternatives considered
