@@ -6,7 +6,7 @@ Growth OS is a Coze-like AI agent desktop platform. This map describes current c
 
 | Layer                 | Choice                                      |
 | --------------------- | ------------------------------------------- |
-| Desktop shell         | Electron 43 (`packages/desktop-core`)       |
+| Desktop shell         | Electron 44 (`packages/desktop-core`)       |
 | Frontend              | Nuxt 4 + Vue 3 + Vite (`apps/desktop`)      |
 | CSS / UI              | Tailwind CSS v4 + daisyUI 5 (`packages/ui`) |
 | Backend               | NestJS + MikroORM (`apps/server`)           |

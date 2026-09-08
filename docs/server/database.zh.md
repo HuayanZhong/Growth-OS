@@ -14,7 +14,8 @@ MikroORM 不自己读 `.env`；每次 CLI 调用都通过 `dotenv -e ../../.env 
 - `schemaGenerator.ignoreSchema` —— 排除 Supabase 系统 schema（auth、storage、realtime、vault 等），保证 `migration:create` 的 diff 干净。
 - `schemaGenerator.ignoreTriggers / ignoreRoutines` —— Supabase 侧管理的函数/触发器（如 `public.rls_auto_enable`）对 schema 生成器 create-only，`migration:create` 永不为 Supabase 管理的对象生成 drop。
 - `migrations: { path: 'dist/infra/database/migrations', pathTs: 'src/infra/database/migrations' }` —— dev/CLI 用 tsx 跑 `.ts` 源，生产跑 dist 编译后的 `.js`。
-- `seeder: { path: 'dist/seeders', pathTs: 'src/seeders', defaultSeeder: 'DatabaseSeeder' }` —— 通过 `@mikro-orm/seeder` 灌种子数据。
+- `contextName: 'default'` —— 命名的 ORM 上下文；`modules/*/` 里每个 `MikroOrmModule.forFeature(...)` 调用必须重复同名，否则 repository provider 注入到错误的 EntityManager token，应用启动即崩。
+- `seeder: { path: 'dist/infra/database/seeders', pathTs: 'src/infra/database/seeders', defaultSeeder: 'DatabaseSeeder' }` —— 通过 `@mikro-orm/seeder` 灌种子数据。
 - `debug: process.env.DB_DEBUG === 'true'` —— SQL 日志开关。
 
 ## 源码结构

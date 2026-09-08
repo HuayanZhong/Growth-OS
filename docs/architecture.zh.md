@@ -6,7 +6,7 @@ Growth OS 是一个类 Coze 的 AI 智能体桌面平台。本文描述当前组
 
 | 层                   | 选型                                         |
 | -------------------- | -------------------------------------------- |
-| 桌面壳               | Electron 43（`packages/desktop-core`）       |
+| 桌面壳               | Electron 44（`packages/desktop-core`）       |
 | 前端                 | Nuxt 4 + Vue 3 + Vite（`apps/desktop`）      |
 | CSS / UI             | Tailwind CSS v4 + daisyUI 5（`packages/ui`） |
 | 后端                 | NestJS + MikroORM（`apps/server`）           |

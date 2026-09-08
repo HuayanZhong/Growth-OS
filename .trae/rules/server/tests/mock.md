@@ -51,7 +51,7 @@ describe('HealthService', () => {
 **Verification**:
 
 ```bash
-rg -n 'vi.mock\(' apps/server/src/**/*.spec.ts
+rg -n 'vi.mock\(' apps/server/test
 # ESM mocks are at the top of files that need them
 pnpm --filter server test
 # All tests pass, no real service calls

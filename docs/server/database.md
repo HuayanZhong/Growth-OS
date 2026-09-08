@@ -14,7 +14,8 @@ MikroORM does not read `.env` itself; every CLI invocation injects it via `doten
 - `schemaGenerator.ignoreSchema` — Supabase system schemas (auth, storage, realtime, vault, ...) are excluded from schema diff/sync so `migration:create` stays clean.
 - `schemaGenerator.ignoreTriggers / ignoreRoutines` — Supabase-managed routines/triggers (e.g. `public.rls_auto_enable`) are create-only for the schema generator, so `migration:create` never emits drops for objects Supabase owns.
 - `migrations: { path: 'dist/infra/database/migrations', pathTs: 'src/infra/database/migrations' }` — dev/CLI runs `.ts` sources via tsx; production runs compiled `.js` from `dist`.
-- `seeder: { path: 'dist/seeders', pathTs: 'src/seeders', defaultSeeder: 'DatabaseSeeder' }` — seed data via `@mikro-orm/seeder`.
+- `contextName: 'default'` — a named ORM context; every `MikroOrmModule.forFeature(...)` call in `modules/*/` must repeat the same name, or repository providers inject the wrong EntityManager token and the app fails at boot.
+- `seeder: { path: 'dist/infra/database/seeders', pathTs: 'src/infra/database/seeders', defaultSeeder: 'DatabaseSeeder' }` — seed data via `@mikro-orm/seeder`.
 - `debug: process.env.DB_DEBUG === 'true'` — SQL logging toggle.
 
 ## Source layout
