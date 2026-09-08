@@ -26,7 +26,7 @@ export const AgentEntity = defineEntity({
     createdAt: p.datetime(),
     updatedAt: p.datetime(),
   }),
-  indexes: [{ properties: ['name'] }],
+  indexes: [{ properties: ['name'] }, { properties: ['updatedAt'] }],
 })
 
 /** agents 行类型 */

@@ -122,7 +122,7 @@ export class SessionsService {
     return toSessionRecord(row)
   }
 
-  /** 删除会话：记录与事件日志同事务级联删除（事件表无 FK，由 service 显式删） */
+  /** 删除会话：记录、事件日志与审计同事务删除/写入（事件表无 FK，由 service 显式删） */
   async remove(id: string, actorId: string): Promise<void> {
     const em = this.orm.em.fork()
     await em.transactional(async (tem) => {
@@ -132,13 +132,16 @@ export class SessionsService {
       }
       tem.remove(row)
       await tem.nativeDelete(SessionEventEntity, { sessionId: id })
-      await this.auditService.record({
-        actorId,
-        action: 'delete',
-        resourceType: 'session',
-        resourceId: id,
-        details: { title: row.title },
-      })
+      await this.auditService.record(
+        {
+          actorId,
+          action: 'delete',
+          resourceType: 'session',
+          resourceId: id,
+          details: { title: row.title },
+        },
+        tem,
+      )
     })
   }
 

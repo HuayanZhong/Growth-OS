@@ -1,7 +1,9 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common'
 import { ApiOperation, ApiTags } from '@nestjs/swagger'
+import { createAgentSchema, updateAgentSchema } from '@growth-os/types'
 import type { Agent, CreateAgentInput, UpdateAgentInput } from '@growth-os/types'
 import { CurrentUser } from '../../common/decorators/current-user.decorator.ts'
+import { ZodValidationPipe } from '../../common/pipes/zod-validation.pipe.ts'
 import type { AuthenticatedUser } from '../../shared/types/auth.types.ts'
 import { AgentsService } from './agents.service.ts'
 
@@ -26,7 +28,7 @@ export class AgentsController {
   @Post()
   @ApiOperation({ summary: '创建 Agent' })
   async create(
-    @Body() input: CreateAgentInput,
+    @Body(new ZodValidationPipe(createAgentSchema)) input: CreateAgentInput,
     @CurrentUser() user: AuthenticatedUser,
   ): Promise<Agent> {
     return this.agentsService.create(input, user.id)
@@ -36,7 +38,7 @@ export class AgentsController {
   @ApiOperation({ summary: '更新 Agent' })
   async update(
     @Param('id') id: string,
-    @Body() input: UpdateAgentInput,
+    @Body(new ZodValidationPipe(updateAgentSchema)) input: UpdateAgentInput,
     @CurrentUser() user: AuthenticatedUser,
   ): Promise<Agent> {
     return this.agentsService.update(id, input, user.id)

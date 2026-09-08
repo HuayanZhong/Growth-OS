@@ -5,6 +5,7 @@
  * （fixture 即此格式，见 @growth-os/shared 的 deriveMessages）；messages 端点
  * 返回服务端投影后的模型可见历史。持久化在阶段三落地，本契约先行。
  */
+import { z } from 'zod'
 import type { Message, SessionEvent } from '../events/session.ts'
 import type { HttpEndpoint } from './http.ts'
 
@@ -20,29 +21,33 @@ export interface SessionRecord {
   updatedAt: number
 }
 
-export type CreateSessionInput = {
-  agentId: string
-  title?: string
-}
+export const createSessionSchema = z.object({
+  agentId: z.string().min(1, 'agentId 不能为空'),
+  title: z.string().min(1).max(100).optional(),
+})
+export type CreateSessionInput = z.infer<typeof createSessionSchema>
 
-export type UpdateSessionInput = {
-  title?: string
-}
+export const updateSessionSchema = z.object({
+  title: z.string().min(1).max(100).optional(),
+})
+export type UpdateSessionInput = z.infer<typeof updateSessionSchema>
 
 /** fork 入参：boundary 必须是源会话中 turn/step 边界事件的 id */
-export type ForkSessionInput = {
-  boundaryEventId: string
-}
+export const forkSessionSchema = z.object({
+  boundaryEventId: z.string().min(1, 'boundaryEventId 不能为空'),
+})
+export type ForkSessionInput = z.infer<typeof forkSessionSchema>
+
+/** 发送用户消息（触发一个回合：turn_start → user → assistant → turn_end） */
+export const sendMessageSchema = z.object({
+  content: z.string().min(1, '消息内容不能为空').max(32_000, '消息内容过长'),
+})
+export type SendMessageInput = z.infer<typeof sendMessageSchema>
 
 /** fork 结果：新会话 id 与复制的事件数（复制范围含 boundary 事件） */
 export interface ForkSessionResult {
   sessionId: string
   copiedEvents: number
-}
-
-/** 发送用户消息（触发一个回合：turn_start → user → assistant → turn_end） */
-export type SendMessageInput = {
-  content: string
 }
 
 /** 回合结果：本回合写入的事件 id（按序）与 assistant 回复 */

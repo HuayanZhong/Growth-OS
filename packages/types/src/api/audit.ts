@@ -5,6 +5,7 @@
  * 落地为 append-only 的 audit_logs 表（复用会话事件日志的存储模式与响应信封）。
  * 记录端只由服务端各域写操作触发，无对外的 POST 端点；本契约只暴露查询。
  */
+import { z } from 'zod'
 import type { HttpEndpoint } from './http.ts'
 
 /** 单条审计日志 */
@@ -24,16 +25,17 @@ export interface AuditLog {
   details?: unknown
 }
 
-/** 审计日志查询条件（GET query，全部可选，时间为 epoch ms 闭区间） */
-export interface AuditLogQuery {
-  actorId?: string
-  action?: string
-  resourceType?: string
-  resourceId?: string
-  from?: number
-  to?: number
-  limit?: number
-}
+/** 审计日志查询条件（GET query，全部可选，时间为 epoch ms 闭区间；limit 上限 100） */
+export const auditLogQuerySchema = z.object({
+  actorId: z.string().optional(),
+  action: z.string().optional(),
+  resourceType: z.string().optional(),
+  resourceId: z.string().optional(),
+  from: z.coerce.number().int().nonnegative().optional(),
+  to: z.coerce.number().int().nonnegative().optional(),
+  limit: z.coerce.number().int().positive().max(100).optional(),
+})
+export type AuditLogQuery = z.infer<typeof auditLogQuerySchema>
 
 export interface AuditApiMap {
   /** 审计日志列表（按时间倒序） */

@@ -15,7 +15,7 @@ export const SkillEntity = defineEntity({
     createdAt: p.datetime(),
     updatedAt: p.datetime(),
   }),
-  indexes: [{ properties: ['name'] }],
+  indexes: [{ properties: ['name'] }, { properties: ['updatedAt'] }],
 })
 
 /** skills 行类型 */

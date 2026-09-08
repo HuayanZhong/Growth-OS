@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { MikroORM, QueryOrder } from '@mikro-orm/core'
-import type { FilterQuery } from '@mikro-orm/core'
+import type { EntityManager, FilterQuery } from '@mikro-orm/core'
 import { InjectMikroORM } from '@mikro-orm/nestjs'
 import { randomUUID } from 'node:crypto'
 import type { AuditLog, AuditLogQuery } from '@growth-os/types'
@@ -28,9 +28,12 @@ export class AuditService {
     private readonly orm: MikroORM,
   ) {}
 
-  /** 记录一条审计日志（append-only） */
-  async record(entry: AuditEntry): Promise<void> {
-    const em = this.orm.em.fork()
+  /**
+   * 记录一条审计日志（append-only）。传入事务内 EM 时与调用方的业务写入
+   * 同事务提交（审计与操作原子）；缺省时独立 fork EM 落库。
+   */
+  async record(entry: AuditEntry, em?: EntityManager): Promise<void> {
+    const target = em ?? this.orm.em.fork()
     const data = {
       id: randomUUID(),
       actorId: entry.actorId,
@@ -40,8 +43,8 @@ export class AuditService {
       timestamp: new Date(),
       details: entry.details ?? null,
     }
-    em.persist(em.create(AuditLogEntity, data))
-    await em.flush()
+    target.persist(target.create(AuditLogEntity, data))
+    await target.flush()
   }
 
   /** 审计日志查询：过滤（actor/action/resource/时间窗）+ 时间倒序 + limit */

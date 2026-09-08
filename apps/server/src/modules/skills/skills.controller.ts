@@ -1,7 +1,9 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common'
 import { ApiOperation, ApiTags } from '@nestjs/swagger'
+import { createSkillSchema, updateSkillSchema } from '@growth-os/types'
 import type { CreateSkillInput, Skill, UpdateSkillInput } from '@growth-os/types'
 import { CurrentUser } from '../../common/decorators/current-user.decorator.ts'
+import { ZodValidationPipe } from '../../common/pipes/zod-validation.pipe.ts'
 import type { AuthenticatedUser } from '../../shared/types/auth.types.ts'
 import { SkillsService } from './skills.service.ts'
 
@@ -26,7 +28,7 @@ export class SkillsController {
   @Post()
   @ApiOperation({ summary: '创建 Skill' })
   async create(
-    @Body() input: CreateSkillInput,
+    @Body(new ZodValidationPipe(createSkillSchema)) input: CreateSkillInput,
     @CurrentUser() user: AuthenticatedUser,
   ): Promise<Skill> {
     return this.skillsService.create(input, user.id)
@@ -36,7 +38,7 @@ export class SkillsController {
   @ApiOperation({ summary: '更新 Skill' })
   async update(
     @Param('id') id: string,
-    @Body() input: UpdateSkillInput,
+    @Body(new ZodValidationPipe(updateSkillSchema)) input: UpdateSkillInput,
     @CurrentUser() user: AuthenticatedUser,
   ): Promise<Skill> {
     return this.skillsService.update(id, input, user.id)

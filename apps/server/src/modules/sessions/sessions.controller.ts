@@ -1,5 +1,11 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common'
 import { ApiOperation, ApiTags } from '@nestjs/swagger'
+import {
+  createSessionSchema,
+  forkSessionSchema,
+  sendMessageSchema,
+  updateSessionSchema,
+} from '@growth-os/types'
 import type {
   Message,
   SessionEvent,
@@ -12,6 +18,7 @@ import type {
   UpdateSessionInput,
 } from '@growth-os/types'
 import { CurrentUser } from '../../common/decorators/current-user.decorator.ts'
+import { ZodValidationPipe } from '../../common/pipes/zod-validation.pipe.ts'
 import type { AuthenticatedUser } from '../../shared/types/auth.types.ts'
 import { SessionsService } from './sessions.service.ts'
 import { TurnService } from './turn.service.ts'
@@ -56,7 +63,7 @@ export class SessionsController {
   @Post()
   @ApiOperation({ summary: '创建会话' })
   async create(
-    @Body() input: CreateSessionInput,
+    @Body(new ZodValidationPipe(createSessionSchema)) input: CreateSessionInput,
     @CurrentUser() user: AuthenticatedUser,
   ): Promise<SessionRecord> {
     return this.sessionsService.create(input, user.id)
@@ -64,7 +71,10 @@ export class SessionsController {
 
   @Post(':id/messages')
   @ApiOperation({ summary: '发送用户消息并执行一个回合（turn_start→user→assistant→turn_end）' })
-  async send(@Param('id') id: string, @Body() input: SendMessageInput): Promise<TurnResult> {
+  async send(
+    @Param('id') id: string,
+    @Body(new ZodValidationPipe(sendMessageSchema)) input: SendMessageInput,
+  ): Promise<TurnResult> {
     return this.turnService.execute(id, input)
   }
 
@@ -72,7 +82,7 @@ export class SessionsController {
   @ApiOperation({ summary: '从 turn/step 边界事件分叉新会话（复制 seq ≤ boundary 的事件）' })
   async fork(
     @Param('id') id: string,
-    @Body() input: ForkSessionInput,
+    @Body(new ZodValidationPipe(forkSessionSchema)) input: ForkSessionInput,
     @CurrentUser() user: AuthenticatedUser,
   ): Promise<ForkSessionResult> {
     return this.sessionsService.forkSession(id, input.boundaryEventId, user.id)
@@ -82,7 +92,7 @@ export class SessionsController {
   @ApiOperation({ summary: '更新会话' })
   async update(
     @Param('id') id: string,
-    @Body() input: UpdateSessionInput,
+    @Body(new ZodValidationPipe(updateSessionSchema)) input: UpdateSessionInput,
     @CurrentUser() user: AuthenticatedUser,
   ): Promise<SessionRecord> {
     return this.sessionsService.update(id, input, user.id)

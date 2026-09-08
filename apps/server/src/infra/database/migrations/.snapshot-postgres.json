@@ -1,6 +1,8 @@
 {
   "name": "public",
-  "namespaces": ["public"],
+  "namespaces": [
+    "public"
+  ],
   "tables": [
     {
       "name": "agents",
@@ -162,7 +164,9 @@
       },
       "indexes": [
         {
-          "columnNames": ["name"],
+          "columnNames": [
+            "name"
+          ],
           "composite": false,
           "constraint": false,
           "keyName": "agents_name_index",
@@ -170,12 +174,24 @@
           "unique": false
         },
         {
-          "columnNames": ["id"],
+          "columnNames": [
+            "id"
+          ],
           "composite": false,
           "constraint": true,
           "keyName": "agents_pkey",
           "primary": true,
           "unique": true
+        },
+        {
+          "columnNames": [
+            "updated_at"
+          ],
+          "composite": false,
+          "constraint": false,
+          "keyName": "agents_updated_at_index",
+          "primary": false,
+          "unique": false
         }
       ],
       "checks": [],
@@ -326,7 +342,9 @@
       },
       "indexes": [
         {
-          "columnNames": ["action"],
+          "columnNames": [
+            "action"
+          ],
           "composite": false,
           "constraint": false,
           "keyName": "audit_logs_action_index",
@@ -334,7 +352,9 @@
           "unique": false
         },
         {
-          "columnNames": ["actor_id"],
+          "columnNames": [
+            "actor_id"
+          ],
           "composite": false,
           "constraint": false,
           "keyName": "audit_logs_actor_id_index",
@@ -342,7 +362,9 @@
           "unique": false
         },
         {
-          "columnNames": ["id"],
+          "columnNames": [
+            "id"
+          ],
           "composite": false,
           "constraint": true,
           "keyName": "audit_logs_id_unique",
@@ -350,7 +372,9 @@
           "unique": true
         },
         {
-          "columnNames": ["seq"],
+          "columnNames": [
+            "seq"
+          ],
           "composite": false,
           "constraint": true,
           "keyName": "audit_logs_pkey",
@@ -358,7 +382,10 @@
           "unique": true
         },
         {
-          "columnNames": ["resource_type", "resource_id"],
+          "columnNames": [
+            "resource_type",
+            "resource_id"
+          ],
           "composite": true,
           "constraint": false,
           "keyName": "audit_logs_resource_type_resource_id_index",
@@ -366,7 +393,9 @@
           "unique": false
         },
         {
-          "columnNames": ["timestamp"],
+          "columnNames": [
+            "timestamp"
+          ],
           "composite": false,
           "constraint": false,
           "keyName": "audit_logs_timestamp_index",
@@ -539,7 +568,9 @@
       },
       "indexes": [
         {
-          "columnNames": ["name"],
+          "columnNames": [
+            "name"
+          ],
           "composite": false,
           "constraint": false,
           "keyName": "projects_name_index",
@@ -547,12 +578,24 @@
           "unique": false
         },
         {
-          "columnNames": ["id"],
+          "columnNames": [
+            "id"
+          ],
           "composite": false,
           "constraint": true,
           "keyName": "projects_pkey",
           "primary": true,
           "unique": true
+        },
+        {
+          "columnNames": [
+            "updated_at"
+          ],
+          "composite": false,
+          "constraint": false,
+          "keyName": "projects_updated_at_index",
+          "primary": false,
+          "unique": false
         }
       ],
       "checks": [],
@@ -686,7 +729,9 @@
       },
       "indexes": [
         {
-          "columnNames": ["agent_id"],
+          "columnNames": [
+            "agent_id"
+          ],
           "composite": false,
           "constraint": false,
           "keyName": "session_events_agent_id_index",
@@ -694,7 +739,9 @@
           "unique": false
         },
         {
-          "columnNames": ["id"],
+          "columnNames": [
+            "id"
+          ],
           "composite": false,
           "constraint": true,
           "keyName": "session_events_id_unique",
@@ -702,7 +749,9 @@
           "unique": true
         },
         {
-          "columnNames": ["seq"],
+          "columnNames": [
+            "seq"
+          ],
           "composite": false,
           "constraint": true,
           "keyName": "session_events_pkey",
@@ -710,7 +759,10 @@
           "unique": true
         },
         {
-          "columnNames": ["session_id", "seq"],
+          "columnNames": [
+            "session_id",
+            "seq"
+          ],
           "composite": true,
           "constraint": false,
           "keyName": "session_events_session_id_seq_index",
@@ -718,7 +770,9 @@
           "unique": false
         },
         {
-          "columnNames": ["timestamp"],
+          "columnNames": [
+            "timestamp"
+          ],
           "composite": false,
           "constraint": false,
           "keyName": "session_events_timestamp_index",
@@ -726,7 +780,9 @@
           "unique": false
         },
         {
-          "columnNames": ["type"],
+          "columnNames": [
+            "type"
+          ],
           "composite": false,
           "constraint": false,
           "keyName": "session_events_type_index",
@@ -831,7 +887,9 @@
       },
       "indexes": [
         {
-          "columnNames": ["agent_id"],
+          "columnNames": [
+            "agent_id"
+          ],
           "composite": false,
           "constraint": false,
           "keyName": "session_records_agent_id_index",
@@ -839,12 +897,24 @@
           "unique": false
         },
         {
-          "columnNames": ["id"],
+          "columnNames": [
+            "id"
+          ],
           "composite": false,
           "constraint": true,
           "keyName": "session_records_pkey",
           "primary": true,
           "unique": true
+        },
+        {
+          "columnNames": [
+            "updated_at"
+          ],
+          "composite": false,
+          "constraint": false,
+          "keyName": "session_records_updated_at_index",
+          "primary": false,
+          "unique": false
         }
       ],
       "checks": [],
@@ -961,7 +1031,9 @@
       },
       "indexes": [
         {
-          "columnNames": ["name"],
+          "columnNames": [
+            "name"
+          ],
           "composite": false,
           "constraint": false,
           "keyName": "skills_name_index",
@@ -969,12 +1041,24 @@
           "unique": false
         },
         {
-          "columnNames": ["id"],
+          "columnNames": [
+            "id"
+          ],
           "composite": false,
           "constraint": true,
           "keyName": "skills_pkey",
           "primary": true,
           "unique": true
+        },
+        {
+          "columnNames": [
+            "updated_at"
+          ],
+          "composite": false,
+          "constraint": false,
+          "keyName": "skills_updated_at_index",
+          "primary": false,
+          "unique": false
         }
       ],
       "checks": [],

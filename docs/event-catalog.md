@@ -26,10 +26,10 @@
 
 **Producers**（11）：
 
-- `apps/server/src/modules/sessions/sessions.service.ts:148 (appendEvent)`
+- `apps/server/src/modules/sessions/sessions.service.ts:151 (appendEvent)`
 - `apps/server/src/modules/sessions/turn.service.ts:41 (appendEvent)`
-- `apps/server/test/modules/sessions/sessions.service.test.ts:196 (appendEvent)`
-- `apps/server/test/modules/sessions/sessions.service.test.ts:213 (appendEvent)`
+- `apps/server/test/modules/sessions/sessions.service.test.ts:200 (appendEvent)`
+- `apps/server/test/modules/sessions/sessions.service.test.ts:217 (appendEvent)`
 - `packages/shared/test/events/bus.test.ts:27 (bus emit)`
 - `packages/shared/test/events/bus.test.ts:41 (bus emit)`
 - `packages/shared/test/events/bus.test.ts:60 (bus emit)`
@@ -45,7 +45,7 @@
 - `apps/desktop/test/nuxt/session-replay.test.ts:43 (useSessionReplay)`
 - `apps/desktop/test/nuxt/session-replay.test.ts:7 (useSessionReplay)`
 - `apps/desktop/test/nuxt/session-replay.test.ts:72 (useSessionReplay)`
-- `apps/server/src/modules/sessions/sessions.service.ts:257 (deriveMessages)`
+- `apps/server/src/modules/sessions/sessions.service.ts:260 (deriveMessages)`
 - `packages/shared/src/session-events.ts:59 (deriveMessages)`
 - `packages/shared/test/events/bus.test.ts:24 (bus on)`
 - `packages/shared/test/events/bus.test.ts:25 (bus on)`

@@ -179,13 +179,17 @@ describe('SessionsService 存储与 fork', () => {
       await service.remove('s1', 'user-1')
       expect(fakeEm.remove).toHaveBeenCalledWith(row)
       expect(fakeEm.nativeDelete).toHaveBeenCalledWith(SessionEventEntity, { sessionId: 's1' })
-      expect(auditService.record).toHaveBeenCalledWith({
-        actorId: 'user-1',
-        action: 'delete',
-        resourceType: 'session',
-        resourceId: 's1',
-        details: { title: '会话' },
-      })
+      // 审计传入事务内 EM：与业务删除同事务提交
+      expect(auditService.record).toHaveBeenCalledWith(
+        {
+          actorId: 'user-1',
+          action: 'delete',
+          resourceType: 'session',
+          resourceId: 's1',
+          details: { title: '会话' },
+        },
+        fakeEm,
+      )
     })
   })
 

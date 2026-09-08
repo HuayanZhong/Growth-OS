@@ -23,7 +23,7 @@ export const ProjectEntity = defineEntity({
     createdAt: p.datetime(),
     updatedAt: p.datetime(),
   }),
-  indexes: [{ properties: ['name'] }],
+  indexes: [{ properties: ['name'] }, { properties: ['updatedAt'] }],
 })
 
 /** projects 行类型 */

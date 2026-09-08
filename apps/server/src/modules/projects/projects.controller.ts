@@ -1,7 +1,9 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common'
 import { ApiOperation, ApiTags } from '@nestjs/swagger'
+import { createProjectSchema, updateProjectSchema } from '@growth-os/types'
 import type { CreateProjectInput, Project, UpdateProjectInput } from '@growth-os/types'
 import { CurrentUser } from '../../common/decorators/current-user.decorator.ts'
+import { ZodValidationPipe } from '../../common/pipes/zod-validation.pipe.ts'
 import type { AuthenticatedUser } from '../../shared/types/auth.types.ts'
 import { ProjectsService } from './projects.service.ts'
 
@@ -26,7 +28,7 @@ export class ProjectsController {
   @Post()
   @ApiOperation({ summary: '创建项目' })
   async create(
-    @Body() input: CreateProjectInput,
+    @Body(new ZodValidationPipe(createProjectSchema)) input: CreateProjectInput,
     @CurrentUser() user: AuthenticatedUser,
   ): Promise<Project> {
     return this.projectsService.create(input, user.id)
@@ -36,7 +38,7 @@ export class ProjectsController {
   @ApiOperation({ summary: '更新项目' })
   async update(
     @Param('id') id: string,
-    @Body() input: UpdateProjectInput,
+    @Body(new ZodValidationPipe(updateProjectSchema)) input: UpdateProjectInput,
     @CurrentUser() user: AuthenticatedUser,
   ): Promise<Project> {
     return this.projectsService.update(id, input, user.id)

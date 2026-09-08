@@ -1,5 +1,6 @@
 import { Test } from '@nestjs/testing'
 import { QueryOrder } from '@mikro-orm/core'
+import type { EntityManager } from '@mikro-orm/core'
 import { getMikroORMToken } from '@mikro-orm/nestjs'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { AuditService } from '../../../src/modules/audit/audit.service.ts'
@@ -78,6 +79,24 @@ describe('AuditService', () => {
       })
       const [, data] = fakeEm.create.mock.calls[0]!
       expect(data).toMatchObject({ details: null })
+    })
+
+    it('传入事务内 EM 时直接复用（不 fork），与业务写入同事务', async () => {
+      const txEm = {
+        create: vi.fn<(entity: unknown, data: unknown) => unknown>(),
+        persist: vi.fn<(entity: unknown) => unknown>(),
+        flush: vi.fn<() => Promise<void>>().mockResolvedValue(undefined),
+      }
+      await service.record(
+        { actorId: 'user-1', action: 'delete', resourceType: 'session', resourceId: 's1' },
+        txEm as unknown as EntityManager,
+      )
+      expect(txEm.create).toHaveBeenCalledTimes(1)
+      expect(txEm.persist).toHaveBeenCalledTimes(1)
+      expect(txEm.flush).toHaveBeenCalledTimes(1)
+      // 缺省路径才 fork，事务路径不得触碰 orm.em
+      expect(fakeEm.create).not.toHaveBeenCalled()
+      expect(fakeEm.flush).not.toHaveBeenCalled()
     })
   })
 

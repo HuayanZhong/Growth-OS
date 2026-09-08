@@ -1,6 +1,8 @@
 import { Controller, Get, Query } from '@nestjs/common'
 import { ApiOperation, ApiTags } from '@nestjs/swagger'
+import { auditLogQuerySchema } from '@growth-os/types'
 import type { AuditLog, AuditLogQuery } from '@growth-os/types'
+import { ZodValidationPipe } from '../../common/pipes/zod-validation.pipe.ts'
 import { AuditService } from './audit.service.ts'
 
 /** Audit 域端点：审计日志只读查询（记录由服务端各域写操作触发） */
@@ -11,7 +13,9 @@ export class AuditController {
 
   @Get()
   @ApiOperation({ summary: '审计日志列表（按时间倒序，支持过滤）' })
-  async list(@Query() query: AuditLogQuery): Promise<AuditLog[]> {
+  async list(
+    @Query(new ZodValidationPipe(auditLogQuerySchema)) query: AuditLogQuery,
+  ): Promise<AuditLog[]> {
     return this.auditService.query(query)
   }
 }

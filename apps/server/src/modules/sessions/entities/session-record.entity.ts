@@ -21,7 +21,7 @@ export const SessionRecordEntity = defineEntity({
     createdAt: p.datetime(),
     updatedAt: p.datetime(),
   }),
-  indexes: [{ properties: ['agentId'] }],
+  indexes: [{ properties: ['agentId'] }, { properties: ['updatedAt'] }],
 })
 
 /** session_records 行类型 */
