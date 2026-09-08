@@ -68,7 +68,7 @@
 
 ## 专家（.trae/agents）
 
-按 description 触发：auth / style / test 三个前端专家。
+按 description 触发：auth / style / test 三个前端专家 + server-architect（NestJS/MikroORM 后端架构专家）。
 
 ## 文档（docs/）
 
@@ -95,4 +95,4 @@ Agent Notes 记录"为什么"（Problem → Decision → Alternatives → Conseq
 
 ## 文档门禁
 
-`pnpm verify:docs` 校验：CLAUDE.md 保持薄指针（指向 [AGENTS.md](../AGENTS.md)）、相对链接有效、字数预算、双文配对 hash、ts 代码块编译（packages README 对真实包源码）、生成式目录新鲜度（[config-catalog.md](config-catalog.md)）。提交前 pre-commit 自动运行；CLAUDE.md 被改动会被拦截，用 `node scripts/verify-docs.cjs --sync` 恢复；双文文档两侧漂移会被拦截，用 `pnpm verify:pairing --write <path>` 重录。
+`pnpm verify:docs` 校验：CLAUDE.md 薄指针、相对链接、字数预算、双文配对 hash、ts 代码块编译、生成式目录新鲜度、harness 资产登记（rules/agents 必须被根 [AGENTS.md](../AGENTS.md) 引用）；`pnpm verify:invariants` 校验结构不变量。两者均挂 pre-commit；CLAUDE.md 漂移用 `node scripts/verify-docs.cjs --sync` 恢复，双文漂移用 `pnpm verify:pairing --write <path>` 重录。

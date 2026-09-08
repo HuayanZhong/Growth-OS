@@ -51,14 +51,14 @@ English single source of truth, loaded on demand; OpenCode sessions additionally
 - **Tests** (`frontend/tests/`): [assertions.md](.trae/rules/frontend/tests/assertions.md) (no non-null assertions, no `any`), [commands.md](.trae/rules/frontend/tests/commands.md) (test → typecheck → lint order), [coverage.md](.trae/rules/frontend/tests/coverage.md), [environment.md](.trae/rules/frontend/tests/environment.md) (@nuxt/test-utils runtime), [isolation.md](.trae/rules/frontend/tests/isolation.md), [mock.md](.trae/rules/frontend/tests/mock.md) (never call real services), [structure.md](.trae/rules/frontend/tests/structure.md)
 - **Server Auth** (`server/auth/`): [verification.md](.trae/rules/server/auth/verification.md) (JWKS dual-track + HS256 probe), [guard.md](.trae/rules/server/auth/guard.md) (SupabaseJwtGuard, @Public, @CurrentUser)
 - **Server Database** (`server/database/`): [orm.md](.trae/rules/server/database/orm.md) (MikroORM v7, entity placement, @InjectMikroORM('default')), [migrations.md](.trae/rules/server/database/migrations.md) (create/up/down workflow)
-- **Server API** (`server/api/`): [errors.md](.trae/rules/server/api/errors.md) (ApiErrorEnvelope, STATUS_CODE_MAP), [responses.md](.trae/rules/server/api/responses.md) (ResponseEnvelopeInterceptor, {data: T}), [health.md](.trae/rules/server/api/health.md) (liveness 200, readiness 503)
+- **Server API** (`server/api/`): [errors.md](.trae/rules/server/api/errors.md) (ApiErrorEnvelope, STATUS_CODE_MAP), [validation.md](.trae/rules/server/api/validation.md) (zod schemas in types, ZodValidationPipe mounting), [responses.md](.trae/rules/server/api/responses.md) (ResponseEnvelopeInterceptor, {data: T}), [health.md](.trae/rules/server/api/health.md) (liveness 200, readiness 503)
 - **Server Middleware** (`server/middleware/`): [compression.md](.trae/rules/server/middleware/compression.md) (SSE exclusion via includes), [helmet.md](.trae/rules/server/middleware/helmet.md) (CSP prod-only), [timeout.md](.trae/rules/server/middleware/timeout.md) (@SkipTimeout for SSE)
   - **Server Tests** (`server/tests/`): [structure.md](.trae/rules/server/tests/structure.md) (test/ mirrors src/, e2e in test/), [mock.md](.trae/rules/server/tests/mock.md) (vi.mock for ESM, fake timers), [commands.md](.trae/rules/server/tests/commands.md) (pnpm --filter server test/typecheck/lint)
 - **Git**: [git-commit-message.md](.trae/rules/git-commit-message.md) (conventional commits, subject language matches the change)
 
 ## Agents (.trae/agents)
 
-On-demand experts, triggered by description: [frontend-auth-expert.md](.trae/agents/frontend-auth-expert.md), [frontend-style-expert.md](.trae/agents/frontend-style-expert.md), [frontend-test-expert.md](.trae/agents/frontend-test-expert.md).
+On-demand experts, triggered by description: [frontend-auth-expert.md](.trae/agents/frontend-auth-expert.md), [frontend-style-expert.md](.trae/agents/frontend-style-expert.md), [frontend-test-expert.md](.trae/agents/frontend-test-expert.md), [server-architect.md](.trae/agents/server-architect.md) (NestJS/MikroORM backend). Harness maintenance: [rule-decay-audit](.trae/skills/rule-decay-audit/SKILL.md) audits rules/docs for decay.
 
 ## Skills
 

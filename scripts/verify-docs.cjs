@@ -232,6 +232,19 @@ for (const { file, regen, generate } of GENERATED_DOCS) {
   }
 }
 
+// 7. Harness index completeness — every rule/agent file must be referenced from
+//    the root AGENTS.md. Unregistered assets are invisible to on-demand loading
+//    (orphan rules) and rot silently; index entries themselves are link-checked above.
+const agentsMdContent = read(path.join(ROOT, 'AGENTS.md'))
+for (const base of ['.trae/rules', '.trae/agents']) {
+  for (const rel of collectMarkdown(path.join(ROOT, base))) {
+    const harnessRel = rel.replace(/\\/g, '/')
+    if (!agentsMdContent.includes(harnessRel)) {
+      fail(`orphan harness asset: ${harnessRel} is not referenced from AGENTS.md`)
+    }
+  }
+}
+
 if (process.exitCode) {
   console.error('[verify-docs] FAILED')
 } else {
