@@ -4,6 +4,15 @@
   "timezone": "Asia/Shanghai",
   "labels": ["dependencies"],
   "prConcurrentLimit": 10,
+  // 与 pnpm-workspace.yaml 的供应链冷却对齐（pnpm 12 默认 1 天）：
+  // 机器人不得提出发布不足 24h 的版本，否则 CI 装机绕过 pnpm 的年龄检查
+  "minimumReleaseAge": "1 day",
+  // 锁文件定期维护：间接依赖（@oxlint/@oxfmt 平台 binding、esbuild、unrs-resolver 等
+  // allowBuilds 提及的无直接声明的包）只在直接依赖升级时被顺带刷新；开启后每周
+  // 单独提 lockfile 维护 PR 保持它们跟进（默认关闭）
+  "lockFileMaintenance": {
+    "enabled": true
+  },
   "packageRules": [
     {
       "groupName": "frontend",
@@ -87,9 +96,16 @@
       "description": "TS 7 对 Nuxt 生态兼容性未就绪，适配后放宽"
     },
     {
-      "matchPackagePatterns": ["^@mikro-orm/"],
+      "matchPackageNames": [
+        "@mikro-orm/core",
+        "@mikro-orm/postgresql",
+        "@mikro-orm/cli",
+        "@mikro-orm/migrations",
+        "@mikro-orm/reflection",
+        "@mikro-orm/seeder"
+      ],
       "enabled": false,
-      "description": "精确钉 7.1.11（7.1.14 连接层有问题）；浮回复验通过后再启用"
+      "description": "精确钉 7.1.11（7.1.14 连接层回归；7.1.15/7.2.0 已发布待真实库复验后浮回）；@mikro-orm/nestjs 已浮回 ^7.1.0 正常监听"
     }
   ]
 }

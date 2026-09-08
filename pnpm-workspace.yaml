@@ -93,7 +93,8 @@ catalogs:
     '@mikro-orm/reflection': 7.1.11
     '@mikro-orm/seeder': 7.1.11
     jose: ^6.0.0
-    nestjs-pino: ^4.6.1
+    # 5.0 起 peer 支持 @nestjs 12；5.1 修复 global prefix 排除路径的日志归属
+    nestjs-pino: ^5.1.0
     pino: ^10.3.1
     '@nestjs/throttler': ^6.5.0
     compression: ^1.8.1
@@ -103,57 +104,3 @@ catalogs:
   # 跨包共享依赖（前后端通用）
   shared:
     zod: ^4.4.3
-
-# NestJS 12 线（2026-08-27 发布）低于 pnpm 12 供应链默认最低包龄，显式豁免；稳定后可清理
-minimumReleaseAgeExclude:
-  - '@nestjs/common@12.0.1'
-  - '@nestjs/core@12.0.1'
-  - '@nestjs/platform-express@12.0.1'
-  - '@nestjs/config@12.0.0'
-  - '@nestjs/cli@12.0.0'
-  - '@nestjs/schematics@12.0.0'
-  - '@nestjs/testing@12.0.1'
-  - '@nestjs/swagger@12.0.1'
-  - '@nestjs/mapped-types@12.0.0'
-  - '@mikro-orm/nestjs@7.0.3-dev.23'
-  - '@oxfmt/binding-android-arm-eabi@0.67.0'
-  - '@oxfmt/binding-android-arm64@0.67.0'
-  - '@oxfmt/binding-darwin-arm64@0.67.0'
-  - '@oxfmt/binding-darwin-x64@0.67.0'
-  - '@oxfmt/binding-freebsd-x64@0.67.0'
-  - '@oxfmt/binding-linux-arm-gnueabihf@0.67.0'
-  - '@oxfmt/binding-linux-arm-musleabihf@0.67.0'
-  - '@oxfmt/binding-linux-arm64-gnu@0.67.0'
-  - '@oxfmt/binding-linux-arm64-musl@0.67.0'
-  - '@oxfmt/binding-linux-ppc64-gnu@0.67.0'
-  - '@oxfmt/binding-linux-riscv64-gnu@0.67.0'
-  - '@oxfmt/binding-linux-riscv64-musl@0.67.0'
-  - '@oxfmt/binding-linux-s390x-gnu@0.67.0'
-  - '@oxfmt/binding-linux-x64-gnu@0.67.0'
-  - '@oxfmt/binding-linux-x64-musl@0.67.0'
-  - '@oxfmt/binding-openharmony-arm64@0.67.0'
-  - '@oxfmt/binding-win32-arm64-msvc@0.67.0'
-  - '@oxfmt/binding-win32-ia32-msvc@0.67.0'
-  - '@oxfmt/binding-win32-x64-msvc@0.67.0'
-  - '@oxlint/binding-android-arm-eabi@1.82.0'
-  - '@oxlint/binding-android-arm64@1.82.0'
-  - '@oxlint/binding-darwin-arm64@1.82.0'
-  - '@oxlint/binding-darwin-x64@1.82.0'
-  - '@oxlint/binding-freebsd-x64@1.82.0'
-  - '@oxlint/binding-linux-arm-gnueabihf@1.82.0'
-  - '@oxlint/binding-linux-arm-musleabihf@1.82.0'
-  - '@oxlint/binding-linux-arm64-gnu@1.82.0'
-  - '@oxlint/binding-linux-arm64-musl@1.82.0'
-  - '@oxlint/binding-linux-ppc64-gnu@1.82.0'
-  - '@oxlint/binding-linux-riscv64-gnu@1.82.0'
-  - '@oxlint/binding-linux-riscv64-musl@1.82.0'
-  - '@oxlint/binding-linux-s390x-gnu@1.82.0'
-  - '@oxlint/binding-linux-x64-gnu@1.82.0'
-  - '@oxlint/binding-linux-x64-musl@1.82.0'
-  - '@oxlint/binding-openharmony-arm64@1.82.0'
-  - '@oxlint/binding-win32-arm64-msvc@1.82.0'
-  - '@oxlint/binding-win32-ia32-msvc@1.82.0'
-  - '@oxlint/binding-win32-x64-msvc@1.82.0'
-  - '@types/node@26.5.0'
-  - oxfmt@0.67.0
-  - oxlint@1.82.0
