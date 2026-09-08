@@ -22,22 +22,22 @@ catalogs:
   dev:
     '@commitlint/cli': ^21.2.1
     '@commitlint/config-conventional': ^21.2.0
-    '@types/node': ^26.1.1
+    '@types/node': ^26.5.0
     dotenv-cli: ^11.0.0
     husky: ^9.1.7
     knip: ^6.34.0
     publint: ^0.3.24
-    lint-staged: ^17.2.0
+    lint-staged: ^17.5.0
     turbo: ^2.10.7
     typescript: 6.0.3
     pino-pretty: ^13.0.0
   # 代码检查目录
   lint:
-    oxlint: ^1.76.0
-    oxlint-tailwindcss: ^1.5.0
+    oxlint: ^1.82.0
+    oxlint-tailwindcss: ^1.10.2
   # 格式化目录
   format:
-    oxfmt: ^0.65.0
+    oxfmt: ^0.67.0
   # 前端依赖
   frontend:
     electron: ^44.0.0
@@ -88,7 +88,7 @@ catalogs:
     '@mikro-orm/nestjs': 7.0.3-dev.23
     '@mikro-orm/postgresql': 7.1.11
     '@mikro-orm/cli': 7.1.11
-    tsx: ^4.23.12
+    tsx: ^4.23.13
     '@mikro-orm/migrations': 7.1.11
     '@mikro-orm/reflection': 7.1.11
     '@mikro-orm/seeder': 7.1.11
@@ -116,3 +116,44 @@ minimumReleaseAgeExclude:
   - '@nestjs/swagger@12.0.1'
   - '@nestjs/mapped-types@12.0.0'
   - '@mikro-orm/nestjs@7.0.3-dev.23'
+  - '@oxfmt/binding-android-arm-eabi@0.67.0'
+  - '@oxfmt/binding-android-arm64@0.67.0'
+  - '@oxfmt/binding-darwin-arm64@0.67.0'
+  - '@oxfmt/binding-darwin-x64@0.67.0'
+  - '@oxfmt/binding-freebsd-x64@0.67.0'
+  - '@oxfmt/binding-linux-arm-gnueabihf@0.67.0'
+  - '@oxfmt/binding-linux-arm-musleabihf@0.67.0'
+  - '@oxfmt/binding-linux-arm64-gnu@0.67.0'
+  - '@oxfmt/binding-linux-arm64-musl@0.67.0'
+  - '@oxfmt/binding-linux-ppc64-gnu@0.67.0'
+  - '@oxfmt/binding-linux-riscv64-gnu@0.67.0'
+  - '@oxfmt/binding-linux-riscv64-musl@0.67.0'
+  - '@oxfmt/binding-linux-s390x-gnu@0.67.0'
+  - '@oxfmt/binding-linux-x64-gnu@0.67.0'
+  - '@oxfmt/binding-linux-x64-musl@0.67.0'
+  - '@oxfmt/binding-openharmony-arm64@0.67.0'
+  - '@oxfmt/binding-win32-arm64-msvc@0.67.0'
+  - '@oxfmt/binding-win32-ia32-msvc@0.67.0'
+  - '@oxfmt/binding-win32-x64-msvc@0.67.0'
+  - '@oxlint/binding-android-arm-eabi@1.82.0'
+  - '@oxlint/binding-android-arm64@1.82.0'
+  - '@oxlint/binding-darwin-arm64@1.82.0'
+  - '@oxlint/binding-darwin-x64@1.82.0'
+  - '@oxlint/binding-freebsd-x64@1.82.0'
+  - '@oxlint/binding-linux-arm-gnueabihf@1.82.0'
+  - '@oxlint/binding-linux-arm-musleabihf@1.82.0'
+  - '@oxlint/binding-linux-arm64-gnu@1.82.0'
+  - '@oxlint/binding-linux-arm64-musl@1.82.0'
+  - '@oxlint/binding-linux-ppc64-gnu@1.82.0'
+  - '@oxlint/binding-linux-riscv64-gnu@1.82.0'
+  - '@oxlint/binding-linux-riscv64-musl@1.82.0'
+  - '@oxlint/binding-linux-s390x-gnu@1.82.0'
+  - '@oxlint/binding-linux-x64-gnu@1.82.0'
+  - '@oxlint/binding-linux-x64-musl@1.82.0'
+  - '@oxlint/binding-openharmony-arm64@1.82.0'
+  - '@oxlint/binding-win32-arm64-msvc@1.82.0'
+  - '@oxlint/binding-win32-ia32-msvc@1.82.0'
+  - '@oxlint/binding-win32-x64-msvc@1.82.0'
+  - '@types/node@26.5.0'
+  - oxfmt@0.67.0
+  - oxlint@1.82.0

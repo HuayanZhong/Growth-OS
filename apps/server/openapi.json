@@ -11,9 +11,7 @@
           }
         },
         "summary": "获取当前登录用户（JWT 保护）",
-        "tags": [
-          "auth"
-        ]
+        "tags": ["auth"]
       }
     },
     "/api/v1/health/liveness": {
@@ -26,9 +24,7 @@
           }
         },
         "summary": "存活探针：无外部依赖，200 即存活",
-        "tags": [
-          "health"
-        ]
+        "tags": ["health"]
       }
     },
     "/api/v1/health/readiness": {
@@ -41,9 +37,7 @@
           }
         },
         "summary": "就绪探针：校验 DB 连通性，失败返回 503",
-        "tags": [
-          "health"
-        ]
+        "tags": ["health"]
       }
     },
     "/api/v1/health": {
@@ -56,9 +50,7 @@
           }
         },
         "summary": "健康检查（等价 readiness，向后兼容）",
-        "tags": [
-          "health"
-        ]
+        "tags": ["health"]
       }
     },
     "/api/v1/agents": {
@@ -71,9 +63,7 @@
           }
         },
         "summary": "Agent 列表",
-        "tags": [
-          "agents"
-        ]
+        "tags": ["agents"]
       },
       "post": {
         "operationId": "AgentsController_create_v1",
@@ -84,9 +74,7 @@
           }
         },
         "summary": "创建 Agent",
-        "tags": [
-          "agents"
-        ]
+        "tags": ["agents"]
       }
     },
     "/api/v1/agents/{id}": {
@@ -99,9 +87,7 @@
           }
         },
         "summary": "获取单个 Agent",
-        "tags": [
-          "agents"
-        ]
+        "tags": ["agents"]
       },
       "patch": {
         "operationId": "AgentsController_update_v1",
@@ -112,9 +98,7 @@
           }
         },
         "summary": "更新 Agent",
-        "tags": [
-          "agents"
-        ]
+        "tags": ["agents"]
       },
       "delete": {
         "operationId": "AgentsController_remove_v1",
@@ -125,9 +109,7 @@
           }
         },
         "summary": "删除 Agent",
-        "tags": [
-          "agents"
-        ]
+        "tags": ["agents"]
       }
     },
     "/api/v1/sessions": {
@@ -140,9 +122,7 @@
           }
         },
         "summary": "会话列表",
-        "tags": [
-          "sessions"
-        ]
+        "tags": ["sessions"]
       },
       "post": {
         "operationId": "SessionsController_create_v1",
@@ -153,9 +133,7 @@
           }
         },
         "summary": "创建会话",
-        "tags": [
-          "sessions"
-        ]
+        "tags": ["sessions"]
       }
     },
     "/api/v1/sessions/{id}/events": {
@@ -168,9 +146,7 @@
           }
         },
         "summary": "会话事件序列（升序，录制-回放同构）",
-        "tags": [
-          "sessions"
-        ]
+        "tags": ["sessions"]
       }
     },
     "/api/v1/sessions/{id}/messages": {
@@ -183,9 +159,7 @@
           }
         },
         "summary": "投影后的模型可见消息历史",
-        "tags": [
-          "sessions"
-        ]
+        "tags": ["sessions"]
       }
     },
     "/api/v1/sessions/{id}": {
@@ -198,9 +172,7 @@
           }
         },
         "summary": "获取单个会话",
-        "tags": [
-          "sessions"
-        ]
+        "tags": ["sessions"]
       },
       "patch": {
         "operationId": "SessionsController_update_v1",
@@ -211,9 +183,7 @@
           }
         },
         "summary": "更新会话",
-        "tags": [
-          "sessions"
-        ]
+        "tags": ["sessions"]
       },
       "delete": {
         "operationId": "SessionsController_remove_v1",
@@ -224,9 +194,7 @@
           }
         },
         "summary": "删除会话",
-        "tags": [
-          "sessions"
-        ]
+        "tags": ["sessions"]
       }
     },
     "/api/v1/skills": {
@@ -239,9 +207,7 @@
           }
         },
         "summary": "技能列表",
-        "tags": [
-          "skills"
-        ]
+        "tags": ["skills"]
       },
       "post": {
         "operationId": "SkillsController_create_v1",
@@ -252,9 +218,7 @@
           }
         },
         "summary": "注册技能",
-        "tags": [
-          "skills"
-        ]
+        "tags": ["skills"]
       }
     },
     "/api/v1/skills/{id}": {
@@ -267,9 +231,7 @@
           }
         },
         "summary": "获取单个技能",
-        "tags": [
-          "skills"
-        ]
+        "tags": ["skills"]
       },
       "patch": {
         "operationId": "SkillsController_update_v1",
@@ -280,9 +242,7 @@
           }
         },
         "summary": "更新技能（含启用状态）",
-        "tags": [
-          "skills"
-        ]
+        "tags": ["skills"]
       },
       "delete": {
         "operationId": "SkillsController_remove_v1",
@@ -293,9 +253,7 @@
           }
         },
         "summary": "删除技能",
-        "tags": [
-          "skills"
-        ]
+        "tags": ["skills"]
       }
     },
     "/api/v1/files": {
@@ -308,9 +266,7 @@
           }
         },
         "summary": "文件列表",
-        "tags": [
-          "files"
-        ]
+        "tags": ["files"]
       },
       "post": {
         "operationId": "FilesController_upload_v1",
@@ -321,9 +277,7 @@
           }
         },
         "summary": "上传文件（multipart/form-data）",
-        "tags": [
-          "files"
-        ]
+        "tags": ["files"]
       }
     },
     "/api/v1/files/{id}": {
@@ -336,9 +290,7 @@
           }
         },
         "summary": "获取文件元数据",
-        "tags": [
-          "files"
-        ]
+        "tags": ["files"]
       },
       "delete": {
         "operationId": "FilesController_remove_v1",
@@ -349,9 +301,7 @@
           }
         },
         "summary": "删除文件",
-        "tags": [
-          "files"
-        ]
+        "tags": ["files"]
       }
     },
     "/api/v1/projects": {
@@ -364,9 +314,7 @@
           }
         },
         "summary": "项目列表",
-        "tags": [
-          "projects"
-        ]
+        "tags": ["projects"]
       },
       "post": {
         "operationId": "ProjectsController_create_v1",
@@ -377,9 +325,7 @@
           }
         },
         "summary": "创建项目",
-        "tags": [
-          "projects"
-        ]
+        "tags": ["projects"]
       }
     },
     "/api/v1/projects/{id}": {
@@ -392,9 +338,7 @@
           }
         },
         "summary": "获取单个项目",
-        "tags": [
-          "projects"
-        ]
+        "tags": ["projects"]
       },
       "patch": {
         "operationId": "ProjectsController_update_v1",
@@ -405,9 +349,7 @@
           }
         },
         "summary": "更新项目",
-        "tags": [
-          "projects"
-        ]
+        "tags": ["projects"]
       },
       "delete": {
         "operationId": "ProjectsController_remove_v1",
@@ -418,9 +360,7 @@
           }
         },
         "summary": "删除项目",
-        "tags": [
-          "projects"
-        ]
+        "tags": ["projects"]
       }
     }
   },
