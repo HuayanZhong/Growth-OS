@@ -57,3 +57,29 @@ Plus the relevant package test suites if rules reference behavior that changed.
 - Fixes applied (per file, incl. mirror + pairing re-records)
 - Confirmed-still-accurate assets (brief)
 - Suggested new rules (only if a stable gap emerged), with the tier they belong to
+
+## Behavior probes (manual, run with the user)
+
+Content audits cannot see runtime behavior — whether rules actually activate,
+experts actually dispatch, and skills actually load. These probes are
+manual-by-design: the platform exposes no dispatch/activation API, and the
+dispatch probe requires watching the Trae UI. Run them at audit cadence and
+record pass/fail per probe in the audit report; failures go to the decay-audit
+backlog, not ad-hoc fixes.
+
+### Probe matrix
+
+1. **Rule activation** — sample one rule per domain (frontend/auth, frontend/styles,
+   frontend/tests, desktop, server/*, agent). For each, phrase a micro-task whose
+   wording matches the rule's `description` trigger and confirm the rule loads
+   (the session shows the rule's guidance being applied or cited).
+2. **Expert dispatch** — for each registered expert, use a prompt squarely inside
+   its `description` and observe whether Trae offers/uses the subagent:
+   - `frontend-auth-expert` — a login/token-flow frontend task
+   - `frontend-style-expert` — a theming/style-conflict task
+   - `frontend-test-expert` — a Vitest/Nuxt test task
+   - `server-architect` — a NestJS/MikroORM backend task
+3. **Skill loading** — name a task matching a skill `description` (e.g.
+   "review this NestJS module for best-practice violations") and confirm the
+   skill loads on demand and that project rules win where guidance conflicts
+   (per the AGENTS.md precedence statement).

@@ -53,6 +53,7 @@ English single source of truth, loaded on demand; OpenCode sessions additionally
 - **Auth** (`frontend/auth/`): [credentials.md](.trae/rules/frontend/auth/credentials.md) (test accounts only in root `.env`), [flows.md](.trae/rules/frontend/auth/flows.md) (login/sign-out/403 fallback), [token.md](.trae/rules/frontend/auth/token.md) (secureStorage session persistence)
 - **Styles** (`frontend/styles/`): [animation.md](.trae/rules/frontend/styles/animation.md) (GSAP, no Vue Transition out-in), [colors.md](.trae/rules/frontend/styles/colors.md) (semantic tokens only), [conflict.md](.trae/rules/frontend/styles/conflict.md) (external overrides via `cn()`), [fonts.md](.trae/rules/frontend/styles/fonts.md) (local bundles, unicode-range), [performance.md](.trae/rules/frontend/styles/performance.md), [responsive.md](.trae/rules/frontend/styles/responsive.md), [reuse.md](.trae/rules/frontend/styles/reuse.md) (extract UI components at 3+ uses), [structure.md](.trae/rules/frontend/styles/structure.md), [themes.md](.trae/rules/frontend/styles/themes.md) (theme-controller, never lock data-theme)
 - **Tests** (`frontend/tests/`): [assertions.md](.trae/rules/frontend/tests/assertions.md) (no non-null assertions, no `any`), [commands.md](.trae/rules/frontend/tests/commands.md) (test → typecheck → lint order), [coverage.md](.trae/rules/frontend/tests/coverage.md), [environment.md](.trae/rules/frontend/tests/environment.md) (@nuxt/test-utils runtime), [isolation.md](.trae/rules/frontend/tests/isolation.md), [mock.md](.trae/rules/frontend/tests/mock.md) (never call real services), [structure.md](.trae/rules/frontend/tests/structure.md)
+- **Desktop** (`desktop/`): [ipc-contract.md](.trae/rules/desktop/ipc-contract.md) (IpcChannelMap single source — channels fan out to main/preload/renderer at compile time; secureStore for sensitive data; launchEnv is non-secret NUXT*PUBLIC*\* only)
 - **Server Auth** (`server/auth/`): [verification.md](.trae/rules/server/auth/verification.md) (JWKS dual-track + HS256 probe), [guard.md](.trae/rules/server/auth/guard.md) (SupabaseJwtGuard, @Public, @CurrentUser)
 - **Server Database** (`server/database/`): [orm.md](.trae/rules/server/database/orm.md) (MikroORM v7, entity placement, @InjectMikroORM('default')), [migrations.md](.trae/rules/server/database/migrations.md) (create/up/down workflow)
 - **Server API** (`server/api/`): [errors.md](.trae/rules/server/api/errors.md) (ApiErrorEnvelope, STATUS_CODE_MAP), [validation.md](.trae/rules/server/api/validation.md) (zod schemas in types, ZodValidationPipe mounting), [responses.md](.trae/rules/server/api/responses.md) (ResponseEnvelopeInterceptor, {data: T}), [health.md](.trae/rules/server/api/health.md) (liveness 200, readiness 503)
@@ -67,7 +68,7 @@ On-demand experts, triggered by description: [frontend-auth-expert.md](.trae/age
 
 ## Skills
 
-`.agents/skills/` (Agent Skills spec) and `.trae/skills/` (Trae project skills) load on demand by `description`; do not read skill bodies unless the task matches.
+`.agents/skills/` (Agent Skills spec) and `.trae/skills/` (Trae project skills) load on demand by `description`; do not read skill bodies unless the task matches. Vendored third-party skills are generic references — when their guidance conflicts with project rules, the rules win.
 
 ## Human docs (docs/)
 
@@ -98,7 +99,7 @@ Observed user preferences live in [.agents/user-profile.md](.agents/user-profile
 1. **One fact, one home.** A statement lives in exactly one file; elsewhere, link to it. Duplicates are violations, not conveniences.
 2. **Document current state, not history.** No "previously / now / no longer" or PR narration in durable prose; put change stories in commits, Agent Notes, or postmortems.
 3. **Cross-reference with relative markdown links**, never bare filenames (machine-checked by `verify-docs`).
-4. **Every non-trivial change ships an Agent Note** (proposed or implemented) in the same change.
+4. **Every non-trivial change ships an Agent Note** in the same change — a full note for changes outside the OpenSpec workflow, a thin pointer note (summary + link) for OpenSpec-planned changes (contract in [README.md](.agents/notes/README.md)).
 
 ## Editing these instructions
 

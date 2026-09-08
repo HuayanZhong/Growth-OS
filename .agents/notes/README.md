@@ -26,6 +26,8 @@ Status: proposed | implemented
 
 **`Alternatives considered` is mandatory** — it is the core value of a note. Write what was rejected and why; "we picked X" without "we rejected Y because Z" is not a note.
 
+**OpenSpec-planned changes ship a thin note instead**: title, status, a one-paragraph summary, and a link to the change under `openspec/changes/` — the full rationale (decisions, alternatives) lives in that change's proposal/design and is archived with it; do not duplicate it here. `/opsx-archive` updates the note's link to the archived location (the docs gate fails on the stale link until then). Changes outside the OpenSpec workflow keep the full skeleton above.
+
 ## Maintenance
 
 - **Keep implemented notes in sync with shipped reality.** When a path, symbol, default, or mechanism changes, rewrite the stale fact in the same change — do not append change history.

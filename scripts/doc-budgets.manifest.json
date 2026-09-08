@@ -1,18 +1,186 @@
 {
   "files": {
-    "AGENTS.md": { "maxWords": 1600 },
-    "docs/AGENTS.md": { "maxWords": 1250 },
-    "docs/architecture.md": { "maxWords": 1800 },
-    "docs/guide-zh.md": { "maxWords": 1140 },
-    ".agents/notes/README.md": { "maxWords": 400 },
-    "README.md": { "maxWords": 400 },
-    "apps/README.md": { "maxWords": 400 },
-    "packages/README.md": { "maxWords": 800 },
-    "tooling/README.md": { "maxWords": 400 },
-    "docs/server/database.md": { "maxWords": 900 },
-    "docs/desktop/architecture.md": { "maxWords": 600 },
-    "docs/cookbook/llm-adapter.md": { "maxWords": 1000 },
-    "docs/cookbook/package.md": { "maxWords": 700 },
-    "docs/cookbook/tool.md": { "maxWords": 600 }
+    "AGENTS.md": {
+      "maxWords": 1600
+    },
+    "docs/AGENTS.md": {
+      "maxWords": 1250
+    },
+    "docs/architecture.md": {
+      "maxWords": 1800
+    },
+    "docs/guide-zh.md": {
+      "maxWords": 1140
+    },
+    ".agents/notes/README.md": {
+      "maxWords": 400
+    },
+    "README.md": {
+      "maxWords": 400
+    },
+    "apps/README.md": {
+      "maxWords": 400
+    },
+    "packages/README.md": {
+      "maxWords": 800
+    },
+    "tooling/README.md": {
+      "maxWords": 400
+    },
+    "docs/server/database.md": {
+      "maxWords": 900
+    },
+    "docs/desktop/architecture.md": {
+      "maxWords": 600
+    },
+    "docs/cookbook/llm-adapter.md": {
+      "maxWords": 1000
+    },
+    "docs/cookbook/package.md": {
+      "maxWords": 700
+    },
+    "docs/cookbook/tool.md": {
+      "maxWords": 600
+    }
+  },
+  "harness": {
+    ".agents/user-profile.md": {
+      "maxWords": 1150
+    },
+    ".trae/documents/ai-module-plan.md": {
+      "maxWords": 2800
+    },
+    ".trae/documents/auth-token-secure-storage-plan.md": {
+      "maxWords": 2150
+    },
+    ".trae/documents/auth-verification-design.md": {
+      "maxWords": 2750
+    },
+    ".trae/documents/dashboard-route-design.md": {
+      "maxWords": 1900
+    },
+    ".trae/documents/iteration-plan.md": {
+      "maxWords": 9100
+    },
+    ".trae/documents/lightweight-automation-plan.md": {
+      "maxWords": 1400
+    },
+    ".trae/documents/server-infrastructure-plan.md": {
+      "maxWords": 4000
+    },
+    ".trae/rules/agent/hooks.md": {
+      "maxWords": 550
+    },
+    ".trae/rules/agent/self-improvement.md": {
+      "maxWords": 600
+    },
+    ".trae/rules/agent/user-profile.md": {
+      "maxWords": 950
+    },
+    ".trae/rules/desktop/ipc-contract.md": {
+      "maxWords": 250
+    },
+    ".trae/rules/frontend/auth/credentials.md": {
+      "maxWords": 250
+    },
+    ".trae/rules/frontend/auth/flows.md": {
+      "maxWords": 550
+    },
+    ".trae/rules/frontend/auth/token.md": {
+      "maxWords": 550
+    },
+    ".trae/rules/frontend/styles/animation.md": {
+      "maxWords": 900
+    },
+    ".trae/rules/frontend/styles/colors.md": {
+      "maxWords": 200
+    },
+    ".trae/rules/frontend/styles/conflict.md": {
+      "maxWords": 250
+    },
+    ".trae/rules/frontend/styles/fonts.md": {
+      "maxWords": 550
+    },
+    ".trae/rules/frontend/styles/performance.md": {
+      "maxWords": 250
+    },
+    ".trae/rules/frontend/styles/responsive.md": {
+      "maxWords": 250
+    },
+    ".trae/rules/frontend/styles/reuse.md": {
+      "maxWords": 300
+    },
+    ".trae/rules/frontend/styles/structure.md": {
+      "maxWords": 400
+    },
+    ".trae/rules/frontend/styles/themes.md": {
+      "maxWords": 300
+    },
+    ".trae/rules/frontend/tests/assertions.md": {
+      "maxWords": 250
+    },
+    ".trae/rules/frontend/tests/commands.md": {
+      "maxWords": 300
+    },
+    ".trae/rules/frontend/tests/coverage.md": {
+      "maxWords": 300
+    },
+    ".trae/rules/frontend/tests/environment.md": {
+      "maxWords": 300
+    },
+    ".trae/rules/frontend/tests/isolation.md": {
+      "maxWords": 250
+    },
+    ".trae/rules/frontend/tests/mock.md": {
+      "maxWords": 300
+    },
+    ".trae/rules/frontend/tests/structure.md": {
+      "maxWords": 450
+    },
+    ".trae/rules/git-commit-message.md": {
+      "maxWords": 900
+    },
+    ".trae/rules/server/api/errors.md": {
+      "maxWords": 400
+    },
+    ".trae/rules/server/api/health.md": {
+      "maxWords": 400
+    },
+    ".trae/rules/server/api/responses.md": {
+      "maxWords": 300
+    },
+    ".trae/rules/server/api/validation.md": {
+      "maxWords": 350
+    },
+    ".trae/rules/server/auth/guard.md": {
+      "maxWords": 300
+    },
+    ".trae/rules/server/auth/verification.md": {
+      "maxWords": 350
+    },
+    ".trae/rules/server/database/migrations.md": {
+      "maxWords": 250
+    },
+    ".trae/rules/server/database/orm.md": {
+      "maxWords": 500
+    },
+    ".trae/rules/server/middleware/compression.md": {
+      "maxWords": 300
+    },
+    ".trae/rules/server/middleware/helmet.md": {
+      "maxWords": 250
+    },
+    ".trae/rules/server/middleware/timeout.md": {
+      "maxWords": 300
+    },
+    ".trae/rules/server/tests/commands.md": {
+      "maxWords": 300
+    },
+    ".trae/rules/server/tests/mock.md": {
+      "maxWords": 450
+    },
+    ".trae/rules/server/tests/structure.md": {
+      "maxWords": 300
+    }
   }
 }

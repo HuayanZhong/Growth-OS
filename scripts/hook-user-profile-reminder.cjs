@@ -52,7 +52,7 @@ process.stdout.write(
   JSON.stringify({
     decision: 'block',
     reason:
-      '任务收尾三问（按 .trae/rules/agent/self-improvement.md 与 agent/user-profile.md §6）：① 本任务是否产生了可复用工作流（满足技能沉淀三标准）→ 是则沉淀为 .trae/skills/<name>/SKILL.md；② 是否有新决策 → 同一变更带 Agent Note；③ 用户是否显露习惯/纠正 → 更新 .agents/user-profile.md；④ 门禁或规则是否有摩擦 → 记入 decay-audit 待办。逐一判断，无沉淀项则忽略本提醒并正常结束。',
+      '任务收尾四问（按 .trae/rules/agent/self-improvement.md §3 与 agent/user-profile.md §6）：① 本任务是否产生了可复用工作流（满足技能沉淀三标准）→ 是则沉淀为 .trae/skills/<name>/SKILL.md；② 是否有新决策 → 同一变更带 Agent Note；③ 用户是否显露习惯/纠正 → 更新 .agents/user-profile.md；④ 门禁或规则是否有摩擦 → 记入 decay-audit 待办。逐一判断，无沉淀项则忽略本提醒并正常结束。',
   }),
 )
 process.exit(0)

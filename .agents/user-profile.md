@@ -5,7 +5,7 @@
 > 置信度：5=用户成文规则（引用）｜4=重复显式陈述/纠正｜3=≥2 次一致行为｜2=单次观察待验证｜1=弱信号。仅 ≥3 影响默认行为。
 
 owner: primary（仓库所有者，单人开发）
-last_updated: 2026-09-08
+last_updated: 2026-09-09
 
 ## 1. 代码风格（Code style）
 
@@ -19,6 +19,8 @@ last_updated: 2026-09-08
   confidence: 4 ｜ evidence: 2026-09-07 用户对 turn 管线/LLM 选型越界的明确批评及后续多次"只固定骨架"的表述 ｜ last_updated: 2026-09-08
 - 大任务自主推进：计划确立后按计划继续，除非出现需要决策的高风险点；事实变化时更新计划。
   confidence: 3 ｜ evidence: 2026-09-07 至 09-08 阶段三/四连续"继续"推进模式 ｜ last_updated: 2026-09-08
+- 偏好统一机制而非双轨：倾向把并行机制合并为单一来源或共享流，而非各养一套。
+  confidence: 3 ｜ evidence: 2026-09-08 "不只是trae能用，别的agent平台也能共享工作流"（OpenSpec 跨平台接入）、2026-09-09 "我希望能够结合起来"（note 与 OpenSpec 整合为瘦指针） ｜ last_updated: 2026-09-09
 
 ## 3. 技术栈选择（Tech stack choices）
 

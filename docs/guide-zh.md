@@ -4,7 +4,7 @@
 
 ## 规则（.trae/rules，英文真相）
 
-按需加载；每类规则各管一块，点击进入英文原文。
+按需加载，点击进入英文原文。
 
 ### 前端认证（frontend/auth/）
 
@@ -33,6 +33,10 @@
 - [isolation.md](../.trae/rules/frontend/tests/isolation.md) — 测试隔离
 - [mock.md](../.trae/rules/frontend/tests/mock.md) — 禁止真实调用外部服务
 - [structure.md](../.trae/rules/frontend/tests/structure.md) — 测试目录结构
+
+### 桌面（desktop/）
+
+- [ipc-contract.md](../.trae/rules/desktop/ipc-contract.md) — IPC 契约：IpcChannelMap 单源三端同步、secureStore 存敏感数据、launchEnv 仅非密钥
 
 ### 提交规范
 
@@ -69,12 +73,12 @@
 ### Agent 协作（agent/）
 
 - [hooks.md](../.trae/rules/agent/hooks.md) — Trae hooks 生命周期、协议、编写规范（守卫与提醒清单）
-- [self-improvement.md](../.trae/rules/agent/self-improvement.md) — 自审与沉淀：收尾三问、技能沉淀、优化循环
+- [self-improvement.md](../.trae/rules/agent/self-improvement.md) — 自审与沉淀：收尾四问、技能沉淀、优化循环
 - [user-profile.md](../.trae/rules/agent/user-profile.md) — 用户画像：采集标准、置信度计分（数据在 `.agents/user-profile.md`，Stop hook 自动提醒）
 
 ## 专家（.trae/agents）
 
-按 description 触发：auth / style / test 三个前端专家 + server-architect（NestJS/MikroORM 后端架构专家）。
+按 description 触发：auth / style / test 前端专家 + server-architect（后端）。
 
 ## 文档（docs/）
 
