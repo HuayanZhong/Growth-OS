@@ -13,6 +13,18 @@
         ]
       }
     ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node scripts/hook-regen-catalogs.cjs",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
     "Stop": [
       {
         "loop_limit": 3,

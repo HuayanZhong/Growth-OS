@@ -30,6 +30,8 @@ Node ≥ 24 required; pnpm 12.1.0 is pinned via `packageManager` + `devEngines` 
 - `pnpm hygiene` — knip (dead code/unused deps, config in `knip.json`) + publint (package exports) via turbo; runs in CI
 - `pnpm verify:docs` — docs gate: CLAUDE.md thin-pointer sync, markdown links, word budgets (limits in [doc-budgets.manifest.json](scripts/doc-budgets.manifest.json), including this file), bilingual-pair hashes
 - `pnpm verify:invariants` — structural invariant checks (ZodValidationPipe mounting, forFeature contextName, shared/types strip-only syntax, server ESM constraints); runs in CI and pre-commit; line-level exemption: `// invariant: skip`
+- `pnpm verify:gates` — gate self-monitoring (gate/hook script syntax, `hooks.json` structure, hook liveness smoke); runs in CI and pre-commit
+- `pnpm verify` — one-shot: invariants + docs + gates; agent wrap-up runs this single command
 - `pnpm verify:pairing --write <path>` — re-record a bilingual pair's hash after a paired change (see [docs/i18n/README.md](docs/i18n/README.md))
 - `pnpm --filter desktop test` / `pnpm --filter server test` — per-app tests (both `vitest run`); single file: `pnpm --filter desktop vitest run test/nuxt/use-auth.test.ts`
 - `pnpm --filter desktop verify:build` — Electron production build smoke test
@@ -54,7 +56,7 @@ English single source of truth, loaded on demand; OpenCode sessions additionally
 - **Server API** (`server/api/`): [errors.md](.trae/rules/server/api/errors.md) (ApiErrorEnvelope, STATUS_CODE_MAP), [validation.md](.trae/rules/server/api/validation.md) (zod schemas in types, ZodValidationPipe mounting), [responses.md](.trae/rules/server/api/responses.md) (ResponseEnvelopeInterceptor, {data: T}), [health.md](.trae/rules/server/api/health.md) (liveness 200, readiness 503)
 - **Server Middleware** (`server/middleware/`): [compression.md](.trae/rules/server/middleware/compression.md) (SSE exclusion via includes), [helmet.md](.trae/rules/server/middleware/helmet.md) (CSP prod-only), [timeout.md](.trae/rules/server/middleware/timeout.md) (@SkipTimeout for SSE)
   - **Server Tests** (`server/tests/`): [structure.md](.trae/rules/server/tests/structure.md) (test/ mirrors src/, e2e in test/), [mock.md](.trae/rules/server/tests/mock.md) (vi.mock for ESM, fake timers), [commands.md](.trae/rules/server/tests/commands.md) (pnpm --filter server test/typecheck/lint)
-- **Agent** (`agent/`): [hooks.md](.trae/rules/agent/hooks.md) (Trae hooks lifecycle/protocol/authoring), [user-profile.md](.trae/rules/agent/user-profile.md) (user profile observation, confidence scoring, update mechanism)
+- **Agent** (`agent/`): [hooks.md](.trae/rules/agent/hooks.md) (Trae hooks lifecycle/protocol/authoring), [user-profile.md](.trae/rules/agent/user-profile.md) (user profile observation, confidence scoring, update mechanism), [self-improvement.md](.trae/rules/agent/self-improvement.md) (closing review, skill distillation, optimize loop)
 - **Git**: [git-commit-message.md](.trae/rules/git-commit-message.md) (conventional commits, subject language matches the change)
 
 ## Agents (.trae/agents)

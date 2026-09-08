@@ -68,8 +68,9 @@
 
 ### Agent 协作（agent/）
 
-- [hooks.md](../.trae/rules/agent/hooks.md) — Trae hooks 事件生命周期、stdin/stdout 协议、编写规范（含画像提醒与 harness 守卫清单）
-- [user-profile.md](../.trae/rules/agent/user-profile.md) — 用户画像：采集标准、置信度计分、更新机制（数据在 `.agents/user-profile.md`，Stop hook 自动提醒审视）
+- [hooks.md](../.trae/rules/agent/hooks.md) — Trae hooks 生命周期、协议、编写规范（守卫与提醒清单）
+- [self-improvement.md](../.trae/rules/agent/self-improvement.md) — 自审与沉淀：收尾三问、技能沉淀、优化循环
+- [user-profile.md](../.trae/rules/agent/user-profile.md) — 用户画像：采集标准、置信度计分（数据在 `.agents/user-profile.md`，Stop hook 自动提醒）
 
 ## 专家（.trae/agents）
 

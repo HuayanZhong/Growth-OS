@@ -43,6 +43,10 @@ jobs:
       - name: Verify invariants
         run: pnpm verify:invariants
 
+      # 门禁自监控：门禁/hook 脚本语法、hooks.json 结构、hook 活体冒烟
+      - name: Verify gates
+        run: pnpm verify:gates
+
       - name: Commitlint
         if: github.event_name == 'pull_request'
         run: pnpm exec commitlint --from "${{ github.event.pull_request.base.sha }}" --to "${{ github.sha }}"
