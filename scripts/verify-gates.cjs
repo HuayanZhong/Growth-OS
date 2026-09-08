@@ -103,6 +103,100 @@ try {
   report(`scripts/doc-budgets.manifest.json is not valid JSON: ${err.message}`)
 }
 
+// 5. Harness asset frontmatter — official formats (Trae rules/subagents, Agent Skills)
+const FRONTMATTER_RE = /^---\r?\n([\s\S]*?)\r?\n---/
+const AGENT_NAME_RE = /^[A-Za-z][A-Za-z0-9-]{0,49}$/
+const SKILL_NAME_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
+
+function frontmatterOf(content) {
+  const m = content.match(FRONTMATTER_RE)
+  return m ? m[1] : null
+}
+
+function hasField(fm, key) {
+  return new RegExp(`^${key}:\\s*\\S`, 'm').test(fm)
+}
+
+function walkMd(dir) {
+  const out = []
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const abs = path.join(dir, entry.name)
+    if (entry.isDirectory()) out.push(...walkMd(abs))
+    else if (entry.name.endsWith('.md')) out.push(abs)
+  }
+  return out
+}
+
+function checkHarnessAssets() {
+  for (const abs of walkMd(path.join(ROOT, '.trae/rules'))) {
+    const rel = path.relative(ROOT, abs).replace(/\\/g, '/')
+    const content = fs.readFileSync(abs, 'utf8')
+    const fm = frontmatterOf(content)
+    if (fm === null) {
+      report(`${rel}: missing YAML frontmatter (Trae rules require alwaysApply/description)`)
+      continue
+    }
+    if (!hasField(fm, 'alwaysApply')) report(`${rel}: frontmatter missing alwaysApply`)
+    if (!hasField(fm, 'description'))
+      report(`${rel}: frontmatter missing description (smart-activation trigger)`)
+  }
+  for (const abs of walkMd(path.join(ROOT, '.trae/agents'))) {
+    const rel = path.relative(ROOT, abs).replace(/\\/g, '/')
+    const content = fs.readFileSync(abs, 'utf8')
+    const fm = frontmatterOf(content)
+    if (fm === null) {
+      report(`${rel}: missing YAML frontmatter (Trae subagents require name/description)`)
+      continue
+    }
+    const nameMatch = fm.match(/^name:\s*(\S+)\s*$/m)
+    if (!nameMatch) report(`${rel}: frontmatter missing name`)
+    else if (!AGENT_NAME_RE.test(nameMatch[1]))
+      report(
+        `${rel}: agent name "${nameMatch[1]}" violates the official shape (letter first, letters/digits/hyphens, <=50)`,
+      )
+    if (!hasField(fm, 'description'))
+      report(`${rel}: frontmatter missing description (dispatch trigger)`)
+    const toolsMatch = fm.match(/^tools:\s*(.+)$/m)
+    if (toolsMatch && toolsMatch[1].split(',').some((t) => t.trim() === '')) {
+      report(`${rel}: tools must be a comma-separated list without empty entries`)
+    }
+  }
+  const skillsDir = path.join(ROOT, '.trae/skills')
+  for (const entry of fs.readdirSync(skillsDir, { withFileTypes: true })) {
+    if (!entry.isDirectory()) continue
+    const skillMd = path.join(skillsDir, entry.name, 'SKILL.md')
+    if (!fs.existsSync(skillMd)) {
+      report(`.trae/skills/${entry.name}: directory has no SKILL.md (Agent Skills spec)`)
+      continue
+    }
+    const rel = path.relative(ROOT, skillMd).replace(/\\/g, '/')
+    const content = fs.readFileSync(skillMd, 'utf8')
+    const fm = frontmatterOf(content)
+    if (fm === null) {
+      report(`${rel}: missing YAML frontmatter (Agent Skills spec requires name/description)`)
+      continue
+    }
+    const nameMatch = fm.match(/^name:\s*(\S+)\s*$/m)
+    if (!nameMatch) report(`${rel}: frontmatter missing name`)
+    else if (nameMatch[1] !== entry.name)
+      report(`${rel}: skill name "${nameMatch[1]}" must match the parent directory "${entry.name}"`)
+    else if (!SKILL_NAME_RE.test(nameMatch[1]) || nameMatch[1].length > 64)
+      report(`${rel}: skill name "${nameMatch[1]}" violates the kebab-case/length constraints`)
+    const descMatch = fm.match(/^description:\s*(.+)$/m)
+    if (!descMatch || descMatch[1].trim() === '') report(`${rel}: frontmatter missing description`)
+    else if (descMatch[1].length > 1024) report(`${rel}: description exceeds 1024 chars`)
+  }
+  try {
+    const mcp = JSON.parse(read('.trae/mcp.json'))
+    if (typeof mcp.mcpServers !== 'object' || mcp.mcpServers === null) {
+      report('.trae/mcp.json: missing mcpServers object')
+    }
+  } catch (err) {
+    report(`.trae/mcp.json is not valid JSON: ${err.message}`)
+  }
+}
+checkHarnessAssets()
+
 if (violations.length > 0) {
   for (const v of violations) console.error(v)
   console.error(`[verify-gates] FAILED (${violations.length} violation(s))`)

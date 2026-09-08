@@ -5,7 +5,7 @@ description: User profile rules: observe the user during interactions and mainta
 
 # User Profile (Observation, Scoring, Update)
 
-**When to use**: during any user interaction — to decide whether an observation qualifies for the profile, how to score it, and how to adapt behavior. The profile data lives in [.agents/user-profile.md](../../.agents/user-profile.md); this rule only governs how it is built and used.
+**When to use**: during any user interaction — to decide whether an observation qualifies for the profile, how to score it, and how to adapt behavior. The profile data lives in [.agents/user-profile.md](../../../.agents/user-profile.md); this rule only governs how it is built and used.
 
 ## 1. Data collection standard
 

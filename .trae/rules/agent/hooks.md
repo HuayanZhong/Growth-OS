@@ -34,6 +34,7 @@ Common stdin fields: `session_id`, `cwd`, `hook_event_name`, `workspace_roots`. 
 ## 4. Inventory
 
 - `scripts/hook-guard-harness.cjs` (`PreToolUse`, `Write|Edit`): harness asset frontmatter validation (rules `alwaysApply`/`description`; agents `name`/`description`/`tools`; SKILL.md name = parent directory).
+- `scripts/hook-regen-catalogs.cjs` (`PostToolUse`, `Write|Edit`): regenerates derived docs (event-catalog / config-catalog / module-graph) when their sources change; silent on unmatched paths, stderr hint on generator failure.
 - `scripts/hook-user-profile-reminder.cjs` (`Stop`): end-of-turn closing review reminder (profile update / skill distillation / note check / friction backlog) with 6h dedup (see [user-profile.md](user-profile.md) §6 and [self-improvement.md](self-improvement.md)).
 
 ## 5. Verification

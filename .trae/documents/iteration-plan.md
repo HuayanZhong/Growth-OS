@@ -595,5 +595,5 @@ Install → Mount → Running → Unmount → Uninstall
 - [DeepSeek Harness 文档标准](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/AGENTS.md)
 - [Cordis 插件框架](https://github.com/cordiverse/cordis)
 - [OpenHands Software Agent SDK 论文 (arXiv 2511.03690)](https://arxiv.org/abs/2511.03690)
-- [Growth OS 架构地图](../docs/architecture.md)
-- [Growth OS AGENTS.md](../AGENTS.md)
+- [Growth OS 架构地图](../../docs/architecture.md)
+- [Growth OS AGENTS.md](../../AGENTS.md)

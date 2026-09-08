@@ -122,7 +122,13 @@ for (const rel of collectMarkdown().filter((f) => f !== 'CLAUDE.md' && f.endsWit
 }
 
 // 4. Relative markdown link validity across all docs
-for (const rel of collectMarkdown()) {
+//    .trae/skills (third-party, hundreds of files) stays skipped; the authored
+//    harness areas (rules/agents/documents) are link-checked explicitly.
+const linkTargets = collectMarkdown()
+for (const base of ['.trae/rules', '.trae/agents', '.trae/documents']) {
+  linkTargets.push(...collectMarkdown(path.join(ROOT, base)))
+}
+for (const rel of linkTargets) {
   const abs = path.join(ROOT, rel)
   const content = read(abs)
   if (content == null) continue

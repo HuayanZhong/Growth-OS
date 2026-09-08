@@ -8,7 +8,7 @@
 
 ## 一、现状与问题
 
-当前 [useSupabase.ts](file:///c:/Users/Administrator/Desktop/Growth%20OS/apps/desktop/app/composables/useSupabase.ts#L14-L20) 使用 Supabase 默认行为（`persistSession: true`），session 明文写入 `localStorage`：
+当前 [useSupabase.ts](../../apps/desktop/app/composables/useSupabase.ts#L14-L20) 使用 Supabase 默认行为（`persistSession: true`），session 明文写入 `localStorage`：
 
 - **access token（短期，~1h）** 明文落盘
 - **refresh token（长期，可续期）** 明文落盘
