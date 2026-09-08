@@ -63,8 +63,12 @@
 ### 后端测试（server/tests/）
 
 - [structure.md](../.trae/rules/server/tests/structure.md) — 测试目录结构（co-located spec + e2e）
-- [mock.md](../.trae/rules/server/tests/mock.md) — Mock 策略（jest.mock for ESM, fake timers）
+- [mock.md](../.trae/rules/server/tests/mock.md) — Mock 策略（vi.mock for ESM, fake timers）
 - [commands.md](../.trae/rules/server/tests/commands.md) — 测试命令与验证顺序
+
+### Agent 协作（agent/）
+
+- [user-profile.md](../.trae/rules/agent/user-profile.md) — 用户画像：采集标准、置信度计分、更新机制（数据在 `.agents/user-profile.md`）
 
 ## 专家（.trae/agents）
 

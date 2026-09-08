@@ -77,6 +77,10 @@ On-demand experts, triggered by description: [frontend-auth-expert.md](.trae/age
 
 Agent Notes record the "why": [README.md](.agents/notes/README.md) defines the contract. Non-trivial changes ship a note in the same change.
 
+## User profile
+
+Observed user preferences live in [.agents/user-profile.md](.agents/user-profile.md), maintained per [user-profile.md](.trae/rules/agent/user-profile.md) (admission threshold, confidence scoring, no secrets). Adapt defaults to entries with confidence ≥3; the user's latest instruction always wins.
+
 ## Secrets and .env
 
 - Test accounts live only in the root `.env` (`SUPABASE_TEST_EMAIL`, `SUPABASE_TEST_PASSWORD`); never hard-code them into code, tests, rules, or commits; rules reference variable names only.
