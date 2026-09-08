@@ -54,6 +54,7 @@ English single source of truth, loaded on demand; OpenCode sessions additionally
 - **Server API** (`server/api/`): [errors.md](.trae/rules/server/api/errors.md) (ApiErrorEnvelope, STATUS_CODE_MAP), [validation.md](.trae/rules/server/api/validation.md) (zod schemas in types, ZodValidationPipe mounting), [responses.md](.trae/rules/server/api/responses.md) (ResponseEnvelopeInterceptor, {data: T}), [health.md](.trae/rules/server/api/health.md) (liveness 200, readiness 503)
 - **Server Middleware** (`server/middleware/`): [compression.md](.trae/rules/server/middleware/compression.md) (SSE exclusion via includes), [helmet.md](.trae/rules/server/middleware/helmet.md) (CSP prod-only), [timeout.md](.trae/rules/server/middleware/timeout.md) (@SkipTimeout for SSE)
   - **Server Tests** (`server/tests/`): [structure.md](.trae/rules/server/tests/structure.md) (test/ mirrors src/, e2e in test/), [mock.md](.trae/rules/server/tests/mock.md) (vi.mock for ESM, fake timers), [commands.md](.trae/rules/server/tests/commands.md) (pnpm --filter server test/typecheck/lint)
+- **Agent** (`agent/`): [hooks.md](.trae/rules/agent/hooks.md) (Trae hooks lifecycle/protocol/authoring), [user-profile.md](.trae/rules/agent/user-profile.md) (user profile observation, confidence scoring, update mechanism)
 - **Git**: [git-commit-message.md](.trae/rules/git-commit-message.md) (conventional commits, subject language matches the change)
 
 ## Agents (.trae/agents)

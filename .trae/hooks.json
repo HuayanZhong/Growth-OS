@@ -12,6 +12,18 @@
           }
         ]
       }
+    ],
+    "Stop": [
+      {
+        "loop_limit": 3,
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node scripts/hook-user-profile-reminder.cjs",
+            "timeout": 15
+          }
+        ]
+      }
     ]
   }
 }

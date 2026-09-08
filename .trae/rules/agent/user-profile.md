@@ -54,7 +54,7 @@ Adjustment rules: each corroborating observation +1 (cap 5); a contradicting obs
 
 ## 6. Update mechanism and quality bar
 
-- **Timing**: review the session's signals at task wrap-up (never interrupt an in-flight task to write the profile).
+- **Timing**: review the session's signals at task wrap-up (never interrupt an in-flight task to write the profile). The `Stop` hook (`.trae/hooks.json` → `scripts/hook-user-profile-reminder.cjs`, 6h dedup) enforces this review automatically at every turn end — treat its reminder as the trigger, comply or explicitly ignore when there are no new signals.
 - **Evidence**: every entry carries a short `evidence` note (what was observed, when) and `last_updated` (YYYY-MM-DD).
 - **Quality bar**: entries without evidence or with confidence 1 and no update for 30 days are pruned; the file must stay parseable as Markdown with the fixed template sections.
 - **Review**: re-read the profile at the start of substantial multi-step tasks; adapt defaults to entries with confidence ≥3.
