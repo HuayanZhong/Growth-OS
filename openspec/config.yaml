@@ -1,0 +1,41 @@
+schema: spec-driven
+
+# Project context (optional)
+# This is shown to AI when creating artifacts.
+# Add your tech stack, conventions, style guides, domain knowledge, etc.
+# Example:
+#   context: |
+#     Tech stack: TypeScript, React, Node.js
+#     We use conventional commits
+#     Domain: e-commerce platform
+
+context: |
+  Growth OS — Coze-like AI agent desktop platform.
+  Stack: Nuxt 4 (apps/desktop), NestJS 12 + MikroORM v7 (apps/server, ESM), Electron (packages/desktop-core),
+  Tailwind CSS v4 + daisyUI 5 (packages/ui), Supabase Auth + PostgreSQL.
+  Monorepo: Turborepo + pnpm 12 workspaces with catalogs (deps use the catalog: protocol, never raw versions).
+  Server is ESM ("type": "module" + NodeNext): relative imports carry explicit extensions; no CJS APIs.
+  Validation: zod schemas co-located in @growth-os/types (createXxxSchema + z.infer), mounted via ZodValidationPipe.
+  Errors: ApiErrorEnvelope { code, message, details? }; codes are machine-readable.
+  Verification: pnpm verify (invariants + docs + gates), then test -> typecheck -> lint must be green.
+  Conventions: conventional commits (header <= 72 chars); harness assets under .trae/ and .agents/ follow
+  docs/AGENTS.md tier taxonomy; read AGENTS.md before changing packages/.
+
+# Per-artifact rules (optional)
+# Add custom rules for specific artifacts.
+# Example:
+#   rules:
+#     proposal:
+#       - Keep proposals under 500 words
+#       - Always include a "Non-goals" section
+#     tasks:
+#       - Break tasks into chunks of max 2 hours
+
+rules:
+  proposal:
+    - State whether the change touches harness assets (.trae/, .agents/, AGENTS.md) — those follow the stricter flow in docs/AGENTS.md
+    - Map affected layers explicitly (apps/desktop / apps/server / packages/*) — cross-layer changes need the layer contracts
+  tasks:
+    - Each task ends with its verification command (per apps/server AGENTS.md and .trae/rules/** verification sections)
+  design:
+    - Reference existing Agent Notes (.agents/notes/) for prior decisions in the touched area

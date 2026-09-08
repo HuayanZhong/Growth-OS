@@ -4,19 +4,20 @@ Growth OS is a Coze-like desktop platform built with Nuxt 4 (frontend), NestJS (
 
 ## Repository layout
 
-| Path                    | Role                                                                                 |
-| ----------------------- | ------------------------------------------------------------------------------------ |
-| `apps/desktop`          | Nuxt 4 frontend + Electron shell app (`app/` source, `modules/`, `test/`)            |
-| `apps/server`           | NestJS backend with MikroORM (`src/`)                                                |
-| `packages/desktop-core` | Electron main process + preload (`src/main.ts`, `src/preload.ts`)                    |
-| `packages/ui`           | Design system components and styles (Tailwind CSS v4 + daisyUI 5)                    |
-| `packages/shared`       | Shared env/normalize utilities                                                       |
-| `packages/types`        | Shared types and IPC channel contracts                                               |
-| `tooling/`              | Shared TypeScript / lint / format / test configs                                     |
-| `docs/`                 | Human-facing docs (architecture map, Chinese guide, doc standard)                    |
-| `.trae/`                | Trae harness: `rules/`, `agents/`, `skills/`, `documents/`, `hooks.json`, `mcp.json` |
-| `.agents/`              | Agent Skills (`skills/`) and decision notes (`notes/`)                               |
-| `scripts/`              | Repo scripts including `verify-docs.cjs` (docs gate)                                 |
+| Path                    | Role                                                                                          |
+| ----------------------- | --------------------------------------------------------------------------------------------- |
+| `apps/desktop`          | Nuxt 4 frontend + Electron shell app (`app/` source, `modules/`, `test/`)                     |
+| `apps/server`           | NestJS backend with MikroORM (`src/`)                                                         |
+| `packages/desktop-core` | Electron main process + preload (`src/main.ts`, `src/preload.ts`)                             |
+| `packages/ui`           | Design system components and styles (Tailwind CSS v4 + daisyUI 5)                             |
+| `packages/shared`       | Shared env/normalize utilities                                                                |
+| `packages/types`        | Shared types and IPC channel contracts                                                        |
+| `tooling/`              | Shared TypeScript / lint / format / test configs                                              |
+| `docs/`                 | Human-facing docs (architecture map, Chinese guide, doc standard)                             |
+| `.trae/`                | Trae harness: `rules/`, `agents/`, `skills/`, `documents/`, `hooks.json`, `mcp.json`          |
+| `.agents/`              | Agent Skills (`skills/`) and decision notes (`notes/`)                                        |
+| `openspec/`             | Spec-driven change workflow (delta specs, proposals, tasks; config in `openspec/config.yaml`) |
+| `scripts/`              | Repo scripts including `verify-docs.cjs` (docs gate)                                          |
 
 ## Commands
 
@@ -32,6 +33,7 @@ Node ≥ 24 required; pnpm 12.1.0 is pinned via `packageManager` + `devEngines` 
 - `pnpm verify:invariants` — structural invariant checks (ZodValidationPipe mounting, forFeature contextName, shared/types strip-only syntax, server ESM constraints); runs in CI and pre-commit; line-level exemption: `// invariant: skip`
 - `pnpm verify:gates` — gate self-monitoring (gate/hook script syntax, `hooks.json` structure, hook liveness smoke); runs in CI and pre-commit
 - `pnpm verify` — one-shot: invariants + docs + gates; agent wrap-up runs this single command
+- OpenSpec change workflow — non-trivial changes go through `openspec/` (delta specs + proposal + tasks): invoke `/opsx-propose` → `/opsx-apply` → `/opsx-archive` via `.trae/commands` (or the `openspec-*` skills); project context in [openspec/config.yaml](openspec/config.yaml)
 - `pnpm verify:pairing --write <path>` — re-record a bilingual pair's hash after a paired change (see [docs/i18n/README.md](docs/i18n/README.md))
 - `pnpm --filter desktop test` / `pnpm --filter server test` — per-app tests (both `vitest run`); single file: `pnpm --filter desktop vitest run test/nuxt/use-auth.test.ts`
 - `pnpm --filter desktop verify:build` — Electron production build smoke test

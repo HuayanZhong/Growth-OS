@@ -99,6 +99,10 @@ Agent Notes 记录"为什么"（Problem → Decision → Alternatives → Conseq
 
 `.agents/skills/`（Agent Skills 规范）与 `.trae/skills/`（Trae 项目技能）按 description 按需加载。
 
+## 变更工作流（OpenSpec）
+
+非平凡变更走规格流程：`/opsx-propose` → `/opsx-apply` → `/opsx-archive`；命令/技能在 `.trae/`，规格库与项目 context 在 [openspec/](../openspec/config.yaml)。跨平台共享：其他 agent `openspec init --tools <id>` 后读同一规格库。
+
 ## 文档门禁
 
 `pnpm verify:docs` 校验：CLAUDE.md 薄指针、相对链接、字数预算、双文配对 hash、ts 代码块编译、生成式目录新鲜度、harness 资产登记（rules/agents 必须被根 [AGENTS.md](../AGENTS.md) 引用）；`pnpm verify:invariants` 校验结构不变量。两者均挂 pre-commit；CLAUDE.md 漂移用 `node scripts/verify-docs.cjs --sync` 恢复，双文漂移用 `pnpm verify:pairing --write <path>` 重录。
