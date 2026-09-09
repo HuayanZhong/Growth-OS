@@ -51,9 +51,9 @@ jobs:
         if: github.event_name == 'pull_request'
         run: pnpm exec commitlint --from "${{ github.event.pull_request.base.sha }}" --to "${{ github.sha }}"
 
-      # turbo 按任务图并行执行 lint/typecheck/test
-      - name: Lint + Typecheck + Test
-        run: pnpm turbo lint typecheck test
+      # turbo 按任务图并行执行 lint/typecheck/test:coverage（test:coverage 同时执行全部测试并检查各包覆盖率阈值）
+      - name: Lint + Typecheck + Test (coverage gated)
+        run: pnpm turbo lint typecheck test:coverage
 
       # e2e 不依赖真实 DB（readiness 断言 503；auth-me 真实登录用例凭据缺失自动 skip）
       - name: E2E (server)

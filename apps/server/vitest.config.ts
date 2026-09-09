@@ -1,4 +1,4 @@
-import { defineConfig } from 'vitest/config'
+import { coverageConfigDefaults, defineConfig } from 'vitest/config'
 import { baseTestConfig } from '../../tooling/test/base.ts'
 
 /**
@@ -10,7 +10,20 @@ export default defineConfig({
     ...baseTestConfig,
     coverage: {
       include: ['src/**'],
-      exclude: ['**/*.test.ts'],
+      // 口径：覆盖率只度量可执行源——资产/类型声明/纯 re-export barrel 不计入分母，
+      // 自动生成的 migrations/seeders 除外；main.ts/app.module.ts 引导代码保持度量
+      exclude: [
+        ...coverageConfigDefaults.exclude,
+        '**/*.d.ts',
+        '**/*.{css,svg,woff,woff2,png,jpg}',
+        '**/.gitkeep',
+        '**/index.ts',
+        '**/*.test.ts',
+        'src/infra/database/migrations/**',
+        'src/infra/database/seeders/**',
+      ],
+      // 基线 = 2026-09-09 口径修正后实测整数下限，防倒退不强制提升；调升需显式改数字
+      thresholds: { lines: 76, branches: 67 },
     },
   },
 })

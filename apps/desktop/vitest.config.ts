@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { defineConfig } from 'vitest/config'
+import { coverageConfigDefaults, defineConfig } from 'vitest/config'
 import { defineVitestProject } from '@nuxt/test-utils/config'
 import { baseTestConfig } from '../../tooling/test/base.ts'
 
@@ -43,6 +43,16 @@ export default defineConfig({
     ...baseTestConfig,
     coverage: {
       include: ['app/**'],
+      // 口径：覆盖率只度量可执行源——资产/类型声明/纯 re-export barrel 不计入分母
+      exclude: [
+        ...coverageConfigDefaults.exclude,
+        '**/*.d.ts',
+        '**/*.{css,svg,woff,woff2,png,jpg}',
+        '**/.gitkeep',
+        '**/index.ts',
+      ],
+      // 基线 = 2026-09-09 口径修正后实测整数下限，防倒退不强制提升；调升需显式改数字
+      thresholds: { lines: 58, branches: 58 },
     },
     projects: [
       {
