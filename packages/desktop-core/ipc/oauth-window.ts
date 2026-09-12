@@ -22,7 +22,7 @@ import {
 } from '@growth-os/types'
 import type { IpcRequest, IpcResponse, OAuthWindowErrorCode } from '@growth-os/types'
 
-// 错误码契约单源在 @growth-os/types，此处转导出（主进程内使用 + 测试引用）
+// 错误码契约单源在 @growth-os/types，常量此处转导出（主进程内使用 + 测试引用）
 export {
   OAUTH_WINDOW_BUSY,
   OAUTH_WINDOW_CANCELLED,
@@ -30,7 +30,6 @@ export {
   OAUTH_WINDOW_NAVIGATION_DENIED,
   OAUTH_WINDOW_TIMEOUT,
 }
-export type { OAuthWindowErrorCode }
 
 /** 授权窗口超时时长：用户可能在 GitHub 输入账号密码，给足时间 */
 const OAUTH_WINDOW_TIMEOUT_MS = 5 * 60 * 1000

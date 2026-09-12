@@ -1,4 +1,5 @@
 import type { AuthError } from '@supabase/supabase-js'
+import type { OAuthWindowErrorCode } from '@growth-os/types'
 import {
   OAUTH_WINDOW_BUSY,
   OAUTH_WINDOW_CANCELLED,
@@ -14,7 +15,7 @@ export const OAUTH_PROVIDER_DISABLED = 'oauth_provider_disabled'
  * OAuth 授权窗口错误码 -> 中文提示。
  * 错误码契约见 @growth-os/types 的 oauthWindow 通道（主进程 reject 的 message）。
  */
-const OAUTH_WINDOW_ERRORS: Record<string, string> = {
+const OAUTH_WINDOW_ERRORS: Record<OAuthWindowErrorCode | typeof OAUTH_PROVIDER_DISABLED, string> = {
   [OAUTH_WINDOW_CANCELLED]: '授权窗口已关闭，已取消登录',
   [OAUTH_WINDOW_TIMEOUT]: '授权超时，请重试',
   [OAUTH_WINDOW_NAVIGATION_DENIED]: '授权页面加载失败，请检查网络后重试',
