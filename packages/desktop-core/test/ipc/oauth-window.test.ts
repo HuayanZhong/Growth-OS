@@ -273,6 +273,34 @@ describe('oauthWindowHandler', () => {
     expect(win.close).toHaveBeenCalled()
   })
 
+  it('导航到无法解析的 URL：按 navigation_denied 中止（matchesCallback/safeHost 防御 catch）', async () => {
+    const { outcome, promise } = call(req())
+    const win = lastWindow()
+    const event = makeEvent()
+    win.webContents.emit('will-navigate', event, 'not-a-parseable-url')
+    await promise
+
+    expect(event.preventDefault).toHaveBeenCalled()
+    expect(outcome).toHaveBeenCalledWith('rejected', OAUTH_WINDOW_NAVIGATION_DENIED)
+    expect(win.close).toHaveBeenCalled()
+  })
+
+  it('结算时窗口已销毁：跳过事件清理与 close，仍正确回传结果', async () => {
+    const { outcome, promise } = call(req())
+    const win = lastWindow()
+    win.isDestroyed.mockReturnValue(true)
+
+    win.webContents.emit('will-redirect', makeEvent(), 'http://localhost:3000/auth?code=destroyed')
+    await promise
+
+    expect(outcome).toHaveBeenCalledWith('resolved', {
+      callbackUrl: 'http://localhost:3000/auth?code=destroyed',
+    })
+    expect(win.close).not.toHaveBeenCalled()
+    // 销毁后不再访问 webContents（不抛错即证明防御生效）
+    expect(win.webContents.removeListener).not.toHaveBeenCalled()
+  })
+
   it('拒绝 webview 嵌入（will-attach-webview preventDefault）', async () => {
     const { promise } = call(req())
     const win = lastWindow()

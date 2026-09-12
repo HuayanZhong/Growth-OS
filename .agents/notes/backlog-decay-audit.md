@@ -5,6 +5,7 @@
 ## Open
 
 - 2026-09-12 ｜ 日常踩坑（SSO change 实测期间）｜ `pnpm dev` 无条件拉起 Electron（[apps/desktop/modules/electron.ts](../../apps/desktop/modules/electron.ts) 的 `listen` hook），没有 Nuxt-only 开关；纯浏览器验证 UI 时桌面窗口被动弹起。建议：模块读环境变量（如 `NUXT_ELECTRON=0`）跳过 build+startup。
+- 2026-09-12 ｜ 日常踩坑（同上）｜ dev 会话停止后子进程残留：`nuxt dev` / `nest start` 从 turbo 树中幸存并占端口（实测：孤儿 nuxt 占 4000 伺服 HTML，导致下一次会话 API 请求全部打到它、`ERR_FAILED`）。建议：StopCommand/turbo kill 后检查 3000/4000 监听进程并清理，或给 dev 脚本加进程树终止（Windows `taskkill /T`）。
 - 2026-09-12 ｜ 观察级 ｜ agent 撰写仓库内 markdown 时倾向写 `file:///` 绝对链接，`verify:docs` 每次都拦（gate 行为正确）。建议：无需动作；在收尾/写产物时默认用相对链接即可。记录在此防止重复踩坑误判为 gate 故障。
 
 ## Resolved

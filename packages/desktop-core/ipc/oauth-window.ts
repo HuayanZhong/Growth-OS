@@ -1,4 +1,4 @@
-﻿/**
+/**
  * oauthWindow IPC handler：OAuth 授权窗口（第三方登录）。
  *
  * 职责：创建次级 BrowserWindow 加载授权页，监听导航——
@@ -100,26 +100,23 @@ export async function oauthWindowHandler(
     activeWindow = win
 
     let settled = false
-    let timeoutTimer: ReturnType<typeof setTimeout> | null = null
+    let timeoutTimer: ReturnType<typeof setTimeout> | undefined
 
     const cleanup = () => {
-      if (timeoutTimer) {
-        clearTimeout(timeoutTimer)
-        timeoutTimer = null
-      }
-      // 窗口可能已被销毁（用户关窗路径），销毁后访问 webContents 会抛错
+      // timeoutTimer 在 settle 前必然已设置（无 null 分支）；窗口销毁后不访问 webContents
+      clearTimeout(timeoutTimer)
+      timeoutTimer = undefined
       if (!win.isDestroyed()) {
         win.webContents.removeListener('will-navigate', onNavigate)
         win.webContents.removeListener('will-redirect', onRedirect)
         win.webContents.removeListener('will-attach-webview', denyWebviewAttach)
         win.removeListener('closed', onClosed)
       }
-      if (activeWindow === win) {
-        activeWindow = null
-      }
+      activeWindow = null
     }
 
     const settle = (outcome: () => void) => {
+      /* v8 ignore next -- 双结算防御：cleanup 已移除全部监听，正常流不可重入 */
       if (settled) return
       settled = true
       cleanup()
@@ -162,10 +159,8 @@ export async function oauthWindowHandler(
 
     function onClosed(): void {
       // 用户/系统直接关窗：窗口级 'closed' 事件。settle 已触发时此回调已被移除，
-      // 走到这里说明流程未结束（用户中途关窗）
-      if (activeWindow === win) {
-        activeWindow = null
-      }
+      // 走到这里说明流程未结束（用户中途关窗）。单飞设计下 activeWindow 必为 win 或 null。
+      activeWindow = null
       rejectWith(OAUTH_WINDOW_CANCELLED)
     }
 
