@@ -24,10 +24,12 @@ describe('LoginForm 渲染结构', () => {
     expect(wrapper.find('button[type=submit]').text()).toContain('登 录')
   })
 
-  it('SSO 按钮（QQ/微信）只存在于登录表单', () => {
+  it('SSO 按钮（QQ/GitHub）只存在于登录表单', () => {
     const wrapper = mountLogin()
     expect(wrapper.text()).toContain('QQ 登录')
-    expect(wrapper.text()).toContain('微信登录')
+    expect(wrapper.text()).toContain('GitHub 登录')
+    // 微信入口已替换为 GitHub，不应再出现
+    expect(wrapper.text()).not.toContain('微信登录')
   })
 
   it('初始未输入时不显示任何校验错误', () => {

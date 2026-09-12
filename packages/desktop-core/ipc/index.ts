@@ -2,8 +2,9 @@
  * IPC handler 注册入口（主进程侧）。
  *
  * 各通道实现拆分如下：
- * - `./secure-store.ts` → secureStore（safeStorage 加密持久化）
- * - `./updates.ts`      → autoUpdater 状态机 + checkForUpdates / quitAndInstall
+ * - `./secure-store.ts`  → secureStore（safeStorage 加密持久化）
+ * - `./updates.ts`       → autoUpdater 状态机 + checkForUpdates / quitAndInstall
+ * - `./oauth-window.ts`  → oauthWindow（第三方登录授权窗口）
  * - 其余通道直接在此注册
  *
  * 通道契约（名称 / 请求 / 响应类型）统一来自 `@growth-os/types` 的 `IpcChannelMap`。
@@ -11,6 +12,7 @@
 import { app } from 'electron'
 import { handleIpc } from './handle.ts'
 import { launchEnvHandler } from './launch-env.ts'
+import { oauthWindowHandler } from './oauth-window.ts'
 import { secureStoreHandler } from './secure-store.ts'
 import { checkForUpdatesHandler, quitAndInstallHandler, setupAutoUpdater } from './updates.ts'
 
@@ -26,4 +28,5 @@ export function registerIpc(): void {
   handleIpc('checkForUpdates', checkForUpdatesHandler)
   handleIpc('quitAndInstall', quitAndInstallHandler)
   handleIpc('launchEnv', launchEnvHandler)
+  handleIpc('oauthWindow', oauthWindowHandler)
 }

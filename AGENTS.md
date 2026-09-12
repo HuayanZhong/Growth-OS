@@ -35,7 +35,7 @@ Node ≥ 24 required; pnpm 12.1.0 is pinned via `packageManager` + `devEngines` 
 - `pnpm verify` — one-shot: invariants + docs + gates; agent wrap-up runs this single command
 - OpenSpec change workflow — non-trivial changes go through `openspec/` (delta specs + proposal + tasks): invoke `/opsx-propose` → `/opsx-apply` → `/opsx-archive` via `.trae/commands` (Trae), `.claude/commands` (Claude Code), `.opencode/commands` (OpenCode), or the shared `openspec-*` skills in `.agents/skills` (any agent platform reading `.agents/skills`); project context in [openspec/config.yaml](openspec/config.yaml)
 - `pnpm verify:pairing --write <path>` — re-record a bilingual pair's hash after a paired change (see [docs/i18n/README.md](docs/i18n/README.md))
-- `pnpm --filter desktop test` / `pnpm --filter server test` — per-app tests (both `vitest run`); single file: `pnpm --filter desktop vitest run test/nuxt/use-auth.test.ts`
+- `pnpm --filter desktop test` / `pnpm --filter server test` — per-app tests (both `vitest run`); single file: `pnpm --filter desktop exec vitest run test/nuxt/use-auth.test.ts`
 - `pnpm --filter desktop verify:build` — Electron production build smoke test
 - `pnpm --filter server typecheck` — backend typecheck
 - MikroORM CLI (run inside `apps/server`, root env injected by the scripts): `pnpm mikro-orm:debug` / `mikro-orm:migration:create` / `mikro-orm:migration:up` / `mikro-orm:migration:down` / `mikro-orm:seeder:run`; workflow in [database.md](docs/server/database.md)

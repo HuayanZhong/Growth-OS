@@ -38,6 +38,7 @@ export const api: DesktopAPI = {
   quitAndInstall: () => invokeIpc('quitAndInstall'),
   secureStore: (request) => invokeIpc('secureStore', request),
   launchEnv: () => invokeIpc('launchEnv'),
+  oauthWindow: (request) => invokeIpc('oauthWindow', request),
 }
 
 contextBridge.exposeInMainWorld('desktop', api)

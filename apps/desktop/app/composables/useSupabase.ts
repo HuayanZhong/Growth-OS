@@ -48,6 +48,9 @@ export function useSupabase(): SupabaseClient {
       persistSession: true,
       autoRefreshToken: true,
       detectSessionInUrl: true,
+      // OAuth（signInWithOAuth）走 PKCE：code 换 session，token 不经 URL fragment；
+      // 只影响 OAuth 流程，signInWithPassword 等路径不变
+      flowType: 'pkce',
       storage: secureStorage,
     },
   })

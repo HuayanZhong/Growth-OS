@@ -110,4 +110,10 @@ export {
   type UpdateCheckResult,
   type LaunchEnvKey,
   type LaunchEnv,
+  OAUTH_WINDOW_BUSY,
+  OAUTH_WINDOW_CANCELLED,
+  OAUTH_WINDOW_INVALID_REQUEST,
+  OAUTH_WINDOW_NAVIGATION_DENIED,
+  OAUTH_WINDOW_TIMEOUT,
+  type OAuthWindowErrorCode,
 } from './utils/ipc-channels.ts'

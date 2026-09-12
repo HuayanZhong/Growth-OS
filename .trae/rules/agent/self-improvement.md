@@ -34,7 +34,7 @@ At wrap-up, answer four questions (the Stop hook reminds automatically):
 1. **Skill**: did this task produce a repeatable workflow meeting §2? → distill or skip with reason.
 2. **Note**: were there non-trivial decisions? → note shipped in the same change.
 3. **Profile**: did the user reveal habits/corrections? → update `.agents/user-profile.md` per its rule.
-4. **Friction**: did any rule/gate get in the way or fail to catch something? → add to the decay-audit backlog (mention in the note), do not patch rules ad hoc.
+4. **Friction**: did any rule/gate get in the way or fail to catch something? → add to the decay-audit backlog ([.agents/notes/backlog-decay-audit.md](../../../.agents/notes/backlog-decay-audit.md); mention in the note), do not patch rules ad hoc.
 
 ## 4. Step-by-step self-optimization loop
 

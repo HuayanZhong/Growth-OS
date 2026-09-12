@@ -1,7 +1,7 @@
 /**
  * registerIpc 单测（test/ipc/x.test.ts 对应 ipc/x.ts）。
  * mock electron 与各通道 handler 模块，验证接线完整性：
- * 4 个通道全部注册、setupAutoUpdater 被调用、version 通道返回 app.getVersion。
+ * 6 个通道全部注册、setupAutoUpdater 被调用、version 通道返回 app.getVersion。
  */
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { app, ipcMain } from 'electron'
@@ -19,6 +19,7 @@ vi.mock('../../ipc/updates.ts', () => ({
   checkForUpdatesHandler: vi.fn(),
   quitAndInstallHandler: vi.fn(),
 }))
+vi.mock('../../ipc/oauth-window.ts', () => ({ oauthWindowHandler: vi.fn() }))
 
 const mockHandle = vi.mocked(ipcMain.handle)
 
@@ -37,7 +38,7 @@ describe('registerIpc', () => {
     expect(setupAutoUpdater).toHaveBeenCalledTimes(1)
   })
 
-  it('注册全部 5 个 IPC 通道', () => {
+  it('注册全部 6 个 IPC 通道', () => {
     registerIpc()
 
     const channels = mockHandle.mock.calls.map(([channel]) => channel)
@@ -47,6 +48,7 @@ describe('registerIpc', () => {
       'checkForUpdates',
       'quitAndInstall',
       'launchEnv',
+      'oauthWindow',
     ])
   })
 

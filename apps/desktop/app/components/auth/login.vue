@@ -33,10 +33,30 @@ const passwordError = computed(() => {
 })
 
 const { signIn } = useAuth()
+const { signInWithProvider } = useOAuthSignIn()
 const { showToast } = useToast()
 
 // 表单根元素（登录成功离场动画目标）
 const rootEl = ref<HTMLElement | null>(null)
+
+// 登录成功统一出口：表单缩小淡出离场，动画结束再跳转，形成「登录页收起 → 工作台滑入」的过渡
+function leaveToDashboard() {
+  showToast('登录成功', 'success')
+  // 动画目标缺失（ref 未绑定/组件重渲染等）时降级直接跳转，
+  // 避免 gsap 对 null 目标静默失败、onComplete 不执行导致卡在登录页
+  if (!rootEl.value) {
+    void navigateTo('/dashboard/agents')
+    return
+  }
+  gsap.to(rootEl.value, {
+    opacity: 0,
+    scale: 0.94,
+    y: -14,
+    duration: 0.3,
+    ease: 'power2.in',
+    onComplete: () => navigateTo('/dashboard/agents'),
+  })
+}
 
 // 提交登录
 async function onSubmit() {
@@ -53,22 +73,7 @@ async function onSubmit() {
       showToast(mapAuthError(error), 'error')
       return
     }
-    showToast('登录成功', 'success')
-    // 动画目标缺失（ref 未绑定/组件重渲染等）时降级直接跳转，
-    // 避免 gsap 对 null 目标静默失败、onComplete 不执行导致卡在登录页
-    if (!rootEl.value) {
-      await navigateTo('/dashboard/agents')
-      return
-    }
-    // 登录成功：表单缩小淡出离场，动画结束再跳转，形成「登录页收起 → 工作台滑入」的过渡
-    gsap.to(rootEl.value, {
-      opacity: 0,
-      scale: 0.94,
-      y: -14,
-      duration: 0.3,
-      ease: 'power2.in',
-      onComplete: () => navigateTo('/dashboard/agents'),
-    })
+    leaveToDashboard()
   } catch (err) {
     // 网络/服务端异常时 signIn 会 throw（如 AuthRetryableFetchError），兜底提示避免静默失败
     showToast(err instanceof Error ? err.message : '登录失败，请稍后重试', 'error')
@@ -77,10 +82,20 @@ async function onSubmit() {
   }
 }
 
-// SSO 登录（预留：接入后调用 signInWithOAuth，QQ/微信需 Supabase 自定义 provider 或代理登录）
-function onSso(provider: 'qq' | 'wechat') {
-  // TODO: await supabase.auth.signInWithOAuth({ provider })
-  void provider
+// SSO 登录：GitHub 走 Supabase 原生 provider（授权窗口内完成）；QQ 待资质就绪后接后端代理，保持占位
+const oauthLoading = ref(false)
+async function onSso(provider: 'qq' | 'github') {
+  if (provider === 'qq') return
+  if (oauthLoading.value) return
+  oauthLoading.value = true
+  try {
+    await signInWithProvider(provider)
+    leaveToDashboard()
+  } catch (err) {
+    showToast(mapOAuthSignInError(err), 'error')
+  } finally {
+    oauthLoading.value = false
+  }
 }
 </script>
 
@@ -165,10 +180,10 @@ function onSso(provider: 'qq' | 'wechat') {
           </button>
         </form>
 
-        <!-- 第三方登录（SSO 只保留在此表单；接入后替换为 supabase.auth.signInWithOAuth） -->
+        <!-- 第三方登录（GitHub 走 Supabase 原生 OAuth；QQ 占位待资质） -->
         <div class="divider text-xs text-base-content/50">或</div>
         <div class="grid grid-cols-2 gap-3">
-          <!-- QQ 登录（品牌蓝，官方图标） -->
+          <!-- QQ 登录（品牌蓝，官方图标；占位，待开放平台资质就绪后接入后端代理） -->
           <button
             type="button"
             class="btn btn-dash btn-info btn-circle btn-block"
@@ -180,12 +195,14 @@ function onSso(provider: 'qq' | 'wechat') {
           </button>
           <button
             type="button"
-            class="btn btn-dash btn-circle btn-success btn-block"
-            @click="onSso('wechat')"
+            class="btn btn-dash btn-neutral btn-circle btn-block"
+            :disabled="oauthLoading"
+            @click="onSso('github')"
           >
-            <!-- 官方微信图标（assets/icons/微信.svg） -->
-            <img src="~/assets/icons/微信.svg" alt="微信 logo" class="h-6 w-6" />
-            微信登录
+            <span v-if="oauthLoading" class="loading loading-spinner loading-sm"></span>
+            <!-- GitHub 官方 mark（assets/icons/github.svg，currentColor 跟随主题） -->
+            <img v-else src="~/assets/icons/github.svg" alt="GitHub logo" class="h-6 w-6" />
+            GitHub 登录
           </button>
         </div>
 

@@ -1,15 +1,14 @@
 # 用户画像（User Profile）
 
-> 活文档：由 agent 在交互中按 [.trae/rules/agent/user-profile.md](../.trae/rules/agent/user-profile.md) 的采集标准、置信度计分与更新机制维护。
-> 规则要点：同模式 ≥2 次独立观察才入档；明文陈述立即入档；每条必须带 evidence 与 last_updated；绝不记录凭证/密钥/隐私/业务数据内容；已被全局规则或 `.trae/rules/**` 编码的偏好只引用不复制。
-> 置信度：5=用户成文规则（引用）｜4=重复显式陈述/纠正｜3=≥2 次一致行为｜2=单次观察待验证｜1=弱信号。仅 ≥3 影响默认行为。
+> 活文档：由 agent 在交互中按 [.trae/rules/agent/user-profile.md](../.trae/rules/agent/user-profile.md) 的采集标准、置信度计分与更新机制维护（入档阈值、no-go 内容、5 分制含义均以该规则为准，仅 ≥3 影响默认行为）。
 
 owner: primary（仓库所有者，单人开发）
-last_updated: 2026-09-09
+last_updated: 2026-09-12
 
 ## 1. 代码风格（Code style）
 
-- (无已确认条目——代码风格已由 oxlint/oxfmt 规则与 `.trae/rules/frontend/styles/**` 编码，此处只记录规则未覆盖的个人偏好)
+- 视觉资产要与现有 UI 光学对齐：新增图标/素材先对照现有素材的 viewBox 占比与风格，官方素材不能直接塞（GitHub vs QQ 尺寸不一致）。
+  confidence: 4 ｜ evidence: 2026-09-12 纠正 GitHub 图标"风格不够统一、大小没有跟我统一"，viewBox 加内边距后解决 ｜ last_updated: 2026-09-12
 
 ## 2. 问题解决路径（Problem-solving path）
 
@@ -19,6 +18,8 @@ last_updated: 2026-09-09
   confidence: 4 ｜ evidence: 2026-09-07 用户对 turn 管线/LLM 选型越界的明确批评及后续多次"只固定骨架"的表述 ｜ last_updated: 2026-09-08
 - 大任务自主推进：计划确立后按计划继续，除非出现需要决策的高风险点；事实变化时更新计划。
   confidence: 3 ｜ evidence: 2026-09-07 至 09-08 阶段三/四连续"继续"推进模式 ｜ last_updated: 2026-09-08
+- 外部资质/付费门槛高时倾向绕行：遇企业认证、备案、付费等门槛，切零成本替代方案，原目标保留占位。
+  confidence: 2 ｜ evidence: 2026-09-09 "太麻烦了…"（微信资质门槛→GitHub，QQ 占位），单次观察 ｜ last_updated: 2026-09-12
 - 偏好统一机制而非双轨：倾向把并行机制合并为单一来源或共享流，而非各养一套。
   confidence: 3 ｜ evidence: 2026-09-08 "不只是trae能用，别的agent平台也能共享工作流"（OpenSpec 跨平台接入）、2026-09-09 "我希望能够结合起来"（note 与 OpenSpec 整合为瘦指针） ｜ last_updated: 2026-09-09
 
