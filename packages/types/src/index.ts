@@ -20,7 +20,7 @@ export type {
 } from './api/http.ts'
 
 export type { Agent, CreateAgentInput, UpdateAgentInput, AgentsApiMap } from './api/agents.ts'
-export { createAgentSchema, updateAgentSchema } from './api/agents.ts'
+export { agentSchema, createAgentSchema, updateAgentSchema } from './api/agents.ts'
 export type {
   SessionRecord,
   CreateSessionInput,
@@ -32,24 +32,28 @@ export type {
   SessionsApiMap,
 } from './api/sessions.ts'
 export {
+  sessionRecordSchema,
   createSessionSchema,
   updateSessionSchema,
   forkSessionSchema,
   sendMessageSchema,
+  forkSessionResultSchema,
+  turnResultSchema,
 } from './api/sessions.ts'
 export type { Skill, CreateSkillInput, UpdateSkillInput, SkillsApiMap } from './api/skills.ts'
-export { createSkillSchema, updateSkillSchema } from './api/skills.ts'
+export { skillSchema, createSkillSchema, updateSkillSchema } from './api/skills.ts'
 export type { FileRecord, FileUploadInput, FilesApiMap } from './api/files.ts'
+export { fileRecordSchema } from './api/files.ts'
 export type {
   Project,
   CreateProjectInput,
   UpdateProjectInput,
   ProjectsApiMap,
 } from './api/projects.ts'
-export { createProjectSchema, updateProjectSchema } from './api/projects.ts'
+export { projectSchema, createProjectSchema, updateProjectSchema } from './api/projects.ts'
 export type { HealthApiMap } from './api/health.ts'
 export type { AuditLog, AuditLogQuery, AuditApiMap } from './api/audit.ts'
-export { auditLogQuerySchema } from './api/audit.ts'
+export { auditLogSchema, auditLogQuerySchema } from './api/audit.ts'
 
 // ---- 插件契约（迭代计划 4.1）----
 export type {
@@ -99,6 +103,14 @@ export type {
   TypedSessionEvent,
   EventFilter,
   SessionEventLog,
+} from './events/session.ts'
+export {
+  messageRoleSchema,
+  toolCallRefSchema,
+  messageSchema,
+  sessionEventSchema,
+  messageEventTypes,
+  bookkeepingEventTypes,
 } from './events/session.ts'
 
 export {

@@ -11,7 +11,7 @@
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "test:e2e": "dotenv -e ../../.env.local -e ../../.env -e ../../.env.development -- vitest run --config vitest.e2e.config.ts",
-    "openapi:export": "dotenv -e ../../.env.local -e ../../.env -e ../../.env.development -- tsx scripts/export-openapi.ts",
+    "openapi:export": "dotenv -e ../../.env.local -e ../../.env -e ../../.env.development -- node scripts/export-openapi.mjs",
     "lint": "oxlint --fix --config .oxlintrc.json",
     "format": "oxfmt --config ../../tooling/format/.oxfmtrc.json",
     "typecheck": "tsc --noEmit",
@@ -43,7 +43,6 @@
     "pino": "catalog:backend",
     "reflect-metadata": "catalog:backend",
     "rxjs": "catalog:backend",
-    "tsx": "catalog:backend",
     "zod": "catalog:shared"
   },
   "devDependencies": {

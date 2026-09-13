@@ -90,7 +90,6 @@ catalogs:
     '@mikro-orm/nestjs': ^7.1.0
     '@mikro-orm/postgresql': 7.1.11
     '@mikro-orm/cli': 7.1.11
-    tsx: ^4.23.13
     '@mikro-orm/migrations': 7.1.11
     '@mikro-orm/reflection': 7.1.11
     '@mikro-orm/seeder': 7.1.11

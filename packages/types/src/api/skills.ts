@@ -17,16 +17,16 @@ export type CreateSkillInput = z.infer<typeof createSkillSchema>
 export const updateSkillSchema = createSkillSchema.partial()
 export type UpdateSkillInput = z.infer<typeof updateSkillSchema>
 
-export interface Skill {
-  id: string
-  name: string
-  description?: string
-  enabled: boolean
+/** Skill 实体：技能包注册与启用状态。enabled 在实体中必有值，覆盖为必填 */
+export const skillSchema = createSkillSchema.extend({
+  id: z.string(),
+  enabled: z.boolean(),
   /** epoch 毫秒 */
-  createdAt: number
+  createdAt: z.number().int(),
   /** epoch 毫秒 */
-  updatedAt: number
-}
+  updatedAt: z.number().int(),
+})
+export type Skill = z.infer<typeof skillSchema>
 
 export interface SkillsApiMap {
   'GET /skills': HttpEndpoint<'GET', undefined, Skill[]>

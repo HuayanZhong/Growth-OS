@@ -1,8 +1,9 @@
 import { NestFactory } from '@nestjs/core'
 import { VersioningType } from '@nestjs/common'
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
+import { SwaggerModule } from '@nestjs/swagger'
 import { Logger } from 'nestjs-pino'
 import { AppModule } from './app.module.ts'
+import { buildOpenApiConfig } from './common/openapi/document.ts'
 import { compressionMiddleware } from './main/compression.middleware.ts'
 import { helmetMiddleware } from './main/helmet.middleware.ts'
 
@@ -39,15 +40,23 @@ async function bootstrap() {
 
   // ---- Swagger / OpenAPI ----
   // 非生产环境自动生成 API 文档，生产环境不暴露（避免信息泄露）。
+  // 文档元信息与 scripts/export-openapi.ts 共用 buildOpenApiConfig()。
   if (process.env.NODE_ENV !== 'production') {
-    const config = new DocumentBuilder()
-      .setTitle('Growth OS API')
-      .setDescription('Growth OS 后端服务 API 文档（自动生成）')
-      .setVersion('1.0')
-      .addBearerAuth()
-      .build()
-    const document = SwaggerModule.createDocument(app, config)
-    SwaggerModule.setup('docs', app, document)
+    const config = buildOpenApiConfig()
+    // 懒生成：首次访问 /docs 才构建 document，缩短启动时间（官方推荐的工厂用法）
+    SwaggerModule.setup('docs', app, () => SwaggerModule.createDocument(app, config), {
+      customSiteTitle: 'Growth OS API Docs',
+      explorer: true,
+      swaggerOptions: {
+        // 刷新页面后保留 Authorize 的 token，调试受保护端点不用重复粘贴
+        persistAuthorization: true,
+        tagsSorter: 'alpha',
+        operationsSorter: 'alpha',
+        // 端点搜索框 + "Try it out" 显示请求耗时
+        filter: true,
+        displayRequestDuration: true,
+      },
+    })
     app.get(Logger).log(`Swagger docs: http://localhost:${port}/docs`)
   }
 

@@ -1,6 +1,7 @@
 import { Controller, Get } from '@nestjs/common'
-import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { CurrentUser } from '../../common/decorators/current-user.decorator.ts'
+import { ApiDataOk, ApiErrorResponses } from '../../common/openapi/schema.ts'
 import type { AuthenticatedUser } from '../../shared/types/auth.types.ts'
 
 /**
@@ -9,11 +10,23 @@ import type { AuthenticatedUser } from '../../shared/types/auth.types.ts'
  * 后续会话等 auth 域路由也挂这里。
  */
 @ApiTags('auth')
+@ApiBearerAuth()
+@ApiErrorResponses('401', '500')
 @Controller('auth')
 export class AuthController {
   @Get('me')
   @ApiOperation({ summary: '获取当前登录用户（JWT 保护）' })
-  @ApiOkResponse({ description: '当前用户，经响应信封包裹为 { data: { id, email? } }' })
+  @ApiDataOk(
+    {
+      type: 'object',
+      properties: {
+        id: { type: 'string', description: '用户 UUID（JWT sub）' },
+        email: { type: 'string', description: '邮箱（隐私脱敏后可能缺省）' },
+      },
+      required: ['id'],
+    },
+    '当前用户',
+  )
   me(@CurrentUser() user: AuthenticatedUser): { id: string; email?: string } {
     return user.email === undefined ? { id: user.id } : { id: user.id, email: user.email }
   }

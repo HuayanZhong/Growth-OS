@@ -4,17 +4,20 @@
  * v1 只做文件元数据与生命周期管理；知识库（KB）的切分/检索契约待阶段三
  * 与事件系统一起设计。
  */
+import { z } from 'zod'
 import type { HttpEndpoint } from './http.ts'
 
-export interface FileRecord {
-  id: string
-  name: string
-  mimeType: string
+/** FileRecord 的 schema：文件元数据 */
+export const fileRecordSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  mimeType: z.string(),
   /** 字节 */
-  size: number
+  size: z.number().int(),
   /** epoch 毫秒 */
-  createdAt: number
-}
+  createdAt: z.number().int(),
+})
+export type FileRecord = z.infer<typeof fileRecordSchema>
 
 /**
  * 上传入参（实际传输为 multipart/form-data：file 字段携带二进制，

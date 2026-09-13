@@ -21,19 +21,19 @@ export type CreateProjectInput = z.infer<typeof createProjectSchema>
 export const updateProjectSchema = createProjectSchema.partial()
 export type UpdateProjectInput = z.infer<typeof updateProjectSchema>
 
-export interface Project {
-  id: string
-  name: string
-  description?: string
-  agentIds: string[]
-  sessionIds: string[]
-  skillIds: string[]
-  fileIds: string[]
+/** Project 实体：项目聚合根。id 引用列表在实体中必有值，覆盖为必填 */
+export const projectSchema = createProjectSchema.extend({
+  id: z.string(),
+  agentIds: z.array(z.string()),
+  sessionIds: z.array(z.string()),
+  skillIds: z.array(z.string()),
+  fileIds: z.array(z.string()),
   /** epoch 毫秒 */
-  createdAt: number
+  createdAt: z.number().int(),
   /** epoch 毫秒 */
-  updatedAt: number
-}
+  updatedAt: z.number().int(),
+})
+export type Project = z.infer<typeof projectSchema>
 
 export interface ProjectsApiMap {
   'GET /projects': HttpEndpoint<'GET', undefined, Project[]>

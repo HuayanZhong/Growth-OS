@@ -23,23 +23,21 @@ export type CreateAgentInput = z.infer<typeof createAgentSchema>
 export const updateAgentSchema = createAgentSchema.partial()
 export type UpdateAgentInput = z.infer<typeof updateAgentSchema>
 
-/** Agent 实体：模型可见的编排单元（人设 + 模型 + 工具绑定） */
-export interface Agent {
-  id: string
-  name: string
-  /** 人设/系统指令 */
-  systemPrompt: string
-  /** 模型标识（如 deepseek-chat），适配器层据此路由 */
-  model: string
-  /** 绑定的工具 id 列表（Skill 域提供目录） */
-  toolIds: string[]
-  description?: string
-  enabled: boolean
+/**
+ * Agent 实体：模型可见的编排单元（人设 + 模型 + 工具绑定）。
+ * 在 create schema 基础上覆盖/补充服务端生成的字段；可选项（toolIds/enabled）
+ * 在实体中必有值，因此覆盖为必填。
+ */
+export const agentSchema = createAgentSchema.extend({
+  id: z.string(),
+  toolIds: z.array(z.string()),
+  enabled: z.boolean(),
   /** epoch 毫秒 */
-  createdAt: number
+  createdAt: z.number().int(),
   /** epoch 毫秒 */
-  updatedAt: number
-}
+  updatedAt: z.number().int(),
+})
+export type Agent = z.infer<typeof agentSchema>
 
 export interface AgentsApiMap {
   'GET /agents': HttpEndpoint<'GET', undefined, Agent[]>

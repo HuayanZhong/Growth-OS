@@ -62,7 +62,7 @@
 - `packages/shared/test/session-events.test.ts:73 (deriveMessages)`
 - `packages/shared/test/session-events.test.ts:84 (deriveMessages)`
 - `packages/shared/test/session-events.test.ts:95 (deriveMessages)`
-- `packages/types/src/events/session.ts:153 (deriveMessages)`
+- `packages/types/src/events/session.ts:174 (deriveMessages)`
 
 ## 事件类型引用分布
 

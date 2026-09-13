@@ -4,6 +4,10 @@
 
 ## Open
 
+- 2026-09-13 ｜ 日常踩坑（git commit 失败排障）｜ harness 字数预算与 agent 追加行为天然冲突：收尾四问每次往 `.agents/user-profile.md`、notes 追加 evidence，预算只减不增；超限只在 pre-commit 的 `verify:gates` 暴露（本轮 user-profile.md 1179 > 1150 拒绝提交，浪费用户一次提交尝试，Trae 生成 git-error 转储但随即清理、不可回读）。建议：① agent 更新 harness 文档后当场跑 `pnpm verify:gates`（不等 commit）；② 考虑把 harness 字数检查前移为 PostToolUse hook 或在 verify 失败信息中列出预算最满的条目；③ agent 侧纪律：预算逼近 90% 的文件优先精简而非追加。
+- 2026-09-13 ｜ 观察级（openapi-completeness 覆盖复核）｜ [export-openapi.mjs](../../apps/server/scripts/export-openapi.mjs) 头注释承诺 openapi.json "供 review diff 与后续 CI 校验（drift 即 fail）"，但该 CI 校验尚未存在：openapi.json 漂移目前纯靠 review 自觉（本轮用临时审计脚本完成一次逐 operation 完备性检查，用后即删）。建议：将"重导出后必须与入库产物一致 + 完备性断言（每 operation 有 summary/security/请求响应 schema）"固化为正式脚本并挂入 CI 或 `pnpm verify`。
+- 2026-09-13 ｜ 日常踩坑（openapi-completeness 实施期间）｜ Trae 终端（Windows）下非零退出进程的 stderr 输出常被整体吞掉：多次 node/pnpm 静默 exit 1 且无任何输出（`2>&1`/`*>`/Start-Process 重定向均无效），Nest 启动错误与 pnpm 失败原因反复不可见。最终靠"临时探针脚本把异常写文件再读取"才拿到真实报错。建议：排障静默失败时默认采用写文件探针法（临时脚本 catch 落盘、用后即删）；进一步可调查 Trae 终端 stderr 采集链路。
+- 2026-09-13 ｜ 日常踩坑（openapi-completeness 收尾）｜ [docs/event-catalog.md](../../docs/event-catalog.md) 内嵌精确行号引用（如 `packages/types/src/events/session.ts:153 (deriveMessages)`），在引用文件上方增删行即触发 drift、`verify:docs` 拦截，需重跑 `pnpm generate:events`。gate 行为正确但改 `events/session.ts` 必误伤。建议：生成器对该类引用去行号或改用锚点；或维持现状（每次多跑一条命令），记录防止误判为 gate 故障。
 - 2026-09-13 ｜ 日常踩坑（playwright-e2e 归档）｜ opsx-archive 把 change 移入 `archive/`（多一层目录）后，proposal/design 内指向 `.agents/`、`docs/` 的相对链接层级必然失效（本轮 design.md 3 个链接被 verify-docs 抓到后人工修）。凡 planning artifacts 引用仓库内相对链接的 change 归档均复现。建议：归档流程末尾强制跑 `pnpm verify:docs` 并自动按新层级修 archive 内链接；或给 openspec CLI 提该问题。
 - 2026-09-13 ｜ 日常踩坑（playwright-e2e 实施期间）｜ [apps/desktop/scripts/verify-build.cjs](../../apps/desktop/scripts/verify-build.cjs) 是失效门禁：验证结果只写报告文件后 `app.quit()`，**失败也 exit 0**；且 did-finish-load 后立即 dump DOM（10s 超时窗口），Vue 异步 mount 未完成时误报"页面内容为空"（本轮实测同一产物先误报后确认渲染正常）。建议：按报告结论设置退出码 + mount 等待/轮询；或评估由 Playwright Electron 冒烟（已具备更强断言）取代该脚本。
 - 2026-09-12 ｜ 日常踩坑（SSO change 实测期间）｜ `pnpm dev` 无条件拉起 Electron（[apps/desktop/modules/electron.ts](../../apps/desktop/modules/electron.ts) 的 `listen` hook），没有 Nuxt-only 开关；纯浏览器验证 UI 时桌面窗口被动弹起。建议：模块读环境变量（如 `NUXT_ELECTRON=0`）跳过 build+startup。
@@ -12,6 +16,7 @@
 
 ## Resolved
 
+- 2026-09-13 ｜ openapi-completeness 收尾 ｜ [generate-event-catalog.cjs](../../scripts/generate-event-catalog.cjs) 的 `pickLiterals` 硬编码只认 `export type X = 'a' | 'b'` 内联联合语法：types 词汇改为 as const 数组派生（schema 单一事实源，见 2026-09-13-openapi-completeness note）后生成器即崩溃，verify-docs 失败。修复：pickLiterals 双格式支持（内联联合 + `(typeof arr)[number]` 数组派生），产物不变，verify:docs 通过。
 - 2026-09-13 ｜ 日常踩坑（use-gsap-transition dev 验证）｜ 根 `.env`/`.env.development` 的 `PORT=4000` 是给 Nest 的，但 `nuxt dev` 同样读 `PORT`：实测 Nuxt 绑 `::1:4000`、Nest 绑 `:::4000`，同端口两主；渲染层默认 `NUXT_PUBLIC_API_BASE_URL`（http://localhost:4000）经 Chromium ::1 优先解析命中 Nuxt 的 SPA fallback，dev 下后端数据请求全部失败。修复（用户授权决策）：desktop dev 脚本固定 `--port 3000`（[apps/desktop/package.json](../../apps/desktop/package.json)）+ `.env.development` 显式 `NUXT_PUBLIC_API_BASE_URL=http://127.0.0.1:4000`。验证：dev 20s 就绪监听 3000、`127.0.0.1:4000/api/v1/projects` 返回 401 JSON（Nest）、Nuxt payload 内联 apiBaseUrl=127.0.0.1:4000 且 localhost:4000 消失。
 
 - 2026-09-13 ｜ use-gsap-transition 收尾四问 ｜ 根 [AGENTS.md](../../AGENTS.md) graphify 引导写 `graphify --update`，实际 CLI 无此命令（正确为 `graphify update .`，实测 `error: unknown command`）。已就地修入（rule-decay-audit 的 fix-drift-in-place 定位，同日过 docs gate）。

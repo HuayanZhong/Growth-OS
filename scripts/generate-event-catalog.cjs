@@ -61,11 +61,24 @@ function listFiles(dir, ext, acc = []) {
 function parseVocabulary() {
   const source = fs.readFileSync(path.join(ROOT, VOCAB_FILE), 'utf8')
   const pickLiterals = (typeName) => {
-    const block = source.match(new RegExp(`export type ${typeName} =((?:\\s*\\|\\s*'[^']+')+)`))
-    if (!block) {
-      throw new Error(`vocabulary type ${typeName} not found in ${VOCAB_FILE}`)
+    // 形式一：内联字面量联合 export type X = 'a' | 'b'
+    const union = source.match(new RegExp(`export type ${typeName} =((?:\\s*\\|\\s*'[^']+')+)`))
+    if (union) {
+      return [...union[0].matchAll(/'([^']+)'/g)].map((m) => m[1])
     }
-    return [...block[0].matchAll(/'([^']+)'/g)].map((m) => m[1])
+    // 形式二：as const 数组派生 export type X = (typeof arr)[number]（schema 单一事实源格式）
+    const derived = source.match(
+      new RegExp(`export type ${typeName} = \\(typeof (\\w+)\\)\\[number\\]`),
+    )
+    if (derived) {
+      const arrayBlock = source.match(
+        new RegExp(`export const ${derived[1]} = \\[([^\\]]+)\\] as const`),
+      )
+      if (arrayBlock) {
+        return [...arrayBlock[1].matchAll(/'([^']+)'/g)].map((m) => m[1])
+      }
+    }
+    throw new Error(`vocabulary type ${typeName} not found in ${VOCAB_FILE}`)
   }
   const messageTypes = pickLiterals('MessageEventType')
   const bookkeepingTypes = pickLiterals('BookkeepingEventType')

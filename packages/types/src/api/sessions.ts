@@ -6,26 +6,28 @@
  * 返回服务端投影后的模型可见历史。持久化在阶段三落地，本契约先行。
  */
 import { z } from 'zod'
+import { messageSchema } from '../events/session.ts'
 import type { Message, SessionEvent } from '../events/session.ts'
 import type { HttpEndpoint } from './http.ts'
 
-/** 会话记录（消息与事件经子资源端点访问） */
-export interface SessionRecord {
-  id: string
-  /** 会话绑定的 Agent */
-  agentId: string
-  title: string
-  /** epoch 毫秒 */
-  createdAt: number
-  /** epoch 毫秒 */
-  updatedAt: number
-}
+/** 会话记录（消息与事件经子资源端点访问）；title 在实体中必有值，覆盖为必填 */
+export type SessionRecord = z.infer<typeof sessionRecordSchema>
 
 export const createSessionSchema = z.object({
   agentId: z.string().min(1, 'agentId 不能为空'),
   title: z.string().min(1).max(100).optional(),
 })
 export type CreateSessionInput = z.infer<typeof createSessionSchema>
+
+/** SessionRecord 的 schema：title 在实体中必有值，覆盖为必填 */
+export const sessionRecordSchema = createSessionSchema.extend({
+  id: z.string(),
+  title: z.string(),
+  /** epoch 毫秒 */
+  createdAt: z.number().int(),
+  /** epoch 毫秒 */
+  updatedAt: z.number().int(),
+})
 
 export const updateSessionSchema = z.object({
   title: z.string().min(1).max(100).optional(),
@@ -44,17 +46,19 @@ export const sendMessageSchema = z.object({
 })
 export type SendMessageInput = z.infer<typeof sendMessageSchema>
 
-/** fork 结果：新会话 id 与复制的事件数（复制范围含 boundary 事件） */
-export interface ForkSessionResult {
-  sessionId: string
-  copiedEvents: number
-}
+/** fork 结果 schema：新会话 id 与复制的事件数（复制范围含 boundary 事件） */
+export const forkSessionResultSchema = z.object({
+  sessionId: z.string(),
+  copiedEvents: z.number().int(),
+})
+export type ForkSessionResult = z.infer<typeof forkSessionResultSchema>
 
-/** 回合结果：本回合写入的事件 id（按序）与 assistant 回复 */
-export interface TurnResult {
-  eventIds: string[]
-  reply: Message
-}
+/** 回合结果 schema：本回合写入的事件 id（按序）与 assistant 回复 */
+export const turnResultSchema = z.object({
+  eventIds: z.array(z.string()),
+  reply: messageSchema,
+})
+export type TurnResult = z.infer<typeof turnResultSchema>
 
 export interface SessionsApiMap {
   'GET /sessions': HttpEndpoint<'GET', undefined, SessionRecord[]>

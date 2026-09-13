@@ -1,8 +1,20 @@
 import { Controller, Get, ServiceUnavailableException } from '@nestjs/common'
 import { ApiOperation, ApiTags } from '@nestjs/swagger'
+import type { SchemaObject } from '@nestjs/swagger'
 import { SkipThrottle } from '@nestjs/throttler'
+import { ApiDataOk, ApiErrorResponses } from '../../common/openapi/schema.ts'
 import { Public } from '../../common/decorators/public.decorator.ts'
 import { HealthService } from './health.service.ts'
+
+/** readiness 的 200 响应 schema（readiness 与向后兼容的 check 共用） */
+const READINESS_OK_SCHEMA: SchemaObject = {
+  type: 'object',
+  properties: {
+    status: { type: 'string', enum: ['ok'] },
+    db: { type: 'string', enum: ['connected'] },
+    latencyMs: { type: 'number', description: 'DB ping 往返耗时（ms）' },
+  },
+}
 
 /**
  * 健康探针端点。
@@ -20,18 +32,22 @@ import { HealthService } from './health.service.ts'
 @ApiTags('health')
 @Public()
 @SkipThrottle()
+@ApiErrorResponses('500')
 @Controller('health')
 export class HealthController {
   constructor(private readonly healthService: HealthService) {}
 
   @Get('liveness')
   @ApiOperation({ summary: '存活探针：无外部依赖，200 即存活' })
+  @ApiDataOk({ type: 'object', properties: { status: { type: 'string', enum: ['ok'] } } }, '存活')
   liveness(): { status: 'ok' } {
     return { status: 'ok' }
   }
 
   @Get('readiness')
   @ApiOperation({ summary: '就绪探针：校验 DB 连通性，失败返回 503' })
+  @ApiErrorResponses('503')
+  @ApiDataOk(READINESS_OK_SCHEMA, '就绪（DB 连通）')
   async readiness() {
     const db = await this.healthService.checkDatabase()
     if (db.status === 'disconnected') {
@@ -47,6 +63,8 @@ export class HealthController {
 
   @Get()
   @ApiOperation({ summary: '健康检查（等价 readiness，向后兼容）' })
+  @ApiErrorResponses('503')
+  @ApiDataOk(READINESS_OK_SCHEMA, '就绪（DB 连通）')
   async check() {
     return this.readiness()
   }

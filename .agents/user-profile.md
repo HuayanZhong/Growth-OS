@@ -3,18 +3,18 @@
 > 活文档：由 agent 在交互中按 [.trae/rules/agent/user-profile.md](../.trae/rules/agent/user-profile.md) 的采集标准、置信度计分与更新机制维护（入档阈值、no-go 内容、5 分制含义均以该规则为准，仅 ≥3 影响默认行为）。
 
 owner: primary（仓库所有者，单人开发）
-last_updated: 2026-09-12
+last_updated: 2026-09-13
 
 ## 1. 代码风格（Code style）
 
-- 视觉资产要与现有 UI 光学对齐：新增图标/素材先对照现有素材的 viewBox 占比与风格，官方素材不能直接塞（GitHub vs QQ 尺寸不一致）。
+- 视觉资产要与现有 UI 光学对齐：新增图标/素材先对照现有素材的 viewBox 占比与风格（GitHub vs QQ 尺寸不一致）。
   confidence: 4 ｜ evidence: 2026-09-12 纠正 GitHub 图标"风格不够统一、大小没有跟我统一"，viewBox 加内边距后解决 ｜ last_updated: 2026-09-12
 
 ## 2. 问题解决路径（Problem-solving path）
 
 - 希望先评估再动手：面对升级/迁移/选型类任务，先给官方依据与对比结论，经确认后执行（例：Nest 12 迁移对照、ESM 切换评估、rspack 评估均先出评估报告）。
   confidence: 3 ｜ evidence: 2026-09-08 ESM 评估与 rspack 评估、2026-09-08 依赖核查均先报告后经确认执行 ｜ last_updated: 2026-09-08
-- 对"越界"敏感：要求严格区分骨架与业务，批评过未经确认的业务化实现；后续应只做确认范围内的改动，扩展先提案。
+- 对"越界"敏感：要求严格区分骨架与业务；只做确认范围内的改动，扩展先提案。
   confidence: 4 ｜ evidence: 2026-09-07 用户对 turn 管线/LLM 选型越界的明确批评及后续多次"只固定骨架"的表述 ｜ last_updated: 2026-09-08
 - 大任务自主推进：计划确立后按计划继续，除非出现需要决策的高风险点；事实变化时更新计划。
   confidence: 3 ｜ evidence: 2026-09-07 至 09-08 阶段三/四连续"继续"推进模式 ｜ last_updated: 2026-09-08
@@ -25,15 +25,15 @@ last_updated: 2026-09-12
 
 ## 3. 技术栈选择（Tech stack choices）
 
-- 依赖与结构决策模式：先查官方文档/registry 实证（发布时间、peer 声明、changelog、directory-structure 文档），再决定升级/钉住/落位；钉住必须带理由注释。
-  confidence: 4 ｜ evidence: 2026-09-08 mikro-orm 精确钉注释、nestjs-pino 升级先查 releases、pnpm 豁免清理先查 minimumReleaseAge 文档；2026-09-13 Playwright E2E 目录三次坚持 test/e2e 并给出 Nuxt directory-structure 文档，证实官方文档优先于工具脚手架惯例 ｜ last_updated: 2026-09-13
+- 依赖与结构决策模式：先查官方文档/registry 实证（发布时间、peer 声明、changelog、directory-structure 文档），再决定升级/钉住/落位；框架能力使用同理（先查最新版文档再写配置）。钉住必须带理由注释。
+  confidence: 4 ｜ evidence: 2026-09-08 mikro-orm 钉版注释、nestjs-pino 先查 releases、pnpm 豁免查 minimumReleaseAge；2026-09-13 Playwright 目录坚持 test/e2e（Nuxt 官方文档）；2026-09-13 swagger 任务再次显式要求查 nest 12 最新文档 ｜ last_updated: 2026-09-13
 
 ## 4. 沟通模式（Communication patterns）
 
 - 短指令推进：常用"继续"/"下一个"/"开始"，期望据此自主衔接既定计划，不反复确认下一步。
   confidence: 4 ｜ evidence: 多次会话中一致使用并明确表达此期待 ｜ last_updated: 2026-09-08
-- 决策偏好选项化：对开放决策接受"选项 + 推荐 + 理由"的形式，选择迅速（如"清理 + 升级 7.1.0"、"现在切 ESM"）。
-  confidence: 3 ｜ evidence: 2026-09-08 多次 AskUserQuestion 决策 ｜ last_updated: 2026-09-08
+- 决策偏好选项化：对开放决策接受"选项 + 推荐 + 理由"的形式，选择迅速（如"清理 + 升级 7.1.0"、"现在切 ESM"、"实体接口改 z.infer（推荐）"）。
+  confidence: 4 ｜ evidence: 2026-09-08 多次 AskUserQuestion 决策；2026-09-13 四选项秒选推荐项 ｜ last_updated: 2026-09-13
 - 汇报格式：接受"改了什么/验证了什么/风险与后续"三段式汇报，未验证内容需明说。
   confidence: 3 ｜ evidence: 全局规则明文要求 + 会话中未提出异议 ｜ last_updated: 2026-09-08
 
