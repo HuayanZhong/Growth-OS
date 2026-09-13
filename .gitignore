@@ -50,3 +50,6 @@ dist-ssr
 scripts/certs/*.pfx
 scripts/certs/*.cer
 scripts/certs/*.pem
+
+# graphify knowledge graph (generated dev artifact)
+graphify-out/

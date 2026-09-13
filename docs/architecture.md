@@ -28,10 +28,17 @@ Shared configs live in `tooling/`: layered TypeScript presets (`tooling/typescri
 4. **Data** (Supabase): Auth handles identity; PostgreSQL is the storage target via the session pooler connection string; per-user isolation via RLS is planned but not yet applied.
 5. **UI packages** (`packages/ui/`): reusable components and semantic style tokens (see `.trae/rules/frontend/styles/`).
 
-```
-user → Vue component → composable → IPC (window.desktop) → desktop-core handlers
-                                 └→ @growth-os/types (typed channels)
-                                 └→ HTTP → NestJS → MikroORM → Supabase PostgreSQL
+```mermaid
+flowchart TB
+  user["user"] --> comp["Vue components + composables (apps/desktop/app)"]
+  comp --> ipc["IPC window.desktop (typed in @growth-os/types)"]
+  ipc --> core["desktop-core handlers (Electron main)"]
+  comp --> sb["supabase-js (Auth)"]
+  sb --> auth[("Supabase Auth")]
+  comp --> api["HTTP /api/v1"]
+  api --> nest["NestJS (apps/server)"]
+  nest --> orm["MikroORM"]
+  orm --> pg[("Supabase PostgreSQL")]
 ```
 
 ## Key mechanisms

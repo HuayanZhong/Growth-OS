@@ -1,14 +1,12 @@
 <script setup lang="ts">
 // 认证页：hero 骨架 + 暗夜切换 + 登录/注册切换（GSAP 3D 翻转过渡动画）
-// 显式注册 CSSPlugin：Vite 预打包 tree-shake 会移除 gsap 的自动注册（sideEffects:false），
-// 不注册则 rotationY/opacity 等 CSS 属性全部被忽略（"Missing plugin"），动画不生效
+// 翻转的 timeline 编排按动画规则保持手写；插件注册与目标归一化收拢在 useGsapTransition
 import { gsap } from 'gsap'
-import { CSSPlugin } from 'gsap/CSSPlugin'
 import { ThemeToggle } from '@growth-os/ui'
 import AuthLogin from '~/components/auth/login.vue'
 import AuthRegister from '~/components/auth/register.vue'
 
-gsap.registerPlugin(CSSPlugin)
+const { normalizeTarget, enter } = useGsapTransition()
 
 // 当前展示的表单：login | register
 const mode = ref<'login' | 'register'>('login')
@@ -17,30 +15,28 @@ const switching = ref(false)
 const loginRef = ref<InstanceType<typeof AuthLogin>>()
 const registerRef = ref<InstanceType<typeof AuthRegister>>()
 
-// 定位表单根元素：Nuxt 4 下条件渲染组件的 $el 可能是 fragment 锚点（Text/注释节点），
-// 命中元素节点直接返回，否则从父容器取 .hero-content
-function formRoot(el: unknown): HTMLElement | null {
-  if (!el) return null
-  return (el as Node).nodeType === Node.ELEMENT_NODE
-    ? (el as HTMLElement)
-    : ((el as Node).parentElement?.querySelector('.hero-content') ?? null)
-}
-
 // 3D 半程翻页：旧表单绕 Y 轴翻到 -90°（侧面朝上、不可见）→ 切换内容 → 新表单从 +90° 翻回 0°。
 // 透视固定在父容器（.hero 的 perspective 样式），翻转只动 rotationY——
 // 若把 transformPerspective 当动画属性，透视值会从极小过渡到 1200px，近大远小极端变形并触发滚动条闪烁。
 function switchMode(next: 'login' | 'register') {
   if (mode.value === next || switching.value) return
   switching.value = true
-  const curEl = formRoot(mode.value === 'login' ? loginRef.value?.$el : registerRef.value?.$el)
+  const curEl = normalizeTarget(
+    mode.value === 'login' ? loginRef.value : registerRef.value,
+    '.hero-content',
+  )
   gsap
     .timeline({
       onComplete: async () => {
         mode.value = next
         await nextTick()
-        const nextEl = formRoot(next === 'login' ? loginRef.value?.$el : registerRef.value?.$el)
+        const nextEl = normalizeTarget(
+          next === 'login' ? loginRef.value : registerRef.value,
+          '.hero-content',
+        )
         if (nextEl) {
-          gsap.fromTo(
+          // 入场动画结束才解锁，切换全程忽略连点
+          enter(
             nextEl,
             { rotationY: 90 },
             {
@@ -48,7 +44,6 @@ function switchMode(next: 'login' | 'register') {
               duration: 0.5,
               ease: 'back.out(1.5)',
               clearProps: 'transform',
-              // 入场动画结束才解锁，切换全程忽略连点
               onComplete: () => {
                 switching.value = false
               },
@@ -65,13 +60,12 @@ function switchMode(next: 'login' | 'register') {
 // 页面入场动画：表单从下方淡入上移（首次访问与登出回到登录页时播放）
 onMounted(async () => {
   await nextTick()
-  const el = formRoot(mode.value === 'login' ? loginRef.value?.$el : registerRef.value?.$el)
+  const el = normalizeTarget(
+    mode.value === 'login' ? loginRef.value : registerRef.value,
+    '.hero-content',
+  )
   if (el) {
-    gsap.fromTo(
-      el,
-      { opacity: 0, y: 24 },
-      { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out', clearProps: 'transform,opacity' },
-    )
+    enter(el, { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' })
   }
 })
 </script>

@@ -1,13 +1,9 @@
 <script setup lang="ts">
 // Dashboard 布局：左侧导航 + 右侧内容区（对标 Coze 桌面端）
 // 进入动画：整体淡入 + 侧边栏左滑入 + 内容区右滑入（GSAP 手动编排，登录→工作台过渡）
+// timeline 错峰编排按动画规则保持手写；CSSPlugin 注册收拢在 useGsapTransition
 import { gsap } from 'gsap'
-import { CSSPlugin } from 'gsap/CSSPlugin'
 import AppSidebar from '~/components/app-sidebar.vue'
-
-// 显式注册 CSSPlugin：Vite 预打包 tree-shake 会移除 gsap 自动注册（sideEffects:false），
-// 不注册则 x/opacity 等 CSS 属性被忽略，动画不生效（registerPlugin 幂等）
-gsap.registerPlugin(CSSPlugin)
 
 const route = useRoute()
 

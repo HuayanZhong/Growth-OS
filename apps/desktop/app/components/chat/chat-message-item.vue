@@ -3,23 +3,19 @@
 // AI 消息 chat-start（带头像 + 浅色气泡）；用户消息 chat-end（主色渐变气泡，对标扣子）
 // 进入动画：挂载时 GSAP fromTo（用户消息自右侧滑入，AI 消息自下方上浮），只动 transform/opacity（animation.md）
 import type { ChatMessage } from './types'
-import { gsap } from 'gsap'
-import { CSSPlugin } from 'gsap/CSSPlugin'
-
-// 显式注册 CSSPlugin：Vite 预打包 tree-shake 会移除 gsap 自动注册（sideEffects:false）
-gsap.registerPlugin(CSSPlugin)
 
 const props = defineProps<{ message: ChatMessage }>()
 
 const rootEl = ref<HTMLElement | null>(null)
+const { enter } = useGsapTransition()
 
 onMounted(() => {
-  const el = rootEl.value
-  if (!el) return
-  // 用户消息从右侧滑入（x），AI 消息自下方上浮（y）；起始值首帧应用避免闪烁
+  if (!rootEl.value) return
+  // 用户消息从右侧滑入（x），AI 消息自下方上浮（y）；起始值首帧应用避免闪烁，
+  // 完成后默认清理残留 transform/opacity（animation.md 第 8/9 条）
   const fromX = props.message.role === 'user' ? 24 : 0
-  gsap.fromTo(
-    el,
+  enter(
+    rootEl.value,
     { opacity: 0, x: fromX, y: props.message.role === 'user' ? 0 : 12 },
     {
       opacity: 1,
@@ -27,8 +23,6 @@ onMounted(() => {
       y: 0,
       duration: 0.32,
       ease: 'power2.out',
-      // 清理残留 transform/opacity，避免影响后续导航
-      clearProps: 'transform,opacity',
     },
   )
 })

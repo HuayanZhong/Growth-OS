@@ -70,6 +70,8 @@ On-demand experts, triggered by description: [frontend-auth-expert.md](.trae/age
 
 `.agents/skills/` (Agent Skills spec) and `.trae/skills/` (Trae project skills) load on demand by `description`; do not read skill bodies unless the task matches. Vendored third-party skills are generic references — when their guidance conflicts with project rules, the rules win.
 
+- **graphify** (`graphify-out/`, git-ignored): knowledge graph of apps/packages/scripts — consult `graphify-out/GRAPH_REPORT.md` (god nodes, communities, callflow) before deep architecture/file-relationship questions; after significant changes refresh with `graphify update .` (code-only changes are free AST; doc changes cost LLM subagents) then `graphify export html` + `graphify export callflow-html`.
+
 ## Human docs (docs/)
 
 - [AGENTS.md](docs/AGENTS.md) — documentation standard: tier taxonomy, writing rules, slop checklist

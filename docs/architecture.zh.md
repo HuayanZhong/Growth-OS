@@ -28,10 +28,17 @@ workspace 依赖图从各包 package.json 生成：[module-graph.md](module-grap
 4. **数据**（Supabase）：Auth 处理身份；PostgreSQL 通过 session pooler 连接串作为存储目标；RLS 按用户隔离尚在规划，尚未应用。
 5. **UI 包**（`packages/ui/`）：可复用组件与语义样式 token（见 `.trae/rules/frontend/styles/`）。
 
-```
-user → Vue 组件 → composable → IPC (window.desktop) → desktop-core 处理器
-                              └→ @growth-os/types（类型化通道）
-                              └→ HTTP → NestJS → MikroORM → Supabase PostgreSQL
+```mermaid
+flowchart TB
+  user["用户"] --> comp["Vue 组件 + composables（apps/desktop/app）"]
+  comp --> ipc["IPC window.desktop（@growth-os/types 类型化）"]
+  ipc --> core["desktop-core 处理器（Electron 主进程）"]
+  comp --> sb["supabase-js（Auth）"]
+  sb --> auth[("Supabase Auth")]
+  comp --> api["HTTP /api/v1"]
+  api --> nest["NestJS（apps/server）"]
+  nest --> orm["MikroORM"]
+  orm --> pg[("Supabase PostgreSQL")]
 ```
 
 ## 关键机制

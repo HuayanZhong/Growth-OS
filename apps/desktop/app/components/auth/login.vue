@@ -1,13 +1,7 @@
 <script setup lang="ts">
 // 登录表单：为 Supabase Auth 预留结构（邮箱 + 密码 + SSO），SSO 只保留在此表单
 import { computed, ref } from 'vue'
-import { gsap } from 'gsap'
-import { CSSPlugin } from 'gsap/CSSPlugin'
 import { loginSchema } from '@growth-os/types'
-
-// 显式注册 CSSPlugin：Vite 预打包 tree-shake 会移除 gsap 自动注册（sideEffects:false），
-// 不注册则 scale/opacity 等 CSS 属性被忽略（registerPlugin 幂等）
-gsap.registerPlugin(CSSPlugin)
 
 // 切换注册表单：由父组件（认证页）监听 switch-to-register 事件
 defineEmits<{ switchToRegister: [] }>()
@@ -35,6 +29,7 @@ const passwordError = computed(() => {
 const { signIn } = useAuth()
 const { signInWithProvider } = useOAuthSignIn()
 const { showToast } = useToast()
+const { exit } = useGsapTransition()
 
 // 表单根元素（登录成功离场动画目标）
 const rootEl = ref<HTMLElement | null>(null)
@@ -48,7 +43,7 @@ function leaveToDashboard() {
     void navigateTo('/dashboard/agents')
     return
   }
-  gsap.to(rootEl.value, {
+  void exit(rootEl.value, {
     opacity: 0,
     scale: 0.94,
     y: -14,

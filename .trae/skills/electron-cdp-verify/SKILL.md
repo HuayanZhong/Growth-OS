@@ -14,13 +14,22 @@ debug port and drive it over CDP with Node's native `fetch` + `WebSocket` (Node 
 ```js
 import { spawn, execSync } from 'node:child_process'
 const child = spawn(process.execPath,
-  ['node_modules/electron/cli.js', 'dist/main.js', '--no-sandbox', '--remote-debugging-port=9222'],
+  ['node_modules/electron/cli.js', 'dist/main.js', '--no-sandbox', '--remote-debugging-port=9222',
+   // Windows 遮挡检测会把后台窗口的 rAF 冻结：GSAP tween 停在起始帧、onComplete 永不触发
+   // （toast 不消失、动画完成后的跳转不执行）。自动化验证必须禁用节流三连。
+   '--disable-features=CalculateNativeWinOcclusion',
+   '--disable-background-timer-throttling', '--disable-renderer-backgrounding'],
   { cwd: 'packages/desktop-core',
-    env: { ...process.env, VITE_DEV_SERVER_URL: 'http://localhost:3000' },
+    env: { ...process.env, VITE_DEV_SERVER_URL: 'http://localhost:4000' },
     stdio: 'ignore' })
 ```
 
-- `VITE_DEV_SERVER_URL` decides dev-server vs packaged-file loading (see `bootstrap/window.ts`).
+- `VITE_DEV_SERVER_URL` decides dev-server vs packaged-file loading (see `bootstrap/window.ts`) —
+  use the URL the dev server actually printed, not an assumed port (in this repo the Nuxt dev port
+  inherits `PORT` from root `.env`, currently 4000).
+- Connect 后发送 `Page.bringToFront`（需先 `Page.enable`），双保险解除遮挡节流。
+- 症状识别：DOM/事件正常（点击、Vue 渲染、toast 出现）但动画"不发生"且回调永不执行 → rAF 被节流，
+  不是动画代码的 bug。
 - Keep the dev server running first; poll `http://127.0.0.1:9222/json/version` until ready.
 - No single-instance lock exists — parallel instances share `userData` (sessions/secure-store).
   A fresh instance is unauthenticated unless a previous one logged in.

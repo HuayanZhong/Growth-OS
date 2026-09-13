@@ -1,14 +1,9 @@
 <script setup lang="ts">
 // Toast 容器：入场滑入 + 离场收缩动画（GSAP 手动编排，禁 Vue Transition）
-import { gsap } from 'gsap'
-import { CSSPlugin } from 'gsap/CSSPlugin'
 import type { ToastType } from '~/composables/useToast'
 
-// 显式注册 CSSPlugin：Vite 预打包 tree-shake 会移除 gsap 自动注册（sideEffects:false），
-// 不注册则 x/scale/opacity 等 CSS 属性被忽略，动画不生效（registerPlugin 幂等）
-gsap.registerPlugin(CSSPlugin)
-
 const { toasts, removeToast } = useToast()
+const { enter, exit, kill } = useGsapTransition()
 
 // 显示层：useToast 队列 + 已标记离场但动画未结束的 toast。
 // 模板只渲染 display——useToast 移除条目后仍保留在显示层播放离场动画，
@@ -45,10 +40,17 @@ watch(
       const el = toastEls.value[d.id]
       if (el && !entered.has(d.id)) {
         entered.add(d.id)
-        gsap.fromTo(
+        enter(
           el,
           { opacity: 0, x: 64, scale: 0.9 },
-          { opacity: 1, x: 0, scale: 1, duration: 0.45, ease: 'power3.out', delay: i * 0.08 },
+          {
+            opacity: 1,
+            x: 0,
+            scale: 1,
+            duration: 0.45,
+            ease: 'power3.out',
+            delay: i * 0.08,
+          },
         )
       }
     })
@@ -63,16 +65,16 @@ watch(
   { immediate: true },
 )
 
-// 离场动画：收缩 + 淡出 + 右移，动画结束才从显示层移除（DOM 随之消失）
+// 离场动画：收缩 + 淡出 + 右移，动画结束才从显示层移除（DOM 随之消失）。
+// 离场动画中途重复触发：exit 内部先终止进行中的 tween，避免从半途重新缩放。
+// 布局属性（height/margin/padding）为既有实现，保持原样透传
 function startLeave(d: DisplayToast) {
   const el = toastEls.value[d.id]
   if (!el) {
     display.value = display.value.filter((x) => x.id !== d.id)
     return
   }
-  // 动画中途重复触发：先终止进行中的 tween，避免从半途重新缩放
-  gsap.killTweensOf(el)
-  gsap.to(el, {
+  void exit(el, {
     opacity: 0,
     x: 64,
     height: 0,
@@ -93,11 +95,11 @@ function dismiss(t: DisplayToast) {
   removeToast(t.id)
 }
 
-// 组件卸载时清理所有进行中的动画。
+// 组件卸载时清理所有进行中的动画（composable 自动回收 + 防御性 kill）。
 // entered 目前是实例级 Set（卸载即销毁），clear() 为防御：防止未来提升为模块级共享时，
 // 重挂载后旧 id 误跳过新 toast 的入场动画
 onUnmounted(() => {
-  gsap.killTweensOf(Object.values(toastEls.value))
+  kill()
   entered.clear()
 })
 
