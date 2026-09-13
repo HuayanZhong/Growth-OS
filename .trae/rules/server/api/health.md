@@ -1,6 +1,6 @@
 ---
 alwaysApply: false
-description: Health probe rule (NestJS + K8s): liveness (no deps, 200), readiness (DB ping, 503 on failure); readiness throws ServiceUnavailableException; DB ping has 5s timeout; probes skip auth and throttle. Use when adding health endpoints or modifying probe behavior.
+description: Health probe rule (NestJS + K8s): liveness (no deps, 200), readiness (DB ping, 503); DB ping 5s timeout; probes skip auth and throttle. Use when adding health endpoints or modifying probe behavior.
 ---
 
 # Health Probes (Liveness + Readiness)

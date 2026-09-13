@@ -1,6 +1,6 @@
 ---
 alwaysApply: false
-description: Trae hooks authoring rule: hook scripts (.trae/hooks.json + scripts/hook-*.cjs) follow the official event lifecycle (PreToolUse/PostToolUse/Stop), the stdin/stdout JSON protocol, defensive parsing, and machine-decidable checks only. Use when adding, modifying, or debugging hooks.
+description: Trae hooks rule: hook scripts (.trae/hooks.json + scripts/hook-*.cjs) follow the lifecycle (PreToolUse/PostToolUse/Stop), stdin/stdout JSON protocol, machine-decidable checks only. Use when adding, modifying, or debugging hooks.
 ---
 
 # Trae Hooks (Lifecycle, Protocol, Authoring)

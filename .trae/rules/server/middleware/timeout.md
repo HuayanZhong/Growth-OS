@@ -1,6 +1,6 @@
 ---
 alwaysApply: false
-description: Timeout rule (NestJS + rxjs): 30s default; @SkipTimeout for SSE/streaming; TimeoutInterceptor uses rxjs timeout operator; AllExceptionsFilter converts TimeoutError to 408 + TIMEOUT code. Use when adding long-running endpoints or modifying timeout behavior.
+description: Timeout rule (NestJS + rxjs): 30s default; @SkipTimeout for SSE/streaming; TimeoutError maps to 408 + TIMEOUT code. Use when adding long-running endpoints or modifying timeout behavior.
 ---
 
 # Request Timeout (TimeoutInterceptor)

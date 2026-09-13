@@ -62,6 +62,14 @@ app.on('window-all-closed', () => {
  * 由 `src/main.ts` 在注册 IPC 后调用。
  */
 export function bootstrap(): void {
+  // E2E 冒烟隔离：外部指定 userData 目录时启用独立会话存储（仅测试注入该变量；
+  // 正常启动无此变量，行为零变化）。必须在 app ready 前设置——localStorage 等
+  // 会话存储位置由 userData 决定；否则冒烟会读到用户日常 file:// origin 的真实登录态
+  const testUserDataDir = process.env.ELECTRON_USER_DATA_DIR
+  if (testUserDataDir) {
+    app.setPath('userData', testUserDataDir)
+  }
+
   app
     .whenReady()
     .then(() => {

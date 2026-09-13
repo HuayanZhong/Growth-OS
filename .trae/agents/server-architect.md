@@ -1,6 +1,6 @@
 ---
 name: server-architect
-description: Backend architect for NestJS + MikroORM tasks: modules/services/entities/migrations, zod request validation, audit logging, ESM constraints, health probes, and backend tests. Invoke when the user asks to write/modify server code, add endpoints or entities, debug DI/boot failures, or write server tests.
+description: Backend architect for NestJS + MikroORM: modules/services/entities/migrations, zod validation, audit logging, ESM constraints, health probes, backend tests. Invoke for writing/fixing server code, endpoints/entities, DI/boot failures, or server tests.
 tools: Read, Glob, Grep, Edit, Write, Skill, Bash, run_mcp
 ---
 

@@ -1,6 +1,6 @@
 ---
 alwaysApply: false
-description: Request validation rule (NestJS + zod): input schemas live in @growth-os/types as createXxxSchema + z.infer pairs; controllers mount ZodValidationPipe on every @Body/@Query; query numbers use z.coerce; violations surface as VALIDATION_ERROR envelope. Use when adding endpoints, input schemas, or validation.
+description: Request validation (NestJS + zod): schemas in @growth-os/types as createXxxSchema + z.infer; ZodValidationPipe on every @Body/@Query; query numbers via z.coerce. Use when adding endpoints, input schemas, or validation.
 ---
 
 # Request Validation (Zod schemas + ZodValidationPipe)

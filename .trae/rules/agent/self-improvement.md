@@ -1,6 +1,6 @@
 ---
 alwaysApply: false
-description: Agent self-improvement rule: at task wrap-up run the closing review (reusable workflow → distill a skill; decisions → Agent Note; user habits → user profile; rule friction → decay-audit backlog), keeping the improve loop (distill → apply → review → revise) running one step at a time. Use when finishing a task, noticing a repeatable workflow, or deciding where a lesson belongs.
+description: Agent self-improvement: at wrap-up run the closing review (workflow → skill; decisions → Note; habits → profile; friction → decay-audit). Use when finishing a task, spotting a repeatable workflow, or deciding where a lesson belongs.
 ---
 
 # Agent Self-Improvement (Skill Distillation & Closing Review)

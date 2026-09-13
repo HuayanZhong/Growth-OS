@@ -1,6 +1,6 @@
 ---
 alwaysApply: false
-description: User profile rules: observe the user during interactions and maintain the structured profile at .agents/user-profile.md — capture stable preferences (code style, problem-solving paths, tech stack, communication patterns) with confidence scoring, keep it free of secrets, and adapt default behavior to confident entries. Use when interacting with the user, noticing preference signals, or updating the profile.
+description: User profile rules: maintain .agents/user-profile.md — stable preferences with confidence scoring, no secrets, adapt behavior to confident entries. Use for interactions, preference signals, or profile updates.
 ---
 
 # User Profile (Observation, Scoring, Update)

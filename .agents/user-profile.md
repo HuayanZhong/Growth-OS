@@ -25,8 +25,8 @@ last_updated: 2026-09-12
 
 ## 3. 技术栈选择（Tech stack choices）
 
-- 依赖升级决策模式：先查官方文档/registry 实证（发布时间、peer 声明、changelog），再决定升级或钉住；钉住必须带理由注释。
-  confidence: 4 ｜ evidence: 2026-09-08 mikro-orm 精确钉注释、nestjs-pino 升级先查 releases、pnpm 豁免清理先查 minimumReleaseAge 文档 ｜ last_updated: 2026-09-08
+- 依赖与结构决策模式：先查官方文档/registry 实证（发布时间、peer 声明、changelog、directory-structure 文档），再决定升级/钉住/落位；钉住必须带理由注释。
+  confidence: 4 ｜ evidence: 2026-09-08 mikro-orm 精确钉注释、nestjs-pino 升级先查 releases、pnpm 豁免清理先查 minimumReleaseAge 文档；2026-09-13 Playwright E2E 目录三次坚持 test/e2e 并给出 Nuxt directory-structure 文档，证实官方文档优先于工具脚手架惯例 ｜ last_updated: 2026-09-13
 
 ## 4. 沟通模式（Communication patterns）
 

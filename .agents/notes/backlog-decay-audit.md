@@ -4,6 +4,8 @@
 
 ## Open
 
+- 2026-09-13 ｜ 日常踩坑（playwright-e2e 归档）｜ opsx-archive 把 change 移入 `archive/`（多一层目录）后，proposal/design 内指向 `.agents/`、`docs/` 的相对链接层级必然失效（本轮 design.md 3 个链接被 verify-docs 抓到后人工修）。凡 planning artifacts 引用仓库内相对链接的 change 归档均复现。建议：归档流程末尾强制跑 `pnpm verify:docs` 并自动按新层级修 archive 内链接；或给 openspec CLI 提该问题。
+- 2026-09-13 ｜ 日常踩坑（playwright-e2e 实施期间）｜ [apps/desktop/scripts/verify-build.cjs](../../apps/desktop/scripts/verify-build.cjs) 是失效门禁：验证结果只写报告文件后 `app.quit()`，**失败也 exit 0**；且 did-finish-load 后立即 dump DOM（10s 超时窗口），Vue 异步 mount 未完成时误报"页面内容为空"（本轮实测同一产物先误报后确认渲染正常）。建议：按报告结论设置退出码 + mount 等待/轮询；或评估由 Playwright Electron 冒烟（已具备更强断言）取代该脚本。
 - 2026-09-12 ｜ 日常踩坑（SSO change 实测期间）｜ `pnpm dev` 无条件拉起 Electron（[apps/desktop/modules/electron.ts](../../apps/desktop/modules/electron.ts) 的 `listen` hook），没有 Nuxt-only 开关；纯浏览器验证 UI 时桌面窗口被动弹起。建议：模块读环境变量（如 `NUXT_ELECTRON=0`）跳过 build+startup。
 - 2026-09-12 ｜ 日常踩坑（同上）｜ dev 会话停止后子进程残留：`nuxt dev` / `nest start` 从 turbo 树中幸存并占端口（实测：孤儿 nuxt 占 4000 伺服 HTML，导致下一次会话 API 请求全部打到它、`ERR_FAILED`）。建议：StopCommand/turbo kill 后检查 3000/4000 监听进程并清理，或给 dev 脚本加进程树终止（Windows `taskkill /T`）。
 - 2026-09-12 ｜ 观察级 ｜ agent 撰写仓库内 markdown 时倾向写 `file:///` 绝对链接，`verify:docs` 每次都拦（gate 行为正确）。建议：无需动作；在收尾/写产物时默认用相对链接即可。记录在此防止重复踩坑误判为 gate 故障。

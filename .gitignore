@@ -40,6 +40,10 @@ dist-ssr
 .nitro
 .cache
 
+# Playwright E2E artifacts（报告/trace 含页面快照，避免测试账号凭据落盘）
+apps/desktop/test-results/
+apps/desktop/playwright-report/
+
 # Local env files
 .env
 .env.*

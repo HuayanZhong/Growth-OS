@@ -1,6 +1,6 @@
 ---
 alwaysApply: false
-description: MikroORM rule (NestJS + MikroORM v7, ESM): entities as defineEntity schemas in modules/<name>/entities/; migrations in src/infra/database/; catalog-managed deps (regression pins carry a reason); CLI via pnpm mikro-orm:* scripts; contextName 'default' consistent across config/forRoot/forFeature; services fork EM explicitly. Use when adding entities, migrations, or ORM config.
+description: MikroORM rule (NestJS v7 ESM): defineEntity entities in modules/<name>/entities/; migrations in src/infra/database/; contextName 'default'; pnpm mikro-orm:* scripts. Use when adding entities, migrations, or ORM config.
 ---
 
 # MikroORM (Database & Entities)

@@ -20,7 +20,8 @@
     },
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["dist/**", ".output/**"]
+      "outputs": ["dist/**", ".output/**"],
+      "inputs": ["$TURBO_DEFAULT$", "../../.env*"]
     },
     "lint": {
       "dependsOn": [],

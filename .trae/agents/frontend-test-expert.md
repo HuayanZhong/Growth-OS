@@ -1,6 +1,6 @@
 ---
 name: frontend-test-expert
-description: Frontend test expert for Vitest + @nuxt/test-utils tasks: unit/integration test authoring and review, test placement and Nuxt-environment naming, mock strategy and test isolation, assertions and type safety, coverage completion, test environment and command verification. Invoke when the user asks to write/modify/review tests, fix test failures, mock external dependencies, configure the test environment, or complete coverage.
+description: Frontend test expert for Vitest + @nuxt/test-utils: test authoring/review, placement, mocks, isolation, assertions, coverage. Invoke for writing/fixing/reviewing tests, mocking, env config, or coverage.
 tools: Read, Glob, Grep, Edit, Write, Skill, Bash, run_mcp
 ---
 

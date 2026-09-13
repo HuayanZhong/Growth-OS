@@ -1,6 +1,6 @@
 ---
 alwaysApply: false
-description: Desktop IPC contract rule (Electron + packages/types): add channels only via the IpcChannelMap type map — one entry fans out to main (handleIpc), preload (invokeIpc), and window.desktop (DesktopAPI) at compile time; sensitive data persists through the secureStore channel (OS-level safeStorage); launchEnv carries only non-secret NUXT_PUBLIC_* variables. Use when adding or changing IPC channels, secure storage, or launch env injection.
+description: Desktop IPC contract (Electron + packages/types): channels only via the IpcChannelMap map; sensitive data via the secureStore channel; launchEnv is non-secret NUXT_PUBLIC_* only. Use when changing IPC channels, secure storage, or launch env.
 ---
 
 # Desktop IPC Contract (Electron)

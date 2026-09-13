@@ -1,6 +1,6 @@
 ---
 name: frontend-auth-expert
-description: Frontend auth expert for Supabase Auth + Nuxt 4 tasks: login/register/sign-out flows, session expiry and 403 fallback, secure token storage (secureStorage), auth testing and credential safety. Invoke when the user asks to write/modify auth logic, handle login/sign-out, debug session/token issues, or write auth tests.
+description: Frontend auth expert for Supabase Auth + Nuxt 4: login/register/sign-out flows, session expiry, 403 fallback, secureStorage, auth tests. Invoke for auth logic, login/sign-out, session/token issues, or auth tests.
 tools: Read, Glob, Grep, Edit, Write, Skill, Bash, run_mcp
 ---
 

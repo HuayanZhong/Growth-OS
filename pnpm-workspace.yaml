@@ -66,6 +66,8 @@ catalogs:
     happy-dom: ^20.11.1
     supertest: ^7.2.2
     '@types/supertest': ^7.2.1
+    # 桌面端 E2E（Chromium only）
+    '@playwright/test': ^1.63.0
     # server e2e 专用：Vitest 转换器不产出 emitDecoratorMetadata，Nest DI 需要 SWC 补
     '@swc/core': ^1.16.1
     unplugin-swc: ^1.5.11
