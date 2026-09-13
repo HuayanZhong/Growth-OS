@@ -8,7 +8,7 @@
   "author": "",
   "type": "module",
   "scripts": {
-    "dev": "nuxt dev --dotenv ../../.env",
+    "dev": "nuxt dev --dotenv ../../.env --port 3000",
     "build": "nuxt build --dotenv ../../.env",
     "start:prod": "electron ../../packages/desktop-core/dist/main.js --no-sandbox",
     "lint": "oxlint --fix --config .oxlintrc.json",
