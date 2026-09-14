@@ -22,8 +22,9 @@ export default defineConfig({
         'src/infra/database/migrations/**',
         'src/infra/database/seeders/**',
       ],
-      // 基线 = 2026-09-09 口径修正后实测整数下限，防倒退不强制提升；调升需显式改数字
-      thresholds: { lines: 76, branches: 67 },
+      // 基线 = 2026-09-09 口径修正后实测整数下限，防倒退不强制提升；调升需显式改数字。
+      // 2026-09-13 拆除五个业务域（teardown-business-domains）后随域删除其测试，按同口径重测下限。
+      thresholds: { lines: 69, branches: 66 },
     },
   },
 })
