@@ -21,17 +21,18 @@ description: MikroORM rule (NestJS v7 ESM): defineEntity entities in modules/<na
 **Example**:
 
 ```ts
-// Entity — Entity Schema style, mirroring existing entities
-export const AgentEntity = defineEntity({
-  name: "AgentRecord",
-  tableName: "agents",
+// Entity — Entity Schema style, mirroring apps/server/src/modules/audit/entities/audit-log.entity.ts
+export const AuditLogEntity = defineEntity({
+  name: "AuditLog",
+  tableName: "audit_logs",
   properties: (p) => ({
-    id: p.text().primary(),
-    name: p.text(),
-    createdAt: p.datetime(),
-    updatedAt: p.datetime(),
+    seq: p.integer().primary().autoincrement(),
+    id: p.text().unique(),
+    actorId: p.text(),
+    action: p.text(),
+    timestamp: p.datetime(),
   }),
-  indexes: [{ properties: ["name"] }],
+  indexes: [{ properties: ["action"] }],
 });
 
 // Migration (via CLI)

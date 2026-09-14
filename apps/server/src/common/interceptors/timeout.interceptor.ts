@@ -17,7 +17,7 @@ const DEFAULT_TIMEOUT_MS = 30_000
  * 请求超时拦截器。
  *
  * 问题背景：
- *   慢请求（LLM 流式响应卡死、DB 连接池耗尽、外部 API 无响应）会无限挂起，
+ *   慢请求（流式响应卡死、DB 连接池耗尽、外部 API 无响应）会无限挂起，
  *   最终只能靠 TCP 层超时断开，客户端拿到的是模糊的 net::ERR_CONNECTION_RESET。
  *   加拦截器后，超时请求会收到明确的 408 Request Timeout + 机器可读错误码。
  *
@@ -28,7 +28,7 @@ const DEFAULT_TIMEOUT_MS = 30_000
  *      由 AllExceptionsFilter 统一转为 { code: 'TIMEOUT', message: '请求超时...' }。
  *
  * 豁免场景：
- *   - SSE 流式端点（/ai/chat）：响应可持续数分钟，不能设固定超时 → @SkipTimeout()。
+ *   - SSE 流式端点：响应可持续数分钟，不能设固定超时 → @SkipTimeout()。
  *   - 未来文件上传等长耗时端点：同样用 @SkipTimeout() 或自定义超时值。
  */
 @Injectable()

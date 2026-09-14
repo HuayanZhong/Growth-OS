@@ -16,7 +16,7 @@
 | Package | Workspace dependencies | Workspace devDependencies |
 | --- | --- |
 | `@growth-os/desktop-core` | `@growth-os/types` | — |
-| `@growth-os/shared` | — | `@growth-os/types` |
+| `@growth-os/shared` | — | — |
 | `@growth-os/types` | — | — |
 | `@growth-os/ui` | — | — |
 
@@ -42,5 +42,4 @@ graph LR
     apps_server --> packages_shared
     apps_server --> packages_types
     packages_desktop_core --> packages_types
-    packages_shared -.-> packages_types
 ```

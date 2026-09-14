@@ -65,10 +65,10 @@ eyJhbGciOiJFUzI1NiJ9  .  eyJzdWIiOiJ1LTEyMyIsLi4uIn0  .  MEUCIQ...
   └► autoRefreshToken：过期前自动换新，业务代码无感
 
 ── 阶段二：前端携带（M1 新增 use-api.ts）──────────────────
-页面调后端 apiFetch('/agents')
+页面调后端 apiFetch('/audit-logs')
   ├► supabase.auth.getSession()          ← 要"当前有效 token"
   ├► headers.Authorization = Bearer <access_token>
-  └► fetch(API_BASE_URL + '/api/v1/agents')
+  └► fetch(API_BASE_URL + '/api/v1/audit-logs')
 
 ── 阶段三：服务端验证（M1 新增 Guard）─────────────────────
 NestJS 请求管线：middleware ─► ★Guard★ ─► interceptor ─► pipe ─► controller

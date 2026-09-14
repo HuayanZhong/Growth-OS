@@ -3,4 +3,4 @@
 # authority; after editing either side, bring the other along and re-record with:
 #   pnpm verify:pairing --write <path>
 architecture.md: 522fbb006924b5fb65c5597135bc9a5e6c24a7e8
-architecture.zh.md: 5830d197b7fbe8b21a833ef6578b839ac11c0916
+architecture.zh.md: 6355077ee414ff3a08281f2ffcb03e06bd0241e4

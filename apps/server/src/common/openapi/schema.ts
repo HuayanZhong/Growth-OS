@@ -6,7 +6,7 @@
  * schema（@growth-os/types）就是 schema 的运行时来源，无需第三方转换库。
  */
 import { applyDecorators } from '@nestjs/common'
-import { ApiCreatedResponse, ApiOkResponse, ApiResponse } from '@nestjs/swagger'
+import { ApiOkResponse, ApiResponse } from '@nestjs/swagger'
 import type { SchemaObject } from '@nestjs/swagger'
 import { toJSONSchema } from 'zod'
 import type { ZodType } from 'zod'
@@ -38,11 +38,6 @@ function dataEnvelope(business: SchemaObject): SchemaObject {
 /** 200 成功响应（信封包裹业务 schema）。 */
 export function ApiDataOk(business: SchemaObject, description: string) {
   return ApiOkResponse({ description, schema: dataEnvelope(business) })
-}
-
-/** 201 成功响应（POST 创建，Nest 默认 201）。 */
-export function ApiDataCreated(business: SchemaObject, description: string) {
-  return ApiCreatedResponse({ description, schema: dataEnvelope(business) })
 }
 
 /** ApiErrorEnvelope schema（AllExceptionsFilter 归一化的统一错误信封）。 */

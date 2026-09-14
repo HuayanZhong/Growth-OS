@@ -8,25 +8,25 @@ last_updated: 2026-09-13
 ## 1. 代码风格（Code style）
 
 - 视觉资产要与现有 UI 光学对齐：新增图标/素材先对照现有素材的 viewBox 占比与风格（GitHub vs QQ 尺寸不一致）。
-  confidence: 4 ｜ evidence: 2026-09-12 纠正 GitHub 图标"风格不够统一、大小没有跟我统一"，viewBox 加内边距后解决 ｜ last_updated: 2026-09-12
+  confidence: 4 ｜ evidence: 2026-09-12 纠正 GitHub 图标风格与大小不统一，viewBox 加内边距解决 ｜ last_updated: 2026-09-12
 
 ## 2. 问题解决路径（Problem-solving path）
 
 - 希望先评估再动手：面对升级/迁移/选型类任务，先给官方依据与对比结论，经确认后执行（例：Nest 12 迁移对照、ESM 切换评估、rspack 评估均先出评估报告）。
-  confidence: 3 ｜ evidence: 2026-09-08 ESM 评估与 rspack 评估、2026-09-08 依赖核查均先报告后经确认执行 ｜ last_updated: 2026-09-08
-- 对"越界"敏感：要求严格区分骨架与业务；只做确认范围内的改动，扩展先提案。
-  confidence: 4 ｜ evidence: 2026-09-07 用户对 turn 管线/LLM 选型越界的明确批评及后续多次"只固定骨架"的表述 ｜ last_updated: 2026-09-08
+  confidence: 3 ｜ evidence: 2026-09-08 ESM/rspack 评估与依赖核查均先报告后确认执行 ｜ last_updated: 2026-09-08
+- 对"越界"敏感：要求严格区分骨架与业务；只做确认范围内的改动，扩展先提案；业务域的领域设计由用户主导，AI 不得未经商量自行新增/定型（2026-09-13 五域整体拆除重建）。
+  confidence: 4 ｜ evidence: 2026-09-07 用户对 turn 管线/LLM 选型越界的明确批评及后续多次"只固定骨架"的表述；2026-09-13 "这些模块是在没有商量的情况下你自己加入的"，确认路线 A 全拆、逐域由用户指导重建 ｜ last_updated: 2026-09-13
 - 大任务自主推进：计划确立后按计划继续，除非出现需要决策的高风险点；事实变化时更新计划。
   confidence: 3 ｜ evidence: 2026-09-07 至 09-08 阶段三/四连续"继续"推进模式 ｜ last_updated: 2026-09-08
 - 外部资质/付费门槛高时倾向绕行：遇企业认证、备案、付费等门槛，切零成本替代方案，原目标保留占位。
-  confidence: 2 ｜ evidence: 2026-09-09 "太麻烦了…"（微信资质门槛→GitHub，QQ 占位），单次观察 ｜ last_updated: 2026-09-12
+  confidence: 2 ｜ evidence: 2026-09-09 微信资质门槛→GitHub、QQ 占位（单次观察） ｜ last_updated: 2026-09-12
 - 偏好统一机制而非双轨：倾向把并行机制合并为单一来源或共享流，而非各养一套。
-  confidence: 3 ｜ evidence: 2026-09-08 "不只是trae能用，别的agent平台也能共享工作流"（OpenSpec 跨平台接入）、2026-09-09 "我希望能够结合起来"（note 与 OpenSpec 整合为瘦指针） ｜ last_updated: 2026-09-09
+  confidence: 3 ｜ evidence: 2026-09-08 OpenSpec 跨平台接入、2026-09-09 note 与 OpenSpec 整合为瘦指针 ｜ last_updated: 2026-09-09
 
 ## 3. 技术栈选择（Tech stack choices）
 
 - 依赖与结构决策模式：先查官方文档/registry 实证（发布时间、peer 声明、changelog、directory-structure 文档），再决定升级/钉住/落位；框架能力使用同理（先查最新版文档再写配置）。钉住必须带理由注释。
-  confidence: 4 ｜ evidence: 2026-09-08 mikro-orm 钉版注释、nestjs-pino 先查 releases、pnpm 豁免查 minimumReleaseAge；2026-09-13 Playwright 目录坚持 test/e2e（Nuxt 官方文档）；2026-09-13 swagger 任务再次显式要求查 nest 12 最新文档 ｜ last_updated: 2026-09-13
+  confidence: 4 ｜ evidence: 2026-09-08 mikro-orm 钉版注释、nestjs-pino 查 releases、pnpm 查 minimumReleaseAge；2026-09-13 Playwright 坚持 test/e2e、Nest 12 文档复查 ｜ last_updated: 2026-09-13
 
 ## 4. 沟通模式（Communication patterns）
 

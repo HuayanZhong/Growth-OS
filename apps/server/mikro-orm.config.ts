@@ -17,7 +17,8 @@ export default defineConfig({
   entities: ['dist/**/*.entity.js'],
   entitiesTs: ['src/**/*.entity.ts'],
 
-  // Supabase Postgres direct connection（长期运行的后端进程用 direct，不用 transaction pooler）
+  // Supabase Postgres session pooler connection（选型见 .agents/notes/implemented/architecture/2026-08-16-supabase-connection.md：
+  // IPv4-only 网络下 direct 不可达，transaction pooler 破坏 prepared statements；IPv6 可用后再评估 direct）
   clientUrl: databaseUrl,
 
   // PostgreSQL statement_timeout：防止单条慢查询无限执行耗尽连接池。

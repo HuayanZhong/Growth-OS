@@ -21,7 +21,6 @@
     "zod": "catalog:shared"
   },
   "devDependencies": {
-    "@growth-os/types": "workspace:*",
     "@types/node": "catalog:dev",
     "@vitest/coverage-v8": "catalog:test",
     "oxfmt": "catalog:format",

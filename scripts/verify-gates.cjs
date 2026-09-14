@@ -326,14 +326,14 @@ function decisionOf(res) {
     hook_event_name: 'PostToolUse',
     tool_name: 'Write',
     cwd: ROOT,
-    tool_input: { file_path: 'packages/shared/src/session-events.ts' },
+    tool_input: { file_path: '.env.example' },
   })
   if (
     regenHit.status !== 0 ||
-    !(regenHit.stderr || '').includes('regenerated docs/event-catalog.md')
+    !(regenHit.stderr || '').includes('regenerated docs/config-catalog.md')
   )
     report(
-      'hook fixture failed: regen did not regenerate the event catalog for a registered source',
+      'hook fixture failed: regen did not regenerate the config catalog for a registered source',
     )
 
   // …and unregistered paths pass through untouched.

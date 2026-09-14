@@ -4,14 +4,30 @@
  * 抽象"对话补全"能力：实现方（DeepSeek/OpenAI 兼容网关等）注册为 NestJS
  * provider 供后端消费，或由 composable 工厂注入前端调用方；调用方只依赖
  * 本接口，不感知具体供应商。
- *
- * 消息词汇复用会话事件的 Message（四角色 + 工具调用字段）——"模型可见即已
- * 记录"的事件投影可直接作为 chat 入参，无需二次转换。
  */
-import type { Message } from '../events/session.ts'
 
-/** 模型可见消息：复用会话事件投影的 Message 类型 */
-export type LLMMessage = Message
+/** 模型可见消息角色 */
+export type LLMMessageRole = 'system' | 'user' | 'assistant' | 'tool'
+
+/** 工具调用引用：assistant 消息携带 / tool 结果回指 */
+export interface LLMToolCallRef {
+  /** 调用唯一 id，tool 结果通过 toolCallId 回指 */
+  id: string
+  /** 工具名 */
+  name: string
+  /** 序列化的调用参数（JSON 字符串） */
+  arguments: string
+}
+
+/** 模型可见消息 */
+export interface LLMMessage {
+  role: LLMMessageRole
+  content: string
+  /** role='tool' 时：本条结果对应的调用 id */
+  toolCallId?: string
+  /** role='assistant' 时：本条消息携带的工具调用 */
+  toolCalls?: LLMToolCallRef[]
+}
 
 export interface LLMChatParams {
   /** 模型标识（如 deepseek-chat），实现方据此路由到具体供应商/部署 */

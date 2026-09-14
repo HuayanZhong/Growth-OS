@@ -3,7 +3,7 @@
  *
  * 前置：先 pnpm --filter server build。AppModule 从 dist（SWC 编译产物）加载——
  * 不要经 tsx/esbuild 加载 src：esbuild 的 emitDecoratorMetadata 不完整，
- * Nest 12 DI 会把 TurnService 的构造参数解析为 undefined（启动即崩）。
+ * Nest 12 DI 会把注入服务的构造参数解析为 undefined（启动即崩）。
  * 纯 JS + dist 与生产启动路径（node dist/src/main.js）完全同构。
  *
  * 文档元信息与 main.ts 共用 buildOpenApiConfig()（同一份 DocumentBuilder 参数），

@@ -1,6 +1,6 @@
 # Desktop — 前端与桌面壳
 
-English | [中文](architecture.zh.md)
+[English](architecture.md) | 中文
 
 Nuxt 4 前端打包进 Electron 壳；Electron 主进程/preload 在 `@growth-os/desktop-core`，本应用提供 UI。运行方式、app/ 结构、技术栈见 [apps/desktop/README.md](../../apps/desktop/README.md)。
 

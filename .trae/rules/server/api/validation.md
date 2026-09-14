@@ -18,18 +18,16 @@ description: Request validation (NestJS + zod): schemas in @growth-os/types as c
 **Example**:
 
 ```ts
-// packages/types/src/api/sessions.ts
-export const sendMessageSchema = z.object({
-  content: z.string().min(1).max(32_000),
+// packages/types/src/api/audit.ts
+export const auditLogQuerySchema = z.object({
+  from: z.coerce.number().int().nonnegative().optional(),
+  limit: z.coerce.number().int().positive().max(100).optional(),
 })
-export type SendMessageInput = z.infer<typeof sendMessageSchema>
+export type AuditLogQuery = z.infer<typeof auditLogQuerySchema>
 
-// apps/server/src/modules/sessions/sessions.controller.ts
-@Post(':id/messages')
-send(
-  @Param('id') id: string,
-  @Body(new ZodValidationPipe(sendMessageSchema)) input: SendMessageInput,
-) { ... }
+// apps/server/src/modules/audit/audit.controller.ts
+@Get()
+list(@Query(new ZodValidationPipe(auditLogQuerySchema)) query: AuditLogQuery) { ... }
 ```
 
 **Verification**:

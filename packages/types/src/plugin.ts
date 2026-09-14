@@ -42,11 +42,6 @@ export interface PluginContext {
   registerAdapter(type: AdapterType, impl: unknown): void
   /** 读取其它插件注册的适配器（未注册返回 null） */
   getAdapter<T>(type: AdapterType): T | null
-  /** 订阅宿主会话事件（词汇表见 events/session.ts）；返回取消订阅函数 */
-  onEvent(
-    type: import('./events/session.ts').SessionEventType,
-    handler: (event: import('./events/session.ts').SessionEvent) => void,
-  ): () => void
   /** 读取插件配置（宿主按插件 id 隔离的配置段；热更新见 4.2 P2） */
   getConfig<T>(key: string): T | undefined
 }

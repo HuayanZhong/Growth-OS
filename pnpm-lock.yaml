@@ -596,9 +596,6 @@ importers:
         specifier: catalog:shared
         version: 4.4.3
     devDependencies:
-      '@growth-os/types':
-        specifier: workspace:*
-        version: link:../types
       '@types/node':
         specifier: catalog:dev
         version: 26.5.0

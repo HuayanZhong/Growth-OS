@@ -1,7 +1,6 @@
 <script setup lang="ts">
 // 左侧导航栏：品牌区 + 导航菜单（技能/文件/AGENTS/项目）+ 用户区（退出登录）
 import { ThemeToggle } from '@growth-os/ui'
-import AgentMenu from '~/components/sidebar/agent-menu.vue'
 import { useAuth } from '~/composables/useAuth'
 import { useNavActive } from '~/composables/useNavActive'
 
@@ -16,7 +15,7 @@ const session = ref(await getSession())
 const { showToast } = useToast()
 const { isActive, navClass } = useNavActive()
 
-// 项目菜单折叠状态（智能体菜单在 AgentMenu 内部自持）
+// 项目菜单折叠状态
 const expanded = reactive({ projects: true })
 
 function toggle(key: keyof typeof expanded) {
@@ -85,7 +84,7 @@ async function onSignOut() {
       <ThemeToggle />
     </div>
 
-    <!-- 中部：导航菜单（技能/文件一级平铺在上，AGENTS/项目二级可展开在下） -->
+    <!-- 中部：导航菜单（技能/文件/AGENTS 一级平铺，项目二级可展开） -->
     <nav class="flex-1 overflow-y-auto px-2 py-2">
       <ul class="flex flex-col gap-1">
         <!-- 技能：一级菜单（平铺链接） -->
@@ -138,8 +137,29 @@ async function onSignOut() {
           </NuxtLink>
         </li>
 
-        <!-- AGENTS 二级菜单（智能体列表 + 操作，独立组件自持折叠与交互状态） -->
-        <AgentMenu />
+        <!-- AGENTS：一级菜单（平铺链接） -->
+        <li>
+          <NuxtLink
+            to="/dashboard/agents"
+            :class="navClass('/dashboard/agents')"
+            class="flex items-center gap-2 px-2 py-2"
+          >
+            <svg
+              class="h-4 w-4 shrink-0"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M12 8V4H8a2 2 0 0 0-2 2v4m6 0v-2a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m-8 0H8a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h2m4-8h4a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2m-4 0h4"
+              />
+            </svg>
+            <span class="truncate">AGENTS</span>
+          </NuxtLink>
+        </li>
 
         <!-- 项目：二级菜单（整行点击展开/收起，箭头仅作指示） -->
         <li>
@@ -184,24 +204,6 @@ async function onSignOut() {
                 />
               </svg>
               <span class="truncate">项目</span>
-            </button>
-            <button
-              type="button"
-              class="shrink-0 p-2 text-base-content/40 opacity-0 transition-all hover:text-primary group-hover:opacity-100"
-              title="新建项目"
-            >
-              <svg
-                class="h-4 w-4"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                viewBox="0 0 24 24"
-              >
-                <path d="M5 12h14" />
-                <path d="M12 5v14" />
-              </svg>
             </button>
           </div>
           <ul v-if="expanded.projects" class="flex flex-col pb-1 pl-9 pr-2">

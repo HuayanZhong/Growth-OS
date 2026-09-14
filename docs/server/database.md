@@ -29,7 +29,7 @@ apps/server/src/
 │   └── database/
 │       ├── migrations/      # migration .ts sources
 │       └── seeders/DatabaseSeeder.ts
-├── modules/                 # business modules (auth, agent, chat); entities in <module>/entities/
+├── modules/                 # business modules (auth, audit); entities in <module>/entities/
 ├── shared/types/            # cross-domain shared types
 └── utils/                   # generic helpers
 ```
@@ -50,6 +50,4 @@ Run from `apps/server`; each injects root env before invoking the CLI:
 
 Entities live in `modules/<business>/entities/` and are discovered by the `entities` globs (`dist/**/*.entity.js` / `src/**/*.entity.ts`). Current tables:
 
-- `sessions` module: `SessionEventEntity` ([session-event.entity.ts](../../apps/server/src/modules/sessions/entities/session-event.entity.ts)) — the append-only `session_events` event log; `SessionRecordEntity` ([session-record.entity.ts](../../apps/server/src/modules/sessions/entities/session-record.entity.ts)) — `session_records` lifecycle metadata. `session_events.session_id` carries no FK; the service cascades event deletion in the same transaction that removes the record.
-- `agents` / `skills` / `projects` modules: one table each (`agents`, `skills`, `projects`); id-reference lists (`toolIds`, `agentIds`, ...) are stored as `jsonb` — members remain owned by their own domain.
 - `audit` module: `AuditLogEntity` ([audit-log.entity.ts](../../apps/server/src/modules/audit/entities/audit-log.entity.ts)) — the append-only `audit_logs` table recording server-side write operations (actor/action/resource).

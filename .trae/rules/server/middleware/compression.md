@@ -41,6 +41,6 @@ export function compressionMiddleware(): ReturnType<typeof compression> {
 ```bash
 # Compressed response has Content-Encoding: gzip
 curl -H "Accept-Encoding: gzip" http://localhost:4000/api/v1/health/liveness -v
-# SSE endpoint has no Content-Encoding
-curl -H "Accept: text/event-stream" http://localhost:4000/api/v1/ai/chat -v
+# SSE endpoint (substitute the actual streaming route once one exists) has no Content-Encoding
+curl -H "Accept: text/event-stream" http://localhost:4000/api/v1/<sse-endpoint> -v
 ```

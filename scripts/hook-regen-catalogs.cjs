@@ -3,7 +3,6 @@
  * Trae PostToolUse hook: regenerate derived docs when their sources change.
  *
  * Mapping (source → generator), kept explicit for extension:
- *   - packages/shared/src/session-events.ts and packages/shared/src/events/… → pnpm generate:events
  *   - .env.example                                                           → pnpm generate:config
  *   - apps/<pkg>/package.json, packages/<pkg>/package.json                   → pnpm generate:graph
  *
@@ -17,13 +16,6 @@ const path = require('node:path')
 const ROOT = path.resolve(__dirname, '..')
 
 const MAPPINGS = [
-  {
-    match: (rel) =>
-      rel === 'packages/shared/src/session-events.ts' ||
-      rel.startsWith('packages/shared/src/events/'),
-    generate: 'node scripts/generate-event-catalog.cjs',
-    label: 'docs/event-catalog.md',
-  },
   {
     match: (rel) => rel === '.env.example',
     generate: 'node scripts/generate-config-catalog.cjs',

@@ -18,15 +18,14 @@ Production entry: `pnpm start:prod` at the repo root launches Electron against t
 
 ```
 app/               # Nuxt source
-├── components/    # cross-domain: auth (login/register), chat, sidebar, ToastContainer
+├── components/    # cross-domain: auth (login/register), sidebar, ToastContainer
 ├── composables/   # transport/auth/state singletons: useApi, useAuth, useSecureStorage, useSupabase, useToast
-├── features/      # domain features: <domain>/api.ts (typed client from @growth-os/types) + <domain>/use-*.ts (domain composables)
 ├── layouts/       # default, dashboard
 ├── middleware/    # auth.global.ts
 └── pages/         # route assembly only (auth, dashboard: agents/files/projects/skills)
 modules/electron.ts    # vite-plugin-electron wiring
 scripts/verify-build.cjs
-test/              # nuxt/ (integration) + unit/
+test/              # nuxt/ (integration) + e2e/ (Playwright)
 ```
 
 ## Stack
