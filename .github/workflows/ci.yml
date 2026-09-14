@@ -52,13 +52,10 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - uses: ./.github/actions/setup
+      # nuxt 环境测试依赖 .nuxt 生成物（~/、#app 别名解析）；CI 干净 checkout 需显式 prepare
+      - run: pnpm --filter desktop exec nuxt prepare
       # test:coverage 同时执行全部测试并检查各包覆盖率阈值
       - run: pnpm turbo test:coverage
-      # [debug] Linux 失败排查：把失败输出逐行转成 error 注解（排障后移除）
-      - name: '[debug] dump per-package coverage output'
-        if: failure()
-        run: |
-          pnpm --filter desktop run test:coverage 2>&1 | tail -n 12 | while IFS= read -r line; do echo "::error::$line"; done || true
 
   e2e:
     name: E2E (server)
@@ -75,13 +72,10 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - uses: ./.github/actions/setup
+      # knip 解析 desktop 测试的 Nuxt 别名（~/、#app）同样依赖 .nuxt 生成物
+      - run: pnpm --filter desktop exec nuxt prepare
       # knip（死代码/未用依赖）+ publint（包 exports 正确性），见 .agents notes 与 iteration-plan 1.3
       - run: pnpm hygiene
-      # [debug] Linux 失败排查：把 knip 输出逐行转成 error 注解（排障后移除）
-      - name: '[debug] dump knip output'
-        if: failure()
-        run: |
-          pnpm exec knip 2>&1 | tail -n 12 | while IFS= read -r line; do echo "::error::$line"; done || true
 
   build:
     name: Build
