@@ -54,6 +54,16 @@ jobs:
       - uses: ./.github/actions/setup
       # test:coverage 同时执行全部测试并检查各包覆盖率阈值
       - run: pnpm turbo test:coverage
+      # [debug] Linux 失败排查：失败时把逐包输出写入 Job Summary（排障后移除）
+      - name: '[debug] dump per-package coverage output'
+        if: failure()
+        run: |
+          {
+            echo "### server test:coverage"
+            pnpm --filter server run test:coverage 2>&1 | tail -n 60
+            echo "### desktop test:coverage"
+            pnpm --filter desktop run test:coverage 2>&1 | tail -n 60
+          } >> "$GITHUB_STEP_SUMMARY" || true
 
   e2e:
     name: E2E (server)
@@ -72,6 +82,14 @@ jobs:
       - uses: ./.github/actions/setup
       # knip（死代码/未用依赖）+ publint（包 exports 正确性），见 .agents notes 与 iteration-plan 1.3
       - run: pnpm hygiene
+      # [debug] Linux 失败排查：失败时把 knip 原始输出写入 Job Summary（排障后移除）
+      - name: '[debug] dump knip output'
+        if: failure()
+        run: |
+          {
+            echo "### knip"
+            pnpm exec knip 2>&1 | tail -n 60
+          } >> "$GITHUB_STEP_SUMMARY" || true
 
   build:
     name: Build
