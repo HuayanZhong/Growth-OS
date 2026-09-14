@@ -11,65 +11,83 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+# 最小权限：本工作流只需要读代码（无发布/写操作）
+permissions:
+  contents: read
+
+# 检查按关注点拆成独立 job 并行执行：各自红绿、各自日志，
+# 一个失败不再遮蔽其余检查（单 job 串行的教训见 2026-09-13 teardown 的 CI 排障）。
 jobs:
-  ci:
-    name: Docs + Lint + Typecheck + Test + Build
+  verify:
+    name: Docs + Invariants + Gates
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v7
-        with:
-          # commitlint 需要完整的提交历史来确定检查范围
-          fetch-depth: 0
+      - uses: ./.github/actions/setup
+      - run: pnpm verify:docs
+      - run: pnpm verify:invariants
+      - run: pnpm verify:gates
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v6
-        # 自动从 package.json 的 packageManager 字段读取版本
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: ./.github/actions/setup
+      - run: pnpm turbo lint
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v7
-        with:
-          node-version-file: .nvmrc
-          cache: pnpm
+  typecheck:
+    name: Typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: ./.github/actions/setup
+      - run: pnpm turbo typecheck
 
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+  test:
+    name: Test (coverage gated)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: ./.github/actions/setup
+      # test:coverage 同时执行全部测试并检查各包覆盖率阈值
+      - run: pnpm turbo test:coverage
 
-      - name: Verify docs
-        run: pnpm verify:docs
-
-      # 结构不变量：ZodValidationPipe 挂载、forFeature contextName、strip-only 源、server ESM 约束
-      - name: Verify invariants
-        run: pnpm verify:invariants
-
-      # 门禁自监控：门禁/hook 脚本语法、hooks.json 结构、hook 活体冒烟
-      - name: Verify gates
-        run: pnpm verify:gates
-
-      - name: Commitlint
-        if: github.event_name == 'pull_request'
-        run: pnpm exec commitlint --from "${{ github.event.pull_request.base.sha }}" --to "${{ github.sha }}"
-
-      # turbo 按任务图并行执行 lint/typecheck/test:coverage（test:coverage 同时执行全部测试并检查各包覆盖率阈值）
-      - name: Lint + Typecheck + Test (coverage gated)
-        run: pnpm turbo lint typecheck test:coverage
-
+  e2e:
+    name: E2E (server)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: ./.github/actions/setup
       # e2e 不依赖真实 DB（readiness 断言 503；auth-me 真实登录用例凭据缺失自动 skip）
-      - name: E2E (server)
-        run: pnpm --filter server test:e2e
+      - run: pnpm --filter server test:e2e
 
+  hygiene:
+    name: Hygiene (knip + publint)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: ./.github/actions/setup
       # knip（死代码/未用依赖）+ publint（包 exports 正确性），见 .agents notes 与 iteration-plan 1.3
-      - name: Hygiene (knip + publint)
-        run: pnpm hygiene
+      - run: pnpm hygiene
 
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: ./.github/actions/setup
       # build 消费 dotenv 链（.env.local/.env.production/.env，git-ignored）。
       # CI 用 .env.example 的占位值显式供源：构建物里的 NUXT_PUBLIC_* 为模板默认值，
       # 与本地构建的差异只在配置内联值，不在编译可行性
-      - name: Build
+      - name: Build (desktop + server)
         run: |
           cp .env.example .env
           pnpm build
         env:
           # Electron 构建可能需要这些环境变量
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # commitlint 需要完整提交历史确定检查范围；仅 PR 触发（push 到 main 单提交不查）
+  commitlint:
+    name: Commitlint
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: ./.github/actions/setup
+        with:
+          fetch-depth: '0'
+      - run: pnpm exec commitlint --from "${{ github.event.pull_request.base.sha }}" --to "${{ github.sha }}"
