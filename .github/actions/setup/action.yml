@@ -1,16 +1,8 @@
 name: 'Setup'
-description: 'Checkout + pnpm/Node 工具链 + 依赖安装（CI 各 job 共用的装配步骤）'
-inputs:
-  fetch-depth:
-    description: 'checkout 深度；0 = 完整历史（commitlint 等需要），默认浅克隆'
-    required: false
-    default: '1'
+description: 'pnpm/Node 工具链 + 依赖安装（前置要求：job 里已先执行 actions/checkout）'
 runs:
   using: composite
   steps:
-    - uses: actions/checkout@v7
-      with:
-        fetch-depth: ${{ inputs.fetch-depth }}
     - uses: pnpm/action-setup@v6
       # 自动从 package.json 的 packageManager 字段读取版本
     - uses: actions/setup-node@v7

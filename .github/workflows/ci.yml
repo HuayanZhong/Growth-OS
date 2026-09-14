@@ -17,11 +17,14 @@ permissions:
 
 # 检查按关注点拆成独立 job 并行执行：各自红绿、各自日志，
 # 一个失败不再遮蔽其余检查（单 job 串行的教训见 2026-09-13 teardown 的 CI 排障）。
+# 注意：本地 composite action（./.github/actions/setup）在执行时才从磁盘解析，
+# 因此每个 job 必须先跑顶层 actions/checkout，再引用它。
 jobs:
   verify:
     name: Docs + Invariants + Gates
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v7
       - uses: ./.github/actions/setup
       - run: pnpm verify:docs
       - run: pnpm verify:invariants
@@ -31,6 +34,7 @@ jobs:
     name: Lint
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v7
       - uses: ./.github/actions/setup
       - run: pnpm turbo lint
 
@@ -38,6 +42,7 @@ jobs:
     name: Typecheck
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v7
       - uses: ./.github/actions/setup
       - run: pnpm turbo typecheck
 
@@ -45,6 +50,7 @@ jobs:
     name: Test (coverage gated)
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v7
       - uses: ./.github/actions/setup
       # test:coverage 同时执行全部测试并检查各包覆盖率阈值
       - run: pnpm turbo test:coverage
@@ -53,6 +59,7 @@ jobs:
     name: E2E (server)
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v7
       - uses: ./.github/actions/setup
       # e2e 不依赖真实 DB（readiness 断言 503；auth-me 真实登录用例凭据缺失自动 skip）
       - run: pnpm --filter server test:e2e
@@ -61,6 +68,7 @@ jobs:
     name: Hygiene (knip + publint)
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v7
       - uses: ./.github/actions/setup
       # knip（死代码/未用依赖）+ publint（包 exports 正确性），见 .agents notes 与 iteration-plan 1.3
       - run: pnpm hygiene
@@ -69,6 +77,7 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v7
       - uses: ./.github/actions/setup
       # build 消费 dotenv 链（.env.local/.env.production/.env，git-ignored）。
       # CI 用 .env.example 的占位值显式供源：构建物里的 NUXT_PUBLIC_* 为模板默认值，
@@ -87,7 +96,8 @@ jobs:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
-      - uses: ./.github/actions/setup
+      - uses: actions/checkout@v7
         with:
-          fetch-depth: '0'
+          fetch-depth: 0
+      - uses: ./.github/actions/setup
       - run: pnpm exec commitlint --from "${{ github.event.pull_request.base.sha }}" --to "${{ github.sha }}"
