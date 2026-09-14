@@ -76,10 +76,6 @@ jobs:
       - run: pnpm --filter desktop exec nuxt prepare
       # knip（死代码/未用依赖）+ publint（包 exports 正确性），见 .agents notes 与 iteration-plan 1.3
       - run: pnpm hygiene
-      # [debug] 排障后移除：knip 输出逐行转 error 注解
-      - name: '[debug] dump knip'
-        if: failure()
-        run: pnpm exec knip --reporter json 2>&1 | tail -n 30 | while IFS= read -r line; do echo "::error::$line"; done || true
 
   build:
     name: Build
