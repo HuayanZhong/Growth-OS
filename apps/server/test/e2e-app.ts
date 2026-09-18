@@ -6,6 +6,7 @@ import { getMikroORMToken } from '@mikro-orm/nestjs'
 import type { MikroORM } from '@mikro-orm/core'
 import { Test } from '@nestjs/testing'
 import { validate } from '../src/config/env.validation.ts'
+import { registerBodyParsers } from '../src/main/body-parser.middleware.ts'
 import { AllExceptionsFilter } from '../src/common/filters/all-exceptions.filter.ts'
 import { TimeoutInterceptor } from '../src/common/interceptors/timeout.interceptor.ts'
 import { ResponseEnvelopeInterceptor } from '../src/common/interceptors/response-envelope.interceptor.ts'
@@ -64,7 +65,9 @@ class E2EAppModule {}
 
 export async function createE2EApp(): Promise<INestApplication> {
   const moduleRef = await Test.createTestingModule({ imports: [E2EAppModule] }).compile()
-  const app = moduleRef.createNestApplication()
+  // bodyParser: false + registerBodyParsers：镜像 main.ts（解析失败错误转译为统一信封）
+  const app = moduleRef.createNestApplication({ bodyParser: false })
+  registerBodyParsers(app)
   app.setGlobalPrefix('api')
   app.enableVersioning({ type: VersioningType.URI, defaultVersion: '1' })
   await app.init()

@@ -37,6 +37,7 @@
     "@nestjs/swagger": "catalog:backend",
     "@nestjs/throttler": "catalog:backend",
     "compression": "catalog:backend",
+    "express": "catalog:backend",
     "helmet": "catalog:backend",
     "jose": "catalog:backend",
     "nestjs-pino": "catalog:backend",

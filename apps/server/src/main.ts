@@ -4,12 +4,19 @@ import { SwaggerModule } from '@nestjs/swagger'
 import { Logger } from 'nestjs-pino'
 import { AppModule } from './app.module.ts'
 import { buildOpenApiConfig } from './common/openapi/document.ts'
+import { registerBodyParsers } from './main/body-parser.middleware.ts'
 import { compressionMiddleware } from './main/compression.middleware.ts'
 import { helmetMiddleware } from './main/helmet.middleware.ts'
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, { bufferLogs: true })
+  // bodyParser: false——默认解析器把 JSON.parse 英文原文透给客户端，改用
+  // body-parser.middleware.ts 的注册函数（解析失败转译为统一信封文案）
+  const app = await NestFactory.create(AppModule, { bufferLogs: true, bodyParser: false })
   app.useLogger(app.get(Logger))
+
+  // ---- 请求体解析 ----
+  // 必须在路由注册之前注册（解析先于一切 handler）。
+  registerBodyParsers(app)
 
   // ---- 响应压缩 ----
   // 必须在路由注册之前注册，否则中间件不会拦截到请求。

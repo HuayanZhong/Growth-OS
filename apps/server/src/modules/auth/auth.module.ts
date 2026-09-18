@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common'
 import { APP_GUARD } from '@nestjs/core'
 import { AuthController } from './auth.controller.ts'
+import { AuthService } from './auth.service.ts'
 import { JwtVerifierService } from './jwt-verifier.service.ts'
 import { SupabaseJwtGuard } from './supabase-jwt.guard.ts'
 
@@ -12,6 +13,7 @@ import { SupabaseJwtGuard } from './supabase-jwt.guard.ts'
 @Module({
   controllers: [AuthController],
   providers: [
+    AuthService,
     JwtVerifierService,
     SupabaseJwtGuard,
     { provide: APP_GUARD, useExisting: SupabaseJwtGuard },

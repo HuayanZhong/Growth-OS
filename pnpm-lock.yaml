@@ -164,6 +164,9 @@ catalogs:
     compression:
       specifier: ^1.8.1
       version: 1.8.1
+    express:
+      specifier: ^5.2.1
+      version: 5.2.1
     helmet:
       specifier: ^8.0.0
       version: 8.3.0
@@ -476,6 +479,9 @@ importers:
       compression:
         specifier: catalog:backend
         version: 1.8.1(supports-color@10.2.2)
+      express:
+        specifier: catalog:backend
+        version: 5.2.1(supports-color@10.2.2)
       helmet:
         specifier: catalog:backend
         version: 8.3.0

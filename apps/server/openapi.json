@@ -103,6 +103,178 @@
         ]
       }
     },
+    "/api/v1/auth/login": {
+      "post": {
+        "operationId": "AuthController_login_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "pattern": "^(?!\\.)(?!.*\\.\\.)([A-Za-z0-9_'+\\-\\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
+                  },
+                  "password": {
+                    "type": "string",
+                    "minLength": 8
+                  }
+                },
+                "required": [
+                  "email",
+                  "password"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "登录结果",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "accessToken": {
+                          "type": "string",
+                          "description": "Supabase access token，放 Authorization: Bearer 头"
+                        },
+                        "tokenType": {
+                          "type": "string",
+                          "description": "令牌类型，恒为 bearer"
+                        },
+                        "expiresIn": {
+                          "type": "number",
+                          "description": "有效期（秒）"
+                        },
+                        "user": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "description": "用户 UUID"
+                            },
+                            "email": {
+                              "type": "string",
+                              "description": "邮箱"
+                            }
+                          },
+                          "required": [
+                            "id"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "accessToken",
+                        "tokenType",
+                        "expiresIn",
+                        "user"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "请求参数校验失败（VALIDATION_ERROR，details 含字段级 issue）",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "description": "机器可读错误码（SCREAMING_SNAKE_CASE，如 NOT_FOUND / VALIDATION_ERROR）"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "面向用户的可读文案"
+                    },
+                    "details": {
+                      "description": "结构化补充信息（如 VALIDATION_ERROR 的字段级 issue 列表）"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "缺少或无效的 Bearer token（UNAUTHORIZED）",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "description": "机器可读错误码（SCREAMING_SNAKE_CASE，如 NOT_FOUND / VALIDATION_ERROR）"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "面向用户的可读文案"
+                    },
+                    "details": {
+                      "description": "结构化补充信息（如 VALIDATION_ERROR 的字段级 issue 列表）"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "服务器内部错误（INTERNAL_ERROR）",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "description": "机器可读错误码（SCREAMING_SNAKE_CASE，如 NOT_FOUND / VALIDATION_ERROR）"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "面向用户的可读文案"
+                    },
+                    "details": {
+                      "description": "结构化补充信息（如 VALIDATION_ERROR 的字段级 issue 列表）"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "summary": "邮箱密码登录，返回访问令牌（公开端点）",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
     "/api/v1/health/liveness": {
       "get": {
         "operationId": "HealthController_liveness_v1",

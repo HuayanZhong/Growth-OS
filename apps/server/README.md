@@ -21,7 +21,7 @@ pnpm test             # unit tests (vitest, src/**/*.spec.ts) — fully mocked, 
 pnpm test:e2e         # supertest e2e (test/*.e2e-spec.ts) — needs root .env (real DATABASE_URL / Supabase)
 ```
 
-E2e covers the auth probe (`/api/v1/health` public, `/api/v1/auth/me` 401 without token / 200 with a real token); real-login cases are skipped automatically when `SUPABASE_TEST_EMAIL` / `SUPABASE_TEST_PASSWORD` are absent.
+E2e covers the auth probe (`/api/v1/health` public, `/api/v1/auth/me` 401 without token / 200 with a real token) and the login endpoint (`/api/v1/auth/login` validation 400 / real-login cases); real-login cases are skipped automatically when `SUPABASE_TEST_EMAIL` / `SUPABASE_TEST_PASSWORD` are absent.
 
 ## Layout
 
@@ -51,4 +51,4 @@ The MikroORM CLI is wrapped (root env injected automatically):
 
 ## Auth
 
-All routes are protected by default via a global JWT guard; public endpoints opt out with `@Public()`. Tokens issued by Supabase Auth are verified per the official dual-track approach (JWKS local verification for asymmetric keys; Auth-server probe for legacy HS256). Design details: [.trae/documents/auth-verification-design.md](../../.trae/documents/auth-verification-design.md).
+All routes are protected by default via a global JWT guard; public endpoints opt out with `@Public()`. Tokens issued by Supabase Auth are verified per the official dual-track approach (JWKS local verification for asymmetric keys; Auth-server probe for legacy HS256). `POST /api/v1/auth/login` is a public endpoint that proxies Supabase Auth's password grant and returns a minimal `{ accessToken, tokenType, expiresIn, user }` payload — API clients (Apifox, the future frontend typed client) log in once and reuse the token in the `Authorization: Bearer` header. Design details: [.trae/documents/auth-verification-design.md](../../.trae/documents/auth-verification-design.md).

@@ -21,7 +21,7 @@ pnpm test             # 单元测试（vitest，src/**/*.spec.ts）——全 moc
 pnpm test:e2e         # supertest e2e（test/*.e2e-spec.ts）——需根 .env（真实 DATABASE_URL / Supabase）
 ```
 
-e2e 覆盖鉴权探针（`/api/v1/health` 公开；`/api/v1/auth/me` 无 token 401 / 有真实 token 200）；缺少 `SUPABASE_TEST_EMAIL` / `SUPABASE_TEST_PASSWORD` 时自动跳过真实登录用例。
+e2e 覆盖鉴权探针（`/api/v1/health` 公开；`/api/v1/auth/me` 无 token 401 / 有真实 token 200）与登录端点（`/api/v1/auth/login` 校验 400 / 真实登录用例）；缺少 `SUPABASE_TEST_EMAIL` / `SUPABASE_TEST_PASSWORD` 时自动跳过真实登录用例。
 
 ## 结构
 
@@ -51,4 +51,4 @@ MikroORM CLI 已封装（自动注入根目录 env）：
 
 ## 鉴权
 
-所有路由默认受全局 JWT Guard 保护，公开端点用 `@Public()` 显式豁免。Supabase Auth 签发的 token 按官方双轨姿势验证（非对称密钥走 JWKS 本地验签，legacy HS256 走 Auth 服务器探针）。设计细节：[.trae/documents/auth-verification-design.md](../../.trae/documents/auth-verification-design.md)。
+所有路由默认受全局 JWT Guard 保护，公开端点用 `@Public()` 显式豁免。Supabase Auth 签发的 token 按官方双轨姿势验证（非对称密钥走 JWKS 本地验签，legacy HS256 走 Auth 服务器探针）。`POST /api/v1/auth/login` 为公开端点，代理 Supabase Auth 的 password grant，返回精简的 `{ accessToken, tokenType, expiresIn, user }`——API 客户端（Apifox 调试、后续前端 typed client）登录一次后把 token 复用进 `Authorization: Bearer` 头即可。设计细节：[.trae/documents/auth-verification-design.md](../../.trae/documents/auth-verification-design.md)。

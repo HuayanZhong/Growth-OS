@@ -27,7 +27,26 @@ export type LoginInput = z.infer<typeof loginSchema>
 /** 注册入参的类型 */
 export type RegisterInput = z.infer<typeof registerSchema>
 
-/** Auth 域 HTTP 契约（JWT 保护；Supabase Auth 承担登录/注册，自有后端只暴露身份查询） */
+/**
+ * 登录响应：自有后端代理 Supabase Auth password grant 后的精简映射。
+ * 只保留携带身份所需的最小字段（Authorization 头 + 过期时间 + 用户标识）；
+ * Supabase 原始 session 的 refresh_token / user metadata 不透传。
+ */
+export interface LoginResult {
+  /** Supabase access token，放 Authorization: Bearer 头 */
+  accessToken: string
+  /** 令牌类型，恒为 bearer */
+  tokenType: string
+  /** 有效期（秒） */
+  expiresIn: number
+  user: {
+    id: string
+    email?: string
+  }
+}
+
+/** Auth 域 HTTP 契约（/auth/me 受 JWT 保护；/auth/login 为公开端点，凭据校验由 Supabase 承担） */
 export interface AuthApiMap {
   'GET /auth/me': HttpEndpoint<'GET', undefined, { id: string; email?: string }>
+  'POST /auth/login': HttpEndpoint<'POST', LoginInput, LoginResult>
 }

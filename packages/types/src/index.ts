@@ -4,7 +4,7 @@
 export { z } from 'zod'
 
 export { loginSchema, registerSchema } from './auth.ts'
-export type { LoginInput, RegisterInput, AuthApiMap } from './auth.ts'
+export type { LoginInput, RegisterInput, LoginResult, AuthApiMap } from './auth.ts'
 
 export type { ApiErrorEnvelope } from './api/error-envelope.ts'
 

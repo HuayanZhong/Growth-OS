@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config'
 import { createRemoteJWKSet, decodeJwt, decodeProtectedHeader, jwtVerify } from 'jose'
 import type { JWTPayload } from 'jose'
 import type { AuthenticatedUser } from '../../shared/types/auth.types.ts'
+import { resolveSupabaseUrl } from './supabase-url.ts'
 
 /** 允许的非对称签名算法（走 JWKS 本地验签） */
 const ASYMMETRIC_ALGS = new Set([
@@ -56,7 +57,7 @@ export class JwtVerifierService {
 
   /** 主路径：非对称密钥，本地 JWKS 验签（官方示例代码） */
   private async verifyViaJwks(token: string): Promise<AuthenticatedUser> {
-    const url = this.supabaseUrl()
+    const url = resolveSupabaseUrl(this.config)
     if (!this.jwksCache || this.jwksUrl !== url) {
       this.jwksCache = createRemoteJWKSet(new URL(`${url}/auth/v1/.well-known/jwks.json`))
       this.jwksUrl = url
@@ -76,7 +77,7 @@ export class JwtVerifierService {
 
   /** 回退路径：HS256 legacy，转问签发者本人（官方推荐探针方式） */
   private async verifyViaAuthServer(token: string): Promise<AuthenticatedUser> {
-    const url = this.supabaseUrl()
+    const url = resolveSupabaseUrl(this.config)
     const anonKey = this.config.get<string>('NUXT_PUBLIC_SUPABASE_ANON_KEY')
     if (!anonKey) throw unauthorized()
     let res: Response
@@ -95,16 +96,6 @@ export class JwtVerifierService {
     } catch {
       throw unauthorized()
     }
-  }
-
-  /** URL 解析链：SUPABASE_URL → NUXT_PUBLIC_SUPABASE_URL → 拒绝 */
-  private supabaseUrl(): string {
-    const url =
-      this.config.get<string>('SUPABASE_URL') ?? this.config.get<string>('NUXT_PUBLIC_SUPABASE_URL')
-    if (!url) {
-      throw new UnauthorizedException({ code: 'UNAUTHORIZED', message: '服务端未配置鉴权来源' })
-    }
-    return url.replace(/\/+$/, '')
   }
 
   private toUser(payload: JWTPayload): AuthenticatedUser {
