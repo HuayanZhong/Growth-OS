@@ -57,3 +57,6 @@ scripts/certs/*.pem
 
 # graphify knowledge graph (generated dev artifact)
 graphify-out/
+
+# archify architecture diagram (generated dev artifact)
+archify-out/
