@@ -1,0 +1,348 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Growth OS · 多模式注册与装配",
+    "locale": "zh-CN",
+    "quality_profile": "standard",
+    "viewBox": [1250, 700],
+    "repository": {
+      "url": "https://github.com/HuayanZhong/Growth-OS",
+      "provider": "github",
+      "link_mode": "web",
+      "revision": "09df15e4f3708432fc78969c3f56f868e49ece7c"
+    },
+    "views": [
+      {
+        "id": "pattern-assembly",
+        "label": "装配与委派全程",
+        "focus": [
+          "agent-config",
+          "assembly",
+          "deepagents",
+          "subagent",
+          "capability-desc",
+          "react",
+          "plan",
+          "router",
+          "supervisor",
+          "hitl",
+          "swarm",
+          "blackboard",
+          "mcp-mode",
+          "a2a-mode",
+          "reflexion",
+          "critic",
+          "tot",
+          "dag",
+          "rsi",
+          "mcp-server",
+          "a2a-agents"
+        ],
+        "note": "配置声明 → 注册表查找装配 → harness 激活；外部能力统一注册委派"
+      }
+    ]
+  },
+  "components": [
+    {
+      "id": "agent-config",
+      "type": "database",
+      "label": "agent 配置",
+      "sublabel": "patterns JSONB 声明",
+      "pos": [50, 110],
+      "size": [170, 64]
+    },
+    {
+      "id": "assembly",
+      "type": "backend",
+      "label": "装配工厂",
+      "sublabel": "查找 · 组合 · 生成",
+      "pos": [290, 110],
+      "size": [170, 64]
+    },
+    {
+      "id": "deepagents",
+      "type": "backend",
+      "label": "deepagents harness",
+      "sublabel": "运行时激活模式",
+      "pos": [530, 110],
+      "size": [180, 64]
+    },
+    {
+      "id": "subagent",
+      "type": "backend",
+      "label": "本地子代理",
+      "sublabel": "task 工具 · 对等",
+      "pos": [780, 110],
+      "size": [170, 64]
+    },
+    {
+      "id": "capability-desc",
+      "type": "backend",
+      "label": "能力描述符",
+      "sublabel": "统一委派契约",
+      "pos": [1020, 110],
+      "size": [180, 64],
+      "sources": [
+        {
+          "path": "packages/types/src/adapters/llm.ts",
+          "label": "LLM 适配器契约"
+        }
+      ]
+    },
+    {
+      "id": "react",
+      "type": "backend",
+      "label": "ReAct",
+      "sublabel": "主循环 · 默认",
+      "pos": [60, 270],
+      "size": [180, 56]
+    },
+    {
+      "id": "plan",
+      "type": "backend",
+      "label": "Plan-and-Execute",
+      "sublabel": "先计划后执行",
+      "pos": [270, 270],
+      "size": [180, 56]
+    },
+    {
+      "id": "router",
+      "type": "backend",
+      "label": "Router",
+      "sublabel": "intent 条件边",
+      "pos": [480, 270],
+      "size": [180, 56]
+    },
+    {
+      "id": "supervisor",
+      "type": "backend",
+      "label": "Supervisor",
+      "sublabel": "层级委派",
+      "pos": [690, 270],
+      "size": [180, 56]
+    },
+    {
+      "id": "hitl",
+      "type": "backend",
+      "label": "HITL",
+      "sublabel": "中断审批恢复",
+      "pos": [900, 270],
+      "size": [180, 56]
+    },
+    {
+      "id": "swarm",
+      "type": "backend",
+      "label": "Swarm / Handoff",
+      "sublabel": "控制权移交",
+      "pos": [60, 346],
+      "size": [180, 56]
+    },
+    {
+      "id": "blackboard",
+      "type": "backend",
+      "label": "Blackboard",
+      "sublabel": "虚拟 FS 共享",
+      "pos": [270, 346],
+      "size": [180, 56]
+    },
+    {
+      "id": "mcp-mode",
+      "type": "backend",
+      "label": "MCP 联邦",
+      "sublabel": "工具动态挂载",
+      "pos": [480, 346],
+      "size": [180, 56]
+    },
+    {
+      "id": "a2a-mode",
+      "type": "backend",
+      "label": "A2A 联邦",
+      "sublabel": "对等远程委派",
+      "pos": [690, 346],
+      "size": [180, 56]
+    },
+    {
+      "id": "reflexion",
+      "type": "backend",
+      "label": "Reflexion",
+      "sublabel": "失败反思重试",
+      "pos": [900, 346],
+      "size": [180, 56]
+    },
+    {
+      "id": "critic",
+      "type": "backend",
+      "label": "Generator-Critic",
+      "sublabel": "生成批判迭代",
+      "pos": [60, 422],
+      "size": [180, 56]
+    },
+    {
+      "id": "tot",
+      "type": "backend",
+      "label": "ToT / GoT",
+      "sublabel": "多分支思维搜索",
+      "pos": [270, 422],
+      "size": [180, 56]
+    },
+    {
+      "id": "dag",
+      "type": "backend",
+      "label": "DAG 并行",
+      "sublabel": "分支聚合 · Send",
+      "pos": [480, 422],
+      "size": [180, 56]
+    },
+    {
+      "id": "rsi",
+      "type": "backend",
+      "label": "RSI 固化",
+      "sublabel": "经验→OKF→注入",
+      "pos": [900, 422],
+      "size": [180, 56]
+    },
+    {
+      "id": "mcp-server",
+      "type": "external",
+      "label": "MCP Servers",
+      "sublabel": "外部工具服务",
+      "pos": [665, 590],
+      "size": [190, 64]
+    },
+    {
+      "id": "a2a-agents",
+      "type": "external",
+      "label": "A2A Agents",
+      "sublabel": "远程对等执行体",
+      "pos": [940, 590],
+      "size": [190, 64]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "PatternRegistry · 14 条目 · 一模式一模块",
+      "wraps": [
+        "react",
+        "plan",
+        "router",
+        "supervisor",
+        "hitl",
+        "swarm",
+        "blackboard",
+        "mcp-mode",
+        "a2a-mode",
+        "reflexion",
+        "critic",
+        "tot",
+        "dag",
+        "rsi"
+      ]
+    },
+    {
+      "kind": "region",
+      "label": "统一委派 · 可委派实体",
+      "wraps": ["subagent", "capability-desc"]
+    }
+  ],
+  "connections": [
+    {
+      "id": "config-assembly",
+      "from": "agent-config",
+      "to": "assembly",
+      "fromSide": "right",
+      "toSide": "left"
+    },
+    {
+      "id": "assembly-harness",
+      "from": "assembly",
+      "to": "deepagents",
+      "fromSide": "right",
+      "toSide": "left"
+    },
+    {
+      "id": "harness-subagent",
+      "from": "deepagents",
+      "to": "subagent",
+      "label": "本地委派",
+      "fromSide": "right",
+      "toSide": "left",
+      "labelAt": [745, 126]
+    },
+    {
+      "id": "harness-capability",
+      "from": "deepagents",
+      "to": "capability-desc",
+      "label": "外部统一委派",
+      "fromSide": "top",
+      "toSide": "top",
+      "via": [
+        [620, 66],
+        [1110, 66]
+      ],
+      "labelAt": [865, 52]
+    },
+    {
+      "id": "a2a-register",
+      "from": "a2a-agents",
+      "to": "capability-desc",
+      "label": "注册",
+      "variant": "dashed",
+      "fromSide": "right",
+      "toSide": "bottom",
+      "via": [
+        [1166, 622],
+        [1166, 204],
+        [1110, 204]
+      ],
+      "labelAt": [1138, 218]
+    },
+    {
+      "id": "mcp-register",
+      "from": "mcp-server",
+      "to": "mcp-mode",
+      "label": "注册工具服务",
+      "variant": "dashed",
+      "fromSide": "top",
+      "toSide": "left",
+      "via": [
+        [760, 545],
+        [462, 545],
+        [462, 374]
+      ],
+      "labelAt": [611, 531]
+    },
+    {
+      "id": "a2a-mode-link",
+      "from": "a2a-agents",
+      "to": "a2a-mode",
+      "label": "联邦实例",
+      "variant": "dashed",
+      "fromSide": "top",
+      "toSide": "bottom",
+      "via": [
+        [1035, 558],
+        [780, 558]
+      ],
+      "labelAt": [900, 572]
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "注册与装配",
+      "items": [
+        "agent 配置以 patterns JSONB 声明模式组合；装配工厂按声明查找注册表条目并生成 harness 配置，运行时按需激活",
+        "外部 MCP / A2A 能力经统一描述符注册为可委派实体，与本地子代理共享 delegate(goal, context, budget) 契约"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "实施节奏",
+      "items": [
+        "P0–P1 ReAct / Plan-Execute / Router 随主链路落地；P2 Supervisor / HITL / MCP 联邦；P3 Reflexion / Gen-Critic 依赖 OKF 通道；P4 A2A / ToT / DAG 待预算护栏成熟"
+      ]
+    }
+  ]
+}

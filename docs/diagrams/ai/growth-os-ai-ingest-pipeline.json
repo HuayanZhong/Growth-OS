@@ -1,0 +1,292 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Growth OS · 知识摄取管线",
+    "locale": "zh-CN",
+    "quality_profile": "standard",
+    "viewBox": [1250, 690],
+    "repository": {
+      "url": "https://github.com/HuayanZhong/Growth-OS",
+      "provider": "github",
+      "link_mode": "web",
+      "revision": "09df15e4f3708432fc78969c3f56f868e49ece7c"
+    },
+    "views": [
+      {
+        "id": "ingest-pipeline",
+        "label": "摄取管线全程",
+        "focus": [
+          "nuxt",
+          "domains",
+          "parser",
+          "chunker",
+          "embedder",
+          "entity-extract",
+          "provider-registry",
+          "llm-providers",
+          "pgvector",
+          "entity-graph",
+          "knowledge-meta",
+          "rag-domain"
+        ],
+        "note": "上传到可检索：解析 → 切片 → 向量化 / 实体抽取 → 索引与 trust 登记"
+      }
+    ]
+  },
+  "components": [
+    {
+      "id": "nuxt",
+      "type": "frontend",
+      "label": "用户工作台",
+      "sublabel": "文档上传",
+      "pos": [50, 110],
+      "size": [140, 64],
+      "sources": [
+        {
+          "path": "apps/desktop/app/composables/useApi.ts",
+          "label": "apiFetch 封装"
+        }
+      ]
+    },
+    {
+      "id": "domains",
+      "type": "backend",
+      "label": "业务域模块",
+      "sublabel": "knowledge 域接收",
+      "pos": [250, 110],
+      "size": [150, 64]
+    },
+    {
+      "id": "parser",
+      "type": "backend",
+      "label": "解析器",
+      "sublabel": "PDF · MD · HTML",
+      "pos": [460, 110],
+      "size": [150, 64]
+    },
+    {
+      "id": "chunker",
+      "type": "backend",
+      "label": "切片器",
+      "sublabel": "语义边界 · 重叠分块",
+      "pos": [680, 110],
+      "size": [150, 64]
+    },
+    {
+      "id": "embedder",
+      "type": "backend",
+      "label": "Embedding",
+      "sublabel": "批量向量化",
+      "pos": [890, 110],
+      "size": [150, 64]
+    },
+    {
+      "id": "entity-extract",
+      "type": "backend",
+      "label": "实体抽取",
+      "sublabel": "LLM 实体关系识别",
+      "pos": [300, 270],
+      "size": [150, 64]
+    },
+    {
+      "id": "provider-registry",
+      "type": "backend",
+      "label": "model-provider",
+      "sublabel": "统一出网 · 工厂",
+      "pos": [760, 270],
+      "size": [150, 64]
+    },
+    {
+      "id": "llm-providers",
+      "type": "external",
+      "label": "模型 Providers",
+      "sublabel": "DeepSeek · GLM · Kimi",
+      "pos": [1000, 270],
+      "size": [150, 64]
+    },
+    {
+      "id": "pgvector",
+      "type": "database",
+      "label": "pgvector",
+      "sublabel": "切片向量 · RLS",
+      "pos": [200, 430],
+      "size": [160, 64]
+    },
+    {
+      "id": "entity-graph",
+      "type": "database",
+      "label": "实体图",
+      "sublabel": "实体关系 · RLS",
+      "pos": [430, 430],
+      "size": [160, 64]
+    },
+    {
+      "id": "knowledge-meta",
+      "type": "database",
+      "label": "知识元数据",
+      "sublabel": "trust 等级 · 摄取状态",
+      "pos": [660, 430],
+      "size": [170, 64]
+    },
+    {
+      "id": "rag-domain",
+      "type": "backend",
+      "label": "RAG 检索域",
+      "sublabel": "混合检索 · trust 过滤",
+      "pos": [950, 430],
+      "size": [150, 64]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "文档摄取流水线",
+      "wraps": ["nuxt", "domains", "parser", "chunker", "embedder"]
+    },
+    {
+      "kind": "region",
+      "label": "模型接入",
+      "wraps": ["provider-registry", "llm-providers"]
+    },
+    {
+      "kind": "region",
+      "label": "索引与元数据 · Supabase",
+      "wraps": ["pgvector", "entity-graph", "knowledge-meta"]
+    }
+  ],
+  "connections": [
+    {
+      "id": "upload",
+      "from": "nuxt",
+      "to": "domains",
+      "fromSide": "right",
+      "toSide": "left"
+    },
+    {
+      "id": "to-parse",
+      "from": "domains",
+      "to": "parser",
+      "fromSide": "right",
+      "toSide": "left"
+    },
+    {
+      "id": "to-chunk",
+      "from": "parser",
+      "to": "chunker",
+      "fromSide": "right",
+      "toSide": "left"
+    },
+    {
+      "id": "to-embed",
+      "from": "chunker",
+      "to": "embedder",
+      "fromSide": "right",
+      "toSide": "left"
+    },
+    {
+      "id": "chunk-entity",
+      "from": "chunker",
+      "to": "entity-extract",
+      "label": "并行抽取",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "via": [
+        [755, 222],
+        [375, 222]
+      ],
+      "labelAt": [565, 208]
+    },
+    {
+      "id": "embed-call",
+      "from": "embedder",
+      "to": "provider-registry",
+      "label": "embedding 调用",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "via": [
+        [965, 222],
+        [835, 222]
+      ],
+      "labelAt": [900, 208]
+    },
+    {
+      "id": "entity-call",
+      "from": "entity-extract",
+      "to": "provider-registry",
+      "label": "抽取 LLM 调用",
+      "fromSide": "right",
+      "toSide": "left",
+      "labelAt": [605, 288]
+    },
+    {
+      "id": "provider-out",
+      "from": "provider-registry",
+      "to": "llm-providers",
+      "label": "API 出网",
+      "variant": "emphasis",
+      "fromSide": "right",
+      "toSide": "left",
+      "labelAt": [955, 288]
+    },
+    {
+      "id": "embed-index",
+      "from": "embedder",
+      "to": "pgvector",
+      "label": "向量写入",
+      "fromSide": "top",
+      "toSide": "top",
+      "via": [
+        [965, 66],
+        [220, 66],
+        [220, 398],
+        [280, 398]
+      ],
+      "labelAt": [590, 52]
+    },
+    {
+      "id": "entity-index",
+      "from": "entity-extract",
+      "to": "entity-graph",
+      "label": "实体关系写入",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "via": [
+        [375, 372],
+        [510, 372]
+      ],
+      "labelAt": [442, 358]
+    },
+    {
+      "id": "vector-serve",
+      "from": "pgvector",
+      "to": "rag-domain",
+      "label": "向量召回",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "bottom",
+      "via": [
+        [280, 560],
+        [1025, 560]
+      ],
+      "labelAt": [650, 546]
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "摄取流水线",
+      "items": [
+        "五段主流水线：上传 → 接收 → 解析 → 切片 → 批量向量化；实体抽取从切片并行消费",
+        "embedding 与实体抽取统一经 model-provider 出网；向量入 pgvector、实体关系入实体图、trust 与摄取状态登记进知识元数据"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "隔离与衔接",
+      "items": [
+        "全程 user_id 隔离（RLS）；文档级 trust 等级供检索时过滤低信来源；摄取完成后由 RAG 检索域消费（检索内部机制见后续详图）"
+      ]
+    }
+  ]
+}

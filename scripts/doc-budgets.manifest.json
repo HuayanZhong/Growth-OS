@@ -47,8 +47,20 @@
     ".agents/user-profile.md": {
       "maxWords": 1150
     },
+    ".trae/documents/ai-agent-patterns-selection.md": {
+      "maxWords": 2800
+    },
+    ".trae/documents/ai-architecture-review.md": {
+      "maxWords": 2600
+    },
     ".trae/documents/ai-module-plan.md": {
       "maxWords": 2800
+    },
+    ".trae/documents/ai-rag-multiagent-design.md": {
+      "maxWords": 4550
+    },
+    ".trae/documents/ai-tech-spec.md": {
+      "maxWords": 5250
     },
     ".trae/documents/auth-token-secure-storage-plan.md": {
       "maxWords": 2150

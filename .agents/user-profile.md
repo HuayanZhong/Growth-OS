@@ -3,7 +3,7 @@
 > 活文档：按 [.trae/rules/agent/user-profile.md](../.trae/rules/agent/user-profile.md) 的采集标准、置信度计分与更新机制维护（阈值、no-go、5 分制含义以该规则为准，仅 ≥3 影响默认行为）。
 
 owner: primary（仓库所有者，单人开发）
-last_updated: 2026-09-19
+last_updated: 2026-09-26
 
 ## 1. 代码风格（Code style）
 
@@ -22,6 +22,8 @@ last_updated: 2026-09-19
   confidence: 3 ｜ evidence: 2026-09-07 至 09-08 阶段三/四连续"继续"推进 ｜ last_updated: 2026-09-08
 - 外部资质/付费门槛高时倾向绕行：切零成本替代方案，原目标保留占位。
   confidence: 2 ｜ evidence: 2026-09-09 微信资质门槛→GitHub、QQ 占位（单次观察） ｜ last_updated: 2026-09-12
+- 受阻不绕圈：修复路径明确时立即执行；绝不以标记/占位文件代替实际动作，token 浪费零容忍。
+  confidence: 4 ｜ evidence: 2026-09-26 循环与 token 纠正 ｜ last_updated: 2026-09-26
 - 偏好统一机制而非双轨：倾向把并行机制合并为单一来源或共享流。
   confidence: 3 ｜ evidence: 2026-09-08 OpenSpec 跨平台接入、2026-09-09 note 整合为瘦指针 ｜ last_updated: 2026-09-09
 
@@ -34,10 +36,10 @@ last_updated: 2026-09-19
 
 - 短指令推进：常用"继续"/"下一个"/"开始"，期望据此自主衔接既定计划，不反复确认。
   confidence: 4 ｜ evidence: 多次会话一致使用并明确表达此期待 ｜ last_updated: 2026-09-08
-- 决策偏好选项化：对开放决策接受"选项+推荐+理由"，选择迅速。
-  confidence: 4 ｜ evidence: 2026-09-08 多次 AskUserQuestion；2026-09-13 四选项秒选推荐项 ｜ last_updated: 2026-09-13
-- 汇报格式：接受"改了什么/验证了什么/风险与后续"三段式，未验证内容需明说。
-  confidence: 3 ｜ evidence: 全局规则明文要求 + 会话无异议 ｜ last_updated: 2026-09-08
+- 决策偏好选项化：对开放决策接受"选项+推荐+理由"，选择迅速；技术选型可整体委托 agent 判断。
+  confidence: 4 ｜ evidence: 2026-09-08 多次 AskUserQuestion；2026-09-26 架构方案委托判断 ｜ last_updated: 2026-09-26
+- 汇报格式：接受"改了什么/验证了什么/风险与后续"三段式，未验证内容需明说；汇报用直白人话，砍表格与 SHA/码值堆砌。
+  confidence: 4 ｜ evidence: 全局规则明文；09-26 纠正汇报啰嗦 ｜ last_updated: 2026-09-26
 
 ## 5. 工作流习惯（Workflow habits）
 

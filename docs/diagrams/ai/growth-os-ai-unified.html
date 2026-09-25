@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>Growth OS · AI 全系统融合图（大画布）</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Geist:wght@400;500;600&family=Geist+Mono&family=Noto+Sans+SC:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  body{margin:0;background:#f5f5f5;color:#2d3142;font-family:'Geist','Noto Sans SC',sans-serif;padding:2.5rem 2rem;}
+  .wrap{max-width:1400px;margin:0 auto;}
+  .eyebrow{font-family:'Geist Mono',monospace;font-size:.68rem;letter-spacing:.14em;color:#4f5d75;text-transform:uppercase;margin-bottom:.6rem;}
+  h1{font-family:'Instrument Serif',serif;font-weight:400;font-size:2rem;margin:0 0 .4rem;}
+  .sub{color:#7a8399;font-size:.88rem;margin-bottom:1.5rem;max-width:52rem;}
+  .frame{background:#fff;border:1px solid rgba(45,49,66,.12);border-radius:8px;padding:1rem;overflow:auto;}
+  svg{display:block;min-width:2100px;}
+  .note{font-family:'Geist Mono',monospace;font-size:.66rem;color:#7a8399;letter-spacing:.06em;margin-top:1rem;}
+  text{font-family:'Geist','Noto Sans SC',sans-serif;}
+  .mono{font-family:'Geist Mono',monospace;}
+</style>
+</head>
+<body>
+<div class="wrap">
+<p class="eyebrow">GROWTH OS · UNIFIED AI ARCHITECTURE</p>
+<h1>AI 全系统融合图</h1>
+<p class="sub">七张图的完整合并视图：入口 → 编排与模式 → 模型接入 → RSI 闭环 → 知识管道 → 数据六轨 → 评估。画布较大，请横向滚动或缩放浏览；分区底色对应六张子系统详图。</p>
+<div class="frame">
+<svg viewBox="0 0 2320 1560" role="img" aria-labelledby="uni-title uni-desc">
+<title id="uni-title">Growth OS AI 全系统融合架构</title>
+<desc id="uni-desc">从用户入口经意图路由、多模式装配编排、模型单点出网，到 RSI 经验闭环、知识摄取检索与评估门槛的完整 AI 系统架构。</desc>
+<rect width="100%" height="100%" fill="#f5f5f5"/>
+<defs>
+<marker id="aw" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#4f5d75"/></marker>
+<marker id="aa" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#eb6c36"/></marker>
+</defs>
+
+<!-- ============ ZONES（先画底色框） ============ -->
+<rect x="90" y="100" width="1050" height="140" rx="6" fill="rgba(45,49,66,0.03)" stroke="rgba(45,49,66,0.30)" stroke-width="1"/>
+<text x="106" y="122" fill="#4f5d75" font-size="11" class="mono" letter-spacing="0.08em">入口 · ENTRY</text>
+<rect x="90" y="310" width="1270" height="300" rx="6" fill="rgba(235,108,54,0.03)" stroke="rgba(235,108,54,0.40)" stroke-width="1" stroke-dasharray="4,4"/>
+<text x="106" y="332" fill="#eb6c36" font-size="11" class="mono" letter-spacing="0.08em">编排与模式 · ORCHESTRATION（14 种模式注册表）</text>
+<rect x="1460" y="310" width="830" height="310" rx="6" fill="rgba(45,49,66,0.03)" stroke="rgba(45,49,66,0.30)" stroke-width="1"/>
+<text x="1476" y="332" fill="#4f5d75" font-size="11" class="mono" letter-spacing="0.08em">模型接入 · MODEL PROVIDER（单点出网）</text>
+<rect x="90" y="660" width="760" height="440" rx="6" fill="rgba(235,108,54,0.03)" stroke="rgba(235,108,54,0.40)" stroke-width="1" stroke-dasharray="4,4"/>
+<text x="106" y="682" fill="#eb6c36" font-size="11" class="mono" letter-spacing="0.08em">RSI 闭环 · SELF-IMPROVEMENT</text>
+<rect x="1060" y="660" width="960" height="430" rx="6" fill="rgba(45,49,66,0.03)" stroke="rgba(45,49,66,0.30)" stroke-width="1"/>
+<text x="1076" y="682" fill="#4f5d75" font-size="11" class="mono" letter-spacing="0.08em">知识管道 · INGEST + RETRIEVAL</text>
+<rect x="1060" y="1210" width="940" height="140" rx="6" fill="rgba(45,49,66,0.05)" stroke="rgba(45,49,66,0.30)" stroke-width="1"/>
+<text x="1076" y="1232" fill="#4f5d75" font-size="11" class="mono" letter-spacing="0.08em">数据六轨 · SUPABASE（RLS）</text>
+<rect x="90" y="1360" width="760" height="130" rx="6" fill="rgba(45,49,66,0.03)" stroke="rgba(45,49,66,0.30)" stroke-width="1"/>
+<text x="106" y="1382" fill="#4f5d75" font-size="11" class="mono" letter-spacing="0.08em">评估 · EVALS</text>
+
+<!-- ============ EDGES（线在节点前） ============ -->
+<g fill="none" stroke="#4f5d75" stroke-width="1.4" stroke-linejoin="round">
+<path d="M555 170 H620" marker-end="url(#aw)"/>
+<path d="M820 170 H900" marker-end="url(#aw)"/>
+<path d="M720 210 V292 H235 V360" marker-end="url(#aw)"/>
+<path d="M785 360 V308 H295 V360" marker-end="url(#aw)"/>
+<path d="M235 440 V465 H1215 V440" marker-end="url(#aw)"/>
+<path d="M235 360 V280 H1380 V280 H1380 V550 H1350" stroke-dasharray="5,4" marker-end="url(#aw)"/>
+<path d="M1225 590 V620 H2140 V660" marker-end="url(#aw)"/>
+<path d="M720 210 V260 H1573 V360" marker-end="url(#aw)"/>
+<path d="M1000 210 V238 H1647 V360" marker-end="url(#aw)"/>
+<path d="M1610 440 V510" marker-end="url(#aw)"/>
+<path d="M1720 400 H1780" marker-end="url(#aw)"/>
+<path d="M1980 550 H2010 V400 H2030" marker-end="url(#aa)" stroke="#eb6c36" stroke-width="1.8"/>
+<path d="M1880 510 V470 H2140 V510" stroke-dasharray="5,4" marker-end="url(#aw)"/>
+<path d="M2140 590 V1185 H220 V770" stroke-dasharray="5,4" marker-end="url(#aw)"/>
+<path d="M220 770 V850" marker-end="url(#aw)"/>
+<path d="M460 770 V800 H255 V850" marker-end="url(#aw)"/>
+<path d="M325 885 H380" marker-end="url(#aw)"/>
+<path d="M530 885 H595" marker-end="url(#aw)"/>
+<path d="M690 920 V975 H375 V1000" marker-end="url(#aw)"/>
+<path d="M690 850 V770" stroke-dasharray="5,4" marker-end="url(#aw)"/>
+<path d="M290 1035 H350" marker-end="url(#aw)"/>
+<path d="M550 1035 H600" marker-end="url(#aw)"/>
+<path d="M700 1070 V1120 H80 V400 H120" marker-end="url(#aa)" stroke="#eb6c36" stroke-width="1.8"/>
+<path d="M450 1070 V1100 H1195 V1250" stroke-dasharray="5,4" marker-end="url(#aw)"/>
+<path d="M1100 170 H1350 V655 H1220 V700" marker-end="url(#aw)"/>
+<path d="M1310 735 H1350" marker-end="url(#aw)"/>
+<path d="M1530 735 H1570" marker-end="url(#aw)"/>
+<path d="M1750 735 H1790" marker-end="url(#aw)"/>
+<path d="M1440 770 V810 H1885 V770" marker-end="url(#aw)"/>
+<path d="M900 170 H940 V638 H1195 V850" marker-end="url(#aw)"/>
+<path d="M1290 885 H1330" marker-end="url(#aw)"/>
+<path d="M1420 920 V955 H1142 V1000" marker-end="url(#aw)"/>
+<path d="M1640 920 V968 H1185 V1000" marker-end="url(#aw)"/>
+<path d="M1865 920 V981 H1227 V1000" marker-end="url(#aw)"/>
+<path d="M1270 1035 H1320" marker-end="url(#aw)"/>
+<path d="M1490 1035 H1540" marker-end="url(#aw)"/>
+<path d="M1625 1070 V1140 H235 V440" marker-end="url(#aa)" stroke="#eb6c36" stroke-width="1.8"/>
+<path d="M1660 770 V790 H1975 V1130 H1163 V1250" marker-end="url(#aw)"/>
+<path d="M1885 770 V790 H2290 V790 H1985 V1190 H1410 V1250" marker-end="url(#aw)"/>
+<path d="M1405 1070 V1232 H1645 V1250" marker-end="url(#aw)"/>
+<path d="M320 1435 H400" marker-end="url(#aw)"/>
+<path d="M600 1435 H640" marker-end="url(#aw)"/>
+<path d="M2030 550 H1990 V1520 H500 V1470" stroke-dasharray="5,4" marker-end="url(#aw)"/>
+</g>
+
+<!-- ============ EDGE LABELS（遮罩 + 6px 净距） ============ -->
+<g font-size="9" class="mono" fill="#7a8399" text-anchor="middle" letter-spacing="0.05em">
+<rect x="545" y="152" width="86" height="12" fill="#f5f5f5"/><text x="588" y="161">REST+SSE</text>
+<rect x="828" y="152" width="66" height="12" fill="#f5f5f5"/><text x="861" y="161">上下文</text>
+<rect x="395" y="280" width="70" height="12" fill="#f5f5f5"/><text x="430" y="289">task 分发</text>
+<rect x="470" y="296" width="80" height="12" fill="#f5f5f5"/><text x="510" y="305">装配</text>
+<rect x="640" y="452" width="110" height="12" fill="#f5f5f5"/><text x="695" y="461">delegate 本地</text>
+<rect x="720" y="268" width="80" height="12" fill="#f5f5f5"/><text x="760" y="277">意图调用</text>
+<rect x="1230" y="226" width="130" height="12" fill="#f5f5f5"/><text x="1295" y="235">embedding·rerank</text>
+<rect x="1795" y="462" width="80" height="12" fill="#f5f5f5"/><text x="1835" y="471">查询条目</text>
+<rect x="1975" y="478" width="70" height="12" fill="#f5f5f5"/><text x="2010" y="487">API 出网</text>
+<rect x="2190" y="1180" width="90" height="12" fill="#f5f5f5"/><text x="2235" y="1189">traces 导出</text>
+<rect x="150" y="802" width="70" height="12" fill="#f5f5f5"/><text x="185" y="811">经验提取</text>
+<rect x="380" y="788" width="70" height="12" fill="#f5f5f5"/><text x="415" y="797">反馈学习</text>
+<rect x="600" y="950" width="70" height="12" fill="#f5f5f5"/><text x="635" y="959">通过送审</text>
+<rect x="700" y="802" width="70" height="12" fill="#f5f5f5"/><text x="735" y="811">淘汰回写</text>
+<rect x="290" y="1022" width="70" height="12" fill="#f5f5f5"/><text x="325" y="1031">人审固化</text>
+<rect x="860" y="1108" width="80" height="12" fill="#f5f5f5"/><text x="900" y="1117">记忆注入</text>
+<rect x="750" y="1088" width="70" height="12" fill="#f5f5f5"/><text x="785" y="1097">OKF 索引</text>
+<rect x="1140" y="158" width="70" height="12" fill="#f5f5f5"/><text x="1175" y="167">文档摄取</text>
+<rect x="1560" y="798" width="70" height="12" fill="#f5f5f5"/><text x="1595" y="807">并行抽取</text>
+<rect x="985" y="626" width="70" height="12" fill="#f5f5f5"/><text x="1020" y="635">查询请求</text>
+<rect x="1288" y="872" width="70" height="12" fill="#f5f5f5"/><text x="1323" y="881">三路查询</text>
+<rect x="1240" y="942" width="70" height="12" fill="#f5f5f5"/><text x="1275" y="951">候选合并</text>
+<rect x="1240" y="1022" width="30" height="12" fill="#f5f5f5"/><text x="1255" y="1031">RRF</text>
+<rect x="700" y="1128" width="80" height="12" fill="#f5f5f5"/><text x="740" y="1137">top-k 回流</text>
+<rect x="1690" y="1118" width="70" height="12" fill="#f5f5f5"/><text x="1725" y="1127">向量写入</text>
+<rect x="1750" y="1230" width="90" height="12" fill="#f5f5f5"/><text x="1795" y="1239">实体关系写入</text>
+<rect x="1460" y="1220" width="70" height="12" fill="#f5f5f5"/><text x="1495" y="1229">trust 依据</text>
+<rect x="330" y="1422" width="70" height="12" fill="#f5f5f5"/><text x="365" y="1431">遥测入集</text>
+<rect x="1100" y="538" width="80" height="12" fill="#f5f5f5"/><text x="1140" y="547">外部委派</text>
+<rect x="1560" y="608" width="70" height="12" fill="#f5f5f5"/><text x="1595" y="617">桥接调用</text>
+<rect x="1640" y="1508" width="80" height="12" fill="#f5f5f5"/><text x="1680" y="1517">数据集构建</text>
+</g>
+
+<!-- ============ NODES ============ -->
+<g stroke-width="1">
+<!-- Zone A 入口 -->
+<rect x="120" y="130" width="180" height="80" rx="6" fill="rgba(45,49,66,0.05)" stroke="#4f5d75"/><text x="210" y="165" text-anchor="middle" font-size="12" font-weight="600" fill="#2d3142">SSE 网关</text><text x="210" y="183" text-anchor="middle" font-size="9" class="mono" fill="#4f5d75">ChatStreamEvent</text>
+<rect x="365" y="130" width="190" height="80" rx="6" fill="rgba(79,93,117,0.10)" stroke="#7a8399"/><text x="460" y="165" text-anchor="middle" font-size="12" font-weight="600" fill="#2d3142">用户工作台</text><text x="460" y="183" text-anchor="middle" font-size="9" class="mono" fill="#4f5d75">流式消费 · 反馈</text>
+<rect x="620" y="130" width="200" height="80" rx="6" fill="#fff" stroke="#2d3142"/><text x="720" y="165" text-anchor="middle" font-size="12" font-weight="600" fill="#2d3142">意图分析层</text><text x="720" y="183" text-anchor="middle" font-size="9" class="mono" fill="#4f5d75">zod 分类 · 条件边</text>
+<rect x="900" y="130" width="200" height="80" rx="6" fill="#fff" stroke="#2d3142"/><text x="1000" y="165" text-anchor="middle" font-size="12" font-weight="600" fill="#2d3142">RAG 检索域</text><text x="1000" y="183" text-anchor="middle" font-size="9" class="mono" fill="#4f5d75">检索 · 摄取 · trust</text>
+<!-- Zone B 编排 -->
+<rect x="120" y="360" width="230" height="80" rx="6" fill="rgba(235,108,54,0.06)" stroke="#eb6c36"/><text x="235" y="395" text-anchor="middle" font-size="12" font-weight="600" fill="#2d3142">deepagents harness</text><text x="235" y="413" text-anchor="middle" font-size="9" class="mono" fill="#4f5d75">主循环 · 子代理 · RSI</text>
+<rect x="410" y="360" width="200" height="80" rx="6" fill="rgba(45,49,66,0.05)" stroke="#4f5d75"/><text x="510" y="395" text-anchor="middle" font-size="12" font-weight="600" fill="#2d3142">agent 配置</text><text x="510" y="413" text-anchor="middle" font-size="9" class="mono" fill="#4f5d75">patterns JSONB</text>
+<rect x="670" y="360" width="230" height="80" rx="6" fill="#fff" stroke="#2d3142"/><text x="785" y="395" text-anchor="middle" font-size="12" font-weight="600" fill="#2d3142">装配工厂</text><text x="785" y="413" text-anchor="middle" font-size="9" class="mono" fill="#4f5d75">查找 · 组合 · 生成</text>
+<rect x="1120" y="360" width="190" height="80" rx="6" fill="#fff" stroke="#2d3142"/><text x="1215" y="395" text-anchor="middle" font-size="12" font-weight="600" fill="#2d3142">本地子代理</text><text x="1215" y="413" text-anchor="middle" font-size="9" class="mono" fill="#4f5d75">task 工具 · 对等</text>
+<rect x="120" y="510" width="210" height="70" rx="6" fill="rgba(45,49,66,0.02)" stroke="rgba(45,49,66,0.30)"/><text x="225" y="540" text-anchor="middle" font-size="11" font-weight="600" fill="#2d3142">循环 · 规划 ×5</text><text x="225" y="557" text-anchor="middle" font-size="9" class="mono" fill="#4f5d75">ReAct·Plan·Reflexion·ToT</text>
+<rect x="360" y="510" width="210" height="70" rx="6" fill="rgba(45,49,66,0.02)" stroke="rgba(45,49,66,0.30)"/><text x="465" y="540" text-anchor="middle" font-size="11" font-weight="600" fill="#2d3142">委派 ×3</text><text x="465" y="557" text-anchor="middle" font-size="9" class="mono" fill="#4f5d75">Supervisor·Swarm·A2A</text>
+<rect x="600" y="510" width="210" height="70" rx="6" fill="rgba(45,49,66,0.02)" stroke="rgba(45,49,66,0.30)"/><text x="705" y="540" text-anchor="middle" font-size="11" font-weight="600" fill="#2d3142">分发 · 并行 · 共享</text><text x="705" y="557" text-anchor="middle" font-size="9" class="mono" fill="#4f5d75">Router·DAG·Blackboard</text>
+<rect x="840" y="510" width="230" height="70" rx="6" fill="rgba(45,49,66,0.02)" stroke="rgba(45,49,66,0.30)"/><text x="955" y="540" text-anchor="middle" font-size="11" font-weight="600" fill="#2d3142">联邦 · 人审 · 增长</text><text x="955" y="557" text-anchor="middle" font-size="9" class="mono" fill="#4f5d75">MCP·HITL·RSI·GenCritic</text>
+<rect x="1120" y="510" width="210" height="80" rx="6" fill="#fff" stroke="#2d3142"/><text x="1225" y="545" text-anchor="middle" font-size="12" font-weight="600" fill="#2d3142">能力描述符</text><text x="1225" y="563" text-anchor="middle" font-size="9" class="mono" fill="#4f5d75">delegate 契约抽象</text>
+<!-- Zone C 模型接入 -->
+<rect x="1500" y="360" width="220" height="80" rx="6" fill="#fff" stroke="#2d3142"/><text x="1610" y="395" text-anchor="middle" font-size="12" font-weight="600" fill="#2d3142">适配器工厂</text><text x="1610" y="413" text-anchor="middle" font-size="9" class="mono" fill="#4f5d75">OpenAI 兼容 · 实例化</text>
+<rect x="1780" y="360" width="200" height="80" rx="6" fill="rgba(45,49,66,0.05)" stroke="#4f5d75"/><text x="1880" y="395" text-anchor="middle" font-size="12" font-weight="600" fill="#2d3142">模型注册表</text><text x="1880" y="413" text-anchor="middle" font-size="9" class="mono" fill="#4f5d75">Provider 条目</text>
+<rect x="2030" y="360" width="220" height="80" rx="6" fill="rgba(45,49,66,0.03)" stroke="rgba(45,49,66,0.30)"/><text x="2140" y="395" text-anchor="middle" font-size="12" font-weight="600" fill="#2d3142">模型 Providers</text><text x="2140" y="413" text-anchor="middle" font-size="9" class="mono" fill="#4f5d75">DeepSeek·GLM·Kimi·OpenAI</text>
+<rect x="1510" y="510" width="200" height="80" rx="6" fill="rgba(45,49,66,0.05)" stroke="#4f5d75"/><text x="1610" y="545" text-anchor="middle" font-size="12" font-weight="600" fill="#2d3142">agent 模型绑定</text><text x="1610" y="563" text-anchor="middle" font-size="9" class="mono" fill="#4f5d75">按 agent 声明</text>
+<rect x="1780" y="510" width="200" height="80" rx="6" fill="#fff" stroke="#2d3142"/><text x="1880" y="545" text-anchor="middle" font-size="12" font-weight="600" fill="#2d3142">usage 计量护栏</text><text x="1880" y="563" text-anchor="middle" font-size="9" class="mono" fill="#4f5d75">token·计费·预算</text>
+<rect x="2030" y="510" width="220" height="80" rx="6" fill="rgba(45,49,66,0.03)" stroke="rgba(45,49,66,0.30)"/><text x="2140" y="545" text-anchor="middle" font-size="12" font-weight="600" fill="#2d3142">LangSmith</text><text x="2140" y="563" text-anchor="middle" font-size="9" class="mono" fill="#4f5d75">tracing · datasets · evals</text>
+<rect x="2030" y="660" width="220" height="80" rx="6" fill="rgba(45,49,66,0.03)" stroke="rgba(45,49,66,0.30)"/><text x="2140" y="695" text-anchor="middle" font-size="12" font-weight="600" fill="#2d3142">外部 Agent 生态</text><text x="2140" y="713" text-anchor="middle" font-size="9" class="mono" fill="#4f5d75">MCP · A2A</text>
+<!-- Zone D RSI -->
+<rect x="125" y="700" width="190" height="70" rx="6" fill="rgba(45,49,66,0.05)" stroke="#4f5d75"/><text x="220" y="730" text-anchor="middle" font-size="12" font-weight="600" fill="#2d3142">原始轨迹</text><text x="220" y="748" text-anchor="middle" font-size="9" class="mono" fill="#4f5d75">traces · 失败样本</text>
+<rect x="365" y="700" width="190" height="70" rx="6" fill="rgba(45,49,66,0.05)" stroke="#4f5d75"/><text x="460" y="730" text-anchor="middle" font-size="12" font-weight="600" fill="#2d3142">反馈记录</text><text x="460" y="748" text-anchor="middle" font-size="9" class="mono" fill="#4f5d75">评分 · 修正</text>
+<rect x="595" y="700" width="190" height="70" rx="6" fill="rgba(45,49,66,0.05)" stroke="#4f5d75"/><text x="690" y="730" text-anchor="middle" font-size="12" font-weight="600" fill="#2d3142">校验记录</text><text x="690" y="748" text-anchor="middle" font-size="9" class="mono" fill="#4f5d75">verifier 回写</text>
+<rect x="115" y="850" width="210" height="70" rx="6" fill="#fff" stroke="#2d3142"/><text x="220" y="880" text-anchor="middle" font-size="12" font-weight="600" fill="#2d3142">curriculum 子代理</text><text x="220" y="898" text-anchor="middle" font-size="9" class="mono" fill="#4f5d75">模式提取 · 失败归因</text>
+<rect x="380" y="850" width="150" height="70" rx="6" fill="rgba(45,49,66,0.05)" stroke="#4f5d75"/><text x="455" y="880" text-anchor="middle" font-size="12" font-weight="600" fill="#2d3142">候选经验</text><text x="455" y="898" text-anchor="middle" font-size="9" class="mono" fill="#4f5d75">策略·规则</text>
+<rect x="595" y="850" width="190" height="70" rx="6" fill="#fff" stroke="#2d3142"/><text x="690" y="880" text-anchor="middle" font-size="12" font-weight="600" fill="#2d3142">verifier 子代理</text><text x="690" y="898" text-anchor="middle" font-size="9" class="mono" fill="#4f5d75">evals 门槛 · 重放</text>
+<rect x="120" y="1000" width="170" height="70" rx="6" fill="rgba(235,108,54,0.05)" stroke="rgba(235,108,54,0.50)" stroke-dasharray="4,4"/><text x="205" y="1030" text-anchor="middle" font-size="12" font-weight="600" fill="#2d3142">人审门</text><text x="205" y="1048" text-anchor="middle" font-size="9" class="mono" fill="#4f5d75">高影响 · 可选</text>
+<rect x="350" y="1000" width="200" height="70" rx="6" fill="rgba(45,49,66,0.05)" stroke="#4f5d75"/><text x="450" y="1030" text-anchor="middle" font-size="12" font-weight="600" fill="#2d3142">OKF 知识库</text><text x="450" y="1048" text-anchor="middle" font-size="9" class="mono" fill="#4f5d75">trust · 固化经验</text>
+<rect x="600" y="1000" width="200" height="70" rx="6" fill="#fff" stroke="#2d3142"/><text x="700" y="1030" text-anchor="middle" font-size="12" font-weight="600" fill="#2d3142">retrieve_knowledge</text><text x="700" y="1048" text-anchor="middle" font-size="9" class="mono" fill="#4f5d75">记忆注入工具</text>
+<!-- Zone E 知识管道 -->
+<rect x="1130" y="700" width="180" height="70" rx="6" fill="#fff" stroke="#2d3142"/><text x="1220" y="730" text-anchor="middle" font-size="12" font-weight="600" fill="#2d3142">解析器</text><text x="1220" y="748" text-anchor="middle" font-size="9" class="mono" fill="#4f5d75">PDF·MD·HTML</text>
+<rect x="1350" y="700" width="180" height="70" rx="6" fill="#fff" stroke="#2d3142"/><text x="1440" y="730" text-anchor="middle" font-size="12" font-weight="600" fill="#2d3142">切片器</text><text x="1440" y="748" text-anchor="middle" font-size="9" class="mono" fill="#4f5d75">语义边界 · 重叠</text>
+<rect x="1570" y="700" width="180" height="70" rx="6" fill="#fff" stroke="#2d3142"/><text x="1660" y="730" text-anchor="middle" font-size="12" font-weight="600" fill="#2d3142">Embedding</text><text x="1660" y="748" text-anchor="middle" font-size="9" class="mono" fill="#4f5d75">批量向量化</text>
+<rect x="1790" y="700" width="190" height="70" rx="6" fill="#fff" stroke="#2d3142"/><text x="1885" y="730" text-anchor="middle" font-size="12" font-weight="600" fill="#2d3142">实体抽取</text><text x="1885" y="748" text-anchor="middle" font-size="9" class="mono" fill="#4f5d75">LLM 实体关系</text>
+<rect x="1100" y="850" width="190" height="70" rx="6" fill="#fff" stroke="#2d3142"/><text x="1195" y="880" text-anchor="middle" font-size="12" font-weight="600" fill="#2d3142">查询理解</text><text x="1195" y="898" text-anchor="middle" font-size="9" class="mono" fill="#4f5d75">改写 · 扩展</text>
+<rect x="1330" y="850" width="180" height="70" rx="6" fill="#fff" stroke="#2d3142"/><text x="1420" y="880" text-anchor="middle" font-size="12" font-weight="600" fill="#2d3142">向量检索</text><text x="1420" y="898" text-anchor="middle" font-size="9" class="mono" fill="#4f5d75">余弦相似</text>
+<rect x="1550" y="850" width="180" height="70" rx="6" fill="#fff" stroke="#2d3142"/><text x="1640" y="880" text-anchor="middle" font-size="12" font-weight="600" fill="#2d3142">关键词检索</text><text x="1640" y="898" text-anchor="middle" font-size="9" class="mono" fill="#4f5d75">Postgres FTS</text>
+<rect x="1770" y="850" width="190" height="70" rx="6" fill="#fff" stroke="#2d3142"/><text x="1865" y="880" text-anchor="middle" font-size="12" font-weight="600" fill="#2d3142">实体子图检索</text><text x="1865" y="898" text-anchor="middle" font-size="9" class="mono" fill="#4f5d75">多跳扩展</text>
+<rect x="1100" y="1000" width="170" height="70" rx="6" fill="#fff" stroke="#2d3142"/><text x="1185" y="1030" text-anchor="middle" font-size="12" font-weight="600" fill="#2d3142">融合排序</text><text x="1185" y="1048" text-anchor="middle" font-size="9" class="mono" fill="#4f5d75">RRF · 加权</text>
+<rect x="1320" y="1000" width="170" height="70" rx="6" fill="rgba(235,108,54,0.05)" stroke="rgba(235,108,54,0.50)" stroke-dasharray="4,4"/><text x="1405" y="1030" text-anchor="middle" font-size="12" font-weight="600" fill="#2d3142">trust 过滤</text><text x="1405" y="1048" text-anchor="middle" font-size="9" class="mono" fill="#4f5d75">信任门槛</text>
+<rect x="1540" y="1000" width="170" height="70" rx="6" fill="#fff" stroke="#2d3142"/><text x="1625" y="1030" text-anchor="middle" font-size="12" font-weight="600" fill="#2d3142">重排</text><text x="1625" y="1048" text-anchor="middle" font-size="9" class="mono" fill="#4f5d75">交叉编码 · top-k</text>
+<!-- Zone F 数据六轨 -->
+<rect x="1100" y="1250" width="190" height="70" rx="6" fill="rgba(45,49,66,0.05)" stroke="#4f5d75"/><text x="1195" y="1280" text-anchor="middle" font-size="12" font-weight="600" fill="#2d3142">pgvector</text><text x="1195" y="1298" text-anchor="middle" font-size="9" class="mono" fill="#4f5d75">切片 · OKF 向量</text>
+<rect x="1330" y="1250" width="180" height="70" rx="6" fill="rgba(45,49,66,0.05)" stroke="#4f5d75"/><text x="1420" y="1280" text-anchor="middle" font-size="12" font-weight="600" fill="#2d3142">实体图</text><text x="1420" y="1298" text-anchor="middle" font-size="9" class="mono" fill="#4f5d75">实体关系</text>
+<rect x="1550" y="1250" width="190" height="70" rx="6" fill="rgba(45,49,66,0.05)" stroke="#4f5d75"/><text x="1645" y="1280" text-anchor="middle" font-size="12" font-weight="600" fill="#2d3142">知识元数据</text><text x="1645" y="1298" text-anchor="middle" font-size="9" class="mono" fill="#4f5d75">全文索引 · trust</text>
+<!-- Zone G 评估 -->
+<rect x="120" y="1400" width="200" height="70" rx="6" fill="#fff" stroke="#2d3142"/><text x="220" y="1430" text-anchor="middle" font-size="12" font-weight="600" fill="#2d3142">span 管道</text><text x="220" y="1448" text-anchor="middle" font-size="9" class="mono" fill="#4f5d75">命名规范·采样·脱敏</text>
+<rect x="400" y="1400" width="200" height="70" rx="6" fill="rgba(45,49,66,0.05)" stroke="#4f5d75"/><text x="500" y="1430" text-anchor="middle" font-size="12" font-weight="600" fill="#2d3142">评估数据集</text><text x="500" y="1448" text-anchor="middle" font-size="9" class="mono" fill="#4f5d75">traces · 反馈构建</text>
+<rect x="640" y="1400" width="200" height="70" rx="6" fill="#fff" stroke="#2d3142"/><text x="740" y="1430" text-anchor="middle" font-size="12" font-weight="600" fill="#2d3142">evals 运行</text><text x="740" y="1448" text-anchor="middle" font-size="9" class="mono" fill="#4f5d75">回归 · 质量评分</text>
+</g>
+
+<!-- LEGEND -->
+<line x1="90" y1="1512" x2="2250" y2="1512" stroke="rgba(45,49,66,0.10)" stroke-width="0.8"/>
+<text x="90" y="1532" fill="#4f5d75" font-size="8" class="mono" letter-spacing="0.14em">LEGEND</text>
+<text x="170" y="1532" fill="#4f5d75" font-size="9" class="mono">实线 = 同步调用 · 虚线 = 可选 / 异步 / 回写 · 橙 = 闭环主干（装配 → 出网 → 记忆注入 → top-k 回流） · 橙虚框 = RSI 闭环与人审 / trust 边界 · 全程 user_id RLS 隔离</text>
+</svg>
+</div>
+<p class="note">FAN-OUT VIEW OF 7 DIAGRAMS · 43 NODES / 44 EDGES · SKIN: DIAGRAM-DESIGN DEFAULT · EXCEEDS 9-NODE BUDGET BY EXPLICIT REQUEST (ZONED FAITHFUL) · SEE INDEX.HTML FOR PER-SUBSYSTEM DETAIL</p>
+</div>
+</body>
+</html>

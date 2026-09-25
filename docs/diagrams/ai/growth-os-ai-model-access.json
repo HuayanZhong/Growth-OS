@@ -1,0 +1,225 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Growth OS · 模型接入",
+    "locale": "zh-CN",
+    "quality_profile": "standard",
+    "viewBox": [1250, 700],
+    "repository": {
+      "url": "https://github.com/HuayanZhong/Growth-OS",
+      "provider": "github",
+      "link_mode": "web",
+      "revision": "09df15e4f3708432fc78969c3f56f868e49ece7c"
+    },
+    "views": [
+      {
+        "id": "model-access",
+        "label": "模型接入全程",
+        "focus": [
+          "intent",
+          "harness",
+          "rag-domain",
+          "adapter-factory",
+          "model-registry",
+          "agent-binding",
+          "usage-meter",
+          "llm-providers",
+          "langsmith"
+        ],
+        "note": "三类调用方汇聚工厂 → 出网前计量护栏 → Providers API"
+      }
+    ]
+  },
+  "components": [
+    {
+      "id": "intent",
+      "type": "backend",
+      "label": "意图分析层",
+      "sublabel": "zod 分类调用",
+      "pos": [50, 110],
+      "size": [160, 64]
+    },
+    {
+      "id": "harness",
+      "type": "backend",
+      "label": "deepagents harness",
+      "sublabel": "主循环 · 子代理 · RSI",
+      "pos": [260, 110],
+      "size": [180, 64]
+    },
+    {
+      "id": "rag-domain",
+      "type": "backend",
+      "label": "RAG 检索域",
+      "sublabel": "embedding · rerank",
+      "pos": [490, 110],
+      "size": [160, 64]
+    },
+    {
+      "id": "adapter-factory",
+      "type": "backend",
+      "label": "适配器工厂",
+      "sublabel": "OpenAI 兼容 · 实例化",
+      "pos": [200, 270],
+      "size": [220, 64],
+      "sources": [
+        {
+          "path": "packages/types/src/adapters/llm.ts",
+          "label": "LLM 适配器契约"
+        }
+      ]
+    },
+    {
+      "id": "model-registry",
+      "type": "database",
+      "label": "模型注册表",
+      "sublabel": "OpenAI 兼容条目",
+      "pos": [720, 270],
+      "size": [190, 64]
+    },
+    {
+      "id": "agent-binding",
+      "type": "database",
+      "label": "模型绑定",
+      "sublabel": "按 agent 配置声明",
+      "pos": [30, 430],
+      "size": [150, 64]
+    },
+    {
+      "id": "usage-meter",
+      "type": "backend",
+      "label": "usage 计量护栏",
+      "sublabel": "token · 计费 · 预算",
+      "pos": [200, 430],
+      "size": [220, 64]
+    },
+    {
+      "id": "llm-providers",
+      "type": "external",
+      "label": "模型 Providers",
+      "sublabel": "DeepSeek · GLM · Kimi · OpenAI",
+      "pos": [520, 590],
+      "size": [190, 64]
+    },
+    {
+      "id": "langsmith",
+      "type": "external",
+      "label": "LangSmith",
+      "sublabel": "tracing · evals · 可选",
+      "pos": [260, 590],
+      "size": [190, 64]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "AI 调用方",
+      "wraps": ["intent", "harness", "rag-domain"]
+    },
+    {
+      "kind": "region",
+      "label": "model-provider · 单点出网",
+      "wraps": ["agent-binding", "adapter-factory", "usage-meter", "model-registry"]
+    }
+  ],
+  "connections": [
+    {
+      "id": "intent-factory",
+      "from": "intent",
+      "to": "adapter-factory",
+      "label": "意图调用",
+      "fromSide": "bottom",
+      "toSide": "left",
+      "via": [[130, 302]],
+      "labelAt": [165, 288]
+    },
+    {
+      "id": "harness-factory",
+      "from": "harness",
+      "to": "adapter-factory",
+      "label": "主循环调用",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "via": [[350, 222], [310, 222]],
+      "labelAt": [330, 208]
+    },
+    {
+      "id": "rag-factory",
+      "from": "rag-domain",
+      "to": "adapter-factory",
+      "label": "embedding · rerank",
+      "fromSide": "bottom",
+      "toSide": "right",
+      "via": [[570, 302]],
+      "labelAt": [495, 288]
+    },
+    {
+      "id": "binding-factory",
+      "from": "agent-binding",
+      "to": "adapter-factory",
+      "label": "按 agent 配置",
+      "fromSide": "top",
+      "toSide": "bottom",
+      "via": [[105, 390], [310, 390]],
+      "labelAt": [207, 376]
+    },
+    {
+      "id": "factory-registry",
+      "from": "adapter-factory",
+      "to": "model-registry",
+      "label": "查询模型条目",
+      "fromSide": "right",
+      "toSide": "left",
+      "labelAt": [570, 316]
+    },
+    {
+      "id": "factory-usage",
+      "from": "adapter-factory",
+      "to": "usage-meter",
+      "label": "出网前护栏",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "labelAt": [359, 382]
+    },
+    {
+      "id": "usage-providers",
+      "from": "usage-meter",
+      "to": "llm-providers",
+      "label": "API 出网",
+      "variant": "emphasis",
+      "fromSide": "right",
+      "toSide": "left",
+      "via": [[470, 462], [470, 622]],
+      "labelAt": [430, 540]
+    },
+    {
+      "id": "usage-langsmith",
+      "from": "usage-meter",
+      "to": "langsmith",
+      "label": "tracing 上报",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "via": [[310, 545], [355, 545]],
+      "labelAt": [332, 559]
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "单点出网",
+      "items": [
+        "意图分析、harness 主循环与子代理、RAG embedding/rerank 的全部调用汇聚适配器工厂；OpenAI 兼容协议一个适配器覆盖多家模型",
+        "出网前经 usage 计量护栏（token · 计费 · 预算）；模型条目与 agent 绑定解耦——注册表新增 Provider，agent 配置零改动"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "可观测性",
+      "items": [
+        "所有出网调用上报 LangSmith（tracing · evals，可选）；失败重试与模型降级在工厂层统一处理"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,337 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Growth OS · RSI 系统级自我改进闭环",
+    "locale": "zh-CN",
+    "quality_profile": "standard",
+    "viewBox": [1250, 690],
+    "repository": {
+      "url": "https://github.com/HuayanZhong/Growth-OS",
+      "provider": "github",
+      "link_mode": "web",
+      "revision": "09df15e4f3708432fc78969c3f56f868e49ece7c"
+    },
+    "views": [
+      {
+        "id": "rsi-cycle",
+        "label": "RSI 闭环全程",
+        "focus": [
+          "runtime",
+          "nuxt",
+          "domains",
+          "langsmith",
+          "raw-traces",
+          "feedback-store",
+          "verified-pool",
+          "curriculum-agent",
+          "candidate",
+          "verifier-agent",
+          "review-gate",
+          "okf-knowledge",
+          "retrieve-knowledge"
+        ],
+        "note": "采集 → 经验池 → 分析 → 校验 → 固化 → 注入的完整循环"
+      }
+    ]
+  },
+  "components": [
+    {
+      "id": "runtime",
+      "type": "backend",
+      "label": "运行时 Agent 执行",
+      "sublabel": "deepagentsjs · 多模式",
+      "pos": [60, 130],
+      "size": [170, 64]
+    },
+    {
+      "id": "domains",
+      "type": "backend",
+      "label": "业务域模块",
+      "sublabel": "采集汇聚 · user_id 隔离",
+      "pos": [280, 130],
+      "size": [160, 64]
+    },
+    {
+      "id": "nuxt",
+      "type": "frontend",
+      "label": "用户工作台",
+      "sublabel": "评分 · 修正 · 复核",
+      "pos": [480, 130],
+      "size": [150, 64],
+      "sources": [
+        {
+          "path": "apps/desktop/app/composables/useApi.ts",
+          "label": "apiFetch 封装"
+        }
+      ]
+    },
+    {
+      "id": "langsmith",
+      "type": "external",
+      "label": "LangSmith",
+      "sublabel": "tracing · evals · 可选",
+      "pos": [760, 130],
+      "size": [150, 56]
+    },
+    {
+      "id": "raw-traces",
+      "type": "database",
+      "label": "原始轨迹",
+      "sublabel": "traces · 失败样本",
+      "pos": [60, 260],
+      "size": [160, 64]
+    },
+    {
+      "id": "feedback-store",
+      "type": "database",
+      "label": "反馈记录",
+      "sublabel": "评分 · 修正 · 结果",
+      "pos": [280, 260],
+      "size": [160, 64]
+    },
+    {
+      "id": "verified-pool",
+      "type": "database",
+      "label": "校验记录",
+      "sublabel": "verifier 回写 · 负样本",
+      "pos": [500, 260],
+      "size": [160, 64]
+    },
+    {
+      "id": "curriculum-agent",
+      "type": "backend",
+      "label": "curriculum 子代理",
+      "sublabel": "模式提取 · 失败归因",
+      "pos": [55, 440],
+      "size": [170, 68]
+    },
+    {
+      "id": "candidate",
+      "type": "database",
+      "label": "候选经验",
+      "sublabel": "策略 · 规则 · 提示",
+      "pos": [280, 440],
+      "size": [140, 68]
+    },
+    {
+      "id": "verifier-agent",
+      "type": "backend",
+      "label": "verifier 子代理",
+      "sublabel": "evals 门槛 · 重放验证",
+      "pos": [470, 440],
+      "size": [170, 68]
+    },
+    {
+      "id": "review-gate",
+      "type": "security",
+      "label": "人审门",
+      "sublabel": "高影响经验 · 可选",
+      "pos": [760, 440],
+      "size": [130, 68]
+    },
+    {
+      "id": "okf-knowledge",
+      "type": "database",
+      "label": "OKF 知识库",
+      "sublabel": "trust 等级 · 固化经验",
+      "pos": [200, 570],
+      "size": [160, 64]
+    },
+    {
+      "id": "retrieve-knowledge",
+      "type": "backend",
+      "label": "retrieve_knowledge",
+      "sublabel": "记忆注入工具",
+      "pos": [470, 570],
+      "size": [170, 64]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "运行时 · 经验产生",
+      "wraps": ["runtime", "domains", "nuxt"]
+    },
+    {
+      "kind": "region",
+      "label": "经验池 · 数据六轨之一 · RLS",
+      "wraps": ["raw-traces", "feedback-store", "verified-pool"]
+    },
+    {
+      "kind": "region",
+      "label": "RSI 引擎 · deepagents 子代理",
+      "wraps": ["curriculum-agent", "candidate", "verifier-agent", "review-gate"]
+    },
+    {
+      "kind": "region",
+      "label": "固化与注入",
+      "wraps": ["okf-knowledge", "retrieve-knowledge"]
+    }
+  ],
+  "connections": [
+    {
+      "id": "runtime-trace",
+      "from": "runtime",
+      "to": "langsmith",
+      "label": "traces 上报（可选）",
+      "variant": "dashed",
+      "fromSide": "top",
+      "toSide": "top",
+      "via": [
+        [145, 84],
+        [835, 84]
+      ],
+      "labelAt": [430, 70]
+    },
+    {
+      "id": "runtime-result",
+      "from": "runtime",
+      "to": "domains",
+      "fromSide": "right",
+      "toSide": "left"
+    },
+    {
+      "id": "nuxt-feedback",
+      "from": "nuxt",
+      "to": "domains",
+      "fromSide": "left",
+      "toSide": "right"
+    },
+    {
+      "id": "trace-ingest",
+      "from": "langsmith",
+      "to": "raw-traces",
+      "label": "traces 导出",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "via": [
+        [835, 222],
+        [140, 222]
+      ],
+      "labelAt": [500, 222]
+    },
+    {
+      "id": "domain-ingest",
+      "from": "domains",
+      "to": "feedback-store",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "pool-analyze-traces",
+      "from": "raw-traces",
+      "to": "curriculum-agent",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "pool-analyze-feedback",
+      "from": "feedback-store",
+      "to": "curriculum-agent",
+      "fromSide": "bottom",
+      "toSide": "left",
+      "via": [
+        [360, 396],
+        [28, 396],
+        [28, 474]
+      ],
+      "labelAt": [218, 382]
+    },
+    {
+      "id": "curriculum-candidate",
+      "from": "curriculum-agent",
+      "to": "candidate",
+      "label": "生成候选",
+      "fromSide": "right",
+      "toSide": "left",
+      "labelAt": [252, 428]
+    },
+    {
+      "id": "candidate-verify",
+      "from": "candidate",
+      "to": "verifier-agent",
+      "fromSide": "right",
+      "toSide": "left"
+    },
+    {
+      "id": "verify-gate",
+      "from": "verifier-agent",
+      "to": "review-gate",
+      "fromSide": "right",
+      "toSide": "left"
+    },
+    {
+      "id": "verify-reject",
+      "from": "verifier-agent",
+      "to": "verified-pool",
+      "label": "淘汰回写",
+      "fromSide": "top",
+      "toSide": "right",
+      "via": [
+        [555, 404],
+        [700, 404],
+        [700, 292]
+      ],
+      "labelAt": [628, 390]
+    },
+    {
+      "id": "gate-solidify",
+      "from": "review-gate",
+      "to": "okf-knowledge",
+      "label": "人审通过 · 固化",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "via": [
+        [825, 536],
+        [280, 536]
+      ],
+      "labelAt": [550, 522]
+    },
+    {
+      "id": "okf-retrieve",
+      "from": "okf-knowledge",
+      "to": "retrieve-knowledge",
+      "label": "按查询检索",
+      "fromSide": "right",
+      "toSide": "left",
+      "labelAt": [415, 586]
+    },
+    {
+      "id": "inject-close",
+      "from": "retrieve-knowledge",
+      "to": "runtime",
+      "label": "经验注入 · 闭环",
+      "variant": "emphasis",
+      "fromSide": "right",
+      "toSide": "left",
+      "via": [
+        [1210, 602],
+        [1210, 24],
+        [28, 24],
+        [28, 162]
+      ],
+      "labelAt": [500, 40]
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "闭环五阶段",
+      "items": [
+        "采集：运行时 traces、用户反馈与执行结果统一汇入经验池",
+        "分析：curriculum 子代理提取成功模式与失败归因，产出候选经验",
+        "校验固化：verifier 子代理重放验证，evals 门槛未过不入库，高影响经验经人审后写入 OKF",
+        "注入生效：retrieve_knowledge 检索固化经验注入运行时，新 traces 重新进入采集"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "边界与约束",
+      "items": [
+        "全程 user_id 隔离，RLS 贯穿经验池与 OKF；只做系统级自改进（经验 / 策略 / 提示），不触碰模型权重——权重级训练属模型阶段能力，超出本系统边界"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Growth OS · AI 架构图套件</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --paper: #f5f5f5;
+      --paper-2: #ffffff;
+      --ink: #2d3142;
+      --muted: #4f5d75;
+      --soft: #7a8399;
+      --rule: rgba(45, 49, 66, 0.12);
+      --accent: #eb6c36;
+      --accent-tint: rgba(235, 108, 54, 0.06);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: 'Geist', sans-serif;
+      line-height: 1.6;
+      padding: 3rem 2rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .eyebrow {
+      font-family: 'Geist Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.75rem;
+    }
+
+    h1 {
+      font-family: 'Instrument Serif', serif;
+      font-weight: 400;
+      font-size: 2.2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      color: var(--soft);
+      margin-bottom: 2.5rem;
+      max-width: 46rem;
+    }
+
+    .layer {
+      margin-bottom: 2.5rem;
+    }
+
+    .layer-head {
+      display: flex;
+      align-items: baseline;
+      gap: 0.75rem;
+      border-top: 1px solid var(--rule);
+      padding-top: 1.25rem;
+      margin-bottom: 1rem;
+    }
+
+    .layer-no {
+      font-family: 'Geist Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+    }
+
+    .layer-title {
+      font-weight: 600;
+      font-size: 1.05rem;
+    }
+
+    .layer-desc {
+      color: var(--soft);
+      font-size: 0.85rem;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: 1.15fr 1fr;
+      gap: 1rem;
+    }
+
+    .cards.single {
+      grid-template-columns: 1fr;
+    }
+
+    .cards.triple {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    a.card {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+      background: var(--paper-2);
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      padding: 1.1rem 1.25rem;
+      transition: border-color 120ms ease;
+    }
+
+    a.card:hover {
+      border-color: var(--accent);
+    }
+
+    .card-top {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--ink);
+      flex: none;
+    }
+
+    .dot.accent {
+      background: var(--accent);
+    }
+
+    .dot.muted {
+      background: var(--muted);
+    }
+
+    .card h3 {
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    .card p {
+      color: var(--muted);
+      font-size: 0.82rem;
+      margin-bottom: 0.6rem;
+    }
+
+    .meta {
+      font-family: 'Geist Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--soft);
+      letter-spacing: 0.06em;
+    }
+
+    .meta a {
+      color: var(--muted);
+      text-decoration: none;
+      border-bottom: 1px dotted var(--rule);
+    }
+
+    footer {
+      border-top: 1px solid var(--rule);
+      margin-top: 3rem;
+      padding-top: 1rem;
+      font-family: 'Geist Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--soft);
+      letter-spacing: 0.08em;
+    }
+  </style>
+</head>
+
+<body>
+  <p class="eyebrow">GROWTH OS · AI ARCHITECTURE DIAGRAM SUITE</p>
+  <h1>AI 架构图套件</h1>
+  <p class="subtitle">主图给出系统全貌，六张子系统详图各展开一条主链路的内部机制。按下方层次顺序阅读：先总览，再沿数据闭环 → 知识管道 → 执行架构 → 质量保障的顺序深入。图源 JSON
+    与源码同仓库版本化，每张图均通过几何校验与四视口渲染验证。</p>
+
+  <div class="layer">
+    <div class="layer-head">
+      <span class="layer-no">L0</span>
+      <span class="layer-title">总览</span>
+      <span class="layer-desc">—— 系统全貌、六轨数据、语义边</span>
+    </div>
+    <div class="cards">
+      <a class="card" href="growth-os-ai-unified.html">
+        <div class="card-top"><span class="dot accent"></span>
+          <h3>全系统融合图（大画布）</h3>
+        </div>
+        <p>七张图合并的单页全景：入口 → 编排与模式 → 模型接入 → RSI 闭环 → 知识管道 → 数据六轨 → 评估。画布 2320×1560，需滚动/缩放浏览；演示与总览用，细节仍以下方分图为准。</p>
+        <div class="meta">43 NODES · 44 EDGES · DIAGRAM-DESIGN 手绘 SVG</div>
+      </a>
+      <a class="card" href="growth-os-ai-architecture-detailed.html">
+        <div class="card-top"><span class="dot accent"></span>
+          <h3>AI 总体架构（主图）</h3>
+        </div>
+        <p>意图路由 → 多模式编排 → 单点出网的主链路；数据层六轨；RSI 闭环与模式注册表的骨架边；外部 MCP / A2A 能力注册。</p>
+        <div class="meta">23 NODES · 36 EDGES · 5 VIEWS · <a href="growth-os-ai-architecture-detailed.json">JSON 源</a>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <div class="layer">
+    <div class="layer-head">
+      <span class="layer-no">L1</span>
+      <span class="layer-title">数据闭环</span>
+      <span class="layer-desc">—— 经验如何变成能力（系统级 RSI）</span>
+    </div>
+    <div class="cards single">
+      <a class="card" href="growth-os-ai-rsi-loop.html">
+        <div class="card-top"><span class="dot accent"></span>
+          <h3>RSI 系统级自我改进闭环</h3>
+        </div>
+        <p>采集 → 经验池三库 → curriculum 分析 → verifier 校验（evals 门槛 · 淘汰回写负样本）→ 人审门 → OKF 固化 → retrieve_knowledge
+          注入运行时。只做系统级自改进，不触碰模型权重。</p>
+        <div class="meta">13 NODES · 14 EDGES · <a href="growth-os-ai-rsi-loop.json">JSON 源</a></div>
+      </a>
+    </div>
+  </div>
+
+  <div class="layer">
+    <div class="layer-head">
+      <span class="layer-no">L2</span>
+      <span class="layer-title">知识管道</span>
+      <span class="layer-desc">—— 文档如何变成可检索的知识</span>
+    </div>
+    <div class="cards triple">
+      <a class="card" href="growth-os-ai-ingest-pipeline.html">
+        <div class="card-top"><span class="dot"></span>
+          <h3>知识摄取管线</h3>
+        </div>
+        <p>上传 → 解析 → 切片 → 向量化 / 实体抽取并行 → pgvector · 实体图 · trust 元数据三路索引。</p>
+        <div class="meta">12 NODES · 11 EDGES · <a href="growth-os-ai-ingest-pipeline.json">JSON 源</a></div>
+      </a>
+      <a class="card" href="growth-os-ai-rag-internal.html">
+        <div class="card-top"><span class="dot"></span>
+          <h3>RAG 检索内部</h3>
+        </div>
+        <p>查询理解 → 向量 / 全文 / 实体子图三路召回 → RRF 融合 → trust 过滤 → 重排 top-k 回流工具层。</p>
+        <div class="meta">13 NODES · 13 EDGES · <a href="growth-os-ai-rag-internal.json">JSON 源</a></div>
+      </a>
+    </div>
+  </div>
+
+  <div class="layer">
+    <div class="layer-head">
+      <span class="layer-no">L3</span>
+      <span class="layer-title">执行架构</span>
+      <span class="layer-desc">—— 请求如何被编排和出网</span>
+    </div>
+    <div class="cards triple">
+      <a class="card" href="growth-os-ai-pattern-assembly.html">
+        <div class="card-top"><span class="dot"></span>
+          <h3>多模式注册与装配</h3>
+        </div>
+        <p>patterns JSONB 声明 → 装配工厂 → harness 激活；14 种模式全清单；外部 MCP / A2A 统一注册为可委派实体。</p>
+        <div class="meta">21 NODES · 7 EDGES · <a href="growth-os-ai-pattern-assembly.json">JSON 源</a></div>
+      </a>
+      <a class="card" href="growth-os-ai-model-access.html">
+        <div class="card-top"><span class="dot"></span>
+          <h3>模型接入</h3>
+        </div>
+        <p>三类调用方汇聚适配器工厂（OpenAI 兼容）→ usage 计量护栏 → Providers 单点出网；模型注册表与 agent 绑定解耦。</p>
+        <div class="meta">9 NODES · 8 EDGES · <a href="growth-os-ai-model-access.json">JSON 源</a></div>
+      </a>
+    </div>
+  </div>
+
+  <div class="layer">
+    <div class="layer-head">
+      <span class="layer-no">L4</span>
+      <span class="layer-title">质量保障</span>
+      <span class="layer-desc">—— 系统如何知道自己在变好</span>
+    </div>
+    <div class="cards single">
+      <a class="card" href="growth-os-ai-observability.html">
+        <div class="card-top"><span class="dot"></span>
+          <h3>观测与评估</h3>
+        </div>
+        <p>结果级采集（始终可用）与轨迹级采集（LangSmith 可选）双通道；traces / 失败样本构建评估数据集，evals 回归评分作为 verifier 门槛输入，衔接 RSI 固化。</p>
+        <div class="meta">9 NODES · 10 EDGES · <a href="growth-os-ai-observability.json">JSON 源</a></div>
+      </a>
+    </div>
+  </div>
+
+  <footer>SOURCE OF TRUTH: docs/diagrams/ai/*.json · RENDERED VIA ARCHIFY (STANDARD PROFILE) · REV 09DF15E · 2026-09-26
+  </footer>
+</body>
+
+</html>

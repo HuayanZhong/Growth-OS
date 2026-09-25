@@ -1,0 +1,313 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Growth OS · RAG 检索内部",
+    "locale": "zh-CN",
+    "quality_profile": "standard",
+    "viewBox": [1250, 700],
+    "repository": {
+      "url": "https://github.com/HuayanZhong/Growth-OS",
+      "provider": "github",
+      "link_mode": "web",
+      "revision": "09df15e4f3708432fc78969c3f56f868e49ece7c"
+    },
+    "views": [
+      {
+        "id": "rag-internal",
+        "label": "检索全程",
+        "focus": [
+          "tools",
+          "query-rewrite",
+          "embedder",
+          "provider-registry",
+          "vector-search",
+          "keyword-search",
+          "entity-search",
+          "pgvector",
+          "knowledge-meta",
+          "entity-graph",
+          "fusion",
+          "trust-filter",
+          "reranker"
+        ],
+        "note": "查询理解 → 三路召回 → 融合 → trust 过滤 → 重排回流"
+      }
+    ]
+  },
+  "components": [
+    {
+      "id": "tools",
+      "type": "backend",
+      "label": "retrieve_knowledge",
+      "sublabel": "工具层入口",
+      "pos": [50, 110],
+      "size": [170, 68]
+    },
+    {
+      "id": "query-rewrite",
+      "type": "backend",
+      "label": "查询理解",
+      "sublabel": "改写 · 扩展",
+      "pos": [300, 110],
+      "size": [150, 64]
+    },
+    {
+      "id": "embedder",
+      "type": "backend",
+      "label": "查询向量化",
+      "sublabel": "查询 embedding",
+      "pos": [530, 110],
+      "size": [150, 64]
+    },
+    {
+      "id": "provider-registry",
+      "type": "backend",
+      "label": "model-provider",
+      "sublabel": "统一出网 · 工厂",
+      "pos": [760, 110],
+      "size": [150, 64],
+      "sources": [
+        {
+          "path": "packages/types/src/adapters/llm.ts",
+          "label": "LLM 适配器契约"
+        }
+      ]
+    },
+    {
+      "id": "vector-search",
+      "type": "backend",
+      "label": "向量检索",
+      "sublabel": "余弦相似召回",
+      "pos": [80, 270],
+      "size": [170, 64]
+    },
+    {
+      "id": "keyword-search",
+      "type": "backend",
+      "label": "关键词检索",
+      "sublabel": "Postgres FTS",
+      "pos": [330, 270],
+      "size": [170, 64]
+    },
+    {
+      "id": "entity-search",
+      "type": "backend",
+      "label": "实体子图检索",
+      "sublabel": "多跳关系扩展",
+      "pos": [580, 270],
+      "size": [170, 64]
+    },
+    {
+      "id": "pgvector",
+      "type": "database",
+      "label": "pgvector",
+      "sublabel": "切片 · OKF 向量",
+      "pos": [80, 430],
+      "size": [170, 64]
+    },
+    {
+      "id": "knowledge-meta",
+      "type": "database",
+      "label": "知识元数据",
+      "sublabel": "全文索引 · trust 等级",
+      "pos": [330, 430],
+      "size": [170, 64]
+    },
+    {
+      "id": "entity-graph",
+      "type": "database",
+      "label": "实体图",
+      "sublabel": "实体关系 · RLS",
+      "pos": [580, 430],
+      "size": [170, 64]
+    },
+    {
+      "id": "fusion",
+      "type": "backend",
+      "label": "融合排序",
+      "sublabel": "RRF · 加权合并",
+      "pos": [80, 590],
+      "size": [170, 64]
+    },
+    {
+      "id": "trust-filter",
+      "type": "security",
+      "label": "trust 过滤",
+      "sublabel": "信任等级门槛",
+      "pos": [330, 590],
+      "size": [170, 64]
+    },
+    {
+      "id": "reranker",
+      "type": "backend",
+      "label": "重排",
+      "sublabel": "交叉编码 · top-k",
+      "pos": [580, 590],
+      "size": [170, 64]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "查询理解",
+      "wraps": ["tools", "query-rewrite", "embedder"]
+    },
+    {
+      "kind": "region",
+      "label": "多路召回",
+      "wraps": ["vector-search", "keyword-search", "entity-search"]
+    },
+    {
+      "kind": "region",
+      "label": "知识库 · Supabase",
+      "wraps": ["pgvector", "knowledge-meta", "entity-graph"]
+    },
+    {
+      "kind": "region",
+      "label": "融合与过滤",
+      "wraps": ["fusion", "trust-filter", "reranker"]
+    }
+  ],
+  "connections": [
+    {
+      "id": "entry",
+      "from": "tools",
+      "to": "query-rewrite",
+      "fromSide": "right",
+      "toSide": "left"
+    },
+    {
+      "id": "rewrite-embed",
+      "from": "query-rewrite",
+      "to": "embedder",
+      "fromSide": "right",
+      "toSide": "left"
+    },
+    {
+      "id": "embed-call",
+      "from": "embedder",
+      "to": "provider-registry",
+      "fromSide": "right",
+      "toSide": "left"
+    },
+    {
+      "id": "embed-vector",
+      "from": "embedder",
+      "to": "vector-search",
+      "label": "查询向量",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "via": [
+        [605, 222],
+        [165, 222]
+      ],
+      "labelAt": [385, 208]
+    },
+    {
+      "id": "vector-query",
+      "from": "vector-search",
+      "to": "pgvector",
+      "label": "向量召回",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "labelAt": [214, 382]
+    },
+    {
+      "id": "keyword-query",
+      "from": "keyword-search",
+      "to": "knowledge-meta",
+      "label": "全文召回",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "labelAt": [464, 382]
+    },
+    {
+      "id": "entity-query",
+      "from": "entity-search",
+      "to": "entity-graph",
+      "label": "子图查询",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "labelAt": [714, 382]
+    },
+    {
+      "id": "result-vector",
+      "from": "pgvector",
+      "to": "fusion",
+      "label": "召回结果",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "labelAt": [214, 542]
+    },
+    {
+      "id": "result-knowledge",
+      "from": "knowledge-meta",
+      "to": "trust-filter",
+      "label": "trust 依据",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "labelAt": [464, 542]
+    },
+    {
+      "id": "result-entity",
+      "from": "entity-graph",
+      "to": "fusion",
+      "label": "子图结果",
+      "fromSide": "bottom",
+      "toSide": "left",
+      "via": [
+        [665, 526],
+        [44, 526],
+        [44, 622]
+      ],
+      "labelAt": [354, 512]
+    },
+    {
+      "id": "fusion-trust",
+      "from": "fusion",
+      "to": "trust-filter",
+      "fromSide": "right",
+      "toSide": "left"
+    },
+    {
+      "id": "trust-rerank",
+      "from": "trust-filter",
+      "to": "reranker",
+      "fromSide": "right",
+      "toSide": "left"
+    },
+    {
+      "id": "rerank-close",
+      "from": "reranker",
+      "to": "tools",
+      "label": "top-k 回流",
+      "variant": "emphasis",
+      "fromSide": "right",
+      "toSide": "top",
+      "via": [
+        [1220, 622],
+        [1220, 60],
+        [135, 60]
+      ],
+      "labelAt": [800, 46]
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "检索流水线",
+      "items": [
+        "查询经理解改写后三路并行：向量召回（pgvector）、全文召回（Postgres FTS）、实体子图扩展（多跳关系）",
+        "召回结果经 RRF 融合 → trust 门槛过滤（低信来源剔除）→ 重排取 top-k 回流工具层，注入 agent 上下文"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "数据与边界",
+      "items": [
+        "pgvector 同时索引文档切片与 OKF 固化经验（trust 标记区分来源）；全程 user_id RLS；embedding 调用统一经 model-provider 出网"
+      ]
+    }
+  ]
+}

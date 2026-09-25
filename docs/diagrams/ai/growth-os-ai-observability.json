@@ -1,0 +1,254 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Growth OS · 观测与评估",
+    "locale": "zh-CN",
+    "quality_profile": "standard",
+    "viewBox": [1250, 700],
+    "repository": {
+      "url": "https://github.com/HuayanZhong/Growth-OS",
+      "provider": "github",
+      "link_mode": "web",
+      "revision": "09df15e4f3708432fc78969c3f56f868e49ece7c"
+    },
+    "views": [
+      {
+        "id": "observability-evals",
+        "label": "观测评估全程",
+        "focus": [
+          "harness",
+          "usage-meter",
+          "nuxt",
+          "span-pipeline",
+          "langsmith",
+          "experience-pool",
+          "eval-datasets",
+          "eval-runner",
+          "verifier-gate"
+        ],
+        "note": "遥测产生 → span 管道 → LangSmith 双通道 → 数据集 → evals → verifier 门槛"
+      }
+    ]
+  },
+  "components": [
+    {
+      "id": "harness",
+      "type": "backend",
+      "label": "deepagents harness",
+      "sublabel": "span 埋点 · 生命周期",
+      "pos": [100, 110],
+      "size": [190, 64]
+    },
+    {
+      "id": "usage-meter",
+      "type": "backend",
+      "label": "usage 计量",
+      "sublabel": "token · 延迟 · 成本",
+      "pos": [400, 110],
+      "size": [190, 64]
+    },
+    {
+      "id": "nuxt",
+      "type": "frontend",
+      "label": "用户工作台",
+      "sublabel": "评分 · 修正反馈",
+      "pos": [735, 110],
+      "size": [180, 64],
+      "sources": [
+        {
+          "path": "apps/desktop/app/composables/useApi.ts",
+          "label": "apiFetch 封装"
+        }
+      ]
+    },
+    {
+      "id": "span-pipeline",
+      "type": "backend",
+      "label": "span 管道",
+      "sublabel": "命名规范 · 采样 · 脱敏",
+      "pos": [280, 270],
+      "size": [240, 64]
+    },
+    {
+      "id": "langsmith",
+      "type": "external",
+      "label": "LangSmith",
+      "sublabel": "tracing · datasets · evals",
+      "pos": [300, 430],
+      "size": [200, 64]
+    },
+    {
+      "id": "experience-pool",
+      "type": "database",
+      "label": "经验池",
+      "sublabel": "traces · 反馈 · RLS",
+      "pos": [730, 430],
+      "size": [190, 64]
+    },
+    {
+      "id": "eval-datasets",
+      "type": "database",
+      "label": "评估数据集",
+      "sublabel": "traces · 反馈构建",
+      "pos": [100, 590],
+      "size": [190, 64]
+    },
+    {
+      "id": "eval-runner",
+      "type": "backend",
+      "label": "evals 运行",
+      "sublabel": "回归 · 质量评分",
+      "pos": [410, 590],
+      "size": [190, 64]
+    },
+    {
+      "id": "verifier-gate",
+      "type": "security",
+      "label": "verifier 门槛",
+      "sublabel": "RSI 固化前置校验",
+      "pos": [730, 590],
+      "size": [190, 64]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "遥测产生",
+      "wraps": ["harness", "usage-meter", "nuxt"]
+    },
+    {
+      "kind": "region",
+      "label": "评估闭环",
+      "wraps": ["eval-datasets", "eval-runner", "verifier-gate"]
+    }
+  ],
+  "connections": [
+    {
+      "id": "harness-span",
+      "from": "harness",
+      "to": "span-pipeline",
+      "label": "执行 span",
+      "fromSide": "left",
+      "toSide": "left",
+      "via": [
+        [48, 142],
+        [48, 302]
+      ],
+      "labelAt": [164, 288]
+    },
+    {
+      "id": "usage-span",
+      "from": "usage-meter",
+      "to": "span-pipeline",
+      "label": "usage 事件",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "via": [
+        [495, 222],
+        [400, 222]
+      ],
+      "labelAt": [447, 208]
+    },
+    {
+      "id": "nuxt-feedback",
+      "from": "nuxt",
+      "to": "experience-pool",
+      "label": "反馈信号",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "labelAt": [874, 300]
+    },
+    {
+      "id": "span-langsmith",
+      "from": "span-pipeline",
+      "to": "langsmith",
+      "label": "tracing（可选）",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "labelAt": [449, 382]
+    },
+    {
+      "id": "langsmith-pool",
+      "from": "langsmith",
+      "to": "experience-pool",
+      "label": "traces 导出",
+      "variant": "dashed",
+      "fromSide": "right",
+      "toSide": "left",
+      "labelAt": [615, 448]
+    },
+    {
+      "id": "langsmith-datasets",
+      "from": "langsmith",
+      "to": "eval-datasets",
+      "label": "数据集构建",
+      "fromSide": "left",
+      "toSide": "left",
+      "via": [
+        [48, 462],
+        [48, 622]
+      ],
+      "labelAt": [174, 448]
+    },
+    {
+      "id": "pool-datasets",
+      "from": "experience-pool",
+      "to": "eval-datasets",
+      "label": "失败样本入集",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "via": [
+        [825, 545],
+        [195, 545]
+      ],
+      "labelAt": [510, 531]
+    },
+    {
+      "id": "datasets-runner",
+      "from": "eval-datasets",
+      "to": "eval-runner",
+      "label": "运行评估",
+      "fromSide": "right",
+      "toSide": "left",
+      "labelAt": [350, 608]
+    },
+    {
+      "id": "runner-verifier",
+      "from": "eval-runner",
+      "to": "verifier-gate",
+      "label": "评分门槛",
+      "fromSide": "right",
+      "toSide": "left",
+      "labelAt": [665, 608]
+    },
+    {
+      "id": "gate-pool",
+      "from": "verifier-gate",
+      "to": "experience-pool",
+      "label": "校验结果回写",
+      "variant": "dashed",
+      "fromSide": "top",
+      "toSide": "bottom",
+      "labelAt": [875, 542]
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "观测与评估双通道",
+      "items": [
+        "结果级采集（反馈 · 执行结果回写经验池）始终可用；轨迹级采集（span → LangSmith）为可选增强，span 命名规范是 M2 预埋点",
+        "traces 与失败样本构建评估数据集，evals 回归运行；评分作为 verifier 门槛输入，通过后进入 RSI 固化（见 RSI 闭环详图）"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "边界",
+      "items": [
+        "LangSmith 关闭时 RSI 降级为结果级采集，闭环不断；遥测经 span 管道脱敏后才出网，全程 user_id 隔离"
+      ]
+    }
+  ]
+}

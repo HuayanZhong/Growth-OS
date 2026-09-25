@@ -1,0 +1,753 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Growth OS · AI 总体架构",
+    "locale": "zh-CN",
+    "quality_profile": "standard",
+    "viewBox": [1250, 696],
+    "repository": {
+      "url": "https://github.com/HuayanZhong/Growth-OS",
+      "provider": "github",
+      "link_mode": "web",
+      "revision": "09df15e4f3708432fc78969c3f56f868e49ece7c"
+    },
+    "views": [
+      {
+        "id": "main-path",
+        "label": "主链路",
+        "focus": [
+          "nuxt",
+          "sse",
+          "intent",
+          "deepagents",
+          "pattern-registry",
+          "langgraph",
+          "langchain",
+          "tools",
+          "provider-registry",
+          "llm-providers"
+        ],
+        "note": "一次消息经意图路由到执行路径再到模型 API"
+      },
+      {
+        "id": "rag-chain",
+        "label": "RAG 检索链路",
+        "focus": ["intent", "tools", "rag-domain", "entity-graph", "pgvector", "okf-knowledge"],
+        "note": "混合检索 + 实体图双级 + OKF trust 过滤的独立检索域"
+      },
+      {
+        "id": "persistence",
+        "label": "数据与知识六轨",
+        "focus": [
+          "domains",
+          "langgraph",
+          "biz-tables",
+          "checkpointer",
+          "rag-domain",
+          "pgvector",
+          "okf-knowledge",
+          "experience-pool"
+        ],
+        "note": "业务表、checkpointer、实体图、pgvector、OKF、经验池六轨同库"
+      },
+      {
+        "id": "gates",
+        "label": "协议挂点",
+        "focus": ["deepagents", "tools", "external-ecosystem", "pattern-registry"],
+        "note": "外部 MCP / A2A 能力注册进模式注册表，与本地子代理统一委派"
+      },
+      {
+        "id": "rsi-loop",
+        "label": "RSI 自我改进闭环",
+        "focus": [
+          "nuxt",
+          "domains",
+          "experience-pool",
+          "deepagents",
+          "okf-knowledge",
+          "tools",
+          "langsmith"
+        ],
+        "note": "反馈与 traces 汇入经验池，curriculum 分析 → verifier 固化 OKF → 注入运行时"
+      }
+    ]
+  },
+  "components": [
+    {
+      "id": "electron",
+      "type": "frontend",
+      "label": "Electron 壳",
+      "sublabel": "secureStore · 更新 · OAuth",
+      "pos": [30, 44],
+      "size": [140, 60],
+      "sources": [
+        {
+          "path": "packages/desktop-core/src/main.ts",
+          "label": "主进程入口"
+        }
+      ]
+    },
+    {
+      "id": "nuxt",
+      "type": "frontend",
+      "label": "Nuxt Agent 工作台",
+      "sublabel": "SSE 流式消费",
+      "pos": [30, 150],
+      "size": [140, 68],
+      "sources": [
+        {
+          "path": "apps/desktop/app/composables/useApi.ts",
+          "label": "apiFetch 封装"
+        }
+      ]
+    },
+    {
+      "id": "types",
+      "type": "backend",
+      "label": "@growth-os/types",
+      "sublabel": "跨端契约 · 单一真相源",
+      "pos": [30, 280],
+      "size": [140, 60],
+      "sources": [
+        {
+          "path": "packages/types/src/adapters/llm.ts",
+          "label": "LLM 适配器契约"
+        }
+      ]
+    },
+    {
+      "id": "guard",
+      "type": "security",
+      "label": "Supabase JWT Guard",
+      "sublabel": "JWKS 双轨验证",
+      "pos": [250, 44],
+      "size": [165, 60],
+      "sources": [
+        {
+          "path": "apps/server/src/modules/auth/supabase-jwt.guard.ts",
+          "label": "全局守卫"
+        }
+      ]
+    },
+    {
+      "id": "pattern-registry",
+      "type": "backend",
+      "label": "模式注册表",
+      "sublabel": "14 种模式 · 可配置装配",
+      "pos": [780, 44],
+      "size": [165, 60]
+    },
+    {
+      "id": "sse",
+      "type": "backend",
+      "label": "SSE 网关",
+      "sublabel": "ChatStreamEvent · AG-UI 对齐",
+      "pos": [250, 150],
+      "size": [165, 68]
+    },
+    {
+      "id": "domains",
+      "type": "backend",
+      "label": "业务域模块",
+      "sublabel": "agent · conversation · knowledge",
+      "pos": [245, 400],
+      "size": [175, 68]
+    },
+    {
+      "id": "deepagents",
+      "type": "backend",
+      "label": "deepagentsjs 编排核心",
+      "sublabel": "harness · 多模式编排 · RSI 闭环",
+      "pos": [520, 146],
+      "size": [195, 76]
+    },
+    {
+      "id": "langgraph",
+      "type": "backend",
+      "label": "langgraph runtime",
+      "sublabel": "durable 执行 · 中断恢复",
+      "pos": [520, 280],
+      "size": [195, 60]
+    },
+    {
+      "id": "langchain",
+      "type": "backend",
+      "label": "langchain 工具抽象",
+      "sublabel": "模型抽象 · MCP 适配",
+      "pos": [520, 400],
+      "size": [195, 60]
+    },
+    {
+      "id": "provider-registry",
+      "type": "backend",
+      "label": "model-provider",
+      "sublabel": "OpenAI 兼容注册表 · 工厂",
+      "pos": [780, 280],
+      "size": [160, 60]
+    },
+    {
+      "id": "tools",
+      "type": "backend",
+      "label": "tools 工具层",
+      "sublabel": "内置工具 · retrieve_knowledge",
+      "pos": [780, 400],
+      "size": [165, 60]
+    },
+    {
+      "id": "langsmith",
+      "type": "external",
+      "label": "LangSmith",
+      "sublabel": "tracing · evals（可选）",
+      "pos": [1010, 44],
+      "size": [165, 60]
+    },
+    {
+      "id": "llm-providers",
+      "type": "external",
+      "label": "模型 Providers",
+      "sublabel": "DeepSeek · GLM · Kimi · OpenAI",
+      "pos": [1010, 280],
+      "size": [165, 60]
+    },
+    {
+      "id": "external-ecosystem",
+      "type": "external",
+      "label": "外部 Agent 生态",
+      "sublabel": "MCP · A2A · 能力注册",
+      "pos": [1010, 150],
+      "size": [165, 68]
+    },
+    {
+      "id": "biz-tables",
+      "type": "database",
+      "label": "业务表",
+      "sublabel": "user_id 隔离 · RLS",
+      "pos": [240, 608],
+      "size": [140, 56]
+    },
+    {
+      "id": "checkpointer",
+      "type": "database",
+      "label": "checkpointer",
+      "sublabel": "LangGraph 自管 · RLS",
+      "pos": [410, 608],
+      "size": [140, 56]
+    },
+    {
+      "id": "pgvector",
+      "type": "database",
+      "label": "pgvector",
+      "sublabel": "切片索引 · RLS",
+      "pos": [750, 608],
+      "size": [140, 56]
+    },
+    {
+      "id": "okf-knowledge",
+      "type": "database",
+      "label": "OKF 知识库",
+      "sublabel": "trust · 人审 · RLS",
+      "pos": [920, 608],
+      "size": [140, 56]
+    },
+    {
+      "id": "experience-pool",
+      "type": "database",
+      "label": "经验池",
+      "sublabel": "traces + 反馈 · 隔离",
+      "pos": [1090, 608],
+      "size": [120, 56]
+    },
+    {
+      "id": "intent",
+      "type": "backend",
+      "label": "意图分析层",
+      "sublabel": "zod 意图分类 · 条件边路由",
+      "pos": [245, 280],
+      "size": [175, 68],
+      "tag": "chat · QA · task · meta"
+    },
+    {
+      "id": "rag-domain",
+      "type": "backend",
+      "label": "RAG 检索域",
+      "sublabel": "检索 · 索引 · trust 过滤",
+      "pos": [780, 484],
+      "size": [165, 56]
+    },
+    {
+      "id": "entity-graph",
+      "type": "database",
+      "label": "实体图",
+      "sublabel": "实体关系 · RLS",
+      "pos": [580, 608],
+      "size": [140, 56]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "客户端 · Electron 桌面壳",
+      "wraps": ["electron", "nuxt", "types"]
+    },
+    {
+      "kind": "region",
+      "label": "AI 编排服务 · NestJS —— 本机起步 · 云端约束",
+      "wraps": [
+        "guard",
+        "sse",
+        "domains",
+        "deepagents",
+        "langgraph",
+        "langchain",
+        "tools",
+        "provider-registry",
+        "pattern-registry",
+        "intent",
+        "rag-domain"
+      ]
+    },
+    {
+      "kind": "region",
+      "label": "数据层 · Supabase（Postgres · Storage）",
+      "wraps": [
+        "biz-tables",
+        "checkpointer",
+        "entity-graph",
+        "pgvector",
+        "okf-knowledge",
+        "experience-pool"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "host-shell",
+      "from": "electron",
+      "to": "nuxt",
+      "label": "承载 · AI 不走 IPC",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "labelAt": [108, 118]
+    },
+    {
+      "id": "entry",
+      "from": "nuxt",
+      "to": "sse",
+      "label": "REST + SSE · Bearer JWT",
+      "variant": "emphasis",
+      "labelAt": [220, 140]
+    },
+    {
+      "id": "authz",
+      "from": "guard",
+      "to": "sse",
+      "label": "校验放行",
+      "variant": "security",
+      "labelAt": [333, 118]
+    },
+    {
+      "id": "contract-ui",
+      "from": "types",
+      "to": "nuxt",
+      "label": "契约同步",
+      "variant": "dashed",
+      "fromSide": "top",
+      "toSide": "bottom"
+    },
+    {
+      "id": "contract-svc",
+      "from": "types",
+      "to": "sse",
+      "label": "契约同步",
+      "variant": "dashed",
+      "fromSide": "right",
+      "toSide": "left",
+      "via": [
+        [240, 310],
+        [240, 184]
+      ]
+    },
+    {
+      "id": "stack-runtime",
+      "from": "deepagents",
+      "to": "langgraph",
+      "label": "durable 执行",
+      "labelAt": [618, 236]
+    },
+    {
+      "id": "stack-framework",
+      "from": "langgraph",
+      "to": "langchain",
+      "label": "模型 / 工具抽象",
+      "labelAt": [618, 354]
+    },
+    {
+      "id": "tools-mount",
+      "from": "langchain",
+      "to": "tools",
+      "label": "工具挂载"
+    },
+    {
+      "id": "checkpoint",
+      "from": "langgraph",
+      "to": "checkpointer",
+      "label": "checkpointer 读写",
+      "fromSide": "left",
+      "toSide": "top",
+      "labelAt": [509, 500],
+      "via": [
+        [455, 310],
+        [455, 520],
+        [480, 520]
+      ]
+    },
+    {
+      "id": "model-factory",
+      "from": "langchain",
+      "to": "provider-registry",
+      "label": "按 agent 配置",
+      "fromSide": "top",
+      "toSide": "left",
+      "via": [
+        [617.5, 372],
+        [745, 372],
+        [745, 310]
+      ],
+      "labelAt": [681, 386]
+    },
+    {
+      "id": "llm-call",
+      "from": "provider-registry",
+      "to": "llm-providers",
+      "variant": "emphasis",
+      "fromSide": "right",
+      "toSide": "left"
+    },
+    {
+      "id": "trace",
+      "from": "deepagents",
+      "to": "langsmith",
+      "label": "tracing（可选）",
+      "variant": "dashed",
+      "fromSide": "top",
+      "toSide": "bottom"
+    },
+    {
+      "id": "a2a-gate",
+      "from": "deepagents",
+      "to": "external-ecosystem",
+      "label": "A2A 委派",
+      "variant": "dashed",
+      "fromSide": "right",
+      "toSide": "left",
+      "labelAt": [806, 180]
+    },
+    {
+      "id": "mcp-gate",
+      "from": "tools",
+      "to": "external-ecosystem",
+      "label": "MCP 工具流",
+      "variant": "dashed",
+      "fromSide": "right",
+      "toSide": "right",
+      "via": [
+        [1190, 430],
+        [1190, 184]
+      ],
+      "labelAt": [1064, 426]
+    },
+    {
+      "id": "biz-write",
+      "from": "domains",
+      "to": "biz-tables",
+      "label": "MikroORM · 业务表",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "labelAt": [386, 520]
+    },
+    {
+      "id": "okf-index",
+      "from": "okf-knowledge",
+      "to": "pgvector",
+      "variant": "dashed",
+      "fromSide": "left",
+      "toSide": "right"
+    },
+    {
+      "id": "tools-rag",
+      "from": "tools",
+      "to": "rag-domain",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "rag-vector",
+      "from": "rag-domain",
+      "to": "pgvector",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "rag-entity",
+      "from": "rag-domain",
+      "to": "entity-graph",
+      "fromSide": "left",
+      "toSide": "right"
+    },
+    {
+      "id": "sse-intent",
+      "from": "sse",
+      "to": "intent",
+      "label": "上下文 + agent 配置",
+      "labelAt": [383, 240]
+    },
+    {
+      "id": "intent-task",
+      "from": "intent",
+      "to": "deepagents",
+      "label": "task · 条件边分发",
+      "labelAt": [498, 250],
+      "fromSide": "right",
+      "toSide": "left",
+      "via": [
+        [440, 314],
+        [440, 184]
+      ]
+    },
+    {
+      "id": "intent-meta",
+      "from": "intent",
+      "to": "domains",
+      "label": "meta · 配置直通",
+      "labelAt": [378, 370]
+    },
+    {
+      "id": "intent-model",
+      "from": "intent",
+      "to": "langchain",
+      "label": "意图 LLM 调用",
+      "fromSide": "right",
+      "toSide": "bottom",
+      "via": [
+        [460, 314],
+        [460, 530],
+        [617.5, 530]
+      ],
+      "labelAt": [540, 516]
+    },
+    {
+      "id": "rag-model",
+      "from": "rag-domain",
+      "to": "provider-registry",
+      "label": "embedding 调用",
+      "fromSide": "right",
+      "toSide": "bottom",
+      "via": [
+        [977, 512],
+        [977, 360],
+        [860, 360]
+      ],
+      "labelAt": [1000, 460]
+    },
+    {
+      "id": "reply-write",
+      "from": "deepagents",
+      "to": "domains",
+      "label": "消息 / usage 回写",
+      "fromSide": "top",
+      "toSide": "left",
+      "via": [
+        [617.5, 132],
+        [207, 132],
+        [207, 434]
+      ],
+      "labelAt": [200, 240]
+    },
+    {
+      "id": "traces-export",
+      "from": "langsmith",
+      "to": "experience-pool",
+      "label": "traces 导出",
+      "variant": "dashed",
+      "fromSide": "right",
+      "toSide": "top",
+      "via": [
+        [1205, 74],
+        [1205, 580],
+        [1150, 580]
+      ],
+      "labelAt": [1178, 566]
+    },
+    {
+      "id": "feedback",
+      "from": "nuxt",
+      "to": "domains",
+      "label": "用户反馈",
+      "fromSide": "bottom",
+      "toSide": "right",
+      "via": [
+        [100, 250],
+        [195, 250],
+        [195, 480],
+        [448, 480],
+        [448, 434]
+      ],
+      "labelAt": [195, 360]
+    },
+    {
+      "id": "pool-ingest",
+      "from": "domains",
+      "to": "experience-pool",
+      "label": "经验入库",
+      "fromSide": "right",
+      "toSide": "left",
+      "via": [
+        [472, 434],
+        [472, 575],
+        [1075, 575],
+        [1075, 636]
+      ],
+      "labelAt": [1075, 594]
+    },
+    {
+      "id": "curriculum",
+      "from": "experience-pool",
+      "to": "deepagents",
+      "label": "curriculum 分析",
+      "fromSide": "bottom",
+      "toSide": "left",
+      "via": [
+        [1150, 680],
+        [180, 680],
+        [180, 130],
+        [490, 130],
+        [490, 184]
+      ],
+      "labelAt": [140, 360]
+    },
+    {
+      "id": "verify-solidify",
+      "from": "deepagents",
+      "to": "okf-knowledge",
+      "label": "verifier 固化",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "via": [
+        [617.5, 240],
+        [990, 240]
+      ],
+      "labelAt": [800, 226]
+    },
+    {
+      "id": "memory-inject",
+      "from": "okf-knowledge",
+      "to": "tools",
+      "label": "记忆注入",
+      "fromSide": "top",
+      "toSide": "bottom",
+      "via": [
+        [990, 472],
+        [862.5, 472]
+      ],
+      "labelAt": [990, 540]
+    },
+    {
+      "id": "doc-ingest",
+      "from": "domains",
+      "to": "rag-domain",
+      "label": "文档摄取",
+      "fromSide": "bottom",
+      "toSide": "bottom",
+      "via": [
+        [332.5, 595],
+        [862.5, 595]
+      ],
+      "labelAt": [930, 595]
+    },
+    {
+      "id": "stream-response",
+      "from": "deepagents",
+      "to": "sse",
+      "label": "流式响应",
+      "variant": "emphasis",
+      "fromSide": "left",
+      "toSide": "right"
+    },
+    {
+      "id": "verifier-writeback",
+      "from": "deepagents",
+      "to": "experience-pool",
+      "label": "校验回写",
+      "fromSide": "right",
+      "toSide": "right",
+      "via": [
+        [760, 184],
+        [760, 555],
+        [1230, 555],
+        [1230, 636]
+      ],
+      "labelAt": [1100, 541]
+    },
+    {
+      "id": "history-read",
+      "from": "domains",
+      "to": "nuxt",
+      "label": "历史 / 复核下发",
+      "fromSide": "right",
+      "toSide": "bottom",
+      "via": [
+        [448, 434],
+        [448, 480],
+        [195, 480],
+        [195, 250],
+        [100, 250]
+      ],
+      "labelAt": [320, 494]
+    },
+    {
+      "id": "pattern-assembly",
+      "from": "pattern-registry",
+      "to": "deepagents",
+      "label": "按配置装配模式",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "via": [
+        [862.5, 124],
+        [617.5, 124]
+      ],
+      "labelAt": [770, 140]
+    },
+    {
+      "id": "capability-register",
+      "from": "external-ecosystem",
+      "to": "pattern-registry",
+      "label": "能力注册",
+      "variant": "dashed",
+      "fromSide": "left",
+      "toSide": "right",
+      "via": [
+        [977, 184],
+        [977, 74]
+      ],
+      "labelAt": [977, 130]
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "客户端与契约",
+      "items": ["渲染进程直连后端（REST + SSE），AI 数据不走 IPC；契约同步自 @growth-os/types"]
+    },
+    {
+      "dot": "emerald",
+      "title": "编排与数据",
+      "items": [
+        "意图分析层四路分发 chat / QA / task / meta；单引擎三层栈 + tools 工具层执行",
+        "所有 LLM / embedding 调用（意图 / 检索 / 工具）汇聚 model-provider 单点出网；消息 / usage 经业务域回写持久化",
+        "数据六轨同库（业务 / checkpointer / 实体图 / pgvector / OKF / 经验池）；外部 MCP / A2A 能力注册进模式注册表，与本地子代理统一委派"
+      ]
+    }
+  ]
+}
