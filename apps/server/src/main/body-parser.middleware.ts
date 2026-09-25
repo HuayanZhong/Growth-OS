@@ -25,7 +25,7 @@ import type { NextFunction, RequestHandler, Request, Response } from 'express'
 const PARSE_FAILED_TYPE = 'entity.parse.failed'
 
 /** 请求体不是合法 JSON 时的固定文案（message 非契约，前端只认 code） */
-export const MALFORMED_JSON_MESSAGE = '请求体不是合法的 JSON'
+const MALFORMED_JSON_MESSAGE = '请求体不是合法的 JSON'
 
 /** 包装解析器：解析失败错误转译为统一信封，其余错误（如实体过大）原样上抛 */
 function translateParseError(parser: RequestHandler): RequestHandler {

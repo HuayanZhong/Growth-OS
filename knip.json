@@ -4,7 +4,7 @@
     ".": {
       "entry": ["scripts/**/*.cjs"],
       "ignore": [".agents/**", ".trae/skills/**"],
-      "ignoreDependencies": ["publint"]
+      "ignoreDependencies": ["oxfmt", "oxlint", "publint"]
     },
     "apps/desktop": {
       "entry": [
