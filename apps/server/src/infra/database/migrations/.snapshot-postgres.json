@@ -1,8 +1,6 @@
 {
   "name": "public",
-  "namespaces": [
-    "public"
-  ],
+  "namespaces": ["public"],
   "tables": [
     {
       "name": "audit_logs",
@@ -147,9 +145,7 @@
       },
       "indexes": [
         {
-          "columnNames": [
-            "action"
-          ],
+          "columnNames": ["action"],
           "composite": false,
           "constraint": false,
           "keyName": "audit_logs_action_index",
@@ -157,9 +153,7 @@
           "unique": false
         },
         {
-          "columnNames": [
-            "actor_id"
-          ],
+          "columnNames": ["actor_id"],
           "composite": false,
           "constraint": false,
           "keyName": "audit_logs_actor_id_index",
@@ -167,9 +161,7 @@
           "unique": false
         },
         {
-          "columnNames": [
-            "id"
-          ],
+          "columnNames": ["id"],
           "composite": false,
           "constraint": true,
           "keyName": "audit_logs_id_unique",
@@ -177,9 +169,7 @@
           "unique": true
         },
         {
-          "columnNames": [
-            "seq"
-          ],
+          "columnNames": ["seq"],
           "composite": false,
           "constraint": true,
           "keyName": "audit_logs_pkey",
@@ -187,10 +177,7 @@
           "unique": true
         },
         {
-          "columnNames": [
-            "resource_type",
-            "resource_id"
-          ],
+          "columnNames": ["resource_type", "resource_id"],
           "composite": true,
           "constraint": false,
           "keyName": "audit_logs_resource_type_resource_id_index",
@@ -198,9 +185,7 @@
           "unique": false
         },
         {
-          "columnNames": [
-            "timestamp"
-          ],
+          "columnNames": ["timestamp"],
           "composite": false,
           "constraint": false,
           "keyName": "audit_logs_timestamp_index",

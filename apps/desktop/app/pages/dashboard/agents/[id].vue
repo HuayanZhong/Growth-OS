@@ -1,6 +1,9 @@
 <script setup lang="ts">
 // Agent 任务开场页：按 slug 从 Agent 目录定位，布局与新任务页对齐（共用 TaskComposer）；
 // 任务执行逻辑暂未实现，发送先以 toast 反馈占位
+// getAgent 显式导入：该名字未进入 Nuxt 自动导入注册表（同文件其余导出正常），显式引用更稳
+import { getAgent } from '~/utils/agents'
+
 const route = useRoute()
 const agent = computed(() => getAgent(route.params.id as string))
 if (!agent.value) {

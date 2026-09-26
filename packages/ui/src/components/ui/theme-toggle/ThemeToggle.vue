@@ -1,12 +1,47 @@
 <script setup lang="ts">
 // 明暗主题切换：daisyUI swap + theme-controller（勾选切 dark，默认 light）
+// 持久化：theme-controller 是纯 CSS 机制（:has(:checked)）不记忆状态，
+// 这里把选择写入 localStorage，挂载时恢复勾选并同步 <html> data-theme，刷新后保持上次主题
+import { onMounted, ref } from 'vue'
+
+const STORAGE_KEY = 'growth-os-theme'
+
+const checkbox = ref<HTMLInputElement | null>(null)
+
+// 亮色为 --default：移除属性交回默认值，不在根上锁 data-theme（themes.md）
+function applyTheme(dark: boolean) {
+  if (dark) {
+    document.documentElement.dataset.theme = 'dark'
+  } else {
+    delete document.documentElement.dataset.theme
+  }
+}
+
+onMounted(() => {
+  if (localStorage.getItem(STORAGE_KEY) === 'dark' && checkbox.value) {
+    checkbox.value.checked = true
+    applyTheme(true)
+  }
+})
+
+function onChange(event: Event) {
+  const dark = (event.target as HTMLInputElement).checked
+  localStorage.setItem(STORAGE_KEY, dark ? 'dark' : 'light')
+  applyTheme(dark)
+}
 </script>
 
 <template>
   <!-- 明暗切换（swap + theme-controller） -->
   <label class="swap swap-rotate">
     <!-- 控制明暗的隐藏复选框：勾选切到 dark（暗），默认主题为亮（light） -->
-    <input type="checkbox" class="theme-controller" value="dark" />
+    <input
+      ref="checkbox"
+      type="checkbox"
+      class="theme-controller"
+      value="dark"
+      @change="onChange"
+    />
     <!-- 太阳（亮色状态） -->
     <svg
       class="swap-off h-6 w-6 fill-current"

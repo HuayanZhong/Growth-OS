@@ -25,14 +25,10 @@
                           "description": "邮箱（隐私脱敏后可能缺省）"
                         }
                       },
-                      "required": [
-                        "id"
-                      ]
+                      "required": ["id"]
                     }
                   },
-                  "required": [
-                    "data"
-                  ]
+                  "required": ["data"]
                 }
               }
             }
@@ -56,10 +52,7 @@
                       "description": "结构化补充信息（如 VALIDATION_ERROR 的字段级 issue 列表）"
                     }
                   },
-                  "required": [
-                    "code",
-                    "message"
-                  ]
+                  "required": ["code", "message"]
                 }
               }
             }
@@ -83,10 +76,7 @@
                       "description": "结构化补充信息（如 VALIDATION_ERROR 的字段级 issue 列表）"
                     }
                   },
-                  "required": [
-                    "code",
-                    "message"
-                  ]
+                  "required": ["code", "message"]
                 }
               }
             }
@@ -98,9 +88,7 @@
           }
         ],
         "summary": "获取当前登录用户（JWT 保护）",
-        "tags": [
-          "auth"
-        ]
+        "tags": ["auth"]
       }
     },
     "/api/v1/auth/login": {
@@ -124,10 +112,7 @@
                     "minLength": 8
                   }
                 },
-                "required": [
-                  "email",
-                  "password"
-                ]
+                "required": ["email", "password"]
               }
             }
           }
@@ -167,22 +152,13 @@
                               "description": "邮箱"
                             }
                           },
-                          "required": [
-                            "id"
-                          ]
+                          "required": ["id"]
                         }
                       },
-                      "required": [
-                        "accessToken",
-                        "tokenType",
-                        "expiresIn",
-                        "user"
-                      ]
+                      "required": ["accessToken", "tokenType", "expiresIn", "user"]
                     }
                   },
-                  "required": [
-                    "data"
-                  ]
+                  "required": ["data"]
                 }
               }
             }
@@ -206,10 +182,7 @@
                       "description": "结构化补充信息（如 VALIDATION_ERROR 的字段级 issue 列表）"
                     }
                   },
-                  "required": [
-                    "code",
-                    "message"
-                  ]
+                  "required": ["code", "message"]
                 }
               }
             }
@@ -233,10 +206,7 @@
                       "description": "结构化补充信息（如 VALIDATION_ERROR 的字段级 issue 列表）"
                     }
                   },
-                  "required": [
-                    "code",
-                    "message"
-                  ]
+                  "required": ["code", "message"]
                 }
               }
             }
@@ -260,19 +230,14 @@
                       "description": "结构化补充信息（如 VALIDATION_ERROR 的字段级 issue 列表）"
                     }
                   },
-                  "required": [
-                    "code",
-                    "message"
-                  ]
+                  "required": ["code", "message"]
                 }
               }
             }
           }
         },
         "summary": "邮箱密码登录，返回访问令牌（公开端点）",
-        "tags": [
-          "auth"
-        ]
+        "tags": ["auth"]
       }
     },
     "/api/v1/health/liveness": {
@@ -292,16 +257,12 @@
                       "properties": {
                         "status": {
                           "type": "string",
-                          "enum": [
-                            "ok"
-                          ]
+                          "enum": ["ok"]
                         }
                       }
                     }
                   },
-                  "required": [
-                    "data"
-                  ]
+                  "required": ["data"]
                 }
               }
             }
@@ -325,19 +286,14 @@
                       "description": "结构化补充信息（如 VALIDATION_ERROR 的字段级 issue 列表）"
                     }
                   },
-                  "required": [
-                    "code",
-                    "message"
-                  ]
+                  "required": ["code", "message"]
                 }
               }
             }
           }
         },
         "summary": "存活探针：无外部依赖，200 即存活",
-        "tags": [
-          "health"
-        ]
+        "tags": ["health"]
       }
     },
     "/api/v1/health/readiness": {
@@ -357,15 +313,11 @@
                       "properties": {
                         "status": {
                           "type": "string",
-                          "enum": [
-                            "ok"
-                          ]
+                          "enum": ["ok"]
                         },
                         "db": {
                           "type": "string",
-                          "enum": [
-                            "connected"
-                          ]
+                          "enum": ["connected"]
                         },
                         "latencyMs": {
                           "type": "number",
@@ -374,9 +326,7 @@
                       }
                     }
                   },
-                  "required": [
-                    "data"
-                  ]
+                  "required": ["data"]
                 }
               }
             }
@@ -400,10 +350,7 @@
                       "description": "结构化补充信息（如 VALIDATION_ERROR 的字段级 issue 列表）"
                     }
                   },
-                  "required": [
-                    "code",
-                    "message"
-                  ]
+                  "required": ["code", "message"]
                 }
               }
             }
@@ -427,19 +374,14 @@
                       "description": "结构化补充信息（如 VALIDATION_ERROR 的字段级 issue 列表）"
                     }
                   },
-                  "required": [
-                    "code",
-                    "message"
-                  ]
+                  "required": ["code", "message"]
                 }
               }
             }
           }
         },
         "summary": "就绪探针：校验 DB 连通性，失败返回 503",
-        "tags": [
-          "health"
-        ]
+        "tags": ["health"]
       }
     },
     "/api/v1/health": {
@@ -459,15 +401,11 @@
                       "properties": {
                         "status": {
                           "type": "string",
-                          "enum": [
-                            "ok"
-                          ]
+                          "enum": ["ok"]
                         },
                         "db": {
                           "type": "string",
-                          "enum": [
-                            "connected"
-                          ]
+                          "enum": ["connected"]
                         },
                         "latencyMs": {
                           "type": "number",
@@ -476,9 +414,7 @@
                       }
                     }
                   },
-                  "required": [
-                    "data"
-                  ]
+                  "required": ["data"]
                 }
               }
             }
@@ -502,10 +438,7 @@
                       "description": "结构化补充信息（如 VALIDATION_ERROR 的字段级 issue 列表）"
                     }
                   },
-                  "required": [
-                    "code",
-                    "message"
-                  ]
+                  "required": ["code", "message"]
                 }
               }
             }
@@ -529,19 +462,14 @@
                       "description": "结构化补充信息（如 VALIDATION_ERROR 的字段级 issue 列表）"
                     }
                   },
-                  "required": [
-                    "code",
-                    "message"
-                  ]
+                  "required": ["code", "message"]
                 }
               }
             }
           }
         },
         "summary": "健康检查（等价 readiness，向后兼容）",
-        "tags": [
-          "health"
-        ]
+        "tags": ["health"]
       }
     },
     "/api/v1/audit-logs": {
@@ -659,9 +587,7 @@
                       }
                     }
                   },
-                  "required": [
-                    "data"
-                  ]
+                  "required": ["data"]
                 }
               }
             }
@@ -685,10 +611,7 @@
                       "description": "结构化补充信息（如 VALIDATION_ERROR 的字段级 issue 列表）"
                     }
                   },
-                  "required": [
-                    "code",
-                    "message"
-                  ]
+                  "required": ["code", "message"]
                 }
               }
             }
@@ -712,10 +635,7 @@
                       "description": "结构化补充信息（如 VALIDATION_ERROR 的字段级 issue 列表）"
                     }
                   },
-                  "required": [
-                    "code",
-                    "message"
-                  ]
+                  "required": ["code", "message"]
                 }
               }
             }
@@ -739,10 +659,7 @@
                       "description": "结构化补充信息（如 VALIDATION_ERROR 的字段级 issue 列表）"
                     }
                   },
-                  "required": [
-                    "code",
-                    "message"
-                  ]
+                  "required": ["code", "message"]
                 }
               }
             }
@@ -754,9 +671,7 @@
           }
         ],
         "summary": "审计日志列表（按时间倒序，支持过滤）",
-        "tags": [
-          "audit"
-        ]
+        "tags": ["audit"]
       }
     }
   },
