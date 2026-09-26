@@ -4,7 +4,7 @@ Status: implemented
 
 ## Problem
 
-`apps/server` 只有 ConfigModule 和 MikroORM CLI 配置，ORM 从未接入 Nest 容器（任何模块都无法注入 `EntityManager`）；`common/` 下无校验管道与异常过滤器，REST 错误响应格式未定义。AI 模块（见 [.trae/documents/ai-module-plan.md](../../../.trae/documents/ai-module-plan.md)）开工前必须补齐这三块地基。
+`apps/server` 只有 ConfigModule 和 MikroORM CLI 配置，ORM 从未接入 Nest 容器（任何模块都无法注入 `EntityManager`）；`common/` 下无校验管道与异常过滤器，REST 错误响应格式未定义。AI 模块（方案 `.trae/documents/ai-module-plan.md`，现已作废删除）开工前必须补齐这三块地基。
 
 ## Decision
 

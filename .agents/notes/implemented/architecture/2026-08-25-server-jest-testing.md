@@ -4,7 +4,7 @@ Status: implemented
 
 ## Problem
 
-`apps/server` 没有任何测试脚本与运行器，`pnpm test` 静默跳过 server；AI 模块迭代（[方案](../../../.trae/documents/ai-module-plan.md)）要求每个里程碑带可验证的测试。团队决定沿用 Nest 官方默认的 Jest，而非前端已用的 Vitest——两套运行器按层分工。
+`apps/server` 没有任何测试脚本与运行器，`pnpm test` 静默跳过 server；AI 模块迭代方案（`.trae/documents/ai-module-plan.md`，现已作废删除）要求每个里程碑带可验证的测试。团队决定沿用 Nest 官方默认的 Jest，而非前端已用的 Vitest——两套运行器按层分工。
 
 ## Decision
 

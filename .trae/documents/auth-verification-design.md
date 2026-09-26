@@ -1,7 +1,7 @@
 # 身份鉴权详解：Supabase Auth + NestJS 验证设计（M1）
 
 > 状态：方案设计（未实现）
-> 相关文件：[ai-module-plan.md](ai-module-plan.md)（总方案）/ [auth-token-secure-storage-plan.md](auth-token-secure-storage-plan.md)（token 存储，已实现）
+> 相关文件：[auth-token-secure-storage-plan.md](auth-token-secure-storage-plan.md)（token 存储，已实现）。原总方案 ai-module-plan.md 已作废删除（2026-09-26），AI 域设计基线见骨架 Agent Note。
 > 目标读者：想完整理解本项目鉴权链路的开发者。先讲清概念与流程，再落到组件设计。
 
 ---

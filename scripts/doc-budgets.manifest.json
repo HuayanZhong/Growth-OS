@@ -53,9 +53,6 @@
     ".trae/documents/ai-architecture-review.md": {
       "maxWords": 2600
     },
-    ".trae/documents/ai-module-plan.md": {
-      "maxWords": 2800
-    },
     ".trae/documents/ai-rag-multiagent-design.md": {
       "maxWords": 4550
     },
