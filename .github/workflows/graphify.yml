@@ -1,0 +1,70 @@
+name: Graphify
+
+# 每日定时重建知识图谱。GitHub Actions cron 用 UTC：
+# 0 0 * * * = 北京时间早 8 点（实际触发可能延迟几分钟，属 GitHub 正常行为）。
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  # 手动触发入口：workflow 合入 main 后先手动跑一次验证，不必等 schedule
+  workflow_dispatch:
+
+# 图谱只上传为 Artifact，不写仓库 → 保持最小权限
+permissions:
+  contents: read
+
+# 与 ci.yml 同约定：同分支新运行取消旧运行
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  graph:
+    name: Update knowledge graph
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+
+      # 版本与本地一致（PyPI 包名 graphifyy，本机 0.9.61），
+      # 保证 AST 缓存格式与本地 graphify-out 兼容
+      - run: pip install graphifyy==0.9.61
+
+      # graphify-out/ 在 .gitignore 中，用 Actions cache 跨运行持久化：
+      # 命中缓存 → `graphify update .` 只重提取变更文件（纯 AST，无 LLM、无 API key）；
+      # 未命中（首次/缓存被逐出）→ 冷启动全量 AST 重建
+      - uses: actions/cache@v4
+        with:
+          path: graphify-out
+          key: graphify-${{ github.sha }}
+          restore-keys: graphify-
+
+      # 只覆盖代码层（AST）。文档的语义重提取需要 LLM，CI 不做，
+      # 由 check-update 步骤报告缺口。若删除代码触发 shrink-guard 拒绝
+      # 缩小 graph.json，需本地 `graphify update . --force` 重建后重跑。
+      - name: Update graph (code AST, no LLM)
+        run: |
+          if [ -f graphify-out/graph.json ]; then
+            graphify update .
+          else
+            graphify extract . --code-only
+          fi
+
+      # cron-safe：只报告待补的语义重提取（文档变更），不阻塞流水线
+      - run: graphify check-update .
+
+      - name: Export HTML
+        run: |
+          graphify export html
+          graphify export callflow-html --output graphify-out/Growth-OS-callflow.html
+
+      - name: Upload graph artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: graphify-out
+          path: |
+            graphify-out/graph.json
+            graphify-out/GRAPH_REPORT.md
+            graphify-out/*.html
