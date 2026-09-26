@@ -59,7 +59,7 @@ test.describe('web 主链路', () => {
     await expect(page).toHaveURL(AUTH_URL, { timeout: 30_000 })
 
     // 受保护路由被重定向回认证页（登出语义完整）
-    await page.goto('/dashboard/agents')
+    await page.goto('/dashboard/tasks/new')
     await expect(page).toHaveURL(AUTH_URL)
   })
 })

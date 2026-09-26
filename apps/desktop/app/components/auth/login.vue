@@ -40,7 +40,7 @@ function leaveToDashboard() {
   // 动画目标缺失（ref 未绑定/组件重渲染等）时降级直接跳转，
   // 避免 gsap 对 null 目标静默失败、onComplete 不执行导致卡在登录页
   if (!rootEl.value) {
-    void navigateTo('/dashboard/agents')
+    void navigateTo(DEFAULT_ENTRY)
     return
   }
   void exit(rootEl.value, {
@@ -49,7 +49,7 @@ function leaveToDashboard() {
     y: -14,
     duration: 0.3,
     ease: 'power2.in',
-    onComplete: () => navigateTo('/dashboard/agents'),
+    onComplete: () => navigateTo(DEFAULT_ENTRY),
   })
 }
 

@@ -2,7 +2,7 @@
  * 全局认证守卫。
  *
  * - 未登录访问受保护页面 -> 跳转 /auth
- * - 已登录访问 /auth -> 跳转 /dashboard/agents（登录后默认入口）
+ * - 已登录访问 /auth -> 跳转 DEFAULT_ENTRY（登录后默认入口）
  *
  * 用 supabase.auth.getSession() 判断登录态：client 已注入 secureStorage 加密通道
  * （Electron 经主进程 safeStorage，浏览器 fallback localStorage），无需手读 localStorage。
@@ -16,7 +16,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
   // 已登录访问登录页 -> 登录后默认入口
   if (loggedIn && isAuthPage) {
-    return navigateTo('/dashboard/agents')
+    return navigateTo(DEFAULT_ENTRY)
   }
   // 未登录访问受保护页面 -> 登录页
   if (!loggedIn && !isAuthPage) {

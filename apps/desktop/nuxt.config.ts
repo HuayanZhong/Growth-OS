@@ -6,7 +6,7 @@ import tailwindcss from '@tailwindcss/vite'
 // https://nuxt.com/docs/4.x/api/nuxt-config#baseurl
 // 从 .env 读取（根 package.json 的 build/dev 脚本通过 dotenv-cli 注入），兜底 './'
 // dev 模式强制 '/':dev 下 Electron 窗口走 dev server URL 加载（见 modules/electron.ts），
-// 相对 baseURL './' 会让子路由（如 /dashboard/agents）把静态资源相对解析成畸形绝对路径
+// 相对 baseURL './' 会让子路由（如 /dashboard/tasks/new）把静态资源相对解析成畸形绝对路径
 // （Windows 盘符拼进 URL，服务端返回 HTML，MIME 校验失败 → 客户端入口加载失败、页面白屏）。
 // 注意：不能只改 process.env——Nuxt 在加载 config 前就已解析 env 默认值，运行时再改无效，必须显式写进 app 配置。
 const appBaseURL =

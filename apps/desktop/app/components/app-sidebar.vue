@@ -1,5 +1,5 @@
 <script setup lang="ts">
-// 左侧导航栏：品牌区 + 导航菜单（技能/文件/AGENTS/项目）+ 用户区（退出登录）
+// 左侧导航栏：品牌区 + 导航菜单（新任务/技能/文件 + AGENTS 树形分组 + 项目）+ 用户区（退出登录）
 import { ThemeToggle } from '@growth-os/ui'
 import { useAuth } from '~/composables/useAuth'
 import { useNavActive } from '~/composables/useNavActive'
@@ -84,9 +84,33 @@ async function onSignOut() {
       <ThemeToggle />
     </div>
 
-    <!-- 中部：导航菜单（技能/文件/AGENTS 一级平铺，项目二级可展开） -->
+    <!-- 中部：导航菜单（新任务/技能/文件/AGENTS 一级平铺，项目二级可展开） -->
     <nav class="flex-1 overflow-y-auto px-2 py-2">
       <ul class="flex flex-col gap-1">
+        <!-- 新任务：一级菜单（平铺链接） -->
+        <li>
+          <NuxtLink
+            to="/dashboard/tasks/new"
+            :class="navClass('/dashboard/tasks/new')"
+            class="flex items-center gap-2 px-2 py-2"
+          >
+            <svg
+              class="h-4 w-4 shrink-0"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              viewBox="0 0 24 24"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <path d="M8 12h8" />
+              <path d="M12 8v8" />
+            </svg>
+            <span class="truncate">新任务</span>
+          </NuxtLink>
+        </li>
+
         <!-- 技能：一级菜单（平铺链接） -->
         <li>
           <NuxtLink
@@ -137,28 +161,45 @@ async function onSignOut() {
           </NuxtLink>
         </li>
 
-        <!-- AGENTS：一级菜单（平铺链接） -->
+        <!-- AGENTS：树形分组（标签 + 新建占位 + Agent 子项，对标 Coze 侧边栏） -->
         <li>
-          <NuxtLink
-            to="/dashboard/agents"
-            :class="navClass('/dashboard/agents')"
-            class="flex items-center gap-2 px-2 py-2"
-          >
-            <svg
-              class="h-4 w-4 shrink-0"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              viewBox="0 0 24 24"
+          <div class="flex items-center justify-between px-2 pb-1 pt-2">
+            <span class="text-xs font-semibold tracking-wide text-base-content/50">AGENTS</span>
+            <button
+              type="button"
+              class="btn btn-ghost btn-square btn-xs"
+              title="新建 Agent"
+              aria-label="新建 Agent"
             >
-              <path
-                d="M12 8V4H8a2 2 0 0 0-2 2v4m6 0v-2a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m-8 0H8a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h2m4-8h4a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2m-4 0h4"
-              />
-            </svg>
-            <span class="truncate">AGENTS</span>
-          </NuxtLink>
+              <svg
+                class="h-4 w-4"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                viewBox="0 0 24 24"
+              >
+                <circle cx="12" cy="12" r="9" />
+                <path d="M8.5 12h7" />
+                <path d="M12 8.5v7" />
+              </svg>
+            </button>
+          </div>
+          <!-- Agent 子项：渲染 Agent 目录（utils/agents.ts），小球即各 Agent 头像 -->
+          <ul class="flex flex-col gap-0.5">
+            <li v-for="agent in AGENT_LIST" :key="agent.slug">
+              <NuxtLink
+                :to="`/dashboard/agents/${agent.slug}`"
+                :class="navClass(`/dashboard/agents/${agent.slug}`)"
+                class="flex items-center gap-2 px-2 py-1.5 text-sm"
+              >
+                <span class="h-5 w-5 shrink-0">
+                  <EmotionBall emotion="02" />
+                </span>
+                <span class="truncate">{{ agent.name }}</span>
+              </NuxtLink>
+            </li>
+          </ul>
         </li>
 
         <!-- 项目：二级菜单（整行点击展开/收起，箭头仅作指示） -->

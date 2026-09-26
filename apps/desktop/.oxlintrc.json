@@ -49,7 +49,8 @@
     "**/.output/**",
     "**/.turbo/**",
     "**/node_modules/**",
-    "**/*.gen.*"
+    "**/*.gen.*",
+    "**/public/emotion-ball/**"
   ],
   "overrides": [
     {

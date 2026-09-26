@@ -38,9 +38,9 @@ describe('auth.global 守卫', () => {
     expect(await run({ path: '/auth' })).toEqual([])
   })
 
-  it('已登录访问 /auth -> 弹回登录后默认入口 /dashboard/agents', async () => {
+  it('已登录访问 /auth -> 弹回登录后默认入口 /dashboard/tasks/new', async () => {
     mocks.getSession.mockResolvedValue({ data: { session: { id: 'u1' } } })
-    expect(await run({ path: '/auth' })).toEqual(['/dashboard/agents'])
+    expect(await run({ path: '/auth' })).toEqual(['/dashboard/tasks/new'])
   })
 
   it('已登录访问受保护页 -> 放行（不跳转）', async () => {
