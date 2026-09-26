@@ -18,6 +18,7 @@
         "vitest.config.ts",
         "test/**/*.{test,spec}.ts"
       ],
+      "ignore": ["public/emotion-ball/**"],
       "ignoreDependencies": ["daisyui", "tailwindcss", "vue-tsc"],
       "vitest": false
     },
