@@ -1,22 +1,33 @@
 // Agent 目录状态逻辑（响应式单例）：目录以服务端为唯一数据源（server-agent-directory），
 // 默认 Agent（seed 行）与自定义 Agent 均来自 GET /api/v1/agents，本模块不持久化任何本地数据。
-// 加载失败/未登录回退空目录（loaded 标志区分「未加载」与「加载完成但为空」）。
+// loaded/loadError 区分「未加载 / 加载失败（可重试）/ 加载完成但为空 / 就绪」；
+// 会话失效（401）不进入错误态——已由 apiFetch 统一出口接管（登出 + 回登录页）。
 // apiFetch 在 Nuxt 运行时可用（依赖 useRuntimeConfig/useSupabase）；unit 测试经 vi.mock 注入。
 // 显式 import：unit 测试（node 环境）不经过 Nuxt 自动导入转换
 import { ref } from 'vue'
 import type { Agent, CreateAgentInput } from '@growth-os/types'
-import { apiFetch } from './useApi'
+import { apiFetch, ApiError } from './useApi'
 import { clearAgentChatSession } from './useAgentChat'
 
 // 模块级单例：ssr: false（SPA）无水合顾虑，目录天然只活在客户端
 const agents = ref<Agent[]>([])
 const loaded = ref(false)
+const loadError = ref<ApiError | null>(null)
 
-// 拉取目录（登录会话就绪后调用）：失败/未登录静默回退空目录（对齐 auth flows 本地降级纪律）
+// 拉取目录（登录会话就绪后调用）：非会话失效错误记入 loadError 供页面呈现可重试错误态，
+// 网络 TypeError 归一为 NETWORK_ERROR（status 0 = 未收到 HTTP 响应）
 export async function loadAgents(): Promise<void> {
   try {
     agents.value = await apiFetch<Agent[]>('/agents')
-  } catch {
+    loadError.value = null
+  } catch (err) {
+    // 401（含刷新失败）已由 apiFetch 出口本地登出并导航登录页，不呈现目录错误态
+    loadError.value =
+      err instanceof ApiError && err.status === 401
+        ? null
+        : err instanceof ApiError
+          ? err
+          : new ApiError(0, { code: 'NETWORK_ERROR', message: '网络异常，请稍后重试' })
     agents.value = []
   } finally {
     loaded.value = true
@@ -51,9 +62,10 @@ export function getDefaultAgent(): Agent | undefined {
 export function resetAgents(): void {
   agents.value = []
   loaded.value = false
+  loadError.value = null
 }
 
-// 组件消费入口：agents/loaded 为响应式单例（模板/computed 直接迭代即可感知增删）
+// 组件消费入口：agents/loaded/loadError 为响应式单例（模板/computed 直接迭代即可感知增删）
 export function useAgents() {
-  return { agents, loaded, loadAgents, createAgent, removeAgent }
+  return { agents, loaded, loadError, loadAgents, createAgent, removeAgent }
 }

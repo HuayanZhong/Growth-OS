@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { unref } from 'vue'
-import { apiFetch } from '~/composables/useApi'
+import { apiFetch, ApiError } from '~/composables/useApi'
 import {
   createAgent,
   getAgent,
@@ -17,11 +17,15 @@ import type { Agent } from '@growth-os/types'
 /**
  * Agent 目录（useAgents）测试（Nuxt 运行时环境：useAgents 依赖 useApi 的
  * useRuntimeConfig/useSupabase 自动导入，node 环境跑不了，故归 test/nuxt）：
- * 目录以服务端为唯一数据源——loadAgents 成功/失败回退、创建追加、删除移除并清会话、
- * 默认 Agent 可空语义、loaded 门控。apiFetch 以 vi.mock 注入（不触真实网络）。
+ * 目录以服务端为唯一数据源——loadAgents 成功/失败/错误状态、创建追加、删除移除并清会话、
+ * 默认 Agent 可空语义、loaded/loadError 门控。apiFetch 以 vi.mock 注入（不触真实网络），
+ * ApiError 保留真实实现（loadError 的 instanceof 分流依赖它）。
  */
 
-vi.mock('~/composables/useApi', () => ({ apiFetch: vi.fn() }))
+vi.mock('~/composables/useApi', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('~/composables/useApi')>()
+  return { ...actual, apiFetch: vi.fn() }
+})
 
 const mockFetch = vi.mocked(apiFetch)
 
@@ -53,7 +57,7 @@ describe('Agent 目录（useAgents）', () => {
   })
 
   describe('loadAgents', () => {
-    it('成功：目录为服务端返回值（默认在前），loaded 置位，默认 Agent 可得', async () => {
+    it('成功：目录为服务端返回值（默认在前），loaded 置位，默认 Agent 可得，错误清除', async () => {
       const custom = makeAgent()
       mockFetch.mockResolvedValue([DEFAULT_AGENT, custom])
 
@@ -63,9 +67,10 @@ describe('Agent 目录（useAgents）', () => {
       expect(getDefaultAgent()).toEqual(DEFAULT_AGENT)
       expect(getAgent(custom.slug)).toEqual(custom)
       expect(unref(useAgents().loaded)).toBe(true)
+      expect(unref(useAgents().loadError)).toBeNull()
     })
 
-    it('失败：静默回退空目录，loaded 仍置位（空态而非未加载）', async () => {
+    it('失败（非会话失效）：记入 loadError 可重试错误态，loaded 仍置位', async () => {
       mockFetch.mockRejectedValue(new Error('网络失败'))
 
       await expect(loadAgents()).resolves.toBeUndefined()
@@ -73,10 +78,49 @@ describe('Agent 目录（useAgents）', () => {
       expect(getDefaultAgent()).toBeUndefined()
       expect(getAgent('agent-abc12345')).toBeUndefined()
       expect(unref(useAgents().loaded)).toBe(true)
+      const err = unref(useAgents().loadError)
+      expect(err).toBeInstanceOf(ApiError)
+      expect(err?.code).toBe('NETWORK_ERROR')
+      expect(err?.status).toBe(0)
+    })
+
+    it('失败（服务端 500 ApiError）：loadError 保留原始状态码与错误码', async () => {
+      mockFetch.mockRejectedValue(new ApiError(500, { code: 'INTERNAL', message: '服务器故障' }))
+
+      await loadAgents()
+
+      const err = unref(useAgents().loadError)
+      expect(err).toBeInstanceOf(ApiError)
+      expect(err?.status).toBe(500)
+      expect(err?.code).toBe('INTERNAL')
+    })
+
+    it('失败（401 会话失效）：已由 apiFetch 出口接管，loadError 置空（页面不呈现错误态）', async () => {
+      mockFetch.mockRejectedValue(
+        new ApiError(401, { code: 'SESSION_EXPIRED', message: '登录已失效，请重新登录' }),
+      )
+
+      await loadAgents()
+
+      expect(unref(useAgents().loadError)).toBeNull()
+      expect(unref(useAgents().loaded)).toBe(true)
+    })
+
+    it('重试成功：错误清除，目录恢复', async () => {
+      mockFetch.mockRejectedValue(new Error('网络失败'))
+      await loadAgents()
+      expect(unref(useAgents().loadError)).not.toBeNull()
+
+      mockFetch.mockResolvedValue([DEFAULT_AGENT])
+      await loadAgents()
+
+      expect(unref(useAgents().loadError)).toBeNull()
+      expect(getDefaultAgent()).toEqual(DEFAULT_AGENT)
     })
 
     it('未加载时 loaded 为 false（区别于加载完成但为空）', () => {
       expect(unref(useAgents().loaded)).toBe(false)
+      expect(unref(useAgents().loadError)).toBeNull()
     })
   })
 
@@ -137,14 +181,16 @@ describe('Agent 目录（useAgents）', () => {
   })
 
   it('resetAgents：恢复未加载空目录（测试隔离）', async () => {
-    mockFetch.mockResolvedValue([DEFAULT_AGENT])
+    mockFetch.mockRejectedValue(new Error('网络失败'))
     await loadAgents()
-    expect(getDefaultAgent()).toBeDefined()
+    expect(getDefaultAgent()).toBeUndefined()
+    expect(unref(useAgents().loadError)).not.toBeNull()
 
     resetAgents()
 
     expect(getDefaultAgent()).toBeUndefined()
     expect(unref(useAgents().loaded)).toBe(false)
+    expect(unref(useAgents().loadError)).toBeNull()
   })
 
   it('表情候选清单：含默认形象、id 唯一且均为字符串编号', () => {
