@@ -1,6 +1,20 @@
-import { describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import TaskComposer from '~/components/TaskComposer.vue'
+
+// 组件内目录下拉走服务端目录单例（server-agent-directory）：以 mock apiFetch 灌入目录
+vi.mock('~/composables/useApi', () => ({ apiFetch: vi.fn() }))
+import { apiFetch } from '~/composables/useApi'
+import { loadAgents } from '~/composables/useAgents'
+
+const mockFetch = vi.mocked(apiFetch)
+
+beforeEach(async () => {
+  mockFetch.mockResolvedValue([
+    { id: 'seed-uuid', slug: 'xiaohuayan', name: '小花颜', isDefault: true, emotion: '02' },
+  ])
+  await loadAgents()
+})
 
 /**
  * 任务输入组件测试（EmotionBall/NuxtLink 打桩，聚焦输入与选择行为）：

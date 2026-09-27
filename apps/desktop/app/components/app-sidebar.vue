@@ -2,16 +2,53 @@
 // 左侧导航栏：品牌区 + 导航菜单（新任务/技能/文件 + AGENTS 树形分组 + 项目）+ 用户区（退出登录）
 import { ThemeToggle } from '@growth-os/ui'
 import CreateAgentModal from '~/components/agents/CreateAgentModal.vue'
-import { useAgents } from '~/composables/useAgents'
+import { getDefaultAgent, useAgents } from '~/composables/useAgents'
+import type { Agent } from '@growth-os/types'
 import { useAuth } from '~/composables/useAuth'
 import { useNavActive } from '~/composables/useNavActive'
 
 const { getSession, signOutWithFallback } = useAuth()
-// Agent 目录：响应式单例（useAgents），新建 Agent 后此列表即时更新
-const { agents } = useAgents()
+// Agent 目录：响应式单例（useAgents），新建/删除后此列表即时更新
+const { agents, removeAgent } = useAgents()
+
+const route = useRoute()
 
 // 创建 Agent 弹窗（CreateAgentModal 暴露 open()）
 const createAgentModal = ref<{ open: () => void } | null>(null)
+
+// 删除 Agent：待确认条目（二次确认弹窗用）；删除成功后目录即时移除，
+// 若正浏览被删 Agent 页则跳回默认 Agent 开场页（默认行不可删，服务端 403 兜底）
+const deleteTarget = ref<Agent | null>(null)
+const deleteDialog = ref<HTMLDialogElement | null>(null)
+
+function openDeleteDialog(agent: Agent) {
+  deleteTarget.value = agent
+  deleteDialog.value?.showModal()
+}
+
+function closeDeleteDialog() {
+  deleteDialog.value?.close()
+  deleteTarget.value = null
+}
+
+async function onDeleteConfirm() {
+  const target = deleteTarget.value
+  if (!target) return
+  closeDeleteDialog()
+  // 先离开被删 Agent 页再删除：目录更新的瞬间 [id].vue 的 404 门控会触发 fatal 错误，
+  // 若仍停留在该页会与这里的导航竞争（实测会把目录连带清空）。先导航则页面卸载、门控消失。
+  const deletingCurrent = route.path === `/dashboard/agents/${target.slug}`
+  if (deletingCurrent) {
+    const fallback = getDefaultAgent()
+    await navigateTo(fallback ? `/dashboard/agents/${fallback.slug}` : '/dashboard/tasks/new')
+  }
+  try {
+    await removeAgent(target)
+    showToast(`已删除「${target.name}」`, 'success')
+  } catch (err) {
+    showToast(err instanceof Error && err.message ? err.message : '删除失败，请稍后重试', 'error')
+  }
+}
 
 // 侧边栏根元素：多根组件 $el 为 null，显式暴露给布局做进入动画
 // （defineExpose 须在顶层 await 之前同步调用）
@@ -193,19 +230,45 @@ async function onSignOut() {
               </svg>
             </button>
           </div>
-          <!-- Agent 子项：渲染 Agent 目录（composables/useAgents.ts），小球即各 Agent 头像 -->
+          <!-- Agent 子项：渲染 Agent 目录（composables/useAgents.ts），小球即各 Agent 头像；
+               自建条目 hover 显现删除入口（默认条目无删除操作），点击弹二次确认 -->
           <ul class="flex flex-col gap-0.5">
             <li v-for="agent in agents" :key="agent.slug">
-              <NuxtLink
-                :to="`/dashboard/agents/${agent.slug}`"
-                :class="navClass(`/dashboard/agents/${agent.slug}`)"
-                class="flex items-center gap-2 px-2 py-1.5 text-sm"
-              >
-                <span class="h-5 w-5 shrink-0">
-                  <EmotionBall :emotion="agent.emotion" :color="agent.color" />
-                </span>
-                <span class="truncate">{{ agent.name }}</span>
-              </NuxtLink>
+              <div class="group relative flex items-center">
+                <NuxtLink
+                  :to="`/dashboard/agents/${agent.slug}`"
+                  :class="navClass(`/dashboard/agents/${agent.slug}`)"
+                  class="flex min-w-0 flex-1 items-center gap-2 rounded-lg px-2 py-1.5 text-sm"
+                >
+                  <span class="h-5 w-5 shrink-0">
+                    <EmotionBall :emotion="agent.emotion" :color="agent.color" />
+                  </span>
+                  <span class="truncate">{{ agent.name }}</span>
+                </NuxtLink>
+                <button
+                  v-if="!agent.isDefault"
+                  type="button"
+                  class="btn btn-ghost btn-square btn-xs absolute right-1 opacity-0 transition-opacity focus-visible:opacity-100 group-hover:opacity-100"
+                  :aria-label="`删除 ${agent.name}`"
+                  :title="`删除 ${agent.name}`"
+                  data-test="agent-delete"
+                  @click.stop.prevent="openDeleteDialog(agent)"
+                >
+                  <svg
+                    class="h-3.5 w-3.5"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M3 6h18" />
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+                    <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                  </svg>
+                </button>
+              </div>
             </li>
           </ul>
         </li>
@@ -315,6 +378,32 @@ async function onSignOut() {
     </div>
     <form method="dialog" class="modal-backdrop">
       <button type="button" @click="closeSignOutDialog">关闭</button>
+    </form>
+  </dialog>
+
+  <!-- 删除 Agent 确认弹窗（侧边栏条目删除入口触发） -->
+  <dialog ref="deleteDialog" class="modal">
+    <div class="modal-box">
+      <h3 class="text-lg font-bold">确认删除 Agent？</h3>
+      <p class="py-4 text-sm text-base-content/70">
+        将删除「{{ deleteTarget?.name }}」，该操作不可恢复，确定要继续吗？
+      </p>
+      <div class="modal-action">
+        <button type="button" class="btn" data-test="delete-cancel" @click="closeDeleteDialog">
+          取消
+        </button>
+        <button
+          type="button"
+          class="btn btn-error"
+          data-test="delete-confirm"
+          @click="onDeleteConfirm"
+        >
+          确认删除
+        </button>
+      </div>
+    </div>
+    <form method="dialog" class="modal-backdrop">
+      <button type="button" @click="closeDeleteDialog">关闭</button>
     </form>
   </dialog>
 

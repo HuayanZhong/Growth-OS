@@ -7,14 +7,23 @@
 // getAgent 显式导入（历史上 utils 版本曾漏进自动导入注册表，显式引用更稳，保留习惯）
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
-import { getAgent } from '~/composables/useAgents'
+import { getAgent, useAgents } from '~/composables/useAgents'
 
 const route = useRoute()
 const slug = computed(() => route.params.id as string)
 const agent = computed(() => getAgent(slug.value))
-if (!agent.value) {
-  throw createError({ statusCode: 404, statusMessage: 'Agent 不存在', fatal: true })
-}
+
+// 404 门控：目录以服务端异步加载，仅在 loaded 后判定（加载窗口内不误判 404）
+const { loaded } = useAgents()
+watch(
+  [loaded, agent],
+  ([isLoaded, current]) => {
+    if (isLoaded && !current) {
+      throw createError({ statusCode: 404, statusMessage: 'Agent 不存在', fatal: true })
+    }
+  },
+  { immediate: true },
+)
 
 const placeholder = computed(() => `告诉${agent.value?.name ?? 'Agent'}，你想先从哪件事开始…`)
 

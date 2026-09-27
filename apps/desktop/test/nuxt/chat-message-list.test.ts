@@ -1,7 +1,21 @@
-import { describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import ChatMessageList from '~/components/ChatMessageList.vue'
 import type { ChatMessage } from '~/types/chat'
+
+// 组件内 getAgent 走服务端目录单例（server-agent-directory）：以 mock apiFetch 灌入目录
+vi.mock('~/composables/useApi', () => ({ apiFetch: vi.fn() }))
+import { apiFetch } from '~/composables/useApi'
+import { loadAgents } from '~/composables/useAgents'
+
+const mockFetch = vi.mocked(apiFetch)
+
+beforeEach(async () => {
+  mockFetch.mockResolvedValue([
+    { id: 'seed-uuid', slug: 'xiaohuayan', name: '小花颜', isDefault: true, emotion: '02' },
+  ])
+  await loadAgents()
+})
 
 /**
  * 会话消息流渲染测试（EmotionBall 打桩，聚焦身份行与 role/kind 渲染区分）：

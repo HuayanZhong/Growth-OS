@@ -14,6 +14,7 @@ import { AuthModule } from './modules/auth/auth.module.ts'
 import { HealthModule } from './modules/health/health.module.ts'
 import { ThrottleModule } from './modules/throttle/throttle.module.ts'
 import { AuditModule } from './modules/audit/audit.module.ts'
+import { AgentsModule } from './modules/agents/agents.module.ts'
 import { NotFoundModule } from './common/not-found/not-found.module.ts'
 
 const isProd = process.env.NODE_ENV === 'production'
@@ -82,6 +83,9 @@ const PINO_AUTO_LOGGING_IGNORE: (req: IncomingMessage) => boolean = (req) =>
 
     // ---- 审计日志（迭代计划 3.4）：各域写操作成功后经 AuditService 显式记录（当前无写侧调用方，重建域时接回） ----
     AuditModule,
+
+    // ---- Agent 目录（server-agent-directory）：创建/列表/删除，目录以服务端为唯一数据源 ----
+    AgentsModule,
 
     // ---- 兜底路由：必须最后注册，未匹配请求收口为 ApiErrorEnvelope 404 ----
     NotFoundModule,

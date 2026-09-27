@@ -23,6 +23,10 @@ export type { HealthApiMap } from './api/health.ts'
 export type { AuditLog, AuditLogQuery, AuditApiMap } from './api/audit.ts'
 export { auditLogSchema, auditLogQuerySchema } from './api/audit.ts'
 
+// ---- Agent 目录契约（server-agent-directory）----
+export type { Agent, CreateAgentInput, DeleteAgentResult, AgentApiMap } from './api/agents.ts'
+export { agentSchema, createAgentSchema, deleteAgentResultSchema } from './api/agents.ts'
+
 // ---- 插件契约（迭代计划 4.1）----
 export type {
   AdapterType,

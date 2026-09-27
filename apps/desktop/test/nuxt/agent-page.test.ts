@@ -10,6 +10,18 @@ mockNuxtImport('useRoute', () => () => mocks.route)
 
 import AgentPage from '~/pages/dashboard/agents/[id].vue'
 import { resetAgentChat, sendMessage, stagePending } from '~/composables/useAgentChat'
+import { apiFetch } from '~/composables/useApi'
+import { loadAgents } from '~/composables/useAgents'
+
+// 页面 getAgent 走服务端目录单例（server-agent-directory）：以 mock apiFetch 灌入目录
+vi.mock('~/composables/useApi', () => ({ apiFetch: vi.fn() }))
+
+const mockFetch = vi.mocked(apiFetch)
+
+const DIRECTORY = [
+  { id: 'seed-uuid', slug: 'xiaohuayan', name: '小花颜', isDefault: true, emotion: '02' },
+  { id: 'row-biancheng', slug: 'biancheng', name: '编程专家', isDefault: false, emotion: '16' },
+]
 
 /**
  * Agent 页双态测试（EmotionBall/NuxtLink 打桩，消息流走真实组件）：
@@ -37,9 +49,11 @@ function mountPage() {
   })
 }
 
-beforeEach(() => {
-  // 隔离：每例清空会话单例与 pending
+beforeEach(async () => {
+  // 隔离：每例清空会话单例与 pending，并恢复目录（页面 404 门控依赖 loaded）
   resetAgentChat()
+  mockFetch.mockResolvedValue(DIRECTORY)
+  await loadAgents()
 })
 
 describe('Agent 页双态', () => {

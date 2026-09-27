@@ -1,7 +1,8 @@
 {
   // test/unit 专属类型检查配置：nuxt typecheck 的 project 不覆盖 test/unit（tsconfig.node.json
   // 的 include 仅含 nuxt.config/modules），由此文件单独承接——由 vitest unit 项目的 typecheck
-  // 消费（见 vitest.config.ts）。被测源文件（app/**）经 import 自动进入程序，无需逐个 include
+  // 消费（见 vitest.config.ts）。被测源文件（app/**）经 import 自动进入程序，无需逐个 include。
+  // 注意：unit 只承载 node 纯逻辑测试；依赖 Nuxt 运行时/自动导入全局的源（如 useApi）归 test/nuxt
   "compilerOptions": {
     "target": "ESNext",
     "module": "ESNext",
@@ -12,7 +13,9 @@
     "noEmit": true,
     "skipLibCheck": true,
     "isolatedModules": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    // @growth-os/types 源码直发，.ts 后缀 import
+    "allowImportingTsExtensions": true
   },
   "include": ["test/unit/**/*.ts"]
 }

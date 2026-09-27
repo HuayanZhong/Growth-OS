@@ -1,6 +1,5 @@
-// Agent 目录常量（纯数据，无状态）：类型见 types/agents.ts，状态逻辑见 composables/useAgents.ts。
-// 数据结构即未来 API payload 蓝本（见 openspec/changes/refactor-sfc-layering/design.md）
-import type { AgentEntry } from '../types/agents'
+// Agent 形象选项常量（纯数据，无状态）：状态逻辑见 composables/useAgents.ts。
+// 目录数据本身已迁移服务端（server-agent-directory），此处只保留创建表单的策展选项。
 
 // 表情形象候选（策展清单）：来源 public/emotion-ball/emotions.js，
 // ID 编号即对外契约不可重排（该文件头注释声明）；剔除失落/疲惫/无奈等不宜作头像的情绪，
@@ -34,8 +33,3 @@ export const AVATAR_COLOR_OPTIONS: ReadonlyArray<{ id: string; name: string }> =
 ]
 
 export const DEFAULT_AVATAR_COLOR = AVATAR_COLOR_OPTIONS[0]?.id ?? '#F6EFE4'
-
-// 内置 seed：默认 Agent「小花颜」，永不写盘、不可被本地数据覆盖
-export const BUILT_IN_AGENTS: AgentEntry[] = [
-  { slug: 'xiaohuayan', name: '小花颜', isDefault: true, emotion: DEFAULT_AVATAR_EMOTION },
-]

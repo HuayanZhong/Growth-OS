@@ -73,6 +73,11 @@ export function consumePending(slug: string): string | null {
   return current && current.slug === slug ? current.text : null
 }
 
+// 删除 Agent 时清理其会话（removeAgent 调用；会话仅内存态，随目录删除一并丢弃）
+export function clearAgentChatSession(slug: string): void {
+  sessions.delete(slug)
+}
+
 // 测试隔离专用：清空全部会话与 pending（生产不调用；测试文件是 knip entry，导出不算死代码）
 export function resetAgentChat(): void {
   sessions.clear()

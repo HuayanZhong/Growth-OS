@@ -35,5 +35,8 @@ export default {
     'header-max-length': [2, 'always', 72],
     'subject-max-length': [2, 'always', 72],
     'body-leading-blank': [1, 'always'],
+    // body 行长不设门禁：提交信息的排版细节由 .trae/rules/git-commit-message.md 承载（用户自控），
+    // 门禁只兜结构性校验（type/scope/header）
+    'body-max-line-length': [0],
   },
 }

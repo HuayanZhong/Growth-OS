@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { nextTick } from 'vue'
-import { mount } from '@vue/test-utils'
+import { flushPromises, mount } from '@vue/test-utils'
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 
 const mocks = vi.hoisted(() => ({
@@ -10,11 +10,18 @@ const mocks = vi.hoisted(() => ({
 mockNuxtImport('navigateTo', () => mocks.navigateTo)
 
 import CreateAgentModal from '~/components/agents/CreateAgentModal.vue'
-import { initAgents, useAgents } from '~/composables/useAgents'
+import { apiFetch } from '~/composables/useApi'
+import { resetAgents, useAgents } from '~/composables/useAgents'
+
+// 创建走服务端（server-agent-directory）：apiFetch mock，POST 返回服务端生成的条目
+vi.mock('~/composables/useApi', () => ({ apiFetch: vi.fn() }))
+
+const mockFetch = vi.mocked(apiFetch)
 
 /**
  * 创建 Agent 弹窗测试（EmotionBall 打桩、navigateTo mock）：
- * 打开初始态、名称必填校验、点选表情/颜色实时预览、创建追加目录并跳转、取消丢弃
+ * 打开初始态、名称必填校验、点选表情/颜色实时预览、创建（POST）成功追加目录并跳转、
+ * 创建失败弹窗内呈现错误且保留表单、扩展选择弹窗、取消丢弃
  */
 function mountModal() {
   return mount(CreateAgentModal, {
@@ -34,10 +41,19 @@ function openModal(wrapper: ReturnType<typeof mountModal>) {
   ;(wrapper.vm as unknown as { open: () => void }).open()
 }
 
+function findCreateButton(wrapper: ReturnType<typeof mountModal>) {
+  return wrapper.findAll('button').find((button) => button.text() === '创建')
+}
+
 describe('CreateAgentModal', () => {
-  beforeEach(() => {
-    // 隔离：目录重置为仅内置；navigateTo 清空调用记录
-    initAgents(null)
+  beforeEach(async () => {
+    // 隔离：目录重置后灌入服务端目录（默认 Agent 在前）；navigateTo 清空调用记录
+    resetAgents()
+    mockFetch.mockResolvedValue([
+      { id: 'seed-uuid', slug: 'xiaohuayan', name: '小花颜', isDefault: true, emotion: '02' },
+    ])
+    const { loadAgents } = await import('~/composables/useAgents')
+    await loadAgents()
     mocks.navigateTo.mockClear()
   })
 
@@ -50,14 +66,14 @@ describe('CreateAgentModal', () => {
     // 未选择技能：扩展能力条显示占位文案，不显示分类 chip
     expect(wrapper.text()).toContain('添加扩展能力（插件、技能和 MCP）')
     expect(wrapper.find('button[aria-label="选择技能"]').exists()).toBe(false)
-    const createButton = wrapper.findAll('button').find((button) => button.text() === '创建')
+    const createButton = findCreateButton(wrapper)
     expect(createButton?.attributes('disabled')).toBeDefined()
   })
 
   it('名称有效后创建按钮可用', async () => {
     const wrapper = mountModal()
     openModal(wrapper)
-    const createButton = wrapper.findAll('button').find((button) => button.text() === '创建')
+    const createButton = findCreateButton(wrapper)
     expect(createButton?.attributes('disabled')).toBeDefined()
     await wrapper.find('input[type="text"]').setValue('写作助手')
     expect(createButton?.attributes('disabled')).toBeUndefined()
@@ -81,7 +97,7 @@ describe('CreateAgentModal', () => {
     ).toBe('#CFE2F4')
   })
 
-  it('创建：追加目录（含表情/颜色/描述/技能）并跳转新开场页', async () => {
+  it('创建：POST 成功追加目录（含表情/颜色/描述/技能）并跳转新开场页', async () => {
     const wrapper = mountModal()
     openModal(wrapper)
     await wrapper.find('input[type="text"]').setValue('  写作助手  ')
@@ -102,24 +118,50 @@ describe('CreateAgentModal', () => {
 
     expect(wrapper.find('button[aria-label="选择技能"]').text()).toContain('+2')
 
-    await wrapper
-      .findAll('button')
-      .find((button) => button.text() === '创建')
-      ?.trigger('click')
+    // POST 响应：slug 由服务端生成
+    mockFetch.mockResolvedValueOnce({
+      id: 'row-srv',
+      slug: 'agent-srv00001',
+      name: '写作助手',
+      isDefault: false,
+      emotion: '10',
+      color: '#CFE2F4',
+      description: '帮我写文章',
+      skills: ['web-search', 'knowledge'],
+    })
+
+    await findCreateButton(wrapper)?.trigger('click')
+    await flushPromises()
 
     // 创建后弹窗必须关闭（弹窗挂载于持久布局，路由切换不会卸载它）
     expect(wrapper.find('dialog[open]').exists()).toBe(false)
 
     const { agents } = useAgents()
     const created = agents.value.find((agent) => agent.name === '写作助手')
-    expect(created?.slug).toMatch(/^agent-/)
+    expect(created?.slug).toBe('agent-srv00001')
     expect(created?.isDefault).toBe(false)
     expect(created?.emotion).toBe('10')
     expect(created?.color).toBe('#CFE2F4')
     expect(created?.description).toBe('帮我写文章')
     expect(created?.skills).toEqual(['web-search', 'knowledge'])
     expect(mocks.navigateTo).toHaveBeenCalledTimes(1)
-    expect(mocks.navigateTo).toHaveBeenCalledWith(`/dashboard/agents/${created?.slug}`)
+    expect(mocks.navigateTo).toHaveBeenCalledWith('/dashboard/agents/agent-srv00001')
+  })
+
+  it('创建失败：弹窗内呈现错误、表单保留且不跳转（可修正后重试）', async () => {
+    const wrapper = mountModal()
+    openModal(wrapper)
+    await wrapper.find('input[type="text"]').setValue('写作助手')
+
+    mockFetch.mockRejectedValueOnce(new Error('创建失败，请稍后重试'))
+    await findCreateButton(wrapper)?.trigger('click')
+    await flushPromises()
+
+    // 弹窗不关闭，错误呈现，表单内容保留
+    expect(wrapper.find('dialog[open]').exists()).toBe(true)
+    expect(wrapper.find('[data-test="form-error"]').text()).toContain('创建失败')
+    expect((wrapper.find('input[type="text"]').element as HTMLInputElement).value).toBe('写作助手')
+    expect(mocks.navigateTo).not.toHaveBeenCalled()
   })
 
   it('扩展选择弹窗：搜索过滤生效，取消不回填', async () => {

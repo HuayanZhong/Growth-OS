@@ -21,10 +21,10 @@ function close() {
   dialogEl.value?.close()
 }
 
-// 事件接线：先关弹窗（宿主职责）再走业务流——弹窗挂载于持久布局，路由切换不会卸载它
-function onSubmit() {
-  close()
-  form.submit()
+// 事件接线：提交成功才关弹窗——失败时保留表单与错误提示（不关闭、不跳转），可修正后重试
+async function onSubmit() {
+  const ok = await form.submit()
+  if (ok) close()
 }
 
 defineExpose({ open })
@@ -209,11 +209,22 @@ defineExpose({ open })
         </div>
       </div>
 
+      <!-- 提交失败提示：不关弹窗、保留表单（可修正后重试） -->
+      <p v-if="form.error" data-test="form-error" class="mt-4 text-sm text-error" role="alert">
+        {{ form.error }}
+      </p>
+
       <!-- 页脚 -->
       <div class="modal-action">
         <button type="button" class="btn" @click="close">取消</button>
-        <button type="button" class="btn btn-primary" :disabled="!form.canCreate" @click="onSubmit">
-          创建
+        <button
+          type="button"
+          class="btn btn-primary"
+          :disabled="!form.canCreate || form.submitting"
+          @click="onSubmit"
+        >
+          <span v-if="form.submitting" class="loading loading-spinner loading-xs" />
+          {{ form.submitting ? '创建中…' : '创建' }}
         </button>
       </div>
     </div>

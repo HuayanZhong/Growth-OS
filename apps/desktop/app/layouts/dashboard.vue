@@ -4,6 +4,8 @@
 // timeline 错峰编排按动画规则保持手写；CSSPlugin 注册收拢在 useGsapTransition
 import { gsap } from 'gsap'
 import AppSidebar from '~/components/app-sidebar.vue'
+import { useAuth } from '~/composables/useAuth'
+import { loadAgents, resetAgents } from '~/composables/useAgents'
 
 const route = useRoute()
 
@@ -15,6 +17,8 @@ const mainRef = ref<HTMLElement | null>(null)
 
 // 登录成功进入工作台：整页淡入，侧边栏从左侧、内容区从右侧滑入（timeline 错峰编排）
 onMounted(async () => {
+  // 目录加载：登录会话就绪后拉取（失败静默回退空目录），不阻塞入场动画
+  if (await useAuth().getSession()) void loadAgents()
   await nextTick()
   const rootEl = rootRef.value
   const asideEl = asideRef.value?.asideEl ?? null
@@ -62,9 +66,10 @@ watch(
   },
 )
 
-// 布局卸载（登出等）时终止进行中的动画，避免泄漏
+// 布局卸载（登出等）时终止进行中的动画并清空目录（登出后目录不残留内存数据）
 onUnmounted(() => {
   gsap.killTweensOf([rootRef.value, asideRef.value?.asideEl, mainRef.value])
+  resetAgents()
 })
 </script>
 
