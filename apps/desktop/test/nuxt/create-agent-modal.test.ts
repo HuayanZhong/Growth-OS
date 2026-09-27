@@ -62,7 +62,7 @@ describe('CreateAgentModal', () => {
     openModal(wrapper)
     const preview = wrapper.find('[data-test="preview"] [data-test="emotion-ball"]')
     expect(preview.attributes('data-emotion')).toBe('02')
-    expect(preview.attributes('data-color')).toBe('#F6EFE4')
+    expect(preview.attributes('data-color')).toBe('#F2E4C0')
     // 未选择技能：扩展能力条显示占位文案，不显示分类 chip
     expect(wrapper.text()).toContain('添加扩展能力（插件、技能和 MCP）')
     expect(wrapper.find('button[aria-label="选择技能"]').exists()).toBe(false)
@@ -94,7 +94,7 @@ describe('CreateAgentModal', () => {
     await wrapper.find('button[aria-label="颜色：雾蓝"]').trigger('click')
     expect(
       wrapper.find('[data-test="preview"] [data-test="emotion-ball"]').attributes('data-color'),
-    ).toBe('#CFE2F4')
+    ).toBe('#A9CDEF')
   })
 
   it('创建：POST 成功追加目录（含表情/颜色/描述/技能）并跳转新开场页', async () => {
@@ -125,7 +125,7 @@ describe('CreateAgentModal', () => {
       name: '写作助手',
       isDefault: false,
       emotion: '10',
-      color: '#CFE2F4',
+      color: '#A9CDEF',
       description: '帮我写文章',
       skills: ['web-search', 'knowledge'],
     })
@@ -141,7 +141,7 @@ describe('CreateAgentModal', () => {
     expect(created?.slug).toBe('agent-srv00001')
     expect(created?.isDefault).toBe(false)
     expect(created?.emotion).toBe('10')
-    expect(created?.color).toBe('#CFE2F4')
+    expect(created?.color).toBe('#A9CDEF')
     expect(created?.description).toBe('帮我写文章')
     expect(created?.skills).toEqual(['web-search', 'knowledge'])
     expect(mocks.navigateTo).toHaveBeenCalledTimes(1)

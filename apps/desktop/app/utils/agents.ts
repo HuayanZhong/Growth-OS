@@ -20,16 +20,17 @@ export const AGENT_AVATAR_OPTIONS: ReadonlyArray<{ id: string; name: string }> =
 export const DEFAULT_AVATAR_EMOTION = '02'
 
 // 形象色板（预设 8 色）：小球身体颜色走引擎 create 的 color 参数（角色画布参数，
-// 硬编码 hex 不属 UI 语义色范畴）；眼白由引擎在设色时自动切纯白。首位为默认米白（上游观感）。
+// 硬编码 hex 不属 UI 语义色范畴）；眼白由引擎在设色时自动切纯白。
+// 中饱和粉彩档（亮度 ~87%、饱和 ~65%）：保证色相间彼此可辨，避免高亮浅色在色板上发白发灰
 export const AVATAR_COLOR_OPTIONS: ReadonlyArray<{ id: string; name: string }> = [
-  { id: '#F6EFE4', name: '奶油' },
-  { id: '#F8DFDC', name: '樱粉' },
-  { id: '#FAE5C0', name: '杏黄' },
-  { id: '#F6EFAF', name: '柠檬' },
-  { id: '#CFE2F4', name: '雾蓝' },
-  { id: '#E3DAF4', name: '藕紫' },
-  { id: '#D9EBD5', name: '薄荷' },
-  { id: '#F4CFC5', name: '珊瑚' },
+  { id: '#F2E4C0', name: '奶油' },
+  { id: '#F6C6CD', name: '樱粉' },
+  { id: '#F5CE95', name: '杏黄' },
+  { id: '#E9E382', name: '柠檬' },
+  { id: '#A9CDEF', name: '雾蓝' },
+  { id: '#C7B6EA', name: '藕紫' },
+  { id: '#ABDABA', name: '薄荷' },
+  { id: '#F2A58F', name: '珊瑚' },
 ]
 
-export const DEFAULT_AVATAR_COLOR = AVATAR_COLOR_OPTIONS[0]?.id ?? '#F6EFE4'
+export const DEFAULT_AVATAR_COLOR = AVATAR_COLOR_OPTIONS[0]?.id ?? '#F2E4C0'
