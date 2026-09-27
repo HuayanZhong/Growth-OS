@@ -3,11 +3,22 @@
 // 下拉即 Agent 目录（useAgents 响应式单例）：选择即路由切换（/dashboard/agents/:slug），
 // 当前 Agent 高亮；各 Agent 小球头像由目录的 emotion 字段驱动
 // 模型选择为纯前端状态（MODEL_LIST 静态目录），模型后端接入后随任务提交
+// showAgentSelector：会话（chat）态不渲染垫层（对标 Coze：切 agent 走侧边栏），开场/新任务页默认显示
 import { getAgent, useAgents } from '~/composables/useAgents'
 
 const props = withDefaults(
-  defineProps<{ agentName?: string; placeholder?: string; agentSlug?: string }>(),
-  { agentName: '小花颜', placeholder: '说说你想做什么…', agentSlug: undefined },
+  defineProps<{
+    agentName?: string
+    placeholder?: string
+    agentSlug?: string
+    showAgentSelector?: boolean
+  }>(),
+  {
+    agentName: '小花颜',
+    placeholder: '说说你想做什么…',
+    agentSlug: undefined,
+    showAgentSelector: true,
+  },
 )
 
 const { agents } = useAgents()
@@ -44,7 +55,8 @@ const menuItemClass =
 </script>
 
 <template>
-  <div class="w-full max-w-3xl">
+  <!-- 宽度策略归使用方：组件只撑满父容器（开场页 max-w-3xl 居中 / 会话态撑满钉底由页面控制） -->
+  <div class="w-full">
     <!-- 输入卡片（顶层）：纵向渐变面 + 大而软的投影，悬浮在垫层之上 -->
     <div
       class="relative z-10 rounded-3xl border border-base-300 bg-linear-to-b from-base-100 to-base-200 shadow-xl shadow-base-content/5"
@@ -163,8 +175,10 @@ const menuItemClass =
     </div>
 
     <!-- 垫层（底层）：缩进更多、圆角更小、颜色更深（近大远小），上沿压入卡片底下，带接地投影；
-         pt 需补偿被卡片压住的部分（-mt-4 = 16px），可见区上下各 4px 使触发器垂直居中且总高不变 -->
+         pt 需补偿被卡片压住的部分（-mt-4 = 16px），可见区上下各 4px 使触发器垂直居中且总高不变；
+         会话（chat）态经 showAgentSelector=false 关闭（切 agent 走侧边栏） -->
     <div
+      v-if="props.showAgentSelector"
       class="-mt-4 mx-6 rounded-b-xl border border-t-0 border-base-300 bg-base-300/60 px-2 pb-1 pt-4 shadow-md shadow-base-content/5"
     >
       <div class="dropdown dropdown-top dropdown-start">

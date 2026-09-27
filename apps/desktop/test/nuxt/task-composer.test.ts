@@ -95,4 +95,11 @@ describe('TaskComposer', () => {
     expect(link.text()).toContain('默认')
     expect(link.find('.flex-1').classes()).toContain('font-medium')
   })
+
+  it('showAgentSelector=false 不渲染 Agent 垫层（会话态，切 agent 走侧边栏）', () => {
+    const wrapper = mountComposer({ agentSlug: 'xiaohuayan', showAgentSelector: false })
+    expect(wrapper.find('a[href="/dashboard/agents/xiaohuayan"]').exists()).toBe(false)
+    // 输入卡片仍在（只隐藏垫层）
+    expect(wrapper.find('textarea').exists()).toBe(true)
+  })
 })

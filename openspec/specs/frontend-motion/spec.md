@@ -70,3 +70,17 @@ When the motion composable is instantiated inside a component setup context, twe
 
 - **WHEN** the caller invokes the explicit kill API for a target
 - **THEN** tweens on that target are killed immediately
+
+### Requirement: Centralized GSAP Flip plugin registration
+
+The desktop app SHALL register GSAP's Flip plugin exactly once at module load of the motion composable, idempotently, so pages performing layout-flip transitions (e.g. the agent chat dock transition) do not perform plugin registration themselves.
+
+#### Scenario: Page uses Flip without local registration
+
+- **WHEN** a page calls `gsap` Flip APIs without importing or registering the Flip plugin itself
+- **THEN** the layout-flip transition animates correctly (plugin is registered)
+
+#### Scenario: Repeated registration is harmless
+
+- **WHEN** the Flip plugin registration executes multiple times across module reloads or HMR
+- **THEN** registration remains idempotent with no errors

@@ -4,10 +4,12 @@
 import { getCurrentScope, onScopeDispose } from 'vue'
 import { gsap } from 'gsap'
 import { CSSPlugin } from 'gsap/CSSPlugin'
+import { Flip } from 'gsap/Flip'
 
 // 模块级注册一次（registerPlugin 幂等，HMR 重载安全）：Vite 预打包 tree-shake 会移除 gsap
-// 的自动注册（sideEffects:false），不注册则 x/scale/rotationY/opacity 等 CSS 属性被忽略
-gsap.registerPlugin(CSSPlugin)
+// 的自动注册（sideEffects:false），不注册则 x/scale/rotationY/opacity 等 CSS 属性被忽略；
+// Flip 供布局翻转动画（agent 页停靠过渡等）使用，页面同样不自行注册
+gsap.registerPlugin(CSSPlugin, Flip)
 
 /** 动画目标：真实元素、组件实例（取 $el）或 null；$el 可能是 fragment 锚点 */
 export type MotionTarget = HTMLElement | { $el?: unknown } | null | undefined

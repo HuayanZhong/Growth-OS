@@ -13,6 +13,7 @@ const gsapMocks = vi.hoisted(() => ({
 
 vi.mock('gsap', () => ({ gsap: gsapMocks }))
 vi.mock('gsap/CSSPlugin', () => ({ CSSPlugin: { id: 'CSSPlugin' } }))
+vi.mock('gsap/Flip', () => ({ Flip: { id: 'Flip' } }))
 
 function makeTween() {
   return { kill: vi.fn() }
@@ -35,11 +36,12 @@ beforeEach(() => {
 })
 
 describe('useGsapTransition', () => {
-  it('模块导入时注册一次 CSSPlugin（幂等职责收拢到 composable）', async () => {
+  it('模块导入时注册一次 CSSPlugin 与 Flip（幂等职责收拢到 composable）', async () => {
     await importComposable()
     expect(gsapMocks.registerPlugin).toHaveBeenCalledTimes(1)
     expect(gsapMocks.registerPlugin).toHaveBeenCalledWith(
       expect.objectContaining({ id: 'CSSPlugin' }),
+      expect.objectContaining({ id: 'Flip' }),
     )
   })
 

@@ -18,6 +18,7 @@ description: Animation rule (Vue 3 + GSAP): use manual GSAP + timeline, not Vue 
 7. Animate only transform (`x/y/scale/rotation`) and `opacity`, never layout properties like `top/left/width/height`; stagger multi-element timing.
 8. Clean up when done: `gsap.kill()` or `clearProps` in `onComplete`/`onUnmounted` to prevent transform residue (residue makes later switches "look animated-less" or drift positions).
 9. Switch experience: entrance animations run `fromTo` from the target state, applying the start value on the first frame to avoid flicker.
+10. GSAP Flip (layout-flip transitions) passes its vars through to the host tween: never include non-animation keys like `target` (they trigger `Invalid property` / "Missing plugin" warnings and the value is ignored); plugin registration stays centralized in the motion composable's module load.
 
 **Example** (3D flip switch login/register):
 
@@ -82,3 +83,4 @@ function switchMode(next: "a" | "b") {
 2. Repeated switching (≥5 times) has no freezes or lost elements; compare `documentElement.scrollWidth/Height` against the viewport — no scrollbar flicker (overflow jitter) during the whole animation.
 3. When an animation "looks like it didn't run" (content switches instantly), check in order: ① is the target real DOM (`$el` may be a Text/comment node); ② is `gsap.plugins.css` registered; ③ sample intermediate frames (inline transform at t≈100/300/700ms) to confirm the tween is writing styles.
 4. `pnpm --filter <app> typecheck` passes.
+5. To prove "animated, not a jump", sample per frame: inside the browser, record the target's `getBoundingClientRect` (top/width) every rAF tick — intermediate frames between first and last prove a real tween. Screenshot tooling has too much latency to catch mid-frames and is not evidence.
