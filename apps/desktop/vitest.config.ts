@@ -60,6 +60,14 @@ export default defineConfig({
           name: 'unit',
           include: ['test/unit/*.{test,spec}.ts'],
           environment: 'node',
+          // unit 项目不在 nuxt typecheck 的任何 project 内（tsconfig.node.json 不含 test/unit），
+          // 由此开启 vitest typecheck 补盲：tsc 检查 test/unit（配置见 tsconfig.unit.json），
+          // 类型错误会使 pnpm test 失败——与运行时断言同一道门禁
+          typecheck: {
+            enabled: true,
+            include: ['test/unit/**/*.test.ts'],
+            tsconfig: './tsconfig.unit.json',
+          },
         },
       },
       await defineVitestProject({

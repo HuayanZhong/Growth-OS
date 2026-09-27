@@ -1,8 +1,8 @@
 <script setup lang="ts">
 // Agent 任务开场页：按 slug 从 Agent 目录定位，布局与新任务页对齐（共用 TaskComposer）；
 // 任务执行逻辑暂未实现，发送先以 toast 反馈占位
-// getAgent 显式导入：该名字未进入 Nuxt 自动导入注册表（同文件其余导出正常），显式引用更稳
-import { getAgent } from '~/utils/agents'
+// getAgent 显式导入（历史上 utils 版本曾漏进自动导入注册表，显式引用更稳，保留习惯）
+import { getAgent } from '~/composables/useAgents'
 
 const route = useRoute()
 const agent = computed(() => getAgent(route.params.id as string))
@@ -20,11 +20,11 @@ function onSend() {
 
 <template>
   <div class="flex h-full flex-col items-center justify-center gap-8 p-6">
-    <!-- 问候语：小球作为 Agent 头像内嵌在标题中 -->
+    <!-- 问候语：小球作为 Agent 头像内嵌在标题中（形象由目录 emotion 字段驱动） -->
     <h1 class="text-3xl font-semibold">
       今天想让
       <span class="mx-1 inline-flex h-8 w-8 align-middle">
-        <EmotionBall emotion="02" />
+        <EmotionBall :emotion="agent?.emotion" :color="agent?.color" />
       </span>
       {{ agent?.name }} 搞定哪件事？
     </h1>

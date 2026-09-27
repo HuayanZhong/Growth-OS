@@ -18,7 +18,10 @@ function mountPage() {
   return mount(AgentPage, {
     global: {
       stubs: {
-        EmotionBall: { template: '<span data-test="emotion-ball" />' },
+        EmotionBall: {
+          props: ['emotion', 'color'],
+          template: '<span data-test="emotion-ball" :data-emotion="emotion" :data-color="color" />',
+        },
         NuxtLink: {
           props: ['to'],
           template: '<a :href="to"><slot /></a>',
@@ -29,7 +32,7 @@ function mountPage() {
 }
 
 describe('Agent 任务开场页', () => {
-  it('合法 slug 渲染 Agent 问候语与输入区', () => {
+  it('合法 slug 渲染 Agent 问候语与输入区，小球形象读目录 emotion 字段', () => {
     const wrapper = mountPage()
     expect(wrapper.text()).toContain('今天想让')
     expect(wrapper.text()).toContain('小花颜')
@@ -37,6 +40,10 @@ describe('Agent 任务开场页', () => {
     expect(wrapper.find('textarea').attributes('placeholder')).toBe(
       '告诉小花颜，你想先从哪件事开始…',
     )
+    // seed Agent 无自定义颜色：color prop 透传为 undefined（属性缺省）
+    const ball = wrapper.find('[data-test="emotion-ball"]')
+    expect(ball.attributes('data-emotion')).toBe('02')
+    expect(ball.attributes('data-color')).toBeUndefined()
   })
 
   it('未知 slug 抛 404', () => {

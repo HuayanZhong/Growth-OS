@@ -1,0 +1,18 @@
+{
+  // test/unit 专属类型检查配置：nuxt typecheck 的 project 不覆盖 test/unit（tsconfig.node.json
+  // 的 include 仅含 nuxt.config/modules），由此文件单独承接——由 vitest unit 项目的 typecheck
+  // 消费（见 vitest.config.ts）。被测源文件（app/**）经 import 自动进入程序，无需逐个 include
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "lib": ["ESNext", "DOM"],
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "resolveJsonModule": true
+  },
+  "include": ["test/unit/**/*.ts"]
+}

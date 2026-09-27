@@ -11,7 +11,10 @@ function mountComposer(props: Record<string, unknown> = {}) {
     props,
     global: {
       stubs: {
-        EmotionBall: { template: '<span data-test="emotion-ball" />' },
+        EmotionBall: {
+          props: ['emotion', 'color'],
+          template: '<span data-test="emotion-ball" :data-emotion="emotion" :data-color="color" />',
+        },
         NuxtLink: {
           props: ['to'],
           template: '<a :href="to"><slot /></a>',

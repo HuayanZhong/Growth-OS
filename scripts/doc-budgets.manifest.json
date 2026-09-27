@@ -80,6 +80,9 @@
     ".trae/rules/agent/hooks.md": {
       "maxWords": 550
     },
+    ".trae/rules/agent/interpret-user-constraints.md": {
+      "maxWords": 200
+    },
     ".trae/rules/agent/self-improvement.md": {
       "maxWords": 600
     },

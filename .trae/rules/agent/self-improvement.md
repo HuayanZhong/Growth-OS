@@ -36,6 +36,10 @@ At wrap-up, answer four questions (the Stop hook reminds automatically):
 3. **Profile**: did the user reveal habits/corrections? → update `.agents/user-profile.md` per its rule.
 4. **Friction**: did any rule/gate get in the way or fail to catch something? → add to the decay-audit backlog ([.agents/notes/backlog-decay-audit.md](../../../.agents/notes/backlog-decay-audit.md); mention in the note), do not patch rules ad hoc.
 
+### Reinforce existing rules (part of question 4, and every wrap-up)
+
+Rules under `.trae/rules/**` strengthen through use — never one-shot authoring. When this task's case **validates, challenges, or extends** an existing rule, update that rule file in the same wrap-up: add the case as evidence, tighten its wording, or extend its scope. If the lesson instead reveals a missing rule, propose it (plan → user approval → note). Either way, run `verify:docs` / `verify:gates` after touching a rule file.
+
 ## 4. Step-by-step self-optimization loop
 
 `interact → sediment (skill/note/profile) → apply (next task uses them) → review (gates + decay audit) → revise`. Each cycle improves one step; do not batch redesigns of the harness. Rule or gate changes proposed by this loop follow the normal change flow (plan → approval → note).

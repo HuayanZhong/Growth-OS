@@ -1,10 +1,17 @@
 <script setup lang="ts">
 // 左侧导航栏：品牌区 + 导航菜单（新任务/技能/文件 + AGENTS 树形分组 + 项目）+ 用户区（退出登录）
 import { ThemeToggle } from '@growth-os/ui'
+import CreateAgentModal from '~/components/agents/CreateAgentModal.vue'
+import { useAgents } from '~/composables/useAgents'
 import { useAuth } from '~/composables/useAuth'
 import { useNavActive } from '~/composables/useNavActive'
 
 const { getSession, signOutWithFallback } = useAuth()
+// Agent 目录：响应式单例（useAgents），新建 Agent 后此列表即时更新
+const { agents } = useAgents()
+
+// 创建 Agent 弹窗（CreateAgentModal 暴露 open()）
+const createAgentModal = ref<{ open: () => void } | null>(null)
 
 // 侧边栏根元素：多根组件 $el 为 null，显式暴露给布局做进入动画
 // （defineExpose 须在顶层 await 之前同步调用）
@@ -170,6 +177,7 @@ async function onSignOut() {
               class="btn btn-ghost btn-square btn-xs"
               title="新建 Agent"
               aria-label="新建 Agent"
+              @click="createAgentModal?.open()"
             >
               <svg
                 class="h-4 w-4"
@@ -185,16 +193,16 @@ async function onSignOut() {
               </svg>
             </button>
           </div>
-          <!-- Agent 子项：渲染 Agent 目录（utils/agents.ts），小球即各 Agent 头像 -->
+          <!-- Agent 子项：渲染 Agent 目录（composables/useAgents.ts），小球即各 Agent 头像 -->
           <ul class="flex flex-col gap-0.5">
-            <li v-for="agent in AGENT_LIST" :key="agent.slug">
+            <li v-for="agent in agents" :key="agent.slug">
               <NuxtLink
                 :to="`/dashboard/agents/${agent.slug}`"
                 :class="navClass(`/dashboard/agents/${agent.slug}`)"
                 class="flex items-center gap-2 px-2 py-1.5 text-sm"
               >
                 <span class="h-5 w-5 shrink-0">
-                  <EmotionBall emotion="02" />
+                  <EmotionBall :emotion="agent.emotion" :color="agent.color" />
                 </span>
                 <span class="truncate">{{ agent.name }}</span>
               </NuxtLink>
@@ -309,4 +317,7 @@ async function onSignOut() {
       <button type="button" @click="closeSignOutDialog">关闭</button>
     </form>
   </dialog>
+
+  <!-- 创建 Agent 弹窗（AGENTS 分组 ⊕ 按钮触发） -->
+  <CreateAgentModal ref="createAgentModal" />
 </template>

@@ -1,11 +1,19 @@
 <script setup lang="ts">
 // 任务输入组件：输入卡片 + 垫层 Agent 选择条（新任务页与 Agent 开场页共用，保持布局对齐）
-// 下拉即 Agent 目录（AGENT_LIST）：选择即路由切换（/dashboard/agents/:slug），当前 Agent 高亮；
+// 下拉即 Agent 目录（useAgents 响应式单例）：选择即路由切换（/dashboard/agents/:slug），
+// 当前 Agent 高亮；各 Agent 小球头像由目录的 emotion 字段驱动
 // 模型选择为纯前端状态（MODEL_LIST 静态目录），模型后端接入后随任务提交
+import { getAgent, useAgents } from '~/composables/useAgents'
+
 const props = withDefaults(
   defineProps<{ agentName?: string; placeholder?: string; agentSlug?: string }>(),
   { agentName: '小花颜', placeholder: '说说你想做什么…', agentSlug: undefined },
 )
+
+const { agents } = useAgents()
+
+// 触发器小球显示当前 Agent 的形象；slug 未传或未命中时由 EmotionBall 默认表情兜底
+const currentAgent = computed(() => (props.agentSlug ? getAgent(props.agentSlug) : undefined))
 
 const emit = defineEmits<{ send: [text: string] }>()
 
@@ -166,7 +174,7 @@ const menuItemClass =
           class="flex cursor-pointer items-center gap-1.5 rounded-lg px-2 py-1 text-sm text-base-content/80"
         >
           <span class="h-5 w-5 shrink-0">
-            <EmotionBall emotion="02" />
+            <EmotionBall :emotion="currentAgent?.emotion" :color="currentAgent?.color" />
           </span>
           <span>{{ props.agentName }}</span>
           <svg
@@ -182,10 +190,10 @@ const menuItemClass =
           </svg>
         </div>
         <ul :class="menuClass" tabindex="0">
-          <li v-for="agent in AGENT_LIST" :key="agent.slug">
+          <li v-for="agent in agents" :key="agent.slug">
             <NuxtLink :to="`/dashboard/agents/${agent.slug}`" :class="menuItemClass">
               <span class="h-5 w-5 shrink-0">
-                <EmotionBall emotion="02" />
+                <EmotionBall :emotion="agent.emotion" :color="agent.color" />
               </span>
               <span
                 class="flex-1 text-left"
