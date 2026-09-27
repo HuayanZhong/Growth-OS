@@ -11,8 +11,10 @@ import { Flip } from 'gsap/Flip'
 // Flip 供布局翻转动画（agent 页停靠过渡等）使用，页面同样不自行注册
 gsap.registerPlugin(CSSPlugin, Flip)
 
-/** 动画目标：真实元素、组件实例（取 $el）或 null；$el 可能是 fragment 锚点 */
-export type MotionTarget = HTMLElement | { $el?: unknown } | null | undefined
+/** 动画目标：真实元素、组件实例（取 $el）或 null；$el 可能是 fragment 锚点。
+ *  $el 必填不可选：可选结构会让模板 ref 对象（RefImpl 无 $el 属性）也匹配本类型，
+ *  误传时归一化静默得 null、动画不跑而 typecheck 全绿（收窄后编译期即拒绝） */
+export type MotionTarget = HTMLElement | { $el: unknown } | null | undefined
 
 /** 完成后清除的内联残留默认值（规则第 8 条）；调用方显式传入 clearProps 时以调用方为准 */
 const DEFAULT_CLEAR_PROPS = 'transform,opacity'
