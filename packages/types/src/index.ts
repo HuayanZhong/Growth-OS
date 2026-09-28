@@ -6,6 +6,22 @@ export { z } from 'zod'
 export { loginSchema, registerSchema } from './auth.ts'
 export type { LoginInput, RegisterInput, LoginResult, AuthApiMap } from './auth.ts'
 
+// ---- AI 流式聊天契约（ai-chat-stream-mvp）----
+export {
+  chatStreamMessageSchema,
+  createChatStreamSchema,
+  chatStreamEventSchema,
+  CHAT_STREAM_RESERVED_EVENT_TYPES,
+  encodeChatStreamFrame,
+  parseChatStreamEvent,
+} from './ai/chat-stream.ts'
+export type {
+  ChatStreamMessage,
+  CreateChatStreamInput,
+  ChatStreamEvent,
+  ChatStreamReservedEventType,
+} from './ai/chat-stream.ts'
+
 export type { ApiErrorEnvelope } from './api/error-envelope.ts'
 
 // ---- HTTP API 契约基建（迭代计划 2.6）----
@@ -39,16 +55,6 @@ export type {
 } from './plugin.ts'
 
 // ---- 能力适配器契约（迭代计划 2.1）——实现方与调用方的唯一耦合点 ----
-export type {
-  LLMMessageRole,
-  LLMToolCallRef,
-  LLMMessage,
-  LLMChatParams,
-  LLMUsage,
-  LLMChatResponse,
-  LLMChunk,
-  LLMAdapter,
-} from './adapters/llm.ts'
 export type {
   StorageUploadInput,
   StoredFile,

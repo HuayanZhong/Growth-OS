@@ -23,7 +23,7 @@
 1. **单一包管理器**：pnpm 12.1.0（workspace catalog，`catalog:` 协议引用，禁止裸版本）。
 2. **服务端 ESM 纪律**：NestJS 以 `"type": "module"` + NodeNext 运行，相对导入带显式扩展名，禁 CJS API（`require`/`__dirname`）。
 3. **依赖边界**：AI 重依赖只进 `apps/server/package.json`；前端 bundle 零 AI 依赖；跨端契约只进 `@growth-os/types`（strip-only 语法，`verify:invariants` 强制）。
-4. **版本锁定策略**：LangChain 系迭代快 [F]，全部锁 catalog 精确版本；用法收敛在 `modules/ai/graph/` 单一目录，升级爆炸半径最小。
+4. **版本锁定策略**：LangChain 系迭代快 [F]，全部锁 catalog 精确版本；用法收敛在 `modules/graph/`（编排）/ `modules/model-provider/`（模型适配）单一目录，升级爆炸半径最小。
 
 ### 1.2 分层组件规格
 
@@ -33,13 +33,13 @@
 | 渲染进程 | Nuxt 4 + Vue 3 | `apps/desktop`，`useApi`/`apiFetch` 拼 Bearer，SSE 消费在 `use-agent-chat` | 零 AI 依赖 |
 | 契约 | `@growth-os/types` | zod schema + TS 类型；`ChatStreamEvent` 命名对齐 AG-UI 生命周期语义 | 单一真相源（骨架决策 2） |
 | 服务端 | NestJS | ESM/NodeNext；zod `ZodValidationPipe`；`{data}` 信封；SSE 端点豁免压缩与超时 | 基建已落地 |
-| Harness | **deepagentsjs** | `createDeepAgent(model, tools, …)`；规划/文件/子代理/skills 内置；Node 22+（仓库 Node ≥24 满足）[F] | 官方 quickstart：docs.langchain.com/oss/javascript/deepagents/quickstart |
+| Harness | **deepagents** | `createDeepAgent({ model, tools, systemPrompt })`（参数对象式，v1.x；旧包名 deepagentsjs 已废弃）；规划/文件/子代理/skills 内置；返回 compiled LangGraph graph；peer 依赖（@langchain/core、langchain、langsmith、langgraph-checkpoint、langgraph-sdk）由宿主锁定 [F] | 官方文档：docs.langchain.com/oss/javascript/deepagents/overview |
 | Runtime | `@langchain/langgraph` | durable 执行、`interrupt()`/`Command(resume)`、checkpointer 接线 | v1.x 系（v1.2 起 DeltaChannel 增量 checkpoint [F]） |
-| Framework | `@langchain/core` + `@langchain/openai` | `ChatOpenAI` 模型抽象、内置工具、`langchain.mcp` 命名空间（v1.4+，beta）[F] | MCP 适配器替代旧 langchain-mcp-adapters |
+| Framework | `@langchain/core` + 供应商适配器（S 期 `@langchain/deepseek`） | `BaseChatModel` 模型抽象、内置工具、`langchain.mcp` 命名空间（beta）[F] | MCP 适配器替代旧 langchain-mcp-adapters |
 | 持久化（引擎态） | `@langchain/langgraph-checkpoint-postgres` | 复用同一 `DATABASE_URL`，自管表结构，短事务 | 与业务表同库不同表（骨架决策 4） |
 | 持久化（业务） | MikroORM v7 + Supabase Postgres | `defineEntity`、contextName 'default'、迁移走 mikro-orm 脚本 | 全表带 `user_id`，RLS 随迁移 |
 | 向量 | pgvector | 原生 SQL 迁移启用扩展；`document_chunk.embedding vector(N)`，HNSW；N 入配置 | 知识期启用 |
-| 模型接入 | OpenAI 兼容注册表 | DeepSeek/智谱/通义/Kimi/OpenAI = 数据行（baseUrl + apiKeyEnv + model 列表），`model.factory` 实例化 | 换供应商改数据不改代码（骨架决策 6） |
+| 模型接入 | OpenAI 兼容注册表 | DeepSeek/智谱/通义/Kimi/OpenAI = 数据行（baseUrl + apiKeyEnv + model 列表），`model.factory` 实例化；S 期为 DeepSeek 专用适配器 `ChatDeepSeek`（`@langchain/deepseek`，当前模型名 deepseek-flash / deepseek-v4-pro），工厂返回 `BaseChatModel` 通用接口 | 换供应商改数据不改代码（骨架决策 6） |
 | 鉴权 | Supabase JWT + jose | JWKS 双轨验证（ES256 探测 + HS256 回退），全局 Guard + `@Public()` | 已落地（M1） |
 | 观测 | LangSmith | `LANGSMITH_API_KEY` / `LANGSMITH_TRACING=true` / `LANGSMITH_PROJECT`（新变量名，旧名失效）[F] | tracing + evals + Tuned Evaluators 可选启用 |
 | 协议挂点 | AG-UI / MCP / A2A | 只留门：事件契约已对齐 AG-UI；MCP 走 `langchain.mcp`；A2A 见 §2.1 | 骨架决策 7 |

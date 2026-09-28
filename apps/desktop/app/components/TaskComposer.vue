@@ -12,12 +12,15 @@ const props = withDefaults(
     placeholder?: string
     agentSlug?: string
     showAgentSelector?: boolean
+    /** 回复生成中：发送按钮变停止按钮，Enter 不再发送 */
+    generating?: boolean
   }>(),
   {
     agentName: '小花颜',
     placeholder: '说说你想做什么…',
     agentSlug: undefined,
     showAgentSelector: true,
+    generating: false,
   },
 )
 
@@ -26,7 +29,7 @@ const { agents } = useAgents()
 // 触发器小球显示当前 Agent 的形象；slug 未传或未命中时由 EmotionBall 默认表情兜底
 const currentAgent = computed(() => (props.agentSlug ? getAgent(props.agentSlug) : undefined))
 
-const emit = defineEmits<{ send: [text: string] }>()
+const emit = defineEmits<{ send: [text: string]; stop: [] }>()
 
 // 输入草稿：发送按钮随内容启用，空内容/纯空白禁用
 const draft = ref('')
@@ -34,9 +37,15 @@ const draft = ref('')
 const canSend = computed(() => draft.value.trim().length > 0)
 
 function send() {
-  if (!canSend.value) return
+  // 生成中不接受新发送：回复按序完成，消息顺序不乱（停止走 stop 事件）
+  if (props.generating || !canSend.value) return
   emit('send', draft.value.trim())
   draft.value = ''
+}
+
+function onAction() {
+  if (props.generating) emit('stop')
+  else send()
 }
 
 // 当前选中模型：默认取目录中的默认项；选择后仅更新本地状态（弹层随焦点移出关闭）
@@ -151,14 +160,25 @@ const menuItemClass =
           </div>
         </div>
 
+        <!-- 生成中：发送按钮变停止按钮（方块，描边样式）；空闲：发送（上箭头，主题色） -->
         <button
           type="button"
-          class="btn btn-circle btn-primary btn-sm"
-          :disabled="!canSend"
-          title="发送"
-          @click="send"
+          data-test="composer-action"
+          class="btn btn-circle btn-sm"
+          :class="
+            props.generating
+              ? 'border border-base-300 bg-base-100 text-base-content/70 hover:bg-base-200'
+              : 'btn-primary text-primary-content'
+          "
+          :disabled="!props.generating && !canSend"
+          :title="props.generating ? '停止生成' : '发送'"
+          @click="onAction"
         >
+          <svg v-if="props.generating" class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
+            <rect x="7" y="7" width="10" height="10" rx="2" />
+          </svg>
           <svg
+            v-else
             class="h-5 w-5"
             fill="none"
             stroke="currentColor"

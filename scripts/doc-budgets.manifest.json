@@ -33,9 +33,6 @@
     "docs/desktop/architecture.md": {
       "maxWords": 600
     },
-    "docs/cookbook/llm-adapter.md": {
-      "maxWords": 1000
-    },
     "docs/cookbook/package.md": {
       "maxWords": 700
     },

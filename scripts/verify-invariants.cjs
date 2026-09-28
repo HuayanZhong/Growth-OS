@@ -216,12 +216,63 @@ function checkServerEsm() {
   }
 }
 
+// ---- 5. LangChain-family import scoping（AI 骨架：单引擎单一收口）----
+
+/**
+ * langchain 系依赖的目录边界：
+ *   - 编排引擎（deepagents / @langchain/langgraph* / langchain / langsmith）
+ *     仅准出现在 modules/graph/**——升级爆炸半径收敛单一目录（骨架决策 3）。
+ *   - 模型适配与抽象（@langchain/core、@langchain/<provider> 适配器）
+ *     准出现在 modules/graph/** 与 modules/model-provider/**——工厂在该域
+ *     实例化具体适配器。
+ * 测试镜像目录（test/modules/graph、test/modules/model-provider）同白名单。
+ */
+function langchainFamilyOf(specifier) {
+  if (
+    specifier === 'deepagents' ||
+    specifier.startsWith('deepagents/') ||
+    specifier === 'langchain' ||
+    specifier.startsWith('langchain/') ||
+    specifier === 'langsmith' ||
+    specifier.startsWith('langsmith/') ||
+    specifier.startsWith('@langchain/langgraph')
+  ) {
+    return 'orchestration'
+  }
+  if (specifier.startsWith('@langchain/')) return 'model-adapter'
+  return null
+}
+
+function checkLangchainScoping() {
+  for (const base of ['apps/server/src', 'apps/server/test']) {
+    for (const abs of walkTs(path.join(ROOT, base))) {
+      const norm = abs.split(path.sep).join('/')
+      if (norm.includes('/modules/graph/') || norm.includes('/modules/model-provider/')) continue
+      const rel = path.relative(ROOT, abs)
+      const content = fs.readFileSync(abs, 'utf8')
+      const re = /(?:from|import)\s*\(?\s*['"]([^'"]+)['"]/g
+      let m
+      while ((m = re.exec(content)) !== null) {
+        if (isExempt(content, m.index)) continue
+        const family = langchainFamilyOf(m[1])
+        if (family === null) continue
+        report(
+          rel,
+          lineOf(content, m.index),
+          `langchain-family import '${m[1]}' (${family}) is only allowed in apps/server/src/modules/{graph,model-provider}`,
+        )
+      }
+    }
+  }
+}
+
 function main() {
   const contextName = extractContextName()
   checkControllers()
   checkForFeature(contextName)
   checkStripOnly()
   checkServerEsm()
+  checkLangchainScoping()
 
   if (violations.length > 0) {
     for (const v of violations) console.log(v)
@@ -229,7 +280,7 @@ function main() {
     process.exit(1)
   }
   console.log(
-    `[verify-invariants] OK (controllers, forFeature contextName '${contextName ?? 'n/a'}', strip-only sources, server ESM)`,
+    `[verify-invariants] OK (controllers, forFeature contextName '${contextName ?? 'n/a'}', strip-only sources, server ESM, langchain scoping)`,
   )
 }
 

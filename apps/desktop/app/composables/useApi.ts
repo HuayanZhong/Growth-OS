@@ -57,6 +57,38 @@ interface ApiFetchOptions {
   signal?: AbortSignal
 }
 
+/** 单次带鉴权发送（apiFetch / apiStream 共用）：token 注入 + JSON 序列化 */
+async function authorizedSend(
+  supabase: SupabaseClient,
+  path: string,
+  options: ApiFetchOptions,
+): Promise<Response> {
+  const base = (useRuntimeConfig().public.apiBaseUrl ?? '').replace(/\/+$/, '')
+  const { data } = await supabase.auth.getSession()
+  const token = data.session?.access_token
+  if (!token) {
+    await localSignOutAndExit(supabase)
+    throw new ApiError(401, { code: 'UNAUTHORIZED', message: '未登录或登录已过期' })
+  }
+  return fetch(`${base}/api/v1${path}`, {
+    method: options.method ?? 'GET',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      // FormData（multipart 上传）原样透传，Content-Type（含 boundary）交由浏览器生成
+      ...(options.body !== undefined && !(options.body instanceof FormData)
+        ? { 'Content-Type': 'application/json' }
+        : {}),
+    },
+    body:
+      options.body === undefined
+        ? undefined
+        : options.body instanceof FormData
+          ? options.body
+          : JSON.stringify(options.body),
+    signal: options.signal,
+  })
+}
+
 /**
  * 自有后端 API 的唯一请求入口：
  * - 自动从 supabase-js 会话取 access_token 拼 Authorization 头（token.md 规则的
@@ -69,39 +101,9 @@ interface ApiFetchOptions {
  * 服务端地址来自 NUXT_PUBLIC_API_BASE_URL（nuxt.config runtimeConfig）。
  */
 export async function apiFetch<T>(path: string, options: ApiFetchOptions = {}): Promise<T> {
-  const base = (useRuntimeConfig().public.apiBaseUrl ?? '').replace(/\/+$/, '')
   const supabase = useSupabase()
 
-  // 单次发送：从 supabase-js 会话取 access_token 拼 Authorization 头（token.md 规则的
-  // 唯一例外点——Supabase API 由 supabase-js 自动注入，自有后端必须手动携带）；
-  // 本地无 token 不发网络请求，直接走登出出口（清本地会话 + 回登录页）
-  const send = async (): Promise<Response> => {
-    const { data } = await supabase.auth.getSession()
-    const token = data.session?.access_token
-    if (!token) {
-      await localSignOutAndExit(supabase)
-      throw new ApiError(401, { code: 'UNAUTHORIZED', message: '未登录或登录已过期' })
-    }
-    return fetch(`${base}/api/v1${path}`, {
-      method: options.method ?? 'GET',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        // FormData（multipart 上传）原样透传，Content-Type（含 boundary）交由浏览器生成
-        ...(options.body !== undefined && !(options.body instanceof FormData)
-          ? { 'Content-Type': 'application/json' }
-          : {}),
-      },
-      body:
-        options.body === undefined
-          ? undefined
-          : options.body instanceof FormData
-            ? options.body
-            : JSON.stringify(options.body),
-      signal: options.signal,
-    })
-  }
-
-  let response = await send()
+  let response = await authorizedSend(supabase, path, options)
   if (response.status === 401) {
     // 统一 401 出口：刷新成功 → 自动重试一次（重试再 401 不再处置，防循环）；
     // 刷新失败 → 已本地登出并回登录页，抛错终结调用方等待
@@ -109,7 +111,7 @@ export async function apiFetch<T>(path: string, options: ApiFetchOptions = {}): 
     if (!recovered) {
       throw new ApiError(401, { code: 'SESSION_EXPIRED', message: '登录已失效，请重新登录' })
     }
-    response = await send()
+    response = await authorizedSend(supabase, path, options)
   }
 
   if (!response.ok) {
@@ -124,4 +126,47 @@ export async function apiFetch<T>(path: string, options: ApiFetchOptions = {}): 
   // 解包成功信封 { data: T }（ResponseEnvelopeInterceptor 全局包装，204 除外）
   const payload = (await response.json()) as ApiSuccess<T>
   return payload.data
+}
+
+interface ApiStreamOptions {
+  body?: unknown
+  signal?: AbortSignal
+}
+
+/**
+ * SSE 流式请求入口（数据面，如 POST /chat/stream）：
+ * - 与 apiFetch 共用 token 注入、401 单次刷新重试与鉴权降级出口、错误信封解析；
+ * - 不解包成功信封——流式响应不走 ResponseEnvelopeInterceptor，返回原始
+ *   Response，响应体由调用方按流消费（SSE 帧解析见 app/utils/sse.ts）。
+ */
+export async function apiStream(path: string, options: ApiStreamOptions = {}): Promise<Response> {
+  const supabase = useSupabase()
+
+  let response = await authorizedSend(supabase, path, {
+    method: 'POST',
+    body: options.body,
+    signal: options.signal,
+  })
+  if (response.status === 401) {
+    const recovered = await recoverAuth(supabase)
+    if (!recovered) {
+      throw new ApiError(401, { code: 'SESSION_EXPIRED', message: '登录已失效，请重新登录' })
+    }
+    response = await authorizedSend(supabase, path, {
+      method: 'POST',
+      body: options.body,
+      signal: options.signal,
+    })
+  }
+
+  if (!response.ok) {
+    const payload = (await response.json().catch(() => null)) as ApiErrorEnvelope | null
+    throw new ApiError(
+      response.status,
+      payload?.code && payload.message
+        ? payload
+        : { code: `HTTP_${response.status}`, message: '请求失败，请稍后重试' },
+    )
+  }
+  return response
 }

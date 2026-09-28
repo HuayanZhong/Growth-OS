@@ -104,6 +104,24 @@ catalogs:
     '@types/compression': ^1.8.1
     helmet: ^8.0.0
     '@nestjs/swagger': ^12.0.1
+  # AI 编排栈（deepagents peer 全集由宿主锁定版本，官方要求；旧包名 deepagentsjs 已废弃禁用。
+  # 版本基线 2026-09-28，随升级刷新）
+  ai:
+    deepagents: ^1.14.1
+    '@langchain/core': ^1.2.13
+    '@langchain/deepseek': ^1.1.15
+    '@langchain/langgraph': ^1.4.18
+    '@langchain/langgraph-checkpoint': ^1.1.5
+    '@langchain/langgraph-sdk': ^1.12.0
+    langchain: ^1.5.14
+    # deepagents 1.14 peer 上限 <0.10.0，0.10.x 未满足前钉 0.9 线
+    langsmith: ^0.9.0
   # 跨包共享依赖（前后端通用）
   shared:
     zod: ^4.4.3
+
+minimumReleaseAgeExclude:
+  - '@langchain/core@1.2.13'
+  - '@langchain/deepseek@1.1.15'
+  - '@langchain/openai@1.6.0'
+  - langchain@1.5.14

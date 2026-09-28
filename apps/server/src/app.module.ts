@@ -15,6 +15,7 @@ import { HealthModule } from './modules/health/health.module.ts'
 import { ThrottleModule } from './modules/throttle/throttle.module.ts'
 import { AuditModule } from './modules/audit/audit.module.ts'
 import { AgentsModule } from './modules/agents/agents.module.ts'
+import { ChatModule } from './modules/chat/chat.module.ts'
 import { NotFoundModule } from './common/not-found/not-found.module.ts'
 
 const isProd = process.env.NODE_ENV === 'production'
@@ -86,6 +87,9 @@ const PINO_AUTO_LOGGING_IGNORE: (req: IncomingMessage) => boolean = (req) =>
 
     // ---- Agent 目录（server-agent-directory）：创建/列表/删除，目录以服务端为唯一数据源 ----
     AgentsModule,
+
+    // ---- AI 流式聊天（ai-chat-stream-mvp）：SSE 数据面，豁免压缩与超时 ----
+    ChatModule,
 
     // ---- 兜底路由：必须最后注册，未匹配请求收口为 ApiErrorEnvelope 404 ----
     NotFoundModule,

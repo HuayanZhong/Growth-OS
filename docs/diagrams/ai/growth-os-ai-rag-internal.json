@@ -69,8 +69,8 @@
       "size": [150, 64],
       "sources": [
         {
-          "path": "packages/types/src/adapters/llm.ts",
-          "label": "LLM 适配器契约"
+          "path": "packages/types/src/ai/chat-stream.ts",
+          "label": "ChatStreamEvent 契约"
         }
       ]
     },

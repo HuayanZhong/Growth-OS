@@ -13,8 +13,19 @@ import { resetAgentChat, sendMessage, stagePending } from '~/composables/useAgen
 import { apiFetch } from '~/composables/useApi'
 import { loadAgents } from '~/composables/useAgents'
 
-// 页面 getAgent 走服务端目录单例（server-agent-directory）：以 mock apiFetch 灌入目录
-vi.mock('~/composables/useApi', () => ({ apiFetch: vi.fn() }))
+// 页面 getAgent 走服务端目录单例（server-agent-directory）：以 mock apiFetch 灌入目录。
+// apiStream 返回挂住不关的 SSE 流（语义 = 生成中）：sendMessage 后 typing 占位
+// 保持呈现，本文件聚焦双态布局而非流式完成行为（流式断言见 use-agent-chat.test.ts）。
+vi.mock('~/composables/useApi', () => ({
+  apiFetch: vi.fn(),
+  apiStream: vi.fn(
+    async () =>
+      new Response(new ReadableStream<Uint8Array>({ start() {} }), {
+        status: 200,
+        headers: { 'Content-Type': 'text/event-stream' },
+      }),
+  ),
+}))
 
 const mockFetch = vi.mocked(apiFetch)
 

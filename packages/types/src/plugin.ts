@@ -15,7 +15,7 @@ export type AdapterType = 'llm' | 'storage' | 'auth' | 'tool'
 /** 插件声明的一个适配器实现 */
 export interface AdapterRef {
   type: AdapterType
-  /** 实现的契约接口名（packages/types/src/adapters/ 中的导出名，如 'LLMAdapter'） */
+  /** 实现的契约接口名（packages/types/src/adapters/ 中的导出名，如 'StorageAdapter'） */
   interface: string
   /** 所实现契约的版本（semver major 需与宿主兼容） */
   version: string
@@ -42,7 +42,7 @@ export interface PluginContext {
   registerAdapter(type: AdapterType, impl: unknown): void
   /** 读取其它插件注册的适配器（未注册返回 null） */
   getAdapter<T>(type: AdapterType): T | null
-  /** 读取插件配置（宿主按插件 id 隔离的配置段；热更新见 4.2 P2） */
+  /** 读取插件配置（宿主按插件 id 隔离的配置段） */
   getConfig<T>(key: string): T | undefined
 }
 

@@ -8,6 +8,7 @@
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
 import { getAgent, useAgents } from '~/composables/useAgents'
+import { isGenerating, sendMessage, stopGenerating } from '~/composables/useAgentChat'
 
 const route = useRoute()
 const slug = computed(() => route.params.id as string)
@@ -34,6 +35,16 @@ const greetingGone = ref(false)
 // 会话（useAgentChat 响应式单例，sendMessage 后 computed 即感知）
 const session = computed(() => getSession(slug.value))
 
+// 生成中状态（停止按钮显隐）：isGenerating 读 reactive Map，computed 可追踪
+const generating = computed(() => isGenerating(slug.value))
+const { showToast } = useToast()
+function onStreamError(message: string): void {
+  showToast(message, 'error')
+}
+function onStop(): void {
+  stopGenerating(slug.value)
+}
+
 // 用户身份（消息流身份行展示，与侧边栏同源）：挂载后取登录邮箱
 const { getSession: getAuthSession } = useAuth()
 const userName = ref('')
@@ -46,7 +57,7 @@ onMounted(async () => {
 function applyEntryState(): void {
   const pendingText = consumePending(slug.value)
   if (pendingText !== null || hasSession(slug.value)) {
-    if (pendingText !== null) sendMessage(slug.value, pendingText)
+    if (pendingText !== null) sendMessage(slug.value, pendingText, onStreamError)
     phase.value = 'chat'
     greetingGone.value = true
   } else {
@@ -69,7 +80,7 @@ let dockTransitionRunning = false
 
 async function onSend(text: string): Promise<void> {
   if (phase.value === 'chat' || dockTransitionRunning) {
-    sendMessage(slug.value, text)
+    sendMessage(slug.value, text, onStreamError)
     return
   }
   const wrapEl = composerWrapRef.value
@@ -79,7 +90,7 @@ async function onSend(text: string): Promise<void> {
   await exit(greetingRef.value, { opacity: 0, y: -16, duration: 0.25, ease: 'power2.in' })
   greetingGone.value = true
   // 2) 翻转 phase + 首条消息入列（同一帧呈现）
-  sendMessage(slug.value, text)
+  sendMessage(slug.value, text, onStreamError)
   phase.value = 'chat'
   await nextTick()
   // 3) composer 滑落停靠 + 消息流淡入（并行）
@@ -187,7 +198,9 @@ onUnmounted(() => {
         :agent-slug="slug"
         :placeholder="placeholder"
         :show-agent-selector="phase === 'hero'"
+        :generating="generating"
         @send="onSend"
+        @stop="onStop"
       />
     </div>
   </div>

@@ -29,6 +29,8 @@ const envSchema = publicEnvSchema.partial().extend({
   // PostgreSQL statement_timeout（毫秒）：防止单条慢查询无限执行耗尽连接池。
   // 缺省 10s；开发环境设 0 可禁用（允许慢查询调试）。
   DB_STATEMENT_TIMEOUT_MS: envIntString().optional(),
+  // DeepSeek API Key（AI 流式聊天必需）：缺失时启动失败，阻断带病运行
+  DEEPSEEK_API_KEY: envString(),
 })
 
 /**

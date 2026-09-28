@@ -28,6 +28,7 @@ Source: [apps/server/src/config/env.validation.ts](../apps/server/src/config/env
 | `THROTTLE_TTL_MS` | `envIntString().optional()` | 限流配置（@nestjs/throttler）：TTL = 窗口时长（毫秒），limit = 窗口内最大请求数。 缺省 60s / 100 次，覆盖桌面应用正常用量；扫描器/DDoS 通常 >1000 次/分钟会被拦截。 |
 | `THROTTLE_LIMIT` | `envIntString().optional()` | — |
 | `DB_STATEMENT_TIMEOUT_MS` | `envIntString().optional()` | PostgreSQL statement_timeout（毫秒）：防止单条慢查询无限执行耗尽连接池。 缺省 10s；开发环境设 0 可禁用（允许慢查询调试）。 |
+| `DEEPSEEK_API_KEY` | `envString()` | DeepSeek API Key（AI 流式聊天必需）：缺失时启动失败，阻断带病运行 |
 
 ## Desktop launch allowlist
 
