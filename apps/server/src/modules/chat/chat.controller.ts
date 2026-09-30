@@ -6,6 +6,7 @@ import type { CreateChatStreamInput } from '@growth-os/types'
 import { ApiDataOk, ApiErrorResponses, toOpenApiSchema } from '../../common/openapi/schema.ts'
 import { SkipTimeout } from '../../common/decorators/skip-timeout.decorator.ts'
 import { ZodValidationPipe } from '../../common/pipes/zod-validation.pipe.ts'
+import { chatStreamRequestSchema } from './chat-stream.request.ts'
 import { ChatStreamService } from './chat-stream.service.ts'
 
 /**
@@ -29,7 +30,7 @@ export class ChatController {
   @ApiOperation({ summary: '流式聊天：请求体携带历史，SSE 帧推送 ChatStreamEvent' })
   @ApiDataOk(toOpenApiSchema(createChatStreamSchema, 'output'), 'SSE 事件流')
   async stream(
-    @Body(new ZodValidationPipe(createChatStreamSchema)) input: CreateChatStreamInput,
+    @Body(new ZodValidationPipe(chatStreamRequestSchema)) input: CreateChatStreamInput,
     @Res() res: Response,
   ): Promise<void> {
     res.status(200)

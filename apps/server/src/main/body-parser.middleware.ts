@@ -17,8 +17,8 @@ import type { NextFunction, RequestHandler, Request, Response } from 'express'
  *     body-parser README），据此精准识别，不做 message 文案模式匹配（跨 Node
  *     版本不稳定）；
  *   - 转译为统一错误信封文案，code 不变（仍为 BAD_REQUEST），message 固定中文；
- *   - 与 Nest 默认 bodyParser 行为对齐：json + urlencoded，limit 同默认 100kb，
- *     仅替换错误文案，不改解析能力。
+ *   - json limit 16mb：聊天契约允许消息携带图片分段（前端压缩产物 ≤1MB/张 ×4，
+ *     base64 后最坏约 5.6MB）；urlencoded 维持默认 100kb（表单场景无大载荷）。
  */
 
 /** body-parser 解析失败错误的 type 标识 */
@@ -42,6 +42,6 @@ function translateParseError(parser: RequestHandler): RequestHandler {
 }
 
 export function registerBodyParsers(app: INestApplication): void {
-  app.use(translateParseError(json({ limit: '100kb' })))
+  app.use(translateParseError(json({ limit: '16mb' })))
   app.use(translateParseError(urlencoded({ extended: true, limit: '100kb' })))
 }

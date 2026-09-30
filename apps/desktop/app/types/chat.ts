@@ -5,9 +5,12 @@ export type ChatRole = 'user' | 'agent'
 export interface ChatMessage {
   id: string
   role: ChatRole
-  /** text：正式消息；typing：agent 侧打字指示占位（任务执行后端接入前的静态占位） */
-  kind: 'text' | 'typing'
+  /** text：正式消息；typing：agent 侧打字指示占位；divider：模型切换分割线（会话元信息，不入请求历史） */
+  kind: 'text' | 'typing' | 'divider'
+  /** divider 时为分割线文案（如「已切换至 DeepSeek」） */
   text: string
+  /** 消息携带的图片（data URL，仅用户消息；随内存会话存活，不持久化） */
+  images?: string[]
   /** 创建时间戳（ms）；消息流顶部日期分割线的数据来源 */
   createdAt: number
 }

@@ -5,9 +5,16 @@
  * 结构不出本目录，由 chat 模块映射为跨端 ChatStreamEvent 契约。
  * 当前事件仅文本增量与回合结束；工具调用、中断恢复事件在此扩展。
  */
+import type { ChatMessageContentPart } from '@growth-os/types'
+
 export type GraphEvent = { type: 'text_delta'; delta: string } | { type: 'turn_end' }
 
 /** 回合输入：模型可见消息历史（与跨端请求契约同构，经 chat 层映射而来） */
 export interface ChatTurnInput {
-  messages: ReadonlyArray<{ role: 'user' | 'assistant'; content: string }>
+  /** 显式模型标识；缺省（Auto）由编排按请求内容路由 */
+  modelId?: string
+  messages: ReadonlyArray<{
+    role: 'user' | 'assistant'
+    content: string | ReadonlyArray<ChatMessageContentPart>
+  }>
 }

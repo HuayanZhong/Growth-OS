@@ -13,13 +13,15 @@ import type { ChatMessage } from '../types/chat'
 
 interface AgentChatSession {
   messages: ChatMessage[]
+  /** 会话当前生效模型（'auto' 或注册表 id）；分割线去重依据，首次发送时记基线 */
+  currentModelId?: string
 }
 
 // 模块级单例：reactive Map（Vue 3 对 Map 的 get/set/has 具备响应性），ssr: false（SPA）无水合顾虑
 const sessions = reactive(new Map<string, AgentChatSession>())
 
 // 跨页交接的暂存首条消息（同一时刻至多一条：新任务页发送即跳转，先到先得）
-let pending: { slug: string; text: string } | null = null
+let pending: { slug: string; text: string; images: string[]; modelId?: string } | null = null
 
 // 生成中的请求：按 slug 一个 AbortController（停止按钮 / 生成中再发 → 中止旧流）。
 // reactive Map：isGenerating 的 has 调用可被组件 computed 追踪（停止按钮显隐）
@@ -55,17 +57,44 @@ export function stopGenerating(slug: string): void {
   inFlight.get(slug)?.abort()
 }
 
-// 发送：追加用户消息并启动流式回复；agent 侧先呈现 typing 占位，首个增量
-// 到达后原位转为文本并随增量增长。生成中再次发送 → 停止旧流后开启新一轮。
-// onError：错误呈现回调（toast 归组件，composable 不依赖 Nuxt UI 单例）。
-export function sendMessage(slug: string, text: string, onError?: (message: string) => void): void {
+// 模型切换分割线：chat 态（有会话）且模型实际变化时插入居中分割线并更新会话
+// 生效模型；重复选择相同模型不插线；无会话（hero 态）不产生。分割线为会话
+// 元信息，不入请求历史（toHistory 仅取 kind === "text"）。
+export function insertModelDivider(slug: string, modelId: string, label: string): void {
+  const session = sessions.get(slug)
+  if (!session || session.messages.length === 0) return
+  if (session.currentModelId === modelId) return
+  session.currentModelId = modelId
+  session.messages.push({
+    id: nextId(),
+    role: 'agent',
+    kind: 'divider',
+    text: `已切换至 ${label}`,
+    createdAt: Date.now(),
+  })
+}
+
+// 发送：追加用户消息（可携带图片 data URL 与显式 modelId）并启动流式回复；agent 侧
+// 先呈现 typing 占位，首个增量到达后原位转为文本并随增量增长。文本与图片任一非空
+// 即可发送。生成中再次发送 → 被忽略（消息顺序保护，终止走 stopGenerating）。
+// onError：错误呈现回调（toast 归组件，composable 不依赖 Nuxt UI 单例）；
+// modelId：手动档显式模型（Auto 缺省，由服务端按请求内容路由）。
+export function sendMessage(
+  slug: string,
+  text: string,
+  images: string[] = [],
+  onError?: (message: string) => void,
+  modelId?: string,
+): void {
   const trimmed = text.trim()
-  if (!trimmed) return
+  const attachedImages = images.filter(Boolean)
+  if (!trimmed && attachedImages.length === 0) return
   // 生成中忽略新发送：回复按序完成，消息顺序不乱（终止走 stopGenerating）
   if (inFlight.has(slug)) return
   let session = sessions.get(slug)
   if (!session) {
-    session = { messages: [] }
+    // 首次发送记模型基线（手动档 id 或 'auto'），分割线去重以此为基准
+    session = { messages: [], currentModelId: modelId ?? 'auto' }
     sessions.set(slug, session)
   }
   if (session.messages.at(-1)?.kind === 'typing') session.messages.pop()
@@ -74,6 +103,7 @@ export function sendMessage(slug: string, text: string, onError?: (message: stri
     role: 'user',
     kind: 'text',
     text: trimmed,
+    ...(attachedImages.length > 0 ? { images: attachedImages } : {}),
     createdAt: Date.now(),
   })
   // 占位气泡必须是 reactive 对象：流式泵逐 delta 原位改写它，若推入数组的
@@ -86,7 +116,7 @@ export function sendMessage(slug: string, text: string, onError?: (message: stri
     createdAt: Date.now(),
   })
   session.messages.push(placeholder)
-  void runStream(slug, session, placeholder, onError)
+  void runStream(slug, session, placeholder, onError, modelId)
 }
 
 // 流式泵：请求 → 逐块解码 → 帧解析 → 增量渲染。唯一事件汇聚点的消费端。
@@ -95,12 +125,18 @@ async function runStream(
   session: AgentChatSession,
   placeholder: ChatMessage,
   onError?: (message: string) => void,
+  modelId?: string,
 ): Promise<void> {
   const controller = new AbortController()
   inFlight.set(slug, controller)
   try {
     const response = await apiStream('/chat/stream', {
-      body: { agentSlug: slug, messages: toHistory(session.messages) },
+      // exactOptionalPropertyTypes：Auto 不携带 modelId 键（服务端按内容路由）
+      body: {
+        agentSlug: slug,
+        messages: toHistory(session.messages),
+        ...(modelId !== undefined ? { modelId } : {}),
+      },
       signal: controller.signal,
     })
     if (!response.body) throw new Error('SSE 响应无响应体')
@@ -143,28 +179,62 @@ async function runStream(
   }
 }
 
-// 内存会话 → 请求历史：typing 占位不入历史，取最近 N 条（契约上限内）
-function toHistory(messages: ChatMessage[]): { role: 'user' | 'assistant'; content: string }[] {
+// 内存会话 → 请求历史：typing 占位不入历史，取最近 N 条（契约上限内）。
+// 带图消息的 content 为分段数组（文本段 + 图片段；无文本时仅图片段），
+// 图片 data URL 即契约 image_url 段的 url，同源零转换。
+function toHistory(messages: ChatMessage[]): {
+  role: 'user' | 'assistant'
+  content:
+    | string
+    | Array<{ type: 'text'; text: string } | { type: 'image_url'; imageUrl: { url: string } }>
+}[] {
   return messages
     .filter((message) => message.kind === 'text')
     .slice(-MAX_HISTORY_MESSAGES)
     .map((message) => ({
       role: message.role === 'user' ? ('user' as const) : ('assistant' as const),
-      content: message.text,
+      content: toHistoryContent(message),
     }))
 }
 
-// 新任务页交接：暂存首条消息（发送即跳转，暂存先于路由）
-export function stagePending(slug: string, text: string): void {
-  pending = { slug, text }
+function toHistoryContent(
+  message: ChatMessage,
+):
+  | string
+  | Array<{ type: 'text'; text: string } | { type: 'image_url'; imageUrl: { url: string } }> {
+  if (!message.images?.length) return message.text
+  const parts: Array<
+    { type: 'text'; text: string } | { type: 'image_url'; imageUrl: { url: string } }
+  > = []
+  if (message.text) parts.push({ type: 'text', text: message.text })
+  for (const url of message.images) parts.push({ type: 'image_url', imageUrl: { url } })
+  return parts
 }
 
-// agent 页消费：命中当前 slug 返回文本；未命中（用户中途改道其他 agent）丢弃，
+// 新任务页交接：暂存首条消息（发送即跳转，暂存先于路由）
+export function stagePending(
+  slug: string,
+  text: string,
+  images: string[] = [],
+  modelId?: string,
+): void {
+  pending = { slug, text, images, ...(modelId !== undefined ? { modelId } : {}) }
+}
+
+// agent 页消费：命中当前 slug 返回消息内容；未命中（用户中途改道其他 agent）丢弃，
 // 防止陈旧草稿在后续访问时意外落进无关会话
-export function consumePending(slug: string): string | null {
+export function consumePending(
+  slug: string,
+): { text: string; images: string[]; modelId?: string } | null {
   const current = pending
   pending = null
-  return current && current.slug === slug ? current.text : null
+  return current && current.slug === slug
+    ? {
+        text: current.text,
+        images: current.images,
+        ...(current.modelId !== undefined ? { modelId: current.modelId } : {}),
+      }
+    : null
 }
 
 // 删除 Agent 时清理其会话（removeAgent 调用；进行中的流一并中止）
@@ -191,5 +261,6 @@ export function useAgentChat() {
     consumePending,
     isGenerating,
     stopGenerating,
+    insertModelDivider,
   }
 }

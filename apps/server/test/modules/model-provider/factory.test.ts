@@ -35,11 +35,11 @@ describe('createModelFactory', () => {
   it('注册表内的非默认模型同样可实例化', () => {
     const factory = createModelFactory({ DEEPSEEK_API_KEY: 'sk-test' })
 
-    factory(DEEPSEEK_PROVIDER.models[1]!)
+    factory(DEEPSEEK_PROVIDER.models[1]!.id)
 
     expect(ChatDeepSeekMock).toHaveBeenCalledWith({
       apiKey: 'sk-test',
-      model: DEEPSEEK_PROVIDER.models[1],
+      model: DEEPSEEK_PROVIDER.models[1]!.id,
     })
   })
 

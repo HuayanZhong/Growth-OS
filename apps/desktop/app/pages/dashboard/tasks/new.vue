@@ -8,10 +8,10 @@
 const { loaded, loadError, loadAgents } = useAgents()
 const defaultAgent = computed(() => getDefaultAgent())
 
-function onSend(text: string) {
+function onSend(text: string, images: string[] = [], modelId?: string) {
   const agent = defaultAgent.value
   if (!agent) return
-  stagePending(agent.slug, text)
+  stagePending(agent.slug, text, images, modelId)
   navigateTo(`/dashboard/agents/${agent.slug}`)
 }
 </script>

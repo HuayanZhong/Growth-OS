@@ -38,7 +38,14 @@ export class ChatStreamService {
     yield { type: 'text_message_start', messageId }
 
     try {
-      for await (const graphEvent of this.chatTurn({ messages: input.messages }, signal)) {
+      // exactOptionalPropertyTypes：显式缺省不传 modelId 键（Auto 由编排侧路由）
+      for await (const graphEvent of this.chatTurn(
+        {
+          messages: input.messages,
+          ...(input.modelId !== undefined ? { modelId: input.modelId } : {}),
+        },
+        signal,
+      )) {
         if (signal.aborted) return
         const event = mapGraphEvent(graphEvent, session)
         if (event) yield event

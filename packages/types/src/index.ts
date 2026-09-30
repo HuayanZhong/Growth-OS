@@ -17,6 +17,7 @@ export {
 } from './ai/chat-stream.ts'
 export type {
   ChatStreamMessage,
+  ChatMessageContentPart,
   CreateChatStreamInput,
   ChatStreamEvent,
   ChatStreamReservedEventType,

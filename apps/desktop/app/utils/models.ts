@@ -1,5 +1,6 @@
-// 模型目录：模型后端接入前的前端静态登记（TaskComposer 模型选择共用），
-// 接入后替换为 server 接口数据；条目按需增删
+// 模型目录：Auto 单档——实际模型由服务端按请求内容路由（Auto 不发具体模型名，
+// 服务端注册表统一管理模型与视觉能力）。接入手动选模型时在此追加条目，
+// 并在服务端 model-provider 注册表同步标注能力。
 export interface ModelEntry {
   id: string
   name: string
@@ -8,5 +9,5 @@ export interface ModelEntry {
 
 export const MODEL_LIST: ModelEntry[] = [
   { id: 'auto', name: 'Auto', isDefault: true },
-  { id: 'deepseek-v4-flash', name: 'DeepSeek-V4-Flash', isDefault: false },
+  { id: 'deepseek-flash', name: 'DeepSeek', isDefault: false },
 ]

@@ -8,7 +8,12 @@
 import { gsap } from 'gsap'
 import { Flip } from 'gsap/Flip'
 import { getAgent, useAgents } from '~/composables/useAgents'
-import { isGenerating, sendMessage, stopGenerating } from '~/composables/useAgentChat'
+import {
+  insertModelDivider,
+  isGenerating,
+  sendMessage,
+  stopGenerating,
+} from '~/composables/useAgentChat'
 
 const route = useRoute()
 const slug = computed(() => route.params.id as string)
@@ -45,6 +50,11 @@ function onStop(): void {
   stopGenerating(slug.value)
 }
 
+// 模型切换：分割线插入与否由会话侧去重（同款/无会话不插）
+function onModelChange(modelId: string, label: string): void {
+  insertModelDivider(slug.value, modelId, label)
+}
+
 // 用户身份（消息流身份行展示，与侧边栏同源）：挂载后取登录邮箱
 const { getSession: getAuthSession } = useAuth()
 const userName = ref('')
@@ -55,9 +65,11 @@ onMounted(async () => {
 
 // 入场态判定：首次进入与 slug 变化（侧边栏切 agent，组件复用）都重新执行
 function applyEntryState(): void {
-  const pendingText = consumePending(slug.value)
-  if (pendingText !== null || hasSession(slug.value)) {
-    if (pendingText !== null) sendMessage(slug.value, pendingText, onStreamError)
+  const pending = consumePending(slug.value)
+  if (pending !== null || hasSession(slug.value)) {
+    if (pending !== null) {
+      sendMessage(slug.value, pending.text, pending.images, onStreamError, pending.modelId)
+    }
     phase.value = 'chat'
     greetingGone.value = true
   } else {
@@ -78,9 +90,9 @@ const chatBodyRef = ref<HTMLElement | null>(null)
 // 过渡进行中的重复发送静默追加（不过渡、不叠加动画）
 let dockTransitionRunning = false
 
-async function onSend(text: string): Promise<void> {
+async function onSend(text: string, images: string[] = [], modelId?: string): Promise<void> {
   if (phase.value === 'chat' || dockTransitionRunning) {
-    sendMessage(slug.value, text, onStreamError)
+    sendMessage(slug.value, text, images, onStreamError, modelId)
     return
   }
   const wrapEl = composerWrapRef.value
@@ -90,7 +102,7 @@ async function onSend(text: string): Promise<void> {
   await exit(greetingRef.value, { opacity: 0, y: -16, duration: 0.25, ease: 'power2.in' })
   greetingGone.value = true
   // 2) 翻转 phase + 首条消息入列（同一帧呈现）
-  sendMessage(slug.value, text, onStreamError)
+  sendMessage(slug.value, text, images, onStreamError, modelId)
   phase.value = 'chat'
   await nextTick()
   // 3) composer 滑落停靠 + 消息流淡入（并行）
@@ -201,6 +213,7 @@ onUnmounted(() => {
         :generating="generating"
         @send="onSend"
         @stop="onStop"
+        @model-change="onModelChange"
       />
     </div>
   </div>

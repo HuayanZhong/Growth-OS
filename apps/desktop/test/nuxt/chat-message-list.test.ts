@@ -90,4 +90,52 @@ describe('ChatMessageList', () => {
     expect(wrapper.find('[data-test="date-divider"]').exists()).toBe(false)
     expect(wrapper.text()).not.toContain('对话由AI生成')
   })
+
+  it('带图消息：图上文下混排渲染，仅图消息无文本区', () => {
+    const wrapper = mountList([
+      {
+        id: 'm4',
+        role: 'user',
+        kind: 'text',
+        text: '看这张图',
+        images: ['data:image/png;base64,aGk=', 'data:image/jpeg;base64,aGk='],
+        createdAt: 1758888000000,
+      },
+      {
+        id: 'm5',
+        role: 'user',
+        kind: 'text',
+        text: '',
+        images: ['data:image/png;base64,aGk='],
+        createdAt: 1758888000000,
+      },
+    ])
+    const images = wrapper.findAll('[data-test="message-image"]')
+    expect(images).toHaveLength(3)
+    expect(images[0]?.attributes('src')).toBe('data:image/png;base64,aGk=')
+    // 图文混排：文本仍在
+    expect(wrapper.text()).toContain('看这张图')
+  })
+
+  it('无图消息不渲染图片节点', () => {
+    const wrapper = mountList()
+    expect(wrapper.findAll('[data-test="message-image"]')).toHaveLength(0)
+  })
+
+  it('模型切换分割线：居中渲染文案，无身份行', () => {
+    const wrapper = mountList([
+      {
+        id: 'm6',
+        role: 'agent',
+        kind: 'divider',
+        text: '已切换至 DeepSeek',
+        createdAt: 1758888000000,
+      },
+    ])
+    const divider = wrapper.find('[data-test="model-divider"]')
+    expect(divider.exists()).toBe(true)
+    expect(divider.text()).toContain('已切换至 DeepSeek')
+    // 分割线为会话元信息：不带身份行（无头像/AI 徽章）
+    expect(divider.find('[data-test="ai-badge"]').exists()).toBe(false)
+  })
 })

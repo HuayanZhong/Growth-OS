@@ -131,4 +131,29 @@ describe('ChatStreamService', () => {
     ])
     expect(turnMock).not.toHaveBeenCalled()
   })
+
+  it('modelId 与分段消息原样透传回合执行器', async () => {
+    turnMock.mockImplementation(makeTurn(['好']))
+    const service = makeService()
+    const input: CreateChatStreamInput = {
+      ...INPUT,
+      modelId: 'deepseek-v4-pro',
+      messages: [
+        {
+          role: 'user',
+          content: [
+            { type: 'text', text: '看图' },
+            { type: 'image_url', imageUrl: { url: 'data:image/png;base64,aGk=' } },
+          ],
+        },
+      ],
+    }
+
+    await collect(service.run(input, new AbortController().signal))
+
+    expect(turnMock).toHaveBeenCalledWith(
+      { messages: input.messages, modelId: 'deepseek-v4-pro' },
+      expect.any(AbortSignal),
+    )
+  })
 })

@@ -6,6 +6,7 @@ import {
   consumePending,
   getSession,
   hasSession,
+  insertModelDivider,
   isGenerating,
   resetAgentChat,
   sendMessage,
@@ -105,7 +106,7 @@ describe('Agent 会话状态（useAgentChat）', () => {
 
   it('pending 命中当前 slug 时消费并清空', () => {
     stagePending('xiaohuayan', '首发内容')
-    expect(consumePending('xiaohuayan')).toBe('首发内容')
+    expect(consumePending('xiaohuayan')).toEqual({ text: '首发内容', images: [] })
     // 消费即清空：二次消费为空
     expect(consumePending('xiaohuayan')).toBeNull()
   })
@@ -117,10 +118,14 @@ describe('Agent 会话状态（useAgentChat）', () => {
     expect(consumePending('xiaohuayan')).toBeNull()
   })
 
-  it('stagePending 覆盖旧暂存（同一时刻至多一条）', () => {
+  it('stagePending 覆盖旧暂存（同一时刻至多一条），携带图片与手动档模型', () => {
     stagePending('xiaohuayan', '旧')
-    stagePending('biancheng', '新')
-    expect(consumePending('biancheng')).toBe('新')
+    stagePending('biancheng', '新', ['data:image/png;base64,aGk='], 'deepseek-flash')
+    expect(consumePending('biancheng')).toEqual({
+      text: '新',
+      images: ['data:image/png;base64,aGk='],
+      modelId: 'deepseek-flash',
+    })
     // 已被「新」覆盖并被消费：旧目标拿不到任何内容
     expect(consumePending('xiaohuayan')).toBeNull()
   })
@@ -227,6 +232,69 @@ describe('Agent 会话状态（useAgentChat）', () => {
     })
   })
 
+  it('Auto 发送不携带 modelId，手动档 modelId 入请求体', async () => {
+    mockApiStream.mockResolvedValue(sseResponse([]))
+    sendMessage('xiaohuayan', '手动档', [], undefined, 'deepseek-flash')
+    await vi.waitFor(() => expect(isGenerating('xiaohuayan')).toBe(false))
+
+    const options = mockApiStream.mock.calls.at(-1)![1]!
+    expect(options.body).toMatchObject({
+      agentSlug: 'xiaohuayan',
+      modelId: 'deepseek-flash',
+    })
+
+    sendMessage('xiaohuayan', 'Auto 档')
+    await vi.waitFor(() => expect(isGenerating('xiaohuayan')).toBe(false))
+    const autoOptions = mockApiStream.mock.calls.at(-1)![1]!
+    expect(autoOptions.body).not.toHaveProperty('modelId')
+  })
+
+  it('模型切换分割线：chat 态实际变化才插入，重复与无会话不插', async () => {
+    mockApiStream.mockResolvedValue(sseResponse([]))
+    sendMessage('xiaohuayan', '第一轮')
+    await vi.waitFor(() => expect(isGenerating('xiaohuayan')).toBe(false))
+
+    // 切到 DeepSeek：插线 + 更新生效模型
+    insertModelDivider('xiaohuayan', 'deepseek-flash', 'DeepSeek')
+    expect(getSession('xiaohuayan')!.messages.at(-1)).toMatchObject({
+      kind: 'divider',
+      text: '已切换至 DeepSeek',
+    })
+
+    // 重复选择相同模型：不插
+    insertModelDivider('xiaohuayan', 'deepseek-flash', 'DeepSeek')
+    expect(getSession('xiaohuayan')!.messages.filter((m) => m.kind === 'divider')).toHaveLength(1)
+
+    // 切回 Auto：插线
+    insertModelDivider('xiaohuayan', 'auto', 'Auto')
+    expect(getSession('xiaohuayan')!.messages.at(-1)).toMatchObject({
+      kind: 'divider',
+      text: '已切换至 Auto',
+    })
+
+    // 无会话：不插不报错
+    insertModelDivider('ghost', 'deepseek-flash', 'DeepSeek')
+    expect(getSession('ghost')).toBeUndefined()
+  })
+
+  it('分割线不进入请求历史', async () => {
+    mockApiStream.mockResolvedValue(sseResponse([]))
+    sendMessage('xiaohuayan', '第一轮')
+    await vi.waitFor(() => expect(isGenerating('xiaohuayan')).toBe(false))
+    insertModelDivider('xiaohuayan', 'deepseek-flash', 'DeepSeek')
+    sendMessage('xiaohuayan', '第二轮')
+    await vi.waitFor(() => expect(isGenerating('xiaohuayan')).toBe(false))
+
+    const options = mockApiStream.mock.calls.at(-1)![1]!
+    expect(options.body).toEqual({
+      agentSlug: 'xiaohuayan',
+      messages: [
+        { role: 'user', content: '第一轮' },
+        { role: 'user', content: '第二轮' },
+      ],
+    })
+  })
+
   it('停止生成：中止流并保留已收到的部分文本', async () => {
     // 首帧后挂起：模拟生成中的长流
     const encoder = new TextEncoder()
@@ -266,7 +334,7 @@ describe('Agent 会话状态（useAgentChat）', () => {
         { type: 'error', code: 'CHAT_STREAM_FAILED', message: '回复生成失败，请稍后重试' },
       ]),
     )
-    sendMessage('xiaohuayan', 'hi', onError)
+    sendMessage('xiaohuayan', 'hi', [], onError)
     const placeholder = getSession('xiaohuayan')!.messages[1]!
 
     await vi.waitFor(() => expect(onError).toHaveBeenCalledWith('回复生成失败，请稍后重试'))
@@ -276,8 +344,90 @@ describe('Agent 会话状态（useAgentChat）', () => {
   it('请求失败（含会话过期）经 onError 冒泡呈现', async () => {
     const onError = vi.fn()
     mockApiStream.mockRejectedValue(new Error('登录已失效，请重新登录'))
-    sendMessage('xiaohuayan', 'hi', onError)
+    sendMessage('xiaohuayan', 'hi', [], onError)
 
     await vi.waitFor(() => expect(onError).toHaveBeenCalledWith('登录已失效，请重新登录'))
+  })
+
+  // ---- 图片消息 ----
+
+  it('带图消息：气泡含 images，请求历史构造 text + image_url 分段', async () => {
+    const dataUrl = 'data:image/png;base64,aGk='
+    mockApiStream.mockResolvedValue(sseResponse([]))
+
+    sendMessage('xiaohuayan', '看这张图', [dataUrl])
+    const { messages } = getSession('xiaohuayan')!
+    expect(messages[0]).toMatchObject({ role: 'user', kind: 'text', text: '看这张图' })
+    expect(messages[0]?.images).toEqual([dataUrl])
+
+    await vi.waitFor(() => expect(isGenerating('xiaohuayan')).toBe(false))
+    const options = mockApiStream.mock.calls.at(-1)![1]!
+    expect(options.body).toEqual({
+      agentSlug: 'xiaohuayan',
+      messages: [
+        {
+          role: 'user',
+          content: [
+            { type: 'text', text: '看这张图' },
+            { type: 'image_url', imageUrl: { url: dataUrl } },
+          ],
+        },
+      ],
+    })
+  })
+
+  it('仅图发送（无文本）：入列 images 且历史为纯图片分段', async () => {
+    const dataUrl = 'data:image/jpeg;base64,aGk='
+    mockApiStream.mockResolvedValue(sseResponse([]))
+
+    sendMessage('xiaohuayan', '   ', [dataUrl])
+    const { messages } = getSession('xiaohuayan')!
+    expect(messages[0]).toMatchObject({ role: 'user', kind: 'text', text: '' })
+    expect(messages[0]?.images).toEqual([dataUrl])
+
+    await vi.waitFor(() => expect(isGenerating('xiaohuayan')).toBe(false))
+    const options = mockApiStream.mock.calls.at(-1)![1]!
+    expect(options.body).toEqual({
+      agentSlug: 'xiaohuayan',
+      messages: [
+        {
+          role: 'user',
+          content: [{ type: 'image_url', imageUrl: { url: dataUrl } }],
+        },
+      ],
+    })
+  })
+
+  it('空文本且无附件的发送不产生任何消息', () => {
+    sendMessage('xiaohuayan', '')
+    sendMessage('xiaohuayan', '', [])
+    expect(getSession('xiaohuayan')).toBeUndefined()
+  })
+
+  it('生成中含图发送同样被忽略（顺序保护覆盖图片消息）', async () => {
+    const encoder = new TextEncoder()
+    let close: (() => void) | undefined
+    mockApiStream.mockImplementation(
+      () =>
+        new Promise<Response>((resolve) => {
+          const body = new ReadableStream<Uint8Array>({
+            start(controller) {
+              controller.enqueue(encoder.encode(`data: ${JSON.stringify(runEvent('生成中'))}\n\n`))
+              close = () => controller.close()
+            },
+          })
+          resolve(new Response(body, { status: 200 }))
+        }),
+    )
+    sendMessage('xiaohuayan', '第一条')
+    await vi.waitFor(() => expect(getSession('xiaohuayan')!.messages[1]!.text).toBe('生成中'))
+
+    sendMessage('xiaohuayan', '带图追问', ['data:image/png;base64,aGk='])
+    const { messages } = getSession('xiaohuayan')!
+    expect(messages.some((m) => m.text === '带图追问')).toBe(false)
+    expect(mockApiStream).toHaveBeenCalledTimes(1)
+
+    close?.()
+    await vi.waitFor(() => expect(isGenerating('xiaohuayan')).toBe(false))
   })
 })
