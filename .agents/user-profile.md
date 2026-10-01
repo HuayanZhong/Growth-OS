@@ -3,7 +3,7 @@
 > 活文档：采集与计分规则见 [.trae/rules/agent/user-profile.md](../.trae/rules/agent/user-profile.md)（仅 ≥3 影响默认行为）。
 
 owner: primary（仓库所有者，单人开发）
-last_updated: 2026-09-28
+last_updated: 2026-09-30
 
 ## 1. 代码风格（Code style）
 
@@ -14,8 +14,8 @@ last_updated: 2026-09-28
 
 ## 2. 问题解决路径（Problem-solving path）
 
-- 升级/迁移/选型先给官方依据与对比。
-  confidence: 3 ｜ evidence: 09-08 ESM/rspack 先报告后执行 ｜ last_updated: 2026-09-08
+- 选型/迁移先给官方依据；跨平台设施逐平台查证格式差异。
+  confidence: 4 ｜ evidence: 09-08 ESM；09-30 三平台差异 | last_updated: 2026-09-30
 - 对"越界"敏感：只做确认范围，扩展/收缩先提案；对标忠实复刻。边界见 [interpret-user-constraints](../../.trae/rules/agent/interpret-user-constraints.md)。
   confidence: 4 ｜ evidence: 09-07 越界；09-13 未商量加模块；09-27 对标两次纠正；09-28 删用户选型被要求找回 ｜ last_updated: 2026-09-28
 - 重建/设计先读 Notes 与归档 changes。
