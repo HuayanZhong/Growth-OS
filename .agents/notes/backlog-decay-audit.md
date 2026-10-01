@@ -3,6 +3,7 @@
 规则/门禁摩擦与腐烂项的落地的 backlog。来源：任务收尾四问（self-improvement §3.4）、rule-decay-audit 审计与行为探针、日常踩坑。每项：发现日期、来源、状态（open / resolved / wontfix）、修复建议。修复本身走正常变更流（批准后改源文件），backlog 只记录不承载修复内容。
 
 ## Open
+- 2026-09-30 ｜ 日常踩坑（harness frontmatter 裁剪修复期）｜ CC 文档称 rules frontmatter 未知字段"运行时静默忽略"，但 VS Code 的 Claude 扩展按自有 schema 严格校验并告警（Trae 字段 alwaysApply/globs 在 .claude/rules 视图报不支持）——运行时容忍 ≠ 校验通过，跨平台共享文件必须以最严校验者为准。同轮：搜索所得的"paths 支持逗号字符串"结论被实测否定（必须 YAML 数组）。建议：无仓库动作；跨平台字段写法以目标平台实测校验器为准，文档只作参考（已按此修正 sync-harness VIEW_FM_DROPS）。
 - 2026-09-30 ｜ 日常踩坑（harness 真相层迁移实施期）｜ verify-docs 的链接检查随技能实体化开始覆盖 `.claude/skills/` 等物化视图，vendored 技能的上游死链（vueuse-functions 的 ../useXxx/index.md 相对链接、尖括号 <URL> 自动链接不被 [linksFrom](../../scripts/verify-docs.cjs) 正则识别）会直接打红仓库门禁。本轮已在真相源就地修 4 处（偏离上游）。建议：明确 vendored 目录的链接检查策略——保持检查则上游死链须项目侧补丁并在 SYNC.md 记录 patch 清单；或对 vendored 目录豁免链接检查只查结构。
 - 2026-09-30 ｜ 收尾四问（同上实施期）｜ `.claude/settings.json` 现同时承载 hooks 真相（团队共享，应提交）与 permissions.allow 白名单（auto 模式逐条批准时自动写入，机器/会话相关）。两类配置混在一个文件里，白名单随仓库提交会污染他人环境。建议：permissions 拆到 `.claude/settings.local.json`（官方 gitignored 位置），settings.json 只留 hooks；待用户决定。
 

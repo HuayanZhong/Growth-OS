@@ -28,7 +28,8 @@
       "Bash(node -e ' *)",
       "Bash(pnpm verify:invariants)",
       "WebSearch",
-      "Bash(git commit -m 'fix\\(harness\\): 同步脚本按平台裁剪规则 frontmatter，视图各守其 schema *)"
+      "Bash(git commit -m 'fix\\(harness\\): 同步脚本按平台裁剪规则 frontmatter，视图各守其 schema *)",
+      "Bash(git commit -m 'docs: decay-audit 补记 CC 文档与 VS Code 扩展校验的差距条目 *)"
     ]
   },
   "hooks": {
