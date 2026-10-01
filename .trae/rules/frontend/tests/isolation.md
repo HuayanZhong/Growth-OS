@@ -1,6 +1,8 @@
 ---
 globs: apps/desktop/**, packages/ui/**
-paths: apps/desktop/**, packages/ui/**
+paths:
+  - "apps/desktop/**"
+  - "packages/ui/**"
 alwaysApply: false
 description: Test isolation rule (Vitest): beforeEach resets shared state (localStorage, singletons, mocks); timers use vi.useFakeTimers + advance, restored in afterEach; cases must not depend on each other. Use for stateful or timer tests.
 ---

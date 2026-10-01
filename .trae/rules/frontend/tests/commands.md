@@ -1,6 +1,8 @@
 ---
 globs: apps/desktop/**, packages/ui/**
-paths: apps/desktop/**, packages/ui/**
+paths:
+  - "apps/desktop/**"
+  - "packages/ui/**"
 alwaysApply: false
 description: Test command & verification rule (pnpm + turbo): pnpm test runs directly (vitest.config auto-loads root .env); verification order is test → typecheck → lint, all green. Use when running tests or verifying before commits.
 ---

@@ -1,6 +1,7 @@
 ---
 globs: apps/server/**
-paths: apps/server/**
+paths:
+  - "apps/server/**"
 alwaysApply: false
 description: Backend test commands rule (pnpm + Vitest): pnpm --filter server test for unit; test:e2e for e2e; verification order: test → typecheck → lint; CI skips env validation. Use when running tests or verifying before commits.
 ---

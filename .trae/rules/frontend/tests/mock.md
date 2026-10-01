@@ -1,6 +1,8 @@
 ---
 globs: apps/desktop/**, packages/ui/**
-paths: apps/desktop/**, packages/ui/**
+paths:
+  - "apps/desktop/**"
+  - "packages/ui/**"
 alwaysApply: false
 description: Test mock strategy (Vitest): never call external services for real (Supabase network, Electron IPC); always mock/stub covering success + error paths; Electron/browser branches via window.desktop. Use when mocking dependencies.
 ---

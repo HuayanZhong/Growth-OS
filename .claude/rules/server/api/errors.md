@@ -1,6 +1,7 @@
 ---
 globs: apps/server/**
-paths: apps/server/**
+paths:
+  - "apps/server/**"
 alwaysApply: false
 description: API error contract rule (NestJS + zod): all errors use ApiErrorEnvelope {code, message, details?}; code is machine-readable; AllExceptionsFilter normalizes all exceptions; 5xx hides internal details. Use when throwing errors or adding error codes.
 ---

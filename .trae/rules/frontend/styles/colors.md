@@ -1,6 +1,8 @@
 ---
 globs: apps/desktop/**, packages/ui/**
-paths: apps/desktop/**, packages/ui/**
+paths:
+  - "apps/desktop/**"
+  - "packages/ui/**"
 alwaysApply: false
 description: Frontend style color rule (Tailwind CSS v4 + daisyUI 5): use semantic color tokens only, never hard-code color values; brand colors map onto semantic tokens. Use when coloring elements or introducing brand colors.
 ---

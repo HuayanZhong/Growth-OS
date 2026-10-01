@@ -1,6 +1,8 @@
 ---
 globs: apps/desktop/**, packages/ui/**
-paths: apps/desktop/**, packages/ui/**
+paths:
+  - "apps/desktop/**"
+  - "packages/ui/**"
 alwaysApply: false
 description: Frontend test organization: test/unit/ node-env pure logic, test/nuxt/ Nuxt-runtime (vitest); test/e2e/ Playwright E2E (separate runner). kebab-case files named after the module. Use when adding test files or choosing a directory.
 ---

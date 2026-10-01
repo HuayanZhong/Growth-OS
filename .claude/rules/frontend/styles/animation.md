@@ -1,6 +1,8 @@
 ---
 globs: apps/desktop/**, packages/ui/**
-paths: apps/desktop/**, packages/ui/**
+paths:
+  - "apps/desktop/**"
+  - "packages/ui/**"
 alwaysApply: false
 description: Animation rule (Vue 3 + GSAP): use manual GSAP + timeline, not Vue Transition out-in (Nuxt 4 bug); targets must be real DOM; perspective on parent, never transformPerspective; animate transform only; clean up. Use for switch/entrance animations.
 ---

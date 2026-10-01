@@ -1,6 +1,8 @@
 ---
 globs: apps/desktop/**, packages/ui/**
-paths: apps/desktop/**, packages/ui/**
+paths:
+  - "apps/desktop/**"
+  - "packages/ui/**"
 alwaysApply: false
 description: Theme switching rule (daisyUI 5): themes enabled explicitly in CSS; switch via theme-controller (global); pages never lock data-theme; default marked with --default. Use when implementing light/dark or multiple themes.
 ---

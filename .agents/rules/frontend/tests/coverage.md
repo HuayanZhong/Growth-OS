@@ -1,6 +1,8 @@
 ---
 globs: apps/desktop/**, packages/ui/**
-paths: apps/desktop/**, packages/ui/**
+paths:
+  - "apps/desktop/**"
+  - "packages/ui/**"
 alwaysApply: false
 description: Test coverage principles (Vitest): test behavior, not implementation; core logic covers normal/error/boundary branches; shared-logic changes and bug fixes add tests in the same pass; UI shells may be untested. Use when deciding what to test.
 ---

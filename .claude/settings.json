@@ -26,7 +26,8 @@
       "Bash(sed -i 's|- 升级/迁移/选型先给官方依据与对比。|- 升级/迁移/选型先给官方依据与对比；跨平台共享基础设施须逐平台查证官方格式差异再定方案（不默认\"格式兼容\"）。\\\\n  confidence: 4 ｜ evidence: 09-08 ESM/rspack 先报告后执行；09-30 harness 生态对齐要求先研究三平台差异 | last_updated: 2026-09-30|' .agents/user-profile.md)",
       "Bash(sed -i 's|^last_updated: 2026-09-28$|last_updated: 2026-09-30|' .agents/user-profile.md)",
       "Bash(node -e ' *)",
-      "Bash(pnpm verify:invariants)"
+      "Bash(pnpm verify:invariants)",
+      "WebSearch"
     ]
   },
   "hooks": {

@@ -1,6 +1,8 @@
 ---
 globs: apps/desktop/**, packages/ui/**
-paths: apps/desktop/**, packages/ui/**
+paths:
+  - "apps/desktop/**"
+  - "packages/ui/**"
 alwaysApply: false
 description: Style conflict rule (Vue 3 + Tailwind CSS v4 + daisyUI 5): external overrides go through class passthrough + cn() merging; no !important, no hard-coded page data-theme. Use when styles are overridden or break after theme switching.
 ---

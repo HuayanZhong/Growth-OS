@@ -1,6 +1,8 @@
 ---
 globs: apps/desktop/**, packages/ui/**
-paths: apps/desktop/**, packages/ui/**
+paths:
+  - "apps/desktop/**"
+  - "packages/ui/**"
 alwaysApply: false
 description: Font rule (Tailwind CSS v4): bundle brand fonts locally; Chinese fonts split by unicode-range, load on demand; font-display: swap + fallback stack; 400-only fonts get [font-synthesis:none]. Use when adding/replacing fonts or fixing load failures.
 ---

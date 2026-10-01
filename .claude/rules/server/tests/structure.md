@@ -1,6 +1,7 @@
 ---
 globs: apps/server/**
-paths: apps/server/**
+paths:
+  - "apps/server/**"
 alwaysApply: false
 description: Backend test structure rule (Vitest + NestJS): unit tests live in test/ mirroring src/ (test/x/y.test.ts for src/x/y.ts); test/*.e2e-spec.ts for e2e tests; kebab-case files; one test per module. Use when adding test files or choosing a directory.
 ---
