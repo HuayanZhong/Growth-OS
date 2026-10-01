@@ -56,33 +56,34 @@ for (const f of cjsFiles) {
   }
 }
 
-// 2. hooks.json structure
-const HOOKS = '.trae/hooks.json'
+// 2. Hooks config: .claude/settings.json is the single truth (Trae natively
+//    merges hooks from this file; .trae/hooks.json was retired to avoid
+//    double execution).
+const SETTINGS = '.claude/settings.json'
 let hooksConfig = null
 try {
-  hooksConfig = JSON.parse(read(HOOKS))
+  const settings = JSON.parse(read(SETTINGS))
+  if (settings?.hooks && Object.keys(settings.hooks).length > 0) hooksConfig = settings
+  else report(`${SETTINGS} registers no hooks`)
 } catch (err) {
-  report(`.trae/hooks.json is not valid JSON: ${err.message}`)
+  report(`${SETTINGS} is not valid JSON: ${err.message}`)
 }
 if (hooksConfig) {
-  if (hooksConfig.version !== 1)
-    report(`.trae/hooks.json version must be 1, got ${hooksConfig.version}`)
   const events = hooksConfig.hooks ?? {}
   const eventNames = Object.keys(events)
-  if (eventNames.length === 0) report('.trae/hooks.json registers no hook events')
+  if (eventNames.length === 0) report(`${SETTINGS} registers no hook events`)
   for (const eventName of eventNames) {
     const groups = events[eventName]
     if (!Array.isArray(groups) || groups.length === 0) {
-      report(`.trae/hooks.json event "${eventName}" has no hook groups`)
+      report(`${SETTINGS} event "${eventName}" has no hook groups`)
       continue
     }
     for (const [gi, group] of groups.entries()) {
       for (const [hi, hook] of (group.hooks ?? []).entries()) {
         const where = `${eventName}[${gi}].hooks[${hi}]`
-        if (hook.type !== 'command')
-          report(`.trae/hooks.json ${where}: unsupported type "${hook.type}"`)
+        if (hook.type !== 'command') report(`${SETTINGS} ${where}: unsupported type "${hook.type}"`)
         if (typeof hook.command !== 'string' || hook.command.trim() === '') {
-          report(`.trae/hooks.json ${where}: empty command`)
+          report(`${SETTINGS} ${where}: empty command`)
         }
       }
     }
@@ -291,12 +292,25 @@ function decisionOf(res) {
     tool_name: 'Write',
     cwd: ROOT,
     tool_input: {
-      file_path: '.trae/rules/desktop/ipc-contract.md',
+      file_path: '.agents/rules/desktop/ipc-contract.md',
       content: '# missing frontmatter\n',
     },
   })
   if (decisionOf(guardBlock) !== 'block')
-    report('hook fixture failed: guard did not block a malformed .trae/rules write')
+    report('hook fixture failed: guard did not block a malformed .agents/rules write')
+
+  // …and block a direct write to a generated view.
+  const guardView = runHook('hook-guard-harness.cjs', {
+    hook_event_name: 'PreToolUse',
+    tool_name: 'Write',
+    cwd: ROOT,
+    tool_input: {
+      file_path: '.trae/rules/desktop/ipc-contract.md',
+      content: '---\nalwaysApply: false\ndescription: probe\n---\n\nbody\n',
+    },
+  })
+  if (decisionOf(guardView) !== 'block')
+    report('hook fixture failed: guard did not block a write to a generated view')
 
   // …allow an application write…
   const guardApp = runHook('hook-guard-harness.cjs', {
@@ -314,7 +328,7 @@ function decisionOf(res) {
     tool_name: 'Write',
     cwd: ROOT,
     tool_input: {
-      file_path: '.trae/rules/desktop/ipc-contract.md',
+      file_path: '.agents/rules/desktop/ipc-contract.md',
       content: '---\nalwaysApply: false\ndescription: probe\n---\n\nbody\n',
     },
   })
@@ -345,6 +359,16 @@ function decisionOf(res) {
   })
   if (regenSkip.status !== 0 || (regenSkip.stderr || '').includes('regenerated'))
     report('hook fixture failed: regen acted on an unregistered path')
+
+  // …and a truth-layer write triggers the harness view sync.
+  const syncHit = runHook('hook-regen-catalogs.cjs', {
+    hook_event_name: 'PostToolUse',
+    tool_name: 'Write',
+    cwd: ROOT,
+    tool_input: { file_path: '.agents/rules/desktop/ipc-contract.md' },
+  })
+  if (syncHit.status !== 0 || !(syncHit.stderr || '').includes('regenerated harness views'))
+    report('hook fixture failed: regen did not sync harness views for a truth-layer write')
 
   // Stop reminder: blocks once with the four closing-review channels, then dedups.
   const stopState = path.join(os.tmpdir(), 'growth-os-profile-review.json')

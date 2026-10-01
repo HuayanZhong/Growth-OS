@@ -1,14 +1,18 @@
 #!/usr/bin/env node
 /**
- * Trae PreToolUse hook: validate harness asset frontmatter before the agent writes it.
+ * Harness PreToolUse hook: validate harness asset frontmatter before the agent writes it,
+ * and block direct writes to generated view directories.
  *
- * Scope (registered in .trae/hooks.json, matcher "Write|Edit"):
- *   - .trae/rules/ (all markdown)   → frontmatter must declare alwaysApply and description
- *   - .trae/agents/ (agent files)   → frontmatter must declare a valid name (letters/digits/hyphens,
+ * Scope (registered in .claude/settings.json hooks — Trae merges the same config,
+ * matcher "Write|Edit"):
+ *   - .agents/rules/ (all markdown) → frontmatter must declare alwaysApply and description
+ *   - .agents/agents/ (agent files) → frontmatter must declare a valid name (letters/digits/hyphens,
  *                             starts with a letter, <=50 chars) and description; tools, when
  *                             present, is a comma-separated list
- *   - .trae/skills/ (SKILL.md)      → name must equal the parent directory (kebab-case) and
+ *   - .agents/skills/ (SKILL.md)    → name must equal the parent directory (kebab-case) and
  *                             description must be present
+ *   - .trae/{rules,agents,skills}/ and .claude/{rules,agents,skills}/ are generated views —
+ *                             writes are blocked; edit the .agents truth layer instead.
  *
  * Protocol: reads the hook event JSON from stdin; emits {"decision":"block","reason":...}
  * on stdout for violations; exits 0 silently when the write is allowed or out of scope.
@@ -47,12 +51,12 @@ function violationsFor(relFile, content) {
     issues.push('missing YAML frontmatter (--- name/description ---)')
     return issues
   }
-  if (norm.startsWith('.trae/rules/')) {
+  if (norm.startsWith('.agents/rules/')) {
     if (!hasField(fm, 'alwaysApply'))
       issues.push('frontmatter must declare alwaysApply (true/false)')
     if (!hasField(fm, 'description'))
       issues.push('frontmatter must declare description (smart-activation trigger)')
-  } else if (norm.startsWith('.trae/agents/')) {
+  } else if (norm.startsWith('.agents/agents/')) {
     const nameMatch = fm.match(/^name:\s*(\S+)\s*$/m)
     if (!nameMatch) {
       issues.push('frontmatter must declare name')
@@ -67,7 +71,7 @@ function violationsFor(relFile, content) {
     if (toolsMatch && toolsMatch[1].split(',').some((t) => t.trim() === '')) {
       issues.push('tools must be a comma-separated list without empty entries')
     }
-  } else if (/^\.trae\/skills\/[^/]+\/SKILL\.md$/.test(norm)) {
+  } else if (/^\.agents\/skills\/[^/]+\/SKILL\.md$/.test(norm)) {
     const dirName = path.basename(path.dirname(norm))
     const nameMatch = fm.match(/^name:\s*(\S+)\s*$/m)
     if (!nameMatch) {
@@ -104,11 +108,25 @@ if (event.tool_name !== 'Write') allow()
 
 const abs = path.isAbsolute(filePath) ? filePath : path.join(event.cwd ?? ROOT, filePath)
 const rel = path.relative(ROOT, abs).replace(/\\/g, '/')
-const inScope =
-  rel.startsWith('.trae/rules/') ||
-  /^\.trae\/agents\/[^/]+\.md$/.test(rel) ||
-  /^\.trae\/skills\/[^/]+\/SKILL\.md$/.test(rel)
-if (!inScope) allow()
+
+const VIEW_SCOPES = [
+  (r) => r.startsWith('.trae/rules/') || r.startsWith('.claude/rules/'),
+  (r) => /^\.trae\/agents\/[^/]+\.md$/.test(r) || /^\.claude\/agents\/[^/]+\.md$/.test(r),
+  (r) =>
+    /^\.trae\/skills\/[^/]+\/SKILL\.md$/.test(r) || /^\.claude\/skills\/[^/]+\/SKILL\.md$/.test(r),
+]
+if (VIEW_SCOPES.some((f) => f(rel))) {
+  block(
+    `${rel} is a generated view — edit the truth source under .agents/ instead, then run \`pnpm sync:harness\`.`,
+  )
+}
+
+const TRUTH_SCOPES = [
+  (r) => r.startsWith('.agents/rules/'),
+  (r) => /^\.agents\/agents\/[^/]+\.md$/.test(r),
+  (r) => /^\.agents\/skills\/[^/]+\/SKILL\.md$/.test(r),
+]
+if (!TRUTH_SCOPES.some((f) => f(rel))) allow()
 
 let content = ''
 try {

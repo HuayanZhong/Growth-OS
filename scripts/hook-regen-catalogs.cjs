@@ -27,6 +27,11 @@ const MAPPINGS = [
     generate: 'node scripts/generate-module-graph.cjs',
     label: 'docs/module-graph.md',
   },
+  {
+    match: (rel) => rel.startsWith('.agents/') || rel === '.mcp.json',
+    generate: 'node scripts/sync-harness.cjs',
+    label: 'harness views',
+  },
 ]
 
 function readStdin() {

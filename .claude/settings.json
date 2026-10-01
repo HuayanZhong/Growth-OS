@@ -1,12 +1,60 @@
 {
   "permissions": {
     "allow": [
-      "Bash(git commit -m 'feat\\(harness\\): 规则 frontmatter 升级为 globs+paths superset *)",
-      "Bash(git rm *)",
-      "Bash(node scripts/sync-harness.cjs)",
-      "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('.mcp.json','utf8'\\)\\); JSON.parse\\(require\\('fs'\\).readFileSync\\('.trae/mcp.json','utf8'\\)\\); console.log\\('both parse OK'\\)\")",
+      "Bash(node scripts/*)",
+      "Bash(node --check*)",
+      "Bash(pnpm sync:harness*)",
+      "Bash(pnpm verify*)",
+      "Bash(pnpm test*)",
+      "Bash(git add*)",
+      "Bash(git commit*)",
+      "Bash(git mv*)",
+      "Bash(git rm*)",
+      "Bash(node --check scripts/verify-gates.cjs)",
+      "Bash(node --check scripts/hook-guard-harness.cjs)",
+      "Bash(node --check scripts/hook-regen-catalogs.cjs)",
+      "Bash(pnpm verify:gates)",
+      "Bash(pnpm verify:docs)",
+      "Bash(node scripts/hook-guard-harness.cjs)",
       "Bash(git add *)",
-      "Bash(git commit -m 'feat\\(harness\\): MCP 配置收敛到项目根 .mcp.json，.trae/mcp.json 转为物化视图 *)"
+      "Bash(git commit -m 'refactor\\(harness\\): hooks 收敛到 .claude/settings.json，守卫改为护真相拦视图 *)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node scripts/hook-guard-harness.cjs",
+            "timeout": 15
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node scripts/hook-regen-catalogs.cjs",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node scripts/hook-user-profile-reminder.cjs",
+            "timeout": 15
+          }
+        ]
+      }
     ]
   }
 }
