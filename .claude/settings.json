@@ -17,7 +17,12 @@
       "Bash(pnpm verify:docs)",
       "Bash(node scripts/hook-guard-harness.cjs)",
       "Bash(git add *)",
-      "Bash(git commit -m 'refactor\\(harness\\): hooks 收敛到 .claude/settings.json，守卫改为护真相拦视图 *)"
+      "Bash(git commit -m 'refactor\\(harness\\): hooks 收敛到 .claude/settings.json，守卫改为护真相拦视图 *)",
+      "Bash(sed -i 's|console.log\\(`\\\\[verify-gates\\\\] OK \\(${cjsFiles.length} scripts, hooks.json checked, hook smoke passed\\)`\\)|console.log\\(`[verify-gates] OK \\(${cjsFiles.length} scripts, hooks checked, hook smoke passed, views in sync\\)`\\)|' scripts/verify-gates.cjs)",
+      "Bash(grep -n -B2 -A8 \"## Repository Map\\\\|\\\\.trae/\\\\`\\\\|\\\\.agents/\\\\`\" AGENTS.md)",
+      "Bash(node scripts/sync-harness.cjs --check)",
+      "Bash(pnpm verify *)",
+      "Bash(git commit -m 'feat\\(harness\\): 视图一致性门禁 + AGENTS.md 真相层说明 + 决策记录 *)"
     ]
   },
   "hooks": {

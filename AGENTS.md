@@ -14,8 +14,9 @@ Growth OS is a Coze-like desktop platform built with Nuxt 4 (frontend), NestJS (
 | `packages/types`        | Shared types and IPC channel contracts                                                        |
 | `tooling/`              | Shared TypeScript / lint / format / test configs                                              |
 | `docs/`                 | Human-facing docs (architecture map, Chinese guide, doc standard)                             |
-| `.trae/`                | Trae harness: `rules/`, `agents/`, `skills/`, `documents/`, `hooks.json`, `mcp.json`          |
-| `.agents/`              | Agent Skills (`skills/`) and decision notes (`notes/`)                                        |
+| `.trae/`                | Trae harness — generated views (`rules/`, `agents/`, `skills/`) synced from `.agents/` + `documents/`, `commands/` |
+| `.agents/`              | **Truth layer** (`skills/`, `rules/`, `agents/`, decision notes `notes/`, `user-profile.md`) — edit here, views are generated |
+| `.claude/`              | Claude Code harness — generated views (`rules/`, `agents/`, `skills/`) synced from `.agents/` + `settings.json` (hooks truth), `commands/opsx/` |
 | `openspec/`             | Spec-driven change workflow (delta specs, proposals, tasks; config in `openspec/config.yaml`) |
 | `scripts/`              | Repo scripts including `verify-docs.cjs` (docs gate)                                          |
 
@@ -48,7 +49,7 @@ Husky runs on every commit: pre-commit runs lint-staged first (oxfmt with `--thr
 
 ## Rules (.trae/rules)
 
-English single source of truth, loaded on demand; OpenCode sessions additionally get all of them injected via `opencode.json` `instructions`. Chinese readers use the index in `docs/guide-zh.md` (never restate rule text).
+Truth lives in `.agents/rules/**` (frontmatter carries both Trae `globs` and Claude Code `paths`); the paths below are generated views — run `pnpm sync:harness` after editing. English rules are loaded on demand; OpenCode sessions additionally get all of them injected via `opencode.json` `instructions`. Chinese readers use the index in `docs/guide-zh.md` (never restate rule text).
 
 - **Auth** (`frontend/auth/`): [credentials.md](.trae/rules/frontend/auth/credentials.md) (test accounts only in root `.env`), [flows.md](.trae/rules/frontend/auth/flows.md) (login/sign-out/403 fallback), [token.md](.trae/rules/frontend/auth/token.md) (secureStorage session persistence)
 - **Styles** (`frontend/styles/`): [animation.md](.trae/rules/frontend/styles/animation.md) (GSAP, no Vue Transition out-in), [colors.md](.trae/rules/frontend/styles/colors.md) (semantic tokens only), [conflict.md](.trae/rules/frontend/styles/conflict.md) (external overrides via `cn()`), [fonts.md](.trae/rules/frontend/styles/fonts.md) (local bundles, unicode-range), [performance.md](.trae/rules/frontend/styles/performance.md), [responsive.md](.trae/rules/frontend/styles/responsive.md), [reuse.md](.trae/rules/frontend/styles/reuse.md) (extract UI components at 3+ uses), [structure.md](.trae/rules/frontend/styles/structure.md), [themes.md](.trae/rules/frontend/styles/themes.md) (theme-controller, never lock data-theme)

@@ -466,9 +466,27 @@ function checkHarnessAssets() {
 }
 checkHarnessAssets()
 
+// 9. View consistency: generated harness views must match the truth layer.
+{
+  const res = spawnSync(process.execPath, [path.join(scriptsDir, 'sync-harness.cjs'), '--check'], {
+    encoding: 'utf8',
+    cwd: ROOT,
+  })
+  if (res.status !== 0)
+    report(
+      `harness views drifted from the .agents truth layer:\n${(res.stderr || '')
+        .split('\n')
+        .filter((l) => l.startsWith('[sync-harness]'))
+        .map((l) => '  ' + l)
+        .join('\n')}`,
+    )
+}
+
 if (violations.length > 0) {
   for (const v of violations) console.error(v)
   console.error(`[verify-gates] FAILED (${violations.length} violation(s))`)
   process.exit(1)
 }
-console.log(`[verify-gates] OK (${cjsFiles.length} scripts, hooks.json checked, hook smoke passed)`)
+console.log(
+  `[verify-gates] OK (${cjsFiles.length} scripts, hooks checked, hook smoke passed, views in sync)`,
+)
