@@ -1,8 +1,6 @@
 ---
-globs: apps/server/**
 paths:
   - "apps/server/**"
-alwaysApply: false
 description: MikroORM rule (NestJS v7 ESM): defineEntity entities in modules/<name>/entities/; migrations in src/infra/database/; contextName 'default'; pnpm mikro-orm:* scripts. Use when adding entities, migrations, or ORM config.
 ---
 

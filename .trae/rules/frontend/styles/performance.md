@@ -1,8 +1,5 @@
 ---
 globs: apps/desktop/**, packages/ui/**
-paths:
-  - "apps/desktop/**"
-  - "packages/ui/**"
 alwaysApply: false
 description: Style performance rule (Tailwind CSS v4): @source scans source dirs precisely; styles import once via the UI package entry; arbitrary-value classes are rare; check CSS output size after builds. Use when the build balloons or styles don't apply.
 ---

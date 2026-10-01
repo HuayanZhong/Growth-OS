@@ -1,9 +1,7 @@
 ---
-globs: apps/desktop/**, packages/ui/**
 paths:
   - "apps/desktop/**"
   - "packages/ui/**"
-alwaysApply: false
 description: Assertion & type safety rule (Vitest + TS strict): non-null assertions on array indexing (noUncheckedIndexedAccess); explicit assertions, no any; typecheck must pass. Use when fixing TS2322/TS2532/TS2554 or writing assertions.
 ---
 

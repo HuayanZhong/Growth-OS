@@ -1,8 +1,6 @@
 ---
-globs: apps/server/**
 paths:
   - "apps/server/**"
-alwaysApply: false
 description: Migration workflow rule (MikroORM): create via pnpm mikro-orm:migration:create; up/down via scripts; never edit compiled dist/; source in src/infra/database/migrations/. Use when creating or applying migrations.
 ---
 

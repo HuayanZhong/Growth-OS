@@ -1,5 +1,4 @@
 ---
-alwaysApply: false
 description: Trae hooks rule: hook scripts (.trae/hooks.json + scripts/hook-*.cjs) follow the lifecycle (PreToolUse/PostToolUse/Stop), stdin/stdout JSON protocol, machine-decidable checks only. Use when adding, modifying, or debugging hooks.
 ---
 

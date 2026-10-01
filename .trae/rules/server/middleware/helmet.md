@@ -1,7 +1,5 @@
 ---
 globs: apps/server/**
-paths:
-  - "apps/server/**"
 alwaysApply: false
 description: Helmet rule (Express + helmet): CSP/COEP enabled in production HTTPS, disabled in dev/Electron; registration before routes; helmet adds X-Content-Type-Options, X-Frame-Options, etc. Use when modifying security headers or CSP policy.
 ---

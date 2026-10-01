@@ -1,5 +1,4 @@
 ---
-alwaysApply: false
 description: User profile rules: maintain .agents/user-profile.md — stable preferences with confidence scoring, no secrets, adapt behavior to confident entries. Use for interactions, preference signals, or profile updates.
 ---
 

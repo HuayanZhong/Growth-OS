@@ -1,9 +1,7 @@
 ---
-globs: apps/desktop/**, packages/ui/**
 paths:
   - "apps/desktop/**"
   - "packages/ui/**"
-alwaysApply: false
 description: Auth flow rule (Supabase Auth + Nuxt 4): login errors map via mapAuthError; null session after sign-up → confirmation view; expired/missing session → local signOut only; 403 degrades locally. Use for login/sign-up/sign-out flows.
 ---
 

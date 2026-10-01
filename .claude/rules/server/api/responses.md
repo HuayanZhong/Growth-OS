@@ -1,8 +1,6 @@
 ---
-globs: apps/server/**
 paths:
   - "apps/server/**"
-alwaysApply: false
 description: Response envelope rule (NestJS): successful responses wrapped as {data: T} by ResponseEnvelopeInterceptor; SSE and 204 excluded; errors go through AllExceptionsFilter, not intercepted. Use when writing controllers or testing response shapes.
 ---
 

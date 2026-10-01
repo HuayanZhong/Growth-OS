@@ -1,9 +1,7 @@
 ---
-globs: apps/desktop/**, packages/ui/**
 paths:
   - "apps/desktop/**"
   - "packages/ui/**"
-alwaysApply: false
 description: Nuxt test environment rule (@nuxt/test-utils): import mockNuxtImport from @nuxt/test-utils/runtime (main entry pulls in bun:test); for real runtimeConfig use vi.resetModules() + dynamic import. Use when mocking composables or singletons.
 ---
 

@@ -1,5 +1,4 @@
 ---
-alwaysApply: false
 description: Agent self-improvement: at wrap-up run the closing review (workflow → skill; decisions → Note; habits → profile; friction → decay-audit). Use when finishing a task, spotting a repeatable workflow, or deciding where a lesson belongs.
 ---
 

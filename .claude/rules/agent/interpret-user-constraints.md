@@ -1,5 +1,4 @@
 ---
-alwaysApply: false
 description: Interpret user constraints narrowly (they target the specific case at hand); never silently generalize them into broader prohibitions. Use when a user constraint seems to forbid a reasonable adjacent practice, or when deciding how far a constraint extends.
 ---
 

@@ -1,7 +1,5 @@
 ---
 globs: apps/desktop/**
-paths:
-  - "apps/desktop/**"
 alwaysApply: false
 description: Desktop IPC contract (Electron + packages/types): channels only via the IpcChannelMap map; sensitive data via the secureStore channel; launchEnv is non-secret NUXT_PUBLIC_* only. Use when changing IPC channels, secure storage, or launch env.
 ---

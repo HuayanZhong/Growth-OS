@@ -1,7 +1,5 @@
 ---
 globs: apps/server/**
-paths:
-  - "apps/server/**"
 alwaysApply: false
 description: Request validation (NestJS + zod): schemas in @growth-os/types as createXxxSchema + z.infer; ZodValidationPipe on every @Body/@Query; query numbers via z.coerce. Use when adding endpoints, input schemas, or validation.
 ---

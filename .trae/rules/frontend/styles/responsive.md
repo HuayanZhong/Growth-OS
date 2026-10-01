@@ -1,8 +1,5 @@
 ---
 globs: apps/desktop/**, packages/ui/**
-paths:
-  - "apps/desktop/**"
-  - "packages/ui/**"
 alwaysApply: false
 description: Responsive style rule (Tailwind CSS v4 + daisyUI 5): mobile-first, enhance progressively across breakpoints; use adaptive containers; daisyUI size classes never take breakpoint prefixes. Use when adapting layouts or handling touch targets.
 ---

@@ -12,6 +12,7 @@ Rules/agents/skills/MCP were duplicated across `.trae/`, `.claude/`, `.agents/` 
 - Agent `tools` drop `run_mcp` (unofficial on both platforms; Claude Code fails subagent launch on unknown tool names).
 - Guard hook validates writes to `.agents/**` truth and blocks writes to generated views.
 - Sync never prunes a view whose truth side does not exist yet (guards against pre-migration data loss; bit us once on first run).
+- Rule frontmatter is trimmed per platform view (Trae: `alwaysApply`/`globs`; Claude Code: `paths` array) — verbatim superset copies fail VS Code Claude-extension schema validation and, earlier, comma-string `paths` failed CC validation entirely (must be a YAML array).
 
 ## Consequences
 

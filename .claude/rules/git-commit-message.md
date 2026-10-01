@@ -1,6 +1,4 @@
 ---
-alwaysApply: false
-scene: git_message
 description: Git commit message rules
 ---
 

@@ -34,6 +34,36 @@ const DIR_VIEWS = [
 ]
 const FILE_VIEWS = [['.mcp.json', '.trae/mcp.json']]
 
+// Per-view frontmatter dialects: the truth layer carries the Trae superset
+// (alwaysApply + description + globs + paths); each platform's view keeps only
+// the fields its own schema supports (VS Code's Claude extension rejects
+// Trae-only fields, so .claude/rules copies must be trimmed, not verbatim).
+const VIEW_FM_DROPS = new Map([
+  ['.trae/rules', ['paths']],
+  ['.claude/rules', ['alwaysApply', 'globs', 'scene']],
+])
+
+function trimFrontmatter(text, dropKeys) {
+  const m = text.match(/^(---\r?\n)([\s\S]*?)(\r?\n---)/)
+  if (!m) return text
+  const lines = m[2].split(/\r?\n/)
+  const out = []
+  let skipping = false
+  for (const line of lines) {
+    const top = /^([A-Za-z_-]+):/.exec(line)
+    if (top) skipping = dropKeys.includes(top[1])
+    if (!skipping) out.push(line)
+  }
+  return m[1] + out.join('\n') + m[3] + text.slice(m[0].length)
+}
+
+function viewDropKeys(viewRel) {
+  for (const [dir, drop] of VIEW_FM_DROPS) {
+    if (viewRel === dir || viewRel.startsWith(dir + '/')) return drop
+  }
+  return null
+}
+
 function relOf(abs) {
   return path.relative(ROOT, abs).replace(/\\/g, '/')
 }
@@ -56,9 +86,11 @@ function stripMcpType(text) {
 }
 
 function expectedViewContent(truthAbs, viewRel) {
-  if (viewRel === '.trae/mcp.json' && STRIP_MCP_TYPE)
-    return stripMcpType(fs.readFileSync(truthAbs, 'utf8'))
-  return fs.readFileSync(truthAbs, 'utf8')
+  let text = fs.readFileSync(truthAbs, 'utf8')
+  if (viewRel === '.trae/mcp.json' && STRIP_MCP_TYPE) return stripMcpType(text)
+  const drop = viewDropKeys(viewRel)
+  if (drop) return trimFrontmatter(text, drop)
+  return text
 }
 
 const drift = []
@@ -157,7 +189,7 @@ function main() {
     const st = lstatSafe(job.viewAbs)
     if (st?.isSymbolicLink()) fs.rmSync(job.viewAbs) // never write through a symlink
     fs.mkdirSync(path.dirname(job.viewAbs), { recursive: true })
-    fs.copyFileSync(job.truthAbs, job.viewAbs)
+    fs.writeFileSync(job.viewAbs, expectedViewContent(job.truthAbs, relOf(job.viewAbs)))
   }
   for (const viewDir of [
     ...DIR_VIEWS.map(([, v]) => v),

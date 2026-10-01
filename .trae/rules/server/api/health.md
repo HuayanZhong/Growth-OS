@@ -1,7 +1,5 @@
 ---
 globs: apps/server/**
-paths:
-  - "apps/server/**"
 alwaysApply: false
 description: Health probe rule (NestJS + K8s): liveness (no deps, 200), readiness (DB ping, 503); DB ping 5s timeout; probes skip auth and throttle. Use when adding health endpoints or modifying probe behavior.
 ---

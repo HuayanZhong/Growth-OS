@@ -1,7 +1,5 @@
 ---
 globs: apps/server/**
-paths:
-  - "apps/server/**"
 alwaysApply: false
 description: Compression rule (Express + compression): threshold 1KB; SSE endpoints excluded via Content-Type check (includes, not ===); compression.filter is the default fallback. Use when modifying compression or SSE behavior.
 ---

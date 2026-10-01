@@ -1,8 +1,5 @@
 ---
 globs: apps/desktop/**, packages/ui/**
-paths:
-  - "apps/desktop/**"
-  - "packages/ui/**"
 alwaysApply: false
 description: Reusable style extraction (Vue 3 + shadcn style): class combos repeated 3+ times become UI package components; variants via cva; merging via cn() keeps external overrides. Use when extracting UI base components or defining variants.
 ---
