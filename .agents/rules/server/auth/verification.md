@@ -1,4 +1,6 @@
 ---
+globs: apps/server/**
+paths: apps/server/**
 alwaysApply: false
 description: JWT verification rule (Supabase + jose): dual-track JWKS local + HS256 Auth server probe; clock tolerance 30s; JWKS URL cached; never expose internal errors. Use when writing or modifying JWT verification logic.
 ---

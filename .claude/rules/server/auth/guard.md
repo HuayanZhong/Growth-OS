@@ -1,4 +1,6 @@
 ---
+globs: apps/server/**
+paths: apps/server/**
 alwaysApply: false
 description: Auth guard rule (NestJS + Supabase): all routes require Bearer token by default; @Public() exempts from JWT; @CurrentUser extracts user; failed getSession counts as logged out. Use for route protection or user context.
 ---

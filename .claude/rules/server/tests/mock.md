@@ -1,4 +1,6 @@
 ---
+globs: apps/server/**
+paths: apps/server/**
 alwaysApply: false
 description: Backend mock strategy rule (Vitest): never call real services (Supabase, DB); mock ESM-only modules with vi.mock; cover success + error paths; use vi.useFakeTimers for timer-dependent code. Use when writing tests or mocking dependencies.
 ---

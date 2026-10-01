@@ -1,4 +1,6 @@
 ---
+globs: apps/desktop/**, packages/ui/**
+paths: apps/desktop/**, packages/ui/**
 alwaysApply: false
 description: Credential safety: test accounts live only in repo root .env (SUPABASE_TEST_EMAIL / SUPABASE_TEST_PASSWORD); never hard-code them into code, tests, rules, or commits; rules reference variable names only. Use for test accounts or credentials.
 ---

@@ -1,4 +1,6 @@
 ---
+globs: apps/server/**
+paths: apps/server/**
 alwaysApply: false
 description: Timeout rule (NestJS + rxjs): 30s default; @SkipTimeout for SSE/streaming; TimeoutError maps to 408 + TIMEOUT code. Use when adding long-running endpoints or modifying timeout behavior.
 ---

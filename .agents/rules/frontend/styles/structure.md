@@ -1,4 +1,6 @@
 ---
+globs: apps/desktop/**, packages/ui/**
+paths: apps/desktop/**, packages/ui/**
 alwaysApply: false
 description: Style organization rule (Vue 3 + Tailwind CSS v4 + daisyUI 5): group in-component classes semantically; inline style forbidden; layered directory structure for style files. Use when writing template classes or adding style files/assets.
 ---

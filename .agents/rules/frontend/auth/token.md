@@ -1,4 +1,6 @@
 ---
+globs: apps/desktop/**, packages/ui/**
+paths: apps/desktop/**, packages/ui/**
 alwaysApply: false
 description: Token/session rule (supabase-js + secureStorage): never touch tokens manually; persist via secureStorage with PII stripped; storage/IPC failures degrade gracefully; failed getSession counts as logged out. Use for token storage or login-state checks.
 ---
