@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git commit -m 'feat\\(harness\\): 规则 frontmatter 升级为 globs+paths superset *)",
+      "Bash(git rm *)",
+      "Bash(node scripts/sync-harness.cjs)",
+      "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('.mcp.json','utf8'\\)\\); JSON.parse\\(require\\('fs'\\).readFileSync\\('.trae/mcp.json','utf8'\\)\\); console.log\\('both parse OK'\\)\")",
+      "Bash(git add *)",
+      "Bash(git commit -m 'feat\\(harness\\): MCP 配置收敛到项目根 .mcp.json，.trae/mcp.json 转为物化视图 *)"
+    ]
+  }
+}
