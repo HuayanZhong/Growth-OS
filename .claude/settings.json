@@ -29,7 +29,16 @@
       "Bash(pnpm verify:invariants)",
       "WebSearch",
       "Bash(git commit -m 'fix\\(harness\\): 同步脚本按平台裁剪规则 frontmatter，视图各守其 schema *)",
-      "Bash(git commit -m 'docs: decay-audit 补记 CC 文档与 VS Code 扩展校验的差距条目 *)"
+      "Bash(git commit -m 'docs: decay-audit 补记 CC 文档与 VS Code 扩展校验的差距条目 *)",
+      "Bash(claude --version)",
+      "Bash(claude mcp *)",
+      "Bash(claude -p \"reply with just: ok\" --debug)",
+      "Bash(claude -p \"Do NOT read any files. Answer from your context only: does your context contain instruction text about 'closing review' with four channels \\(技能/Note/profile/decay-audit\\), or about user-profile observation/scoring? Answer yes/no plus which one.\")",
+      "Bash(claude -p \"Read apps/server/src/app.module.ts \\(just skim it\\). Then answer from your context: do you now also see injected rule text about 'ApiErrorEnvelope' error contract or 'ZodValidationPipe' validation rules that came from .claude/rules? Answer yes/no, which rule topics appeared, and whether they appeared BEFORE your file read or only after.\")",
+      "Bash(claude -p \"Write a file at .trae/rules/probe-guard-test.md with exactly this content: '---\\\\nalwaysApply: false\\\\ndescription: probe\\\\n---\\\\n\\\\nbody\\\\n'. Use the Write tool.\" --permission-mode acceptEdits)",
+      "WebFetch(domain:mintlify.wiki)",
+      "Bash(node scripts/verify-gates.cjs)",
+      "Bash(git commit -m 'docs: 画像补记格式研究方法论教训（实测闭环优先于文档摘要） *)"
     ]
   },
   "hooks": {
