@@ -7,7 +7,7 @@
  * .agents/ 与 .trae/ 下的 vendored 技能资产不参与格式化与 lint：保持与上游一致，
  * 且第三方脚本不满足本仓库 lint 规则（oxlint 实测 7 errors）。
  */
-const VENDORED_PREFIXES = ['.agents/', '.trae/']
+const VENDORED_PREFIXES = ['.agents/', '.trae/', '.claude/']
 
 const ownFiles = (files) => files.filter((f) => !VENDORED_PREFIXES.some((p) => f.startsWith(p)))
 

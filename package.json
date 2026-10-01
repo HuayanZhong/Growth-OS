@@ -19,6 +19,7 @@
     "verify:docs": "node scripts/verify-docs.cjs",
     "verify:invariants": "node scripts/verify-invariants.cjs",
     "verify:gates": "node scripts/verify-gates.cjs",
+    "sync:harness": "node scripts/sync-harness.cjs",
     "verify": "pnpm verify:invariants && pnpm verify:docs && pnpm verify:gates",
     "verify:pairing": "node scripts/verify-translation-pairing.cjs",
     "generate:config": "node scripts/generate-config-catalog.cjs",
