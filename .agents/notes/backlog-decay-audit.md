@@ -3,6 +3,7 @@
 规则/门禁摩擦与腐烂项的落地的 backlog。来源：任务收尾四问（self-improvement §3.4）、rule-decay-audit 审计与行为探针、日常踩坑。每项：发现日期、来源、状态（open / resolved / wontfix）、修复建议。修复本身走正常变更流（批准后改源文件），backlog 只记录不承载修复内容。
 
 ## Open
+- 2026-10-08 ｜ 收尾四问（knip 补录 `.claude/**` 实施期）｜ `pnpm verify` 三门禁不含 hygiene：本轮新增 `.claude/skills` 视图目录后 knip 报 168 unused files，仅在补跑 hygiene 时暴露——verify 全绿造成"已验证"错觉。建议：把 `pnpm hygiene` 并入 `pnpm verify` 链（实测 ~0.8s，开销可忽略），或 CI 单独跑；待用户批准。
 - 2026-10-08 ｜ 日常踩坑（harness 终审期）｜ verify-docs 的 markdown 遍历不排除 `.superpowers/` 会话暂存目录：SDD 审查包（review-package，内含粘贴的规则原文与相对链接）生成即打红 docs 门禁，靠删除临时文件解除。该目录 git 忽略但被门禁扫描，未来每次双轴审查都会复现。建议：verify-docs 的 SKIP_DIRS 增加 `.superpowers/`（或链接检查豁免 git-ignored 目录），走正常变更流。
 - 2026-09-30 ｜ 日常踩坑（harness frontmatter 裁剪修复期）｜ CC 文档称 rules frontmatter 未知字段"运行时静默忽略"，但 VS Code 的 Claude 扩展按自有 schema 严格校验并告警（Trae 字段 alwaysApply/globs 在 .claude/rules 视图报不支持）——运行时容忍 ≠ 校验通过，跨平台共享文件必须以最严校验者为准。同轮：搜索所得的"paths 支持逗号字符串"结论被实测否定（必须 YAML 数组）。建议：无仓库动作；跨平台字段写法以目标平台实测校验器为准，文档只作参考（已按此修正 sync-harness VIEW_FM_DROPS）。
 - 2026-09-30 ｜ 日常踩坑（harness 真相层迁移实施期）｜ verify-docs 的链接检查随技能实体化开始覆盖 `.claude/skills/` 等物化视图，vendored 技能的上游死链（vueuse-functions 的 ../useXxx/index.md 相对链接、尖括号 <URL> 自动链接不被 [linksFrom](../../scripts/verify-docs.cjs) 正则识别）会直接打红仓库门禁。本轮已在真相源就地修 4 处（偏离上游）。建议：明确 vendored 目录的链接检查策略——保持检查则上游死链须项目侧补丁并在 SYNC.md 记录 patch 清单；或对 vendored 目录豁免链接检查只查结构。
