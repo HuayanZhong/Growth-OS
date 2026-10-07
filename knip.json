@@ -2,9 +2,19 @@
   "$schema": "./node_modules/knip/schema.json",
   "workspaces": {
     ".": {
-      "entry": ["scripts/**/*.cjs"],
-      "ignore": [".agents/**", ".trae/skills/**"],
-      "ignoreDependencies": ["oxfmt", "oxlint", "publint"]
+      "entry": [
+        "scripts/**/*.cjs"
+      ],
+      "ignore": [
+        ".agents/**",
+        ".trae/skills/**",
+        ".claude/**"
+      ],
+      "ignoreDependencies": [
+        "oxfmt",
+        "oxlint",
+        "publint"
+      ]
     },
     "apps/desktop": {
       "entry": [
@@ -18,23 +28,48 @@
         "vitest.config.ts",
         "test/**/*.{test,spec}.ts"
       ],
-      "ignore": ["public/emotion-ball/**"],
-      "ignoreDependencies": ["daisyui", "tailwindcss", "vue-tsc"],
+      "ignore": [
+        "public/emotion-ball/**"
+      ],
+      "ignoreDependencies": [
+        "daisyui",
+        "tailwindcss",
+        "vue-tsc"
+      ],
       "vitest": false
     },
     "apps/server": {
-      "entry": ["src/main.ts", "mikro-orm.config.ts", "test/**/*.e2e-spec.ts"],
-      "ignore": ["src/infra/database/migrations/**"],
-      "ignoreDependencies": ["pino-pretty"],
+      "entry": [
+        "src/main.ts",
+        "mikro-orm.config.ts",
+        "test/**/*.e2e-spec.ts"
+      ],
+      "ignore": [
+        "src/infra/database/migrations/**"
+      ],
+      "ignoreDependencies": [
+        "pino-pretty"
+      ],
       "ignoreIssues": {
-        "src/infra/database/seeders/DatabaseSeeder.ts": ["files"],
-        "src/common/decorators/skip-timeout.decorator.ts": ["exports"]
+        "src/infra/database/seeders/DatabaseSeeder.ts": [
+          "files"
+        ],
+        "src/common/decorators/skip-timeout.decorator.ts": [
+          "exports"
+        ]
       }
     },
     "packages/desktop-core": {
-      "entry": ["src/main.ts", "src/preload.ts"],
-      "ignore": ["src/types.ts"],
-      "ignoreDependencies": ["electron-builder"]
+      "entry": [
+        "src/main.ts",
+        "src/preload.ts"
+      ],
+      "ignore": [
+        "src/types.ts"
+      ],
+      "ignoreDependencies": [
+        "electron-builder"
+      ]
     },
     "packages/shared": {},
     "packages/types": {},
