@@ -22,8 +22,8 @@ last_updated: 2026-09-30
   confidence: 3 ｜ evidence: 09-14 未读设计笔记即成稿被批评 ｜ last_updated: 2026-09-18
 - 大任务自主推进：按计划继续，高风险点才请示；事实变化即更新计划。
   confidence: 3 ｜ evidence: 09-07 阶段三四连续"继续" ｜ last_updated: 2026-09-08
-- 实施反对一次到位：渐进切刀，每刀一风险源独立验收；每刀跑全套验证（verify+lint+typecheck+test+hygiene，三门禁不含后四者）。
-  confidence: 4 ｜ evidence: 09-26/27 切刀纠正；09-28 最小化；10-08 质询未跑全套 | last_updated: 2026-10-08
+- 实施反对一次到位：渐进切刀，每刀一风险源独立验收；每刀跑全套验证（verify 外含 lint/typecheck/test:coverage/hygiene）。
+  confidence: 4 ｜ evidence: 09-26/27 切刀纠正；09-28；10-08 质询未跑全套、CI coverage 倒退 | last_updated: 2026-10-08
 - 资质/付费门槛高时倾向零成本绕行，原目标占位。
   confidence: 2 ｜ evidence: 09-09 微信资质→GitHub、QQ 占位 ｜ last_updated: 2026-09-12
 - 偏好统一机制而非双轨：并行机制合并单一来源；新结构守既有惯例，域不搞特例。
