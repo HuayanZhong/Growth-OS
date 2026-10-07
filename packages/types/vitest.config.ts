@@ -17,6 +17,7 @@ export default defineConfig({
       exclude: [
         ...coverageConfigDefaults.exclude,
         '**/*.d.ts',
+        '**/*.md',
         '**/*.{css,svg,woff,woff2,png,jpg}',
         '**/.gitkeep',
         '**/index.ts',
