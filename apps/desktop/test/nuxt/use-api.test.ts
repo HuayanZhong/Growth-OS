@@ -11,7 +11,7 @@ const mocks = vi.hoisted(() => ({
 }))
 
 // 只 mock 应用级 composable（useSupabase）与 navigateTo；useRuntimeConfig 是 Nuxt 内置，
-// mockNuxtImport 不支持且会破坏环境装配（见 .trae/rules/frontend/tests/environment.md），
+// mockNuxtImport 不支持且会破坏环境装配（见 .agents/rules/frontend/tests/environment.md），
 // 断言使用其真实默认值 http://localhost:4000
 mockNuxtImport('useSupabase', () => () => ({ auth: mocks.auth }))
 mockNuxtImport('navigateTo', () => mocks.navigateTo)

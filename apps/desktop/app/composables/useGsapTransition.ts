@@ -1,4 +1,4 @@
-// GSAP 动画封装：集中动画规则（.trae/rules/frontend/styles/animation.md）的机械性样板——
+// GSAP 动画封装：集中动画规则（.agents/rules/frontend/styles/animation.md）的机械性样板——
 // 插件注册、入场 fromTo（首帧应用起始值 + 完成清理残留）、离场（先杀在飞 tween，完成可 await）、
 // $el fragment 锚点归一化、scope 销毁自动回收。规则是"为什么"，这里是"怎么做"。
 import { getCurrentScope, onScopeDispose } from 'vue'

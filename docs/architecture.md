@@ -22,11 +22,11 @@ Shared configs live in `tooling/`: layered TypeScript presets (`tooling/typescri
 
 ## Layers and data flow
 
-1. **Presentation** (`apps/desktop/app/`): pages, layouts, components, composables. State is kept in composables (`useAuth`, `useSupabase`, `useSecureStorage`, `useToast`); auth flows are governed by `.trae/rules/frontend/auth/`.
+1. **Presentation** (`apps/desktop/app/`): pages, layouts, components, composables. State is kept in composables (`useAuth`, `useSupabase`, `useSecureStorage`, `useToast`); auth flows are governed by `.agents/rules/frontend/auth/`.
 2. **Bridge** (`packages/desktop-core/`): Electron main process + preload, exposing a minimal `window.desktop` API via `contextBridge` (`contextIsolation: true`, `nodeIntegration: false`). IPC channels are typed in `packages/types/src/utils/ipc-channels.ts`.
 3. **API** (`apps/server/`): NestJS bootstrap with env validation (`src/config/env.validation.ts`), MikroORM wiring, and a global JWT guard (`modules/auth`, default-deny with `@Public()` opt-out; design in `.trae/documents/auth-verification-design.md`). Business entities land per module — see [database.md](server/database.md) for schema/entity status.
 4. **Data** (Supabase): Auth handles identity; PostgreSQL is the storage target via the session pooler connection string; per-user isolation via RLS is planned but not yet applied.
-5. **UI packages** (`packages/ui/`): reusable components and semantic style tokens (see `.trae/rules/frontend/styles/`).
+5. **UI packages** (`packages/ui/`): reusable components and semantic style tokens (see `.agents/rules/frontend/styles/`).
 
 ```mermaid
 flowchart TB
@@ -43,13 +43,13 @@ flowchart TB
 
 ## Key mechanisms
 
-- **Auth**: supabase-js client injects secureStorage for token persistence; PII is stripped before storage; login state comes from `getSession()`; sign-out falls back to local-only on expired/403 sessions. See [flows.md](../.trae/rules/frontend/auth/flows.md) and [token.md](../.trae/rules/frontend/auth/token.md).
+- **Auth**: supabase-js client injects secureStorage for token persistence; PII is stripped before storage; login state comes from `getSession()`; sign-out falls back to local-only on expired/403 sessions. See [flows.md](../.agents/rules/frontend/auth/flows.md) and [token.md](../.agents/rules/frontend/auth/token.md).
 - **Env**: dotenv-cli `-e` chain — `.env.local` (personal/deploy override, git-ignored) → `.env.development`/`.env.production` → `.env`; first file listed wins, missing files are skipped. Client-visible keys are `NUXT_PUBLIC_*`, validated by the shared `publicEnvSchema`; the desktop renderer overrides them at launch through the `launchEnv` IPC channel instead of baking values at build. Variable catalog: [config-catalog.md](config-catalog.md).
 - **Electron + Nuxt integration**: `apps/desktop/modules/electron.ts` compiles main/preload via vite-plugin-electron and starts Electron in dev; production build compiles only (electron-builder packages). Frontend/shell mechanisms (auth, IPC, styles, tests): [desktop/architecture.md](desktop/architecture.md).
-- **Animations**: manual GSAP + timeline for component switches (Vue `Transition mode="out-in"` + JS hooks is broken under Nuxt 4); see [animation.md](../.trae/rules/frontend/styles/animation.md).
+- **Animations**: manual GSAP + timeline for component switches (Vue `Transition mode="out-in"` + JS hooks is broken under Nuxt 4); see [animation.md](../.agents/rules/frontend/styles/animation.md).
 - **Database (server)**: MikroORM via `apps/server/mikro-orm.config.ts`, connecting with the session pooler string; migrations and seeders live in `infra/database/` and run through the `mikro-orm:*` scripts. See [database.md](server/database.md).
 
 ## Change guidance
 
-- New feature in `packages/` → read this map first, then the owning package README and the relevant `.trae/rules/` file.
+- New feature in `packages/` → read this map first, then the owning package README and the relevant `.agents/rules/` file.
 - Architecture decisions and rejected alternatives → write an Agent Note in `.agents/notes/` in the same change (see [notes README](../.agents/notes/README.md)).

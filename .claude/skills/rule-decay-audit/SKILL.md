@@ -1,6 +1,6 @@
 ---
 name: rule-decay-audit
-description: Audit the Trae harness (.trae/rules, .trae/agents, AGENTS.md, human docs) for decay — rule assertions that no longer match the code (renamed frameworks, moved paths, stale versions, inverted API semantics), missing index entries, and broken bilingual mirrors. Fix drift in place and re-verify. Use when the user asks to review rules/docs for rot, after a big migration (test framework swap, major dependency bump, ESM switch), or periodically as harness maintenance.
+description: Audit the Trae harness (.agents/rules, .agents/agents, AGENTS.md, human docs) for decay — rule assertions that no longer match the code (renamed frameworks, moved paths, stale versions, inverted API semantics), missing index entries, and broken bilingual mirrors. Fix drift in place and re-verify. Use when the user asks to review rules/docs for rot, after a big migration (test framework swap, major dependency bump, ESM switch), or periodically as harness maintenance.
 ---
 
 Systematic decay audit of the harness: every rule assertion is checked against the code it describes, drift is fixed at the source, and the bilingual/index contracts are re-verified. The machine gates (`verify:docs` for links/budgets/pairs, `verify:invariants` for structural checks) run first; this audit covers what they cannot — semantic drift between prose and code.
@@ -11,8 +11,8 @@ Systematic decay audit of the harness: every rule assertion is checked against t
 
 List the audit surface:
 
-- `.trae/rules/**/*.md` — domain rules (English source of truth)
-- `.trae/agents/*.md` — on-demand experts
+- `.agents/rules/**/*.md` — domain rules (English source of truth)
+- `.agents/agents/*.md` — on-demand experts
 - `AGENTS.md` (root) — standing orders + rules/agents index
 - `docs/architecture.md` / `docs/server/database.md` / `docs/desktop/architecture.md` — human detail docs
 - `docs/guide-zh.md` — Chinese navigation index
@@ -32,7 +32,7 @@ Grep and run commands to verify each anchor. Anchor-less prose (pure principle) 
 
 ### 3. Fix drift at the source
 
-- Rules are English SSOT: fix the `.trae/rules/**` file, never a mirror.
+- Rules are English SSOT: fix the `.agents/rules/**` file, never a mirror.
 - Human docs with Chinese mirrors: change both sides in the same change, then re-record the pair hash with `pnpm verify:pairing --write <path>`.
 - Update `docs/guide-zh.md` when rule files are added/removed/renamed (index only, no restatement).
 - Keep the tier taxonomy: standing orders → root `AGENTS.md` (one line), domain detail → the owning rule, rationale → an Agent Note.
@@ -40,7 +40,7 @@ Grep and run commands to verify each anchor. Anchor-less prose (pure principle) 
 
 ### 4. Check index completeness
 
-Every file under `.trae/rules/**/*.md` and `.trae/agents/*.md` must be referenced from the root `AGENTS.md` (no orphan rules), and every index entry must resolve (machine-checked by `verify:docs` link validation).
+Every file under `.agents/rules/**/*.md` and `.agents/agents/*.md` must be referenced from the root `AGENTS.md` (no orphan rules), and every index entry must resolve (machine-checked by `verify:docs` link validation).
 
 ### 5. Re-verify
 

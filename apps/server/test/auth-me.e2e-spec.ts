@@ -9,7 +9,7 @@ import { createE2EApp } from './e2e-app.ts'
  * - 无 token → 401 信封
  * - 根 .env 测试账号真实登录取 token → 200 且返回同一用户
  * 凭据缺失（CI）时跳过真实登录用例，401 分支仍执行。
- * 凭据只从环境变量读取，禁止硬编码（见 .trae/rules/frontend/auth/credentials.md）。
+ * 凭据只从环境变量读取，禁止硬编码（见 .agents/rules/frontend/auth/credentials.md）。
  */
 const EMAIL = process.env.SUPABASE_TEST_EMAIL
 const PASSWORD = process.env.SUPABASE_TEST_PASSWORD

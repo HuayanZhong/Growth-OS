@@ -32,9 +32,9 @@ import '@growth-os/ui/main.css'
 
 ## Rules
 
-- Semantic color tokens only, no hard-coded values — see [colors.md](../../.trae/rules/frontend/styles/colors.md).
-- External overrides merge via `cn()` — see [conflict.md](../../.trae/rules/frontend/styles/conflict.md).
-- Class combos repeated 3+ times become components here — see [reuse.md](../../.trae/rules/frontend/styles/reuse.md).
+- Semantic color tokens only, no hard-coded values — see [colors.md](../../.agents/rules/frontend/styles/colors.md).
+- External overrides merge via `cn()` — see [conflict.md](../../.agents/rules/frontend/styles/conflict.md).
+- Class combos repeated 3+ times become components here — see [reuse.md](../../.agents/rules/frontend/styles/reuse.md).
 
 ## Tests
 
@@ -42,4 +42,4 @@ Mirrored layout: `test/` sits beside `src/` (`src/x/y.ts` → `test/x/y.test.ts`
 
 ## Known limitations
 
-- Only `theme-toggle` is shipped so far; further components are extracted when class combos hit 3+ uses ([reuse.md](../../.trae/rules/frontend/styles/reuse.md)).
+- Only `theme-toggle` is shipped so far; further components are extracted when class combos hit 3+ uses ([reuse.md](../../.agents/rules/frontend/styles/reuse.md)).

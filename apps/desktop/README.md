@@ -34,6 +34,6 @@ Nuxt 4 · Vue 3 · Tailwind CSS v4 · daisyUI · Supabase (auth) · GSAP. Design
 
 ## Rules
 
-- Auth flows: `.trae/rules/frontend/auth/` (credentials, flows, token)
-- Styles: `.trae/rules/frontend/styles/` (colors, themes, animation, …)
-- Tests: `.trae/rules/frontend/tests/` (mock, isolation, commands, …)
+- Auth flows: `.agents/rules/frontend/auth/` (credentials, flows, token)
+- Styles: `.agents/rules/frontend/styles/` (colors, themes, animation, …)
+- Tests: `.agents/rules/frontend/tests/` (mock, isolation, commands, …)

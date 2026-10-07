@@ -236,11 +236,12 @@ for (const { file, regen, generate } of GENERATED_DOCS) {
   }
 }
 
-// 7. Harness index completeness — every rule/agent file must be referenced from
+// 7. Harness index completeness — every truth rule/agent file must be referenced from
 //    the root AGENTS.md. Unregistered assets are invisible to on-demand loading
 //    (orphan rules) and rot silently; index entries themselves are link-checked above.
+//    Scans the .agents truth layer (the .trae/.claude views are generated from it).
 const agentsMdContent = read(path.join(ROOT, 'AGENTS.md'))
-for (const base of ['.trae/rules', '.trae/agents']) {
+for (const base of ['.agents/rules', '.agents/agents']) {
   for (const rel of collectMarkdown(path.join(ROOT, base))) {
     const harnessRel = rel.replace(/\\/g, '/')
     if (!agentsMdContent.includes(harnessRel)) {

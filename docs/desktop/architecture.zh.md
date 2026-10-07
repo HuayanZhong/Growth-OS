@@ -16,10 +16,10 @@ apps/desktop          桌面 UI（Nuxt 4 应用）
 ## 关键机制
 
 - **Electron 接线**：`modules/electron.ts` 通过 vite-plugin-electron 在 dev 编译主进程/preload 并启动窗口，prod 走打包产物。
-- **认证**：Supabase Auth，`useAuth`/`useSecureStorage`/`useSupabase` composables；会话经 secureStorage 持久化，`middleware/auth.global.ts` 做路由守卫。登录/登出/403 回退遵循 `.trae/rules/frontend/auth/`（flows、token、credentials）。
+- **认证**：Supabase Auth，`useAuth`/`useSecureStorage`/`useSupabase` composables；会话经 secureStorage 持久化，`middleware/auth.global.ts` 做路由守卫。登录/登出/403 回退遵循 `.agents/rules/frontend/auth/`（flows、token、credentials）。
 - **IPC**：通道名定义在 `@growth-os/types` 的 `ipc-channels.ts`，preload 通过 contextBridge 暴露 `window.desktop` 最小面；改通道需同一变更同步 `apps/desktop` 与 `@growth-os/desktop-core`。
-- **样式**：语义色 token、主题经 theme-controller 切换、GSAP 动画、3+ 复用抽到 `@growth-os/ui`——遵循 `.trae/rules/frontend/styles/`。
-- **测试**：Nuxt 官方 projects 布局——`test/unit/`（node 环境，纯逻辑）+ `test/nuxt/`（Nuxt 运行时，自动纳入 Nuxt TS 上下文）；测试禁止真调 Supabase 网络与 Electron IPC——遵循 `.trae/rules/frontend/tests/`。
+- **样式**：语义色 token、主题经 theme-controller 切换、GSAP 动画、3+ 复用抽到 `@growth-os/ui`——遵循 `.agents/rules/frontend/styles/`。
+- **测试**：Nuxt 官方 projects 布局——`test/unit/`（node 环境，纯逻辑）+ `test/nuxt/`（Nuxt 运行时，自动纳入 Nuxt TS 上下文）；测试禁止真调 Supabase 网络与 Electron IPC——遵循 `.agents/rules/frontend/tests/`。
 
 ## 验证
 

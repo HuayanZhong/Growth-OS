@@ -32,9 +32,9 @@ import '@growth-os/ui/main.css'
 
 ## 规则
 
-- 只用语义色 token，不硬编码色值——见 [colors.md](../../.trae/rules/frontend/styles/colors.md)。
-- 外部样式覆盖走 `cn()` 合并——见 [conflict.md](../../.trae/rules/frontend/styles/conflict.md)。
-- 重复 3+ 次的类组合抽成组件放这里——见 [reuse.md](../../.trae/rules/frontend/styles/reuse.md)。
+- 只用语义色 token，不硬编码色值——见 [colors.md](../../.agents/rules/frontend/styles/colors.md)。
+- 外部样式覆盖走 `cn()` 合并——见 [conflict.md](../../.agents/rules/frontend/styles/conflict.md)。
+- 重复 3+ 次的类组合抽成组件放这里——见 [reuse.md](../../.agents/rules/frontend/styles/reuse.md)。
 
 ## 测试
 
@@ -42,4 +42,4 @@ import '@growth-os/ui/main.css'
 
 ## 已知限制
 
-- 目前只交付了 `theme-toggle`；其余组件待类组合达到 3+ 次复用时再抽取（[reuse.md](../../.trae/rules/frontend/styles/reuse.md)）。
+- 目前只交付了 `theme-toggle`；其余组件待类组合达到 3+ 次复用时再抽取（[reuse.md](../../.agents/rules/frontend/styles/reuse.md)）。

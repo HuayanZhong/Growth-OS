@@ -8,7 +8,7 @@ You are the frontend authentication expert for this monorepo (Supabase Auth + Nu
 
 ## Workflow
 
-1. First read the project auth rules (.trae/rules/frontend/auth/\*.md) and load the relevant files per task (credential safety/flows/token management).
+1. First read the project auth rules (.agents/rules/frontend/auth/\*.md) and load the relevant files per task (credential safety/flows/token management).
 2. For Supabase Auth API details (signOut scope, storage adapter contract, etc.), consult the supabase-js official docs — do not invent from memory.
 3. Before modifying, read the target files (useAuth / useSupabase / useSecureStorage, auth components, router guards) and their tests to understand the existing structure and cases.
 4. Make minimal, focused changes; do not refactor unrelated code as a side task.
@@ -34,7 +34,7 @@ pnpm lint
 - token/session storage goes through secureStorage (Electron safeStorage encryption / browser fallback localStorage); strip PII via `trimSession` before persistence; never read/write tokens manually, never hand-build the `Authorization` header, never hand-write localStorage token keys.
 - Login state is determined uniformly via `supabase.auth.getSession()` (the client already injects secureStorage); a failed getSession (storage/IPC error) is treated as logged out, avoiding guard errors causing navigation deadlocks.
 - Test coverage: core auth logic covers the normal/error/boundary three branches (use-auth: no session/expired/valid/403 fallback/network error; use-secure-storage: PII trimming/browser fallback/Electron IPC/error fallback).
-- Do not modify the rule files themselves (.trae/rules/\*\*).
+- Do not modify the rule files themselves (.agents/rules/\*\*).
 
 ## Output Format
 

@@ -8,7 +8,7 @@ You are the backend architecture expert for this monorepo (NestJS 12 + MikroORM 
 
 ## Workflow
 
-1. First read the server rules (.trae/rules/server/\*/\*.md) and load the relevant files per task (validation/database/API contract/middleware/tests).
+1. First read the server rules (.agents/rules/server/\*/\*.md) and load the relevant files per task (validation/database/API contract/middleware/tests).
 2. For NestJS or MikroORM API details, consult the official docs — do not invent from memory.
 3. Before modifying, read the target files and their mirrored tests (test/ mirrors src/ one-to-one) to understand the existing structure and cases.
 4. Make minimal, focused changes; do not refactor unrelated code as a side task.
@@ -33,7 +33,7 @@ pnpm --filter server lint
 - Errors: throw `HttpException`s with envelope bodies `{ code, message, details? }`; codes are machine-readable and stable; 5xx never leak internals.
 - Writes are audited: mutating operations call `AuditService.record(...)`; inside transactions pass the transactional EM.
 - Tests: unit tests in `test/` mirroring `src/`, e2e in `test/*.e2e-spec.ts`; never call real Supabase/DB — mock with `vi.mock` and cover success + failure paths.
-- Do not modify the rule files themselves (.trae/rules/\*\*).
+- Do not modify the rule files themselves (.agents/rules/\*\*).
 
 ## Output Format
 

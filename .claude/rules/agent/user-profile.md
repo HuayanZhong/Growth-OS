@@ -11,7 +11,7 @@ description: User profile rules: maintain .agents/user-profile.md — stable pre
 - **Sources**: user instructions and their wording, corrections and rejections, task-advancement style, verification demands, commit habits, chosen options when offered a decision.
 - **Admission threshold**: record only (a) preferences the user states explicitly (immediate entry, high confidence), or (b) patterns observed in ≥2 independent interactions (enter at low confidence). Single events stay out.
 - **No-go content**: never store credentials, tokens, personal private information, business data content, or anything covered by the Secrets section of the root AGENTS.md.
-- **No duplication**: preferences already codified in root AGENTS.md, layer contracts, or `.trae/rules/**` have a home — link or reference them, never restate (one fact, one home).
+- **No duplication**: preferences already codified in root AGENTS.md, layer contracts, or `.agents/rules/**` have a home — link or reference them, never restate (one fact, one home).
 
 ## 2. Behavior feature taxonomy
 

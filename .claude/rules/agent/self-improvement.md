@@ -21,7 +21,7 @@ A lesson goes to exactly one channel; never duplicate across them.
 Distill a workflow into a skill only when ALL hold:
 
 1. **Reusable**: the flow will recur across future tasks (not a one-off solution).
-2. **Cross-cutting or harness-level**: not project-domain logic — domain constraints belong in `.trae/rules/**`, decisions in notes.
+2. **Cross-cutting or harness-level**: not project-domain logic — domain constraints belong in `.agents/rules/**`, decisions in notes.
 3. **Stable**: the steps have succeeded at least once end-to-end and are unlikely to change next time.
 
 Format: `.trae/skills/<kebab-name>/SKILL.md` per the Agent Skills spec (`name` = parent directory, `description` states what and when — the PreToolUse hook enforces this). One capability per skill; keep the body under ~100 lines and reference files instead of inlining.
@@ -37,7 +37,7 @@ At wrap-up, answer four questions (the Stop hook reminds automatically):
 
 ### Reinforce existing rules (part of question 4, and every wrap-up)
 
-Rules under `.trae/rules/**` strengthen through use — never one-shot authoring. When this task's case **validates, challenges, or extends** an existing rule, update that rule file in the same wrap-up: add the case as evidence, tighten its wording, or extend its scope. If the lesson instead reveals a missing rule, propose it (plan → user approval → note). Either way, run `verify:docs` / `verify:gates` after touching a rule file.
+Rules under `.agents/rules/**` strengthen through use — never one-shot authoring. When this task's case **validates, challenges, or extends** an existing rule, update that rule file in the same wrap-up: add the case as evidence, tighten its wording, or extend its scope. If the lesson instead reveals a missing rule, propose it (plan → user approval → note). Either way, run `verify:docs` / `verify:gates` after touching a rule file.
 
 ## 4. Step-by-step self-optimization loop
 

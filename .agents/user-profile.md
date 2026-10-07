@@ -1,6 +1,6 @@
 # 用户画像（User Profile）
 
-> 活文档：采集与计分规则见 [.trae/rules/agent/user-profile.md](../.trae/rules/agent/user-profile.md)（仅 ≥3 影响默认行为）。
+> 活文档：采集与计分规则见 [.agents/rules/agent/user-profile.md](../.agents/rules/agent/user-profile.md)（仅 ≥3 影响默认行为）。
 
 owner: primary（仓库所有者，单人开发）
 last_updated: 2026-09-30
@@ -16,7 +16,7 @@ last_updated: 2026-09-30
 
 - 选型/迁移先给官方依据；格式以运行时校验闭环为准。
   confidence: 4 ｜ evidence: 09-08 ESM；09-30 paths 实测 | last_updated: 2026-09-30
-- 对"越界"敏感：只做确认范围，扩展/收缩先提案；对标忠实复刻。边界见 [interpret-user-constraints](../../.trae/rules/agent/interpret-user-constraints.md)。
+- 对"越界"敏感：只做确认范围，扩展/收缩先提案；对标忠实复刻。边界见 [interpret-user-constraints](../../.agents/rules/agent/interpret-user-constraints.md)。
   confidence: 4 ｜ evidence: 09-07 越界；09-13 未商量加模块；09-27 对标两次纠正；09-28 删用户选型被要求找回 ｜ last_updated: 2026-09-28
 - 重建/设计先读 Notes 与归档 changes。
   confidence: 3 ｜ evidence: 09-14 未读设计笔记即成稿被批评 ｜ last_updated: 2026-09-18

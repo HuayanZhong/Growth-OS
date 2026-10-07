@@ -2,81 +2,81 @@
 
 本文件是给开发人员阅读的中文导航：**只索引、不转述**。规则正文以英文真相文件为准，改规则只改英文文件，本文件仅在结构变化时同步索引。机器侧的单一事实源是 [AGENTS.md](../AGENTS.md)。
 
-## 规则（.trae/rules，英文真相）
+## 规则（.agents/rules，英文真相）
 
 按需加载，点击进入英文原文。
 
 ### 前端认证（frontend/auth/）
 
-- [credentials.md](../.trae/rules/frontend/auth/credentials.md) — 测试账号只放根 `.env`，规则只引用变量名
-- [flows.md](../.trae/rules/frontend/auth/flows.md) — 登录/登出/403 兜底流程
-- [token.md](../.trae/rules/frontend/auth/token.md) — secureStorage 会话持久化，PII 剥离
+- [credentials.md](../.agents/rules/frontend/auth/credentials.md) — 测试账号只放根 `.env`，规则只引用变量名
+- [flows.md](../.agents/rules/frontend/auth/flows.md) — 登录/登出/403 兜底流程
+- [token.md](../.agents/rules/frontend/auth/token.md) — secureStorage 会话持久化，PII 剥离
 
 ### 前端样式（frontend/styles/）
 
-- [animation.md](../.trae/rules/frontend/styles/animation.md) — GSAP 动画，禁用 Vue Transition out-in（Nuxt 4 bug）
-- [colors.md](../.trae/rules/frontend/styles/colors.md) — 只用语义色 token，不硬编码色值
-- [conflict.md](../.trae/rules/frontend/styles/conflict.md) — 外部样式覆盖走 class 透传 + `cn()` 合并
-- [fonts.md](../.trae/rules/frontend/styles/fonts.md) — 品牌字体本地化，中文字体 unicode-range 拆分
-- [performance.md](../.trae/rules/frontend/styles/performance.md) — 样式性能与构建产物检查
-- [responsive.md](../.trae/rules/frontend/styles/responsive.md) — 移动优先响应式
-- [reuse.md](../.trae/rules/frontend/styles/reuse.md) — 重复 3+ 次的类组合抽成 UI 组件
-- [structure.md](../.trae/rules/frontend/styles/structure.md) — 样式文件组织
-- [themes.md](../.trae/rules/frontend/styles/themes.md) — 主题切换，页面不锁 data-theme
+- [animation.md](../.agents/rules/frontend/styles/animation.md) — GSAP 动画，禁用 Vue Transition out-in（Nuxt 4 bug）
+- [colors.md](../.agents/rules/frontend/styles/colors.md) — 只用语义色 token，不硬编码色值
+- [conflict.md](../.agents/rules/frontend/styles/conflict.md) — 外部样式覆盖走 class 透传 + `cn()` 合并
+- [fonts.md](../.agents/rules/frontend/styles/fonts.md) — 品牌字体本地化，中文字体 unicode-range 拆分
+- [performance.md](../.agents/rules/frontend/styles/performance.md) — 样式性能与构建产物检查
+- [responsive.md](../.agents/rules/frontend/styles/responsive.md) — 移动优先响应式
+- [reuse.md](../.agents/rules/frontend/styles/reuse.md) — 重复 3+ 次的类组合抽成 UI 组件
+- [structure.md](../.agents/rules/frontend/styles/structure.md) — 样式文件组织
+- [themes.md](../.agents/rules/frontend/styles/themes.md) — 主题切换，页面不锁 data-theme
 
 ### 前端测试（frontend/tests/）
 
-- [assertions.md](../.trae/rules/frontend/tests/assertions.md) — 断言与类型安全（禁止非空断言、禁止 any）
-- [commands.md](../.trae/rules/frontend/tests/commands.md) — 验证顺序 test → typecheck → lint
-- [coverage.md](../.trae/rules/frontend/tests/coverage.md) — 覆盖原则：测行为不测实现
-- [environment.md](../.trae/rules/frontend/tests/environment.md) — @nuxt/test-utils 环境
-- [isolation.md](../.trae/rules/frontend/tests/isolation.md) — 测试隔离
-- [mock.md](../.trae/rules/frontend/tests/mock.md) — 禁止真实调用外部服务
-- [structure.md](../.trae/rules/frontend/tests/structure.md) — 测试目录结构
+- [assertions.md](../.agents/rules/frontend/tests/assertions.md) — 断言与类型安全（禁止非空断言、禁止 any）
+- [commands.md](../.agents/rules/frontend/tests/commands.md) — 验证顺序 test → typecheck → lint
+- [coverage.md](../.agents/rules/frontend/tests/coverage.md) — 覆盖原则：测行为不测实现
+- [environment.md](../.agents/rules/frontend/tests/environment.md) — @nuxt/test-utils 环境
+- [isolation.md](../.agents/rules/frontend/tests/isolation.md) — 测试隔离
+- [mock.md](../.agents/rules/frontend/tests/mock.md) — 禁止真实调用外部服务
+- [structure.md](../.agents/rules/frontend/tests/structure.md) — 测试目录结构
 
 ### 桌面（desktop/）
 
-- [ipc-contract.md](../.trae/rules/desktop/ipc-contract.md) — IPC 契约：IpcChannelMap 单源三端同步、secureStore 存敏感数据、launchEnv 仅非密钥
+- [ipc-contract.md](../.agents/rules/desktop/ipc-contract.md) — IPC 契约：IpcChannelMap 单源三端同步、secureStore 存敏感数据、launchEnv 仅非密钥
 
 ### 提交规范
 
-- [git-commit-message.md](../.trae/rules/git-commit-message.md) — conventional commits，subject 语言与改动一致
+- [git-commit-message.md](../.agents/rules/git-commit-message.md) — conventional commits，subject 语言与改动一致
 
 ### 后端认证（server/auth/）
 
-- [verification.md](../.trae/rules/server/auth/verification.md) — JWT 双轨验证（JWKS 本地 + HS256 Auth 探针）
-- [guard.md](../.trae/rules/server/auth/guard.md) — SupabaseJwtGuard、@Public、@CurrentUser
+- [verification.md](../.agents/rules/server/auth/verification.md) — JWT 双轨验证（JWKS 本地 + HS256 Auth 探针）
+- [guard.md](../.agents/rules/server/auth/guard.md) — SupabaseJwtGuard、@Public、@CurrentUser
 
 ### 后端数据库（server/database/）
 
-- [orm.md](../.trae/rules/server/database/orm.md) — MikroORM v7 配置、entity 放置、@InjectMikroORM('default')
-- [migrations.md](../.trae/rules/server/database/migrations.md) — 迁移工作流（create/up/down）
+- [orm.md](../.agents/rules/server/database/orm.md) — MikroORM v7 配置、entity 放置、@InjectMikroORM('default')
+- [migrations.md](../.agents/rules/server/database/migrations.md) — 迁移工作流（create/up/down）
 
 ### 后端 API（server/api/）
 
-- [errors.md](../.trae/rules/server/api/errors.md) — ApiErrorEnvelope、AllExceptionsFilter、STATUS_CODE_MAP
-- [responses.md](../.trae/rules/server/api/responses.md) — ResponseEnvelopeInterceptor、{data: T} 信封
-- [health.md](../.trae/rules/server/api/health.md) — 健康探针双层（liveness 200, readiness 503）
+- [errors.md](../.agents/rules/server/api/errors.md) — ApiErrorEnvelope、AllExceptionsFilter、STATUS_CODE_MAP
+- [responses.md](../.agents/rules/server/api/responses.md) — ResponseEnvelopeInterceptor、{data: T} 信封
+- [health.md](../.agents/rules/server/api/health.md) — 健康探针双层（liveness 200, readiness 503）
 
 ### 后端中间件（server/middleware/）
 
-- [compression.md](../.trae/rules/server/middleware/compression.md) — 响应压缩，SSE 排除（includes 匹配）
-- [helmet.md](../.trae/rules/server/middleware/helmet.md) — 安全头，CSP 仅生产环境
-- [timeout.md](../.trae/rules/server/middleware/timeout.md) — 请求超时，@SkipTimeout 用于 SSE
+- [compression.md](../.agents/rules/server/middleware/compression.md) — 响应压缩，SSE 排除（includes 匹配）
+- [helmet.md](../.agents/rules/server/middleware/helmet.md) — 安全头，CSP 仅生产环境
+- [timeout.md](../.agents/rules/server/middleware/timeout.md) — 请求超时，@SkipTimeout 用于 SSE
 
 ### 后端测试（server/tests/）
 
-- [structure.md](../.trae/rules/server/tests/structure.md) — 测试目录结构（co-located spec + e2e）
-- [mock.md](../.trae/rules/server/tests/mock.md) — Mock 策略（vi.mock for ESM, fake timers）
-- [commands.md](../.trae/rules/server/tests/commands.md) — 测试命令与验证顺序
+- [structure.md](../.agents/rules/server/tests/structure.md) — 测试目录结构（co-located spec + e2e）
+- [mock.md](../.agents/rules/server/tests/mock.md) — Mock 策略（vi.mock for ESM, fake timers）
+- [commands.md](../.agents/rules/server/tests/commands.md) — 测试命令与验证顺序
 
 ### Agent 协作（agent/）
 
-- [hooks.md](../.trae/rules/agent/hooks.md) — Trae hooks 生命周期、协议、编写规范（守卫与提醒清单）
-- [self-improvement.md](../.trae/rules/agent/self-improvement.md) — 自审与沉淀：收尾四问、技能沉淀、优化循环
-- [user-profile.md](../.trae/rules/agent/user-profile.md) — 用户画像：采集标准、置信度计分（数据在 `.agents/user-profile.md`，Stop hook 自动提醒）
+- [hooks.md](../.agents/rules/agent/hooks.md) — Trae hooks 生命周期、协议、编写规范（守卫与提醒清单）
+- [self-improvement.md](../.agents/rules/agent/self-improvement.md) — 自审与沉淀：收尾四问、技能沉淀、优化循环
+- [user-profile.md](../.agents/rules/agent/user-profile.md) — 用户画像：采集标准、置信度计分（数据在 `.agents/user-profile.md`，Stop hook 自动提醒）
 
-## 专家（.trae/agents）
+## 专家（.agents/agents）
 
 按 description 触发：auth / style / test 前端专家 + server-architect（后端）。
 

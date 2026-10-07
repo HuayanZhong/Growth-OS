@@ -39,6 +39,6 @@ rules:
     - State whether the change touches harness assets (.trae/, .agents/, AGENTS.md) — those follow the stricter flow in docs/AGENTS.md
     - Map affected layers explicitly (apps/desktop / apps/server / packages/*) — cross-layer changes need the layer contracts
   tasks:
-    - Each task ends with its verification command (per apps/server AGENTS.md and .trae/rules/** verification sections)
+    - Each task ends with its verification command (per apps/server AGENTS.md and .agents/rules/** verification sections)
   design:
     - Reference existing Agent Notes (.agents/notes/) for prior decisions in the touched area

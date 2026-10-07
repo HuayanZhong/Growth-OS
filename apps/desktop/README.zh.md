@@ -34,6 +34,6 @@ Nuxt 4 · Vue 3 · Tailwind CSS v4 · daisyUI · Supabase（认证）· GSAP。�
 
 ## 规则
 
-- 认证流程：`.trae/rules/frontend/auth/`（credentials、flows、token）
-- 样式：`.trae/rules/frontend/styles/`（colors、themes、animation 等）
-- 测试：`.trae/rules/frontend/tests/`（mock、isolation、commands 等）
+- 认证流程：`.agents/rules/frontend/auth/`（credentials、flows、token）
+- 样式：`.agents/rules/frontend/styles/`（colors、themes、animation 等）
+- 测试：`.agents/rules/frontend/tests/`（mock、isolation、commands 等）

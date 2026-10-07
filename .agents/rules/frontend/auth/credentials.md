@@ -14,7 +14,7 @@ description: Credential safety: test accounts live only in repo root .env (SUPAB
 **Key points**:
 
 1. Test accounts (email + password) live only in the repo root `.env`: `SUPABASE_TEST_EMAIL`, `SUPABASE_TEST_PASSWORD`.
-2. `.env` is gitignored (under the `Local env files` section) and is the only allowed location — never hard-code account credentials into components, composables, test files, rules (`.trae/rules/**`), or commit contents.
+2. `.env` is gitignored (under the `Local env files` section) and is the only allowed location — never hard-code account credentials into components, composables, test files, rules (`.agents/rules/**`), or commit contents.
 3. Read test accounts from environment variables: vitest.config auto-loads the root `.env`, so `process.env.SUPABASE_TEST_EMAIL` works directly inside tests; AI tests read the `.env` file directly.
 4. Rule files (including this one) only reference variable names, never inline real account values.
 
