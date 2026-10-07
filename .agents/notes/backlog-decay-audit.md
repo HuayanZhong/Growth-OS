@@ -3,6 +3,7 @@
 规则/门禁摩擦与腐烂项的落地的 backlog。来源：任务收尾四问（self-improvement §3.4）、rule-decay-audit 审计与行为探针、日常踩坑。每项：发现日期、来源、状态（open / resolved / wontfix）、修复建议。修复本身走正常变更流（批准后改源文件），backlog 只记录不承载修复内容。
 
 ## Open
+- 2026-10-08 ｜ 日常踩坑（harness 终审期）｜ verify-docs 的 markdown 遍历不排除 `.superpowers/` 会话暂存目录：SDD 审查包（review-package，内含粘贴的规则原文与相对链接）生成即打红 docs 门禁，靠删除临时文件解除。该目录 git 忽略但被门禁扫描，未来每次双轴审查都会复现。建议：verify-docs 的 SKIP_DIRS 增加 `.superpowers/`（或链接检查豁免 git-ignored 目录），走正常变更流。
 - 2026-09-30 ｜ 日常踩坑（harness frontmatter 裁剪修复期）｜ CC 文档称 rules frontmatter 未知字段"运行时静默忽略"，但 VS Code 的 Claude 扩展按自有 schema 严格校验并告警（Trae 字段 alwaysApply/globs 在 .claude/rules 视图报不支持）——运行时容忍 ≠ 校验通过，跨平台共享文件必须以最严校验者为准。同轮：搜索所得的"paths 支持逗号字符串"结论被实测否定（必须 YAML 数组）。建议：无仓库动作；跨平台字段写法以目标平台实测校验器为准，文档只作参考（已按此修正 sync-harness VIEW_FM_DROPS）。
 - 2026-09-30 ｜ 日常踩坑（harness 真相层迁移实施期）｜ verify-docs 的链接检查随技能实体化开始覆盖 `.claude/skills/` 等物化视图，vendored 技能的上游死链（vueuse-functions 的 ../useXxx/index.md 相对链接、尖括号 <URL> 自动链接不被 [linksFrom](../../scripts/verify-docs.cjs) 正则识别）会直接打红仓库门禁。本轮已在真相源就地修 4 处（偏离上游）。建议：明确 vendored 目录的链接检查策略——保持检查则上游死链须项目侧补丁并在 SYNC.md 记录 patch 清单；或对 vendored 目录豁免链接检查只查结构。
 - 2026-09-30 ｜ 收尾四问（同上实施期）｜ `.claude/settings.json` 混装 hooks 真相与 permissions.allow 白名单。**已修复（10-08 终审）**：permissions 拆至 `.claude/settings.local.json`（git 忽略），settings.json 只留 hooks 三件套；残留条目清理为通用规则。状态：resolved。
