@@ -5,7 +5,7 @@
 ## Open
 - 2026-09-30 ｜ 日常踩坑（harness frontmatter 裁剪修复期）｜ CC 文档称 rules frontmatter 未知字段"运行时静默忽略"，但 VS Code 的 Claude 扩展按自有 schema 严格校验并告警（Trae 字段 alwaysApply/globs 在 .claude/rules 视图报不支持）——运行时容忍 ≠ 校验通过，跨平台共享文件必须以最严校验者为准。同轮：搜索所得的"paths 支持逗号字符串"结论被实测否定（必须 YAML 数组）。建议：无仓库动作；跨平台字段写法以目标平台实测校验器为准，文档只作参考（已按此修正 sync-harness VIEW_FM_DROPS）。
 - 2026-09-30 ｜ 日常踩坑（harness 真相层迁移实施期）｜ verify-docs 的链接检查随技能实体化开始覆盖 `.claude/skills/` 等物化视图，vendored 技能的上游死链（vueuse-functions 的 ../useXxx/index.md 相对链接、尖括号 <URL> 自动链接不被 [linksFrom](../../scripts/verify-docs.cjs) 正则识别）会直接打红仓库门禁。本轮已在真相源就地修 4 处（偏离上游）。建议：明确 vendored 目录的链接检查策略——保持检查则上游死链须项目侧补丁并在 SYNC.md 记录 patch 清单；或对 vendored 目录豁免链接检查只查结构。
-- 2026-09-30 ｜ 收尾四问（同上实施期）｜ `.claude/settings.json` 现同时承载 hooks 真相（团队共享，应提交）与 permissions.allow 白名单（auto 模式逐条批准时自动写入，机器/会话相关）。两类配置混在一个文件里，白名单随仓库提交会污染他人环境。建议：permissions 拆到 `.claude/settings.local.json`（官方 gitignored 位置），settings.json 只留 hooks；待用户决定。
+- 2026-09-30 ｜ 收尾四问（同上实施期）｜ `.claude/settings.json` 混装 hooks 真相与 permissions.allow 白名单。**已修复（10-08 终审）**：permissions 拆至 `.claude/settings.local.json`（git 忽略），settings.json 只留 hooks 三件套；残留条目清理为通用规则。状态：resolved。
 
 - 2026-09-28 ｜ 收尾四问（chat-image-paste 实施期）｜ 观察级：上述预算条目（09-13）的检查点归属再次误导——verify:docs 单跑全绿被当作预算安全，实际预算检查只在 verify:gates，又一轮"压字数-重跑"循环。是对该条建议 ③（预算检查前移/失败信息注明归属）的补充佐证，不另立建议。
 - 2026-09-28 ｜ 日常踩坑（同上实施期）｜ 观察级：Trae 终端/工具结果多次出现串扰或错乱（Read/Grep 返回与磁盘不符的混合内容、多命令管道输出互相掺杂），误导过一次门禁判断。缓解已验证有效：关键门禁不信任管道文本输出，用 `; Write-Host "xxx:$LASTEXITCODE"` 回显 exit code 实测确认。追加形态（09-28，分割线增量轮）：SearchReplace 结果头显示错误文件路径（引用不存在的文件名），但 diff 内容实际正确落盘——"结果与磁盘不符"从只读操作蔓延到写入操作，成功性判断只能靠事后 Read 复核。建议：无需仓库动作；写入后对关键文件 Read 复核（可入收尾习惯）。

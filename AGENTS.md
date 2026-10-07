@@ -32,7 +32,7 @@ Node ≥ 24 required; pnpm 12.1.0 is pinned via `packageManager` + `devEngines` 
 - `pnpm hygiene` — knip (dead code/unused deps, config in `knip.json`) + publint (package exports) via turbo; runs in CI
 - `pnpm verify:docs` — docs gate: CLAUDE.md thin-pointer sync, markdown links, word budgets (limits in [doc-budgets.manifest.json](scripts/doc-budgets.manifest.json), including this file), bilingual-pair hashes
 - `pnpm verify:invariants` — structural invariant checks (ZodValidationPipe mounting, forFeature contextName, shared/types strip-only syntax, server ESM constraints); runs in CI and pre-commit; line-level exemption: `// invariant: skip`
-- `pnpm verify:gates` — gate self-monitoring (gate/hook script syntax, `hooks.json` structure, hook liveness smoke); runs in CI and pre-commit
+- `pnpm verify:gates` — gate self-monitoring (gate/hook script syntax, hooks config, hook liveness smoke, harness view consistency); runs in CI and pre-commit
 - `pnpm verify` — one-shot: invariants + docs + gates; agent wrap-up runs this single command
 - OpenSpec change workflow — non-trivial changes go through `openspec/` (delta specs + proposal + tasks): invoke `/opsx-propose` → `/opsx-apply` → `/opsx-archive` via `.trae/commands` (Trae), `.claude/commands` (Claude Code), `.opencode/commands` (OpenCode), or the shared `openspec-*` skills in `.agents/skills` (any agent platform reading `.agents/skills`); project context in [openspec/config.yaml](openspec/config.yaml)
 - `pnpm verify:pairing --write <path>` — re-record a bilingual pair's hash after a paired change (see [docs/i18n/README.md](docs/i18n/README.md))

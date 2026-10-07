@@ -175,6 +175,13 @@ function main() {
         drift.push(`drifted view: ${relOf(job.viewAbs)}`)
     }
     for (const abs of stale) drift.push(`stale view file: ${relOf(abs)}`)
+    for (const viewDir of [
+      ...DIR_VIEWS.map(([, v]) => v),
+      ...FILE_VIEWS.map(([, v]) => path.dirname(v)),
+    ]) {
+      if (!fs.existsSync(path.join(ROOT, viewDir, VIEW_MARKER)))
+        drift.push(`missing marker: ${viewDir}/${VIEW_MARKER}`)
+    }
     if (drift.length > 0) {
       for (const d of drift) process.stderr.write(`[sync-harness] ${d}\n`)
       process.stderr.write('[sync-harness] run `pnpm sync:harness` to materialize views\n')

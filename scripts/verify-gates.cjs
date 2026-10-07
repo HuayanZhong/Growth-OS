@@ -60,16 +60,16 @@ for (const f of cjsFiles) {
 //    merges hooks from this file; .trae/hooks.json was retired to avoid
 //    double execution).
 const SETTINGS = '.claude/settings.json'
-let hooksConfig = null
+let settingsHooks = null
 try {
   const settings = JSON.parse(read(SETTINGS))
-  if (settings?.hooks && Object.keys(settings.hooks).length > 0) hooksConfig = settings
+  if (settings?.hooks && Object.keys(settings.hooks).length > 0) settingsHooks = settings
   else report(`${SETTINGS} registers no hooks`)
 } catch (err) {
   report(`${SETTINGS} is not valid JSON: ${err.message}`)
 }
-if (hooksConfig) {
-  const events = hooksConfig.hooks ?? {}
+if (settingsHooks) {
+  const events = settingsHooks.hooks ?? {}
   const eventNames = Object.keys(events)
   if (eventNames.length === 0) report(`${SETTINGS} registers no hook events`)
   for (const eventName of eventNames) {

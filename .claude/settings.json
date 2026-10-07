@@ -1,46 +1,4 @@
 {
-  "permissions": {
-    "allow": [
-      "Bash(node scripts/*)",
-      "Bash(node --check*)",
-      "Bash(pnpm sync:harness*)",
-      "Bash(pnpm verify*)",
-      "Bash(pnpm test*)",
-      "Bash(git add*)",
-      "Bash(git commit*)",
-      "Bash(git mv*)",
-      "Bash(git rm*)",
-      "Bash(node --check scripts/verify-gates.cjs)",
-      "Bash(node --check scripts/hook-guard-harness.cjs)",
-      "Bash(node --check scripts/hook-regen-catalogs.cjs)",
-      "Bash(pnpm verify:gates)",
-      "Bash(pnpm verify:docs)",
-      "Bash(node scripts/hook-guard-harness.cjs)",
-      "Bash(git add *)",
-      "Bash(git commit -m 'refactor\\(harness\\): hooks 收敛到 .claude/settings.json，守卫改为护真相拦视图 *)",
-      "Bash(sed -i 's|console.log\\(`\\\\[verify-gates\\\\] OK \\(${cjsFiles.length} scripts, hooks.json checked, hook smoke passed\\)`\\)|console.log\\(`[verify-gates] OK \\(${cjsFiles.length} scripts, hooks checked, hook smoke passed, views in sync\\)`\\)|' scripts/verify-gates.cjs)",
-      "Bash(grep -n -B2 -A8 \"## Repository Map\\\\|\\\\.trae/\\\\`\\\\|\\\\.agents/\\\\`\" AGENTS.md)",
-      "Bash(node scripts/sync-harness.cjs --check)",
-      "Bash(pnpm verify *)",
-      "Bash(git commit -m 'feat\\(harness\\): 视图一致性门禁 + AGENTS.md 真相层说明 + 决策记录 *)",
-      "Bash(sed -i 's|- 升级/迁移/选型先给官方依据与对比。|- 升级/迁移/选型先给官方依据与对比；跨平台共享基础设施须逐平台查证官方格式差异再定方案（不默认\"格式兼容\"）。\\\\n  confidence: 4 ｜ evidence: 09-08 ESM/rspack 先报告后执行；09-30 harness 生态对齐要求先研究三平台差异 | last_updated: 2026-09-30|' .agents/user-profile.md)",
-      "Bash(sed -i 's|^last_updated: 2026-09-28$|last_updated: 2026-09-30|' .agents/user-profile.md)",
-      "Bash(node -e ' *)",
-      "Bash(pnpm verify:invariants)",
-      "WebSearch",
-      "Bash(git commit -m 'fix\\(harness\\): 同步脚本按平台裁剪规则 frontmatter，视图各守其 schema *)",
-      "Bash(git commit -m 'docs: decay-audit 补记 CC 文档与 VS Code 扩展校验的差距条目 *)",
-      "Bash(claude --version)",
-      "Bash(claude mcp *)",
-      "Bash(claude -p \"reply with just: ok\" --debug)",
-      "Bash(claude -p \"Do NOT read any files. Answer from your context only: does your context contain instruction text about 'closing review' with four channels \\(技能/Note/profile/decay-audit\\), or about user-profile observation/scoring? Answer yes/no plus which one.\")",
-      "Bash(claude -p \"Read apps/server/src/app.module.ts \\(just skim it\\). Then answer from your context: do you now also see injected rule text about 'ApiErrorEnvelope' error contract or 'ZodValidationPipe' validation rules that came from .claude/rules? Answer yes/no, which rule topics appeared, and whether they appeared BEFORE your file read or only after.\")",
-      "Bash(claude -p \"Write a file at .trae/rules/probe-guard-test.md with exactly this content: '---\\\\nalwaysApply: false\\\\ndescription: probe\\\\n---\\\\n\\\\nbody\\\\n'. Use the Write tool.\" --permission-mode acceptEdits)",
-      "WebFetch(domain:mintlify.wiki)",
-      "Bash(node scripts/verify-gates.cjs)",
-      "Bash(git commit -m 'docs: 画像补记格式研究方法论教训（实测闭环优先于文档摘要） *)"
-    ]
-  },
   "hooks": {
     "PreToolUse": [
       {

@@ -1,10 +1,10 @@
 ---
-description: Trae hooks rule: hook scripts (.trae/hooks.json + scripts/hook-*.cjs) follow the lifecycle (PreToolUse/PostToolUse/Stop), stdin/stdout JSON protocol, machine-decidable checks only. Use when adding, modifying, or debugging hooks.
+description: Trae hooks rule: hook scripts (.claude/settings.json hooks key + scripts/hook-*.cjs) follow the lifecycle (PreToolUse/PostToolUse/Stop), stdin/stdout JSON protocol, machine-decidable checks only. Use when adding, modifying, or debugging hooks.
 ---
 
 # Trae Hooks (Lifecycle, Protocol, Authoring)
 
-**When to use**: when adding or modifying hooks in `.trae/hooks.json` or `scripts/hook-*.cjs`.
+**When to use**: when adding or modifying hooks in `.claude/settings.json` or `scripts/hook-*.cjs`.
 
 ## 1. Event lifecycle
 
@@ -18,7 +18,7 @@ Common stdin fields: `session_id`, `cwd`, `hook_event_name`, `workspace_roots`. 
 
 ## 2. Configuration
 
-- Project hooks live in `.trae/hooks.json` (`version: 1`); global hooks at `~/.trae-cn/hooks.json` are merged by Trae — this repo only maintains the project file.
+- Project hooks live in `.claude/settings.json` under the `hooks` key (Trae merges this same file natively; `.trae/hooks.json` was retired to avoid double execution).
 - `matcher` applies to `PreToolUse`/`PostToolUse`/`Notification` only; `Stop` groups use `loop_limit` (default 5) against re-entry loops.
 
 ## 3. Authoring rules
@@ -32,7 +32,7 @@ Common stdin fields: `session_id`, `cwd`, `hook_event_name`, `workspace_roots`. 
 
 ## 4. Inventory
 
-- `scripts/hook-guard-harness.cjs` (`PreToolUse`, `Write|Edit`): harness asset frontmatter validation (rules `alwaysApply`/`description`; agents `name`/`description`/`tools`; SKILL.md name = parent directory).
+- `scripts/hook-guard-harness.cjs` (`PreToolUse`, `Write|Edit`): harness asset frontmatter validation (rules `alwaysApply`/`description`; agents `name`/`description`/`tools`; SKILL.md name = parent directory); blocks direct writes to generated views.
 - `scripts/hook-regen-catalogs.cjs` (`PostToolUse`, `Write|Edit`): regenerates derived docs (config-catalog / module-graph) when their sources change; silent on unmatched paths, stderr hint on generator failure.
 - `scripts/hook-user-profile-reminder.cjs` (`Stop`): end-of-turn closing review reminder (profile update / skill distillation / note check / friction backlog) with 6h dedup (see [user-profile.md](user-profile.md) §6 and [self-improvement.md](self-improvement.md)).
 
@@ -41,6 +41,6 @@ Common stdin fields: `session_id`, `cwd`, `hook_event_name`, `workspace_roots`. 
 ```bash
 echo '{"hook_event_name":"Stop"}' | node scripts/hook-user-profile-reminder.cjs
 # first call blocks with a review reason; second call within 6h allows silently
-node -e "JSON.parse(require('fs').readFileSync('.trae/hooks.json','utf8'))"
+node -e "JSON.parse(require('fs').readFileSync('.claude/settings.json','utf8'))"
 # config stays valid JSON
 ```

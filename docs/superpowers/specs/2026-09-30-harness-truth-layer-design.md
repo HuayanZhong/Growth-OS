@@ -143,3 +143,14 @@ Trae 侧对 `type` 字段官方未定义、社区证实容忍——列为迁移�
 - **Trae `.agents` 开关是用户级设置**（不在仓库内）→ `.trae/skills` 视图物化兜底，开关与否都能加载
 - **CC rules 39 个中 6 个无条件加载**（agent 元规则 + git-commit-message）→ 体量小，可接受；后续可用 paths 精细化
 - **范围外**：OpenCode agents 转换（`.opencode/agents` 为空，暂无需求）；documents/ 不迁移；commands 三平台现状不动；`.claude/settings.local.json` 个人配置不进仓库
+
+---
+
+## 9. 实施偏差记录（2026-09-30 实施期定稿，覆盖上文相应表述）
+
+1. **§4.1 paths 写法**：Claude Code 实测拒绝逗号字符串（必须 YAML 数组，每行 `- "glob"`）；上文的 `paths: apps/server/**/*.ts` 标量写法仅示意，落地为数组。
+2. **§4.1 superset 载体**：真相源保持 superset，但视图不再逐字复制——sync 按平台裁剪（.trae 视图删 `paths`；.claude 视图删 `alwaysApply`/`globs`/`scene`），因 VS Code Claude 扩展按自有 schema 严格校验，verbatim superset 副本会报错。
+3. **§5 标记文件**：`.README.md` 改为无扩展名 `.sync-generated`，避开 verify-gates 的 .md 遍历与字数预算检查。
+4. **§5 prune 语义**：真相源缺失的视图不 prune（首跑曾误删 44 个视图文件，已修复并加守卫）。
+5. **§4.5 hooks**：`timeout` 单位秒；`loop_limit` 未迁移（Trae 侧默认 5）。
+6. **§8 勘误**：`scene: git_message` 仅存在于 git-commit-message.md，Claude Code 视图裁剪该字段。
