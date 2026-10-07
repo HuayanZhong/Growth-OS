@@ -14,8 +14,8 @@ last_updated: 2026-09-30
 
 ## 2. 问题解决路径（Problem-solving path）
 
-- 选型/迁移先给官方依据；格式以运行时校验闭环为准。
-  confidence: 4 ｜ evidence: 09-08 ESM；09-30 paths 实测 | last_updated: 2026-09-30
+- 选型/迁移先给官方依据；格式实测闭环；迁移后逐文件核对。
+  confidence: 4 ｜ evidence: 09-08 ESM；09-30/10-08 手动纠错 | last_updated: 2026-10-08
 - 对"越界"敏感：只做确认范围，扩展/收缩先提案；对标忠实复刻。边界见 [interpret-user-constraints](../../.agents/rules/agent/interpret-user-constraints.md)。
   confidence: 4 ｜ evidence: 09-07 越界；09-13 未商量加模块；09-27 对标两次纠正；09-28 删用户选型被要求找回 ｜ last_updated: 2026-09-28
 - 重建/设计先读 Notes 与归档 changes。

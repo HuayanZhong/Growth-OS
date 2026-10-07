@@ -18,5 +18,5 @@ Rules/agents/skills/MCP were duplicated across `.trae/`, `.claude/`, `.agents/` 
 
 - Editing truth without syncing is caught by `verify:gates` (red) and auto-healed by the PostToolUse hook.
 - Trae's `type` tolerance in `.trae/mcp.json` is undocumented; fallback is `STRIP_DEFAULT = true` in `sync-harness.cjs`.
-- ~50 repo references to `.trae/rules/**` remain valid — view paths still exist physically.
+- Active-file references were migrated to `.agents/rules/**` (10-08 sweep, incl. orphan-check fix in verify-docs); remaining `.trae/rules` mentions are deliberate (knip ignores, budget keys, hook fixtures, historical notes).
 - Vendored/generated skill assets are excluded from lint-staged via `VENDORED_PREFIXES` (`.claude/` added alongside `.agents/`, `.trae/`).
